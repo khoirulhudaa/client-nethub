@@ -357,7 +357,7 @@ export default function TakeQuiz() {
                     className={`flex w-full items-center gap-3 rounded-lg border px-4 py-3 text-left text-sm transition ${
                       selected
                         ? "border-accent bg-accent/10 text-accent"
-                        : "border-gray-200 hover:border-gray-300"
+                        : "border-gray-500/40 hover:border-gray-300"
                     }`}
                   >
                     <span
@@ -412,7 +412,7 @@ export default function TakeQuiz() {
               type="button"
               disabled={currentQ === 0}
               onClick={() => setCurrentQ((p) => p - 1)}
-              className="rounded-lg border border-gray-200 px-4 py-2 text-sm disabled:opacity-40"
+              className="rounded-lg border active:scale-[0.99] duration-100 border-gray-200 px-4 py-2 hover:bg-slate-500/20 text-sm disabled:opacity-40"
             >
               Sebelumnya
             </button>
@@ -430,7 +430,7 @@ export default function TakeQuiz() {
               <button
                 type="button"
                 onClick={() => setCurrentQ((p) => p + 1)}
-                className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-white hover:opacity-90"
+                className="rounded-lg active:scale-[0.99] duration-100 bg-accent px-5 py-2 text-sm font-medium text-white hover:opacity-90"
               >
                 Selanjutnya
               </button>

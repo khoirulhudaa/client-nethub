@@ -208,7 +208,7 @@ const PostDetail = () => {
       
       <div className="w-full bg-slate-200 dark:bg-slate-500 p-0 overflow-hidden rounded-2xl">
         {post.coverImage && (
-          <img src={post.coverImage} alt="cover-image" className="mb-6 h-72 w-full object-contain" />
+          <img src={post.coverImage} alt="cover-image" className="mb-6 h-72 w-full hover:scale-[1.1] duration-300 ease-in object-contain" />
         )}
       </div>
 
