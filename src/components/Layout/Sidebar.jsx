@@ -7,6 +7,7 @@ import {
   LayoutGrid,
   LogOut,
   Network,
+  PencilRuler,
   Search,
   ShieldAlert,
   Wrench
@@ -16,7 +17,7 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import { useState } from "react";
 
 const categoryLinks = [
-  { label: "All Guides", icon: LayoutGrid, to: "/", category: null },
+  { label: "Dashboard", icon: LayoutGrid, to: "/", category: null },
   { label: "Topology", icon: Network, to: "/?category=Topology", category: "Topology" },
   { label: "Installation", icon: Boxes, to: "/?category=Installation", category: "Installation" },
   { label: "Maintenance", icon: Wrench, to: "/?category=Maintenance", category: "Maintenance" },
@@ -26,7 +27,8 @@ const categoryLinks = [
 
 const quizLinks = [
   { label: "Creation Quiz", icon: HelpCircle, to: "/quiz-builder" },
-  { label: "Quiz Network", icon: Brain, to: "/quizzes" },
+  { label: "Learn Network", icon: Brain, to: "/quizzes" },
+  { label: "Practice now", icon: PencilRuler, to: "/topology-practice" }, // ← baru
 ];
 
 const Sidebar = ({ onNavigate }) => {
@@ -78,7 +80,7 @@ const handleSearch = (e) => {
         </div>
       </form>
 
-      <nav className="flex flex-1 flex-col gap-1">
+      <nav className="flex flex-1 flex-col gap-1 pt-2">
         <p className="px-2 pb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
           Categories
         </p>
@@ -105,7 +107,7 @@ const handleSearch = (e) => {
           );
         })}
 
-        <p className="px-3 pb-1 pt-5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+        <p className="px-3 pb-1 pt-3.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
           Quiz
         </p>
         {quizLinks.map(({ label, icon: Icon, to }) => (
@@ -126,11 +128,24 @@ const handleSearch = (e) => {
           </NavLink>
         ))}
 
-        <p className="px-3 pb-1 pt-5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+        <p className="px-3 pb-1 pt-3.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
           Library
         </p>
-        {/* My Guides tetap sama */}
-</nav>
+        <NavLink
+          to="/my-posts"
+          onClick={onNavigate}
+          className={({ isActive }) =>
+            `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
+              isActive
+                ? "bg-accent-soft text-accent"
+                : "text-gray-600 hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
+            }`
+          }
+        >
+          <FileText size={17} />
+          My Guides
+        </NavLink>
+      </nav>
 
       <NavLink
         to="/profile"

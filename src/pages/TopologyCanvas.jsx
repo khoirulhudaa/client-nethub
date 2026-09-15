@@ -13,6 +13,7 @@ import {
 import "@xyflow/react/dist/style.css";
 import { toPng } from "html-to-image";
 import {
+  AlertTriangle,
   Camera,
   Download,
   HardDrive,
@@ -28,6 +29,7 @@ import {
   Wifi,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { validateConnection } from "../../../server/src/utils/cableRules";
 
 /* ====================== Custom Node ====================== */
 const HardwareNode = ({ data, selected }) => {
@@ -115,6 +117,7 @@ export default function TopologyCanvas({
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [selectedCable, setSelectedCable] = useState(CABLE_TYPES[0]);
   const [selectedEdge, setSelectedEdge] = useState(null);
+  const [connectionWarnings, setConnectionWarnings] = useState([]); // array of { edgeId, message }
 
   // Filter berdasarkan allowed*
   const availableHardware = allowedHardware
@@ -197,6 +200,66 @@ export default function TopologyCanvas({
     },
     [onNodesChange, edges, setNodes, updateParent]
   );
+  
+  const checkAllWarnings = useCallback((currentNodes, currentEdges) => {
+    const warnings = [];
+
+    currentEdges.forEach((edge) => {
+      const sourceNode = currentNodes.find((n) => n.id === edge.source);
+      const targetNode = currentNodes.find((n) => n.id === edge.target);
+
+      if (!sourceNode || !targetNode) return;
+
+      const sourceType = sourceNode.data?.type;
+      const targetType = targetNode.data?.type;
+      const cableType = edge.data?.cableType || "utp";
+
+      const result = validateConnection(sourceType, targetType, cableType);
+
+      if (!result.valid) {
+        warnings.push({
+          edgeId: edge.id,
+          message: result.message,
+        });
+      }
+    });
+
+    setConnectionWarnings(warnings);
+  }, []);
+
+  useEffect(() => {
+    checkAllWarnings(nodes, edges);
+  }, [nodes, edges, checkAllWarnings]);
+
+
+  const getEdgeStyle = (edge, warnings) => {
+    const isInvalid = warnings.some((w) => w.edgeId === edge.id);
+    const cable = CABLE_TYPES.find((c) => c.id === edge.data?.cableType) || CABLE_TYPES[0];
+
+    return {
+      stroke: isInvalid ? "#ef4444" : cable.color, // merah jika invalid
+      strokeWidth: isInvalid ? 3 : 2.5,
+      strokeDasharray:
+        cable.style === "dashed"
+          ? "6 4"
+          : cable.style === "dotted"
+          ? "2 3"
+          : undefined,
+    };
+  };
+
+  useEffect(() => {
+    checkAllWarnings(nodes, edges);
+
+    // Update warna edge yang invalid
+    setEdges((eds) =>
+      eds.map((e) => {
+        const isInvalid = connectionWarnings.some((w) => w.edgeId === e.id);
+        // Kita pakai functional update yang lebih aman
+        return e;
+      })
+    );
+  }, [nodes, edges]);
 
   const onEdgesChangeInternal = useCallback(
     (changes) => {
@@ -411,6 +474,21 @@ export default function TopologyCanvas({
               </button>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* ===== WARNING LIST ===== */}
+      {connectionWarnings.length > 0 && (
+        <div className="space-y-2">
+          {connectionWarnings.map((w) => (
+            <div
+              key={w.edgeId}
+              className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300"
+            >
+              <AlertTriangle size={16} className="mt-0.5 shrink-0" />
+              <span>{w.message}</span>
+            </div>
+          ))}
         </div>
       )}
 

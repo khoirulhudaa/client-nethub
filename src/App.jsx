@@ -13,6 +13,7 @@ import QuizBuilder from "./pages/QuizBuilder.jsx";
 import Quizzes from "./pages/Quizzes.jsx";
 import Register from "./pages/Register.jsx";
 import TakeQuiz from "./pages/TakeQuiz.jsx";
+import TopologyPractice from "./pages/TopologyPractice.jsx";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
         <Route path="profile" element={<Profile />} />
         <Route path="/quizzes/:id" element={<TakeQuiz />} />
         <Route path="/quizzes" element={<Quizzes />} />
+        <Route path="/topology-practice" element={<TopologyPractice />} />
         <Route path="quiz-builder" element={<QuizBuilder />} />
       </Route>
     </Routes>
