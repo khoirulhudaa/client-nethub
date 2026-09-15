@@ -1,5 +1,6 @@
 import {
   Boxes,
+  Brain,
   FileText,
   HardDrive,
   HelpCircle,
@@ -21,7 +22,11 @@ const categoryLinks = [
   { label: "Maintenance", icon: Wrench, to: "/?category=Maintenance", category: "Maintenance" },
   { label: "Fixing Error", icon: ShieldAlert, to: "/?category=Fixing", category: "Fixing" },
   { label: "Soft & Hardware", icon: HardDrive, to: "/?category=Hardware", category: "Hardware" },
-  { label: "Quiz Network", icon: HelpCircle, to: "/quiz-builder", category: null },
+];
+
+const quizLinks = [
+  { label: "Creation Quiz", icon: HelpCircle, to: "/quiz-builder" },
+  { label: "Quiz Network", icon: Brain, to: "/quizzes" },
 ];
 
 const Sidebar = ({ onNavigate }) => {
@@ -78,8 +83,10 @@ const handleSearch = (e) => {
           Categories
         </p>
         {categoryLinks.map(({ label, icon: Icon, to, category }) => {
-          // Cek apakah item ini aktif berdasarkan query category
-          const isCategoryActive = currentCategory === category;
+          const isCategoryActive =
+            category === null
+              ? !currentCategory && location.pathname === "/"
+              : currentCategory === category;
 
           return (
             <NavLink
@@ -99,23 +106,31 @@ const handleSearch = (e) => {
         })}
 
         <p className="px-3 pb-1 pt-5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+          Quiz
+        </p>
+        {quizLinks.map(({ label, icon: Icon, to }) => (
+          <NavLink
+            key={label}
+            to={to}
+            onClick={onNavigate}
+            className={({ isActive }) =>
+              `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
+                isActive
+                  ? "bg-blue-600 text-white"
+                  : "text-gray-600 hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
+              }`
+            }
+          >
+            <Icon size={17} />
+            {label}
+          </NavLink>
+        ))}
+
+        <p className="px-3 pb-1 pt-5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
           Library
         </p>
-        <NavLink
-          to="/my-posts"
-          onClick={onNavigate}
-          className={({ isActive }) =>
-            `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
-              isActive
-                ? "bg-accent-soft text-accent"
-                : "text-gray-600 hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
-            }`
-          }
-        >
-          <FileText size={17} />
-          My Guides
-        </NavLink>
-      </nav>
+        {/* My Guides tetap sama */}
+</nav>
 
       <NavLink
         to="/profile"

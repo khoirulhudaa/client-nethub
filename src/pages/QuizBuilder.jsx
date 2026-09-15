@@ -108,72 +108,119 @@ export default function QuizBuilder() {
 
   const handleSave = async (publish = false) => {
     if (!title.trim()) {
-      setError("Judul wajib diisi");
-      return;
+        setError("Judul wajib diisi");
+        return;
     }
     if (questions.length < 5) {
-      setError("Minimal 5 soal");
-      return;
+        setError("Minimal 5 soal");
+        return;
     }
     if (questions.length > 15) {
-      setError("Maksimal 15 soal");
-      return;
+        setError("Maksimal 15 soal");
+        return;
     }
 
     // Validasi dasar
     for (let i = 0; i < questions.length; i++) {
-      const q = questions[i];
-      if (!q.questionText.trim()) {
+        const q = questions[i];
+        if (!q.questionText.trim()) {
         setError(`Soal #${i + 1} belum diisi teks pertanyaan`);
         setActiveIndex(i);
         return;
-      }
-      if (q.type === "multiple_choice") {
+        }
+
+        if (q.type === "multiple_choice") {
+        // Cek apakah ada opsi yang masih kosong
+        const emptyOption = q.options.some((o) => !o.text.trim());
+        if (emptyOption) {
+            setError(`Soal #${i + 1}: semua opsi jawaban harus diisi`);
+            setActiveIndex(i);
+            return;
+        }
+
         const hasCorrect = q.options.some((o) => o.isCorrect);
         if (!hasCorrect) {
-          setError(`Soal #${i + 1} (Pilihan Ganda) belum punya jawaban benar`);
-          setActiveIndex(i);
-          return;
+            setError(`Soal #${i + 1} (Pilihan Ganda) belum punya jawaban benar`);
+            setActiveIndex(i);
+            return;
         }
-      }
-      if (q.type === "topology") {
+        }
+
+        if (q.type === "topology") {
         if (!q.correctTopology?.nodes?.length) {
-          setError(`Soal #${i + 1} (Topology) belum punya kunci jawaban`);
-          setActiveIndex(i);
-          return;
+            setError(`Soal #${i + 1} (Topology) belum punya kunci jawaban`);
+            setActiveIndex(i);
+            return;
         }
-      }
+        }
     }
 
     setSaving(true);
     setError("");
 
+    // ===== SANITASI DATA SEBELUM KIRIM =====
+    const cleanedQuestions = questions.map((q) => {
+        if (q.type === "multiple_choice") {
+        return {
+            type: q.type,
+            questionText: q.questionText.trim(),
+            explanation: q.explanation || "",
+            points: q.points || 10,
+            allowMultiple: Boolean(q.allowMultiple),
+            options: q.options.map((o) => ({
+            text: o.text.trim(),
+            isCorrect: Boolean(o.isCorrect),
+            })),
+            // hapus field topology yang tidak perlu
+            correctTopology: undefined,
+            allowedHardware: undefined,
+            allowedCables: undefined,
+            matchThreshold: undefined,
+        };
+        }
+
+        // type === "topology"
+        return {
+        type: q.type,
+        questionText: q.questionText.trim(),
+        explanation: q.explanation || "",
+        points: q.points || 10,
+        correctTopology: q.correctTopology || { nodes: [], edges: [] },
+        allowedHardware: q.allowedHardware || [],
+        allowedCables: q.allowedCables || [],
+        matchThreshold: q.matchThreshold || 0.85,
+        // hapus options supaya tidak kena validasi required
+        options: undefined,
+        allowMultiple: undefined,
+        };
+    });
+
     const payload = {
-      title: title.trim(),
-      description: description.trim(),
-      category,
-      tags: tags
+        title: title.trim(),
+        description: description.trim(),
+        category,
+        tags: tags
         .split(",")
         .map((t) => t.trim().toLowerCase())
         .filter(Boolean),
-      questions,
-      isPublished: publish || isPublished,
+        questions: cleanedQuestions,
+        isPublished: publish || isPublished,
     };
 
     try {
-      if (isEdit) {
+        if (isEdit) {
         await api.put(`/quizzes/${id}`, payload);
-      } else {
+        } else {
         await api.post("/quizzes", payload);
-      }
-      navigate("/quizzes");
+        }
+        navigate("/quizzes");
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || "Gagal menyimpan quiz");
+        console.error(err);
+        setError(err.response?.data?.message || "Gagal menyimpan quiz");
     } finally {
-      setSaving(false);
+        setSaving(false);
     }
-  };
+    };
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 pb-16">
@@ -283,9 +330,9 @@ export default function QuizBuilder() {
         <div className="space-y-5">
         {/* ===== Daftar Soal (horizontal) ===== */}
         <div className="surface-card rounded-xl border border-gray-200 bg-white p-3">
-            <div className="mb-2 flex items-center justify-between px-1">
+            <div className="mb-2 flex items-center justify-between px-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                Soal ({questions.length}/20)
+                Soal ({questions.length}/15)
             </p>
             <button
                 type="button"
@@ -298,7 +345,7 @@ export default function QuizBuilder() {
             </button>
             </div>
 
-            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
+            <div className="flex gap-2 overflow-x-auto pb-1 px-2 scrollbar-thin">
             {questions.map((q, i) => (
                 <button
                 key={i}

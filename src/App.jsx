@@ -1,16 +1,18 @@
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import AppLayout from "./components/Layout/AppLayout.jsx";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 
-import Login from "./pages/Login.jsx";
-import Register from "./pages/Register.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
-import CreatePost from "./pages/CreatePost.jsx";
-import PostDetail from "./pages/PostDetail.jsx";
 import AuthorProfile from "./pages/AuthorProfile.jsx";
+import CreatePost from "./pages/CreatePost.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import Login from "./pages/Login.jsx";
 import MyPosts from "./pages/MyPosts.jsx";
+import PostDetail from "./pages/PostDetail.jsx";
 import Profile from "./pages/Profile.jsx";
 import QuizBuilder from "./pages/QuizBuilder.jsx";
+import Quizzes from "./pages/Quizzes.jsx";
+import Register from "./pages/Register.jsx";
+import TakeQuiz from "./pages/TakeQuiz.jsx";
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
         <Route path="authors/:id" element={<AuthorProfile />} />
         <Route path="my-posts" element={<MyPosts />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="/quizzes/:id" element={<TakeQuiz />} />
+        <Route path="/quizzes" element={<Quizzes />} />
         <Route path="quiz-builder" element={<QuizBuilder />} />
       </Route>
     </Routes>

@@ -408,7 +408,7 @@ const Dashboard = () => {
         <div className="mb-6 flex flex-wrap items-center gap-x-2.5">
           <button
             onClick={() => updateParam("category", "")}
-            className={`rounded-full border px-3 py-1.5 text-sm transition ${
+            className={`rounded-xl border px-3 py-1.5 text-sm transition ${
               !category
                 ? "border-accent bg-accent text-white"
                 : "border-gray-200 bg-white text-gray-600 hover:border-accent/50"
@@ -420,7 +420,7 @@ const Dashboard = () => {
             <button
               key={item}
               onClick={() => updateParam("category", item)}
-              className={`rounded-full border px-3 py-1.5 text-sm transition ${
+              className={`rounded-xl border px-3 py-1.5 text-sm transition ${
                 category === item
                   ? "border-accent bg-accent text-white"
                   : "border-gray-200 bg-white text-gray-600 hover:border-accent/50"
