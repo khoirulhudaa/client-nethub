@@ -152,19 +152,28 @@ const CreatePost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
     if (!form.title.trim() || !form.content.trim()) {
       setError("Title and content are required.");
       return;
     }
+
+    const tagsArray = form.tags
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+
+    if (tagsArray.length > 4) {
+      setError("Maksimal 4 tags saja.");
+      return;
+    }
+
     setSaving(true);
     try {
       const payload = {
         ...form,
-        tags: form.tags
-          .split(",")
-          .map((t) => t.trim())
-          .filter(Boolean),
-        gallery, // kirim gallery ke backend
+        tags: tagsArray,
+        gallery,
         topology,
       };
       const res = isEditing
@@ -294,13 +303,34 @@ const CreatePost = () => {
               </select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium">Tags (comma separated)</label>
+              <label className="mb-1.5 block text-sm font-medium">
+                Tags (maksimal 4, pisahkan dengan koma)
+              </label>
               <input
                 className="input-field"
                 value={form.tags}
-                onChange={(e) => setForm({ ...form, tags: e.target.value })}
-                placeholder="vlan, mikrotik, switch"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Hitung jumlah tag saat ini
+                  const currentTags = value
+                    .split(",")
+                    .map((t) => t.trim())
+                    .filter(Boolean);
+
+                  // Kalau sudah 4 tag dan user masih mengetik koma baru → tolak
+                  if (currentTags.length > 4) return;
+
+                  setForm({ ...form, tags: value });
+                }}
+                placeholder="vlan, mikrotik, switch, wifi"
               />
+              <p className="mt-1 text-xs text-gray-400">
+                {form.tags
+                  .split(",")
+                  .map((t) => t.trim())
+                  .filter(Boolean).length}
+                /4 tags
+              </p>
             </div>
           </div>
 

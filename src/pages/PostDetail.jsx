@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Pin, Heart, Trash2, Pencil, Loader2, Bookmark } from "lucide-react";
+import { Pin, Heart, Trash2, Pencil, Loader2, Bookmark, Share2, Link2, Twitter, Linkedin } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -22,6 +22,8 @@ const PostDetail = () => {
   const [liked, setLiked] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
+
+  const [showShare, setShowShare] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -53,6 +55,27 @@ const PostDetail = () => {
       toast.success(data.post.isPinned ? "Guide dipin" : "Guide di-unpin");
     } catch (err) {
       toast.error(err?.response?.data?.message || "Gagal mengubah status pin");
+    }
+  };
+
+  
+  const postUrl = `${window.location.origin}/posts/${post?.slug || slug}`;
+  const shareText = encodeURIComponent(post?.title || "");
+
+  const shareLinks = {
+    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${shareText}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`,
+    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(postUrl)}`,
+    whatsapp: `https://wa.me/?text=${shareText}%20${encodeURIComponent(postUrl)}`,
+  };
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(postUrl);
+      toast.success("Link berhasil disalin");
+      setShowShare(false);
+    } catch {
+      toast.error("Gagal menyalin link");
     }
   };
 
@@ -247,13 +270,96 @@ const PostDetail = () => {
           <Heart size={16} className={liked ? "fill-red-500" : ""} />
           {likesCount}
         </button>
+
         <button onClick={handleBookmark} className="flex items-center gap-1.5 text-sm">
           <Bookmark size={16} className={bookmarked ? "fill-accent text-accent" : ""} />
           {bookmarked ? "Saved" : "Save"}
         </button>
+
+        {/* ===== SHARE BUTTON ===== */}
+        <div className="relative">
+          <button
+            onClick={() => setShowShare((v) => !v)}
+            className="flex items-center gap-1.5 text-sm text-gray-500 transition hover:text-accent"
+          >
+            <Share2 size={16} />
+            Share
+          </button>
+
+          {showShare && (
+            <>
+              {/* Backdrop untuk menutup dropdown */}
+              <div
+                className="fixed inset-0 z-10"
+                onClick={() => setShowShare(false)}
+              />
+
+              <div className="absolute left-0 top-full z-20 mt-2 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/10 dark:bg-gray-900">
+                <button
+                  onClick={copyLink}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-white/5"
+                >
+                  <Link2 size={16} />
+                  Salin Link
+                </button>
+
+                <a
+                  href={shareLinks.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setShowShare(false)}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-white/5"
+                >
+                  <span className="flex h-4 w-4 items-center justify-center text-[13px] font-bold text-green-600">
+                    WA
+                  </span>
+                  WhatsApp
+                </a>
+
+                {/* <a
+                  href={shareLinks.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setShowShare(false)}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-white/5"
+                >
+                  <Twitter size={16} className="text-sky-500" />
+                  Twitter / X
+                </a>
+
+                <a
+                  href={shareLinks.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setShowShare(false)}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-white/5"
+                >
+                  <Facebook size={16} className="text-blue-600" />
+                  Facebook
+                </a> */}
+
+                <a
+                  href={shareLinks.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setShowShare(false)}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-white/5"
+                >
+                  <Linkedin size={16} className="text-blue-700" />
+                  LinkedIn
+                </a>
+              </div>
+            </>
+          )}
+        </div>
+
         <span className="text-sm text-gray-400">{post.views} views</span>
+
         {post.tags?.map((t) => (
-          <span key={t} className="pill bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-gray-400">
+          <span
+            key={t}
+            className="pill bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-gray-400"
+          >
             #{t}
           </span>
         ))}
