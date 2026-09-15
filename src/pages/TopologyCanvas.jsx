@@ -1,0 +1,560 @@
+import {
+  Background,
+  Controls,
+  Handle,
+  MarkerType,
+  MiniMap,
+  Position,
+  ReactFlow,
+  addEdge,
+  useEdgesState,
+  useNodesState,
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+import { toPng } from "html-to-image";
+import {
+  Camera,
+  Download,
+  HardDrive,
+  HardDriveDownload,
+  Monitor,
+  Phone,
+  Printer,
+  Router,
+  Server,
+  Shield,
+  StickyNote,
+  Trash2,
+  Wifi,
+} from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+/* ====================== Custom Node ====================== */
+const HardwareNode = ({ data, selected }) => {
+  const Icon = data.icon || Router;
+
+  return (
+    <div
+      className={`min-w-[140px] rounded-xl border-2 bg-white p-3 shadow-md transition dark:bg-gray-900 ${
+        selected
+          ? "border-accent ring-2 ring-accent/30"
+          : "border-gray-200 dark:border-white/10"
+      }`}
+    >
+      <Handle type="target" position={Position.Top} className="!bg-accent" />
+      <Handle type="source" position={Position.Bottom} className="!bg-accent" />
+      <Handle type="source" position={Position.Right} className="!bg-accent" />
+      <Handle type="target" position={Position.Left} className="!bg-accent" />
+
+      <div className="flex items-center gap-2">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/10 text-accent">
+          <Icon size={18} />
+        </div>
+        <div className="flex-1">
+          <p className="text-sm font-semibold leading-tight">{data.label}</p>
+          <p className="text-[10px] text-gray-400">{data.type}</p>
+        </div>
+      </div>
+
+      {data.note && (
+        <div className="mt-2 rounded-md bg-amber-50 px-2 py-1.5 text-[11px] text-amber-800 dark:bg-amber-500/10 dark:text-amber-300">
+          <div className="flex items-start gap-1">
+            <StickyNote size={12} className="mt-0.5 shrink-0" />
+            <span>{data.note}</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const nodeTypes = {
+  hardware: HardwareNode,
+};
+
+/* ====================== Hardware Types ====================== */
+export const HARDWARE_TYPES = [
+  { type: "Router", icon: Router },
+  { type: "MikroTik", icon: Router },
+  { type: "Switch", icon: HardDrive },
+  { type: "Server", icon: Server },
+  { type: "PC", icon: Monitor },
+  { type: "Access Point", icon: Wifi },
+  { type: "Firewall", icon: Shield },
+  { type: "Printer/FC", icon: Printer },
+  { type: "CCTV", icon: Camera },
+  { type: "DVR/DVR", icon: HardDriveDownload },
+  { type: "Telepon", icon: Phone },
+];
+
+/* ====================== Cable Types ====================== */
+export const CABLE_TYPES = [
+  { id: "utp", label: "UTP / LAN", color: "#22c55e", style: "solid" },
+  { id: "fiber", label: "Fiber Optic", color: "#f59e0b", style: "dashed" },
+  { id: "coaxial", label: "Coaxial", color: "#ef4444", style: "solid" },
+  { id: "serial", label: "Serial / Console", color: "#8b5cf6", style: "dotted" },
+  { id: "power", label: "Power", color: "#64748b", style: "solid" },
+  { id: "wireless", label: "Wireless", color: "#06b6d4", style: "dashed" },
+];
+
+/* ====================== Main Component ====================== */
+export default function TopologyCanvas({
+  value = { nodes: [], edges: [] },
+  onChange,
+  readOnly = false,
+  mode = "editor", // "editor" | "quiz" | "review"
+  allowedHardware = null, // array of type string, null = semua
+  allowedCables = null, // array of cable id, null = semua
+  showToolbar = true,
+  height = 420,
+}) {
+  const [nodes, setNodes, onNodesChange] = useNodesState(value.nodes || []);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(value.edges || []);
+  const [selectedNode, setSelectedNode] = useState(null);
+  const reactFlowWrapper = useRef(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [selectedCable, setSelectedCable] = useState(CABLE_TYPES[0]);
+  const [selectedEdge, setSelectedEdge] = useState(null);
+
+  // Filter berdasarkan allowed*
+  const availableHardware = allowedHardware
+    ? HARDWARE_TYPES.filter((h) => allowedHardware.includes(h.type))
+    : HARDWARE_TYPES;
+
+  const availableCables = allowedCables
+    ? CABLE_TYPES.filter((c) => allowedCables.includes(c.id))
+    : CABLE_TYPES;
+
+  // Pastikan selectedCable selalu valid
+  useEffect(() => {
+    if (availableCables.length > 0 && !availableCables.find((c) => c.id === selectedCable.id)) {
+      setSelectedCable(availableCables[0]);
+    }
+  }, [availableCables, selectedCable]);
+
+  // Sync dari parent
+  useEffect(() => {
+    setNodes(value.nodes || []);
+    setEdges(value.edges || []);
+  }, [value, setNodes, setEdges]);
+
+  const updateParent = useCallback(
+    (newNodes, newEdges) => {
+      onChange?.({ nodes: newNodes, edges: newEdges });
+    },
+    [onChange]
+  );
+
+  const onConnect = useCallback(
+    (params) => {
+      if (readOnly) return;
+
+      const cable = selectedCable;
+
+      const newEdges = addEdge(
+        {
+          ...params,
+          type: "smoothstep",
+          animated: cable.id === "wireless" || cable.id === "fiber",
+          style: {
+            stroke: cable.color,
+            strokeWidth: 2.5,
+            strokeDasharray:
+              cable.style === "dashed"
+                ? "6 4"
+                : cable.style === "dotted"
+                ? "2 3"
+                : undefined,
+          },
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: cable.color,
+          },
+          label: cable.label,
+          labelStyle: { fill: cable.color, fontSize: 10, fontWeight: 600 },
+          labelBgStyle: { fill: "#ffffff", fillOpacity: 0.9 },
+          labelBgPadding: [4, 2],
+          data: { cableType: cable.id },
+        },
+        edges
+      );
+
+      setEdges(newEdges);
+      updateParent(nodes, newEdges);
+    },
+    [edges, nodes, readOnly, selectedCable, setEdges, updateParent]
+  );
+
+  const onNodesChangeInternal = useCallback(
+    (changes) => {
+      onNodesChange(changes);
+      setTimeout(() => {
+        setNodes((nds) => {
+          updateParent(nds, edges);
+          return nds;
+        });
+      }, 0);
+    },
+    [onNodesChange, edges, setNodes, updateParent]
+  );
+
+  const onEdgesChangeInternal = useCallback(
+    (changes) => {
+      onEdgesChange(changes);
+      setTimeout(() => {
+        setEdges((eds) => {
+          updateParent(nodes, eds);
+          return eds;
+        });
+      }, 0);
+    },
+    [onEdgesChange, nodes, setEdges, updateParent]
+  );
+
+  const onEdgeClick = useCallback(
+    (_, edge) => {
+      if (readOnly) return;
+      setSelectedEdge(edge);
+      setSelectedNode(null);
+    },
+    [readOnly]
+  );
+
+  const onEdgesDelete = useCallback(
+    (deleted) => {
+      const newEdges = edges.filter((e) => !deleted.find((d) => d.id === e.id));
+      setEdges(newEdges);
+      setSelectedEdge(null);
+      updateParent(nodes, newEdges);
+    },
+    [edges, nodes, setEdges, updateParent]
+  );
+
+  const deleteSelectedEdge = () => {
+    if (!selectedEdge) return;
+    const newEdges = edges.filter((e) => e.id !== selectedEdge.id);
+    setEdges(newEdges);
+    setSelectedEdge(null);
+    updateParent(nodes, newEdges);
+  };
+
+  const changeCableType = (cable) => {
+    if (!selectedEdge) return;
+
+    const newEdges = edges.map((e) => {
+      if (e.id !== selectedEdge.id) return e;
+
+      return {
+        ...e,
+        animated: cable.id === "wireless" || cable.id === "fiber",
+        style: {
+          stroke: cable.color,
+          strokeWidth: 2.5,
+          strokeDasharray:
+            cable.style === "dashed"
+              ? "6 4"
+              : cable.style === "dotted"
+              ? "2 3"
+              : undefined,
+        },
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: cable.color,
+        },
+        label: cable.label,
+        labelStyle: { fill: cable.color, fontSize: 10, fontWeight: 600 },
+        data: { cableType: cable.id },
+      };
+    });
+
+    setEdges(newEdges);
+    setSelectedEdge(newEdges.find((e) => e.id === selectedEdge.id));
+    updateParent(nodes, newEdges);
+  };
+
+  const addHardware = (hw) => {
+    if (readOnly || !reactFlowInstance) return;
+
+    const id = `node-${Date.now()}`;
+    const position = reactFlowInstance.screenToFlowPosition({
+      x: window.innerWidth / 2,
+      y: 300,
+    });
+
+    const newNode = {
+      id,
+      type: "hardware",
+      position,
+      data: {
+        label: hw.type,
+        type: hw.type,
+        icon: hw.icon,
+        note: "",
+      },
+    };
+
+    const newNodes = [...nodes, newNode];
+    setNodes(newNodes);
+    updateParent(newNodes, edges);
+  };
+
+  const onNodeClick = (_, node) => {
+    if (readOnly) return;
+    setSelectedNode(node);
+    setSelectedEdge(null);
+  };
+
+  const exportToPng = async () => {
+    const viewport = reactFlowWrapper.current?.querySelector(".react-flow__viewport");
+    if (!viewport) {
+      alert("Canvas belum siap");
+      return;
+    }
+
+    try {
+      const dataUrl = await toPng(viewport, {
+        backgroundColor: "#ffffff",
+        quality: 1,
+        pixelRatio: 2,
+      });
+
+      const link = document.createElement("a");
+      link.download = `topology-${Date.now()}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Export failed:", err);
+      alert("Gagal export PNG");
+    }
+  };
+
+  const updateLabel = (label) => {
+    if (!selectedNode) return;
+    const newNodes = nodes.map((n) =>
+      n.id === selectedNode.id
+        ? { ...n, data: { ...n.data, label: label || n.data.type } }
+        : n
+    );
+    setNodes(newNodes);
+    setSelectedNode({
+      ...selectedNode,
+      data: { ...selectedNode.data, label: label || selectedNode.data.type },
+    });
+    updateParent(newNodes, edges);
+  };
+
+  const updateNote = (note) => {
+    if (!selectedNode) return;
+    const newNodes = nodes.map((n) =>
+      n.id === selectedNode.id ? { ...n, data: { ...n.data, note } } : n
+    );
+    setNodes(newNodes);
+    setSelectedNode({ ...selectedNode, data: { ...selectedNode.data, note } });
+    updateParent(newNodes, edges);
+  };
+
+  const deleteSelected = () => {
+    if (!selectedNode) return;
+    const newNodes = nodes.filter((n) => n.id !== selectedNode.id);
+    const newEdges = edges.filter(
+      (e) => e.source !== selectedNode.id && e.target !== selectedNode.id
+    );
+    setNodes(newNodes);
+    setEdges(newEdges);
+    setSelectedNode(null);
+    updateParent(newNodes, newEdges);
+  };
+
+  const isInteractive = !readOnly && mode !== "review";
+  const showSidePanels = isInteractive && (selectedNode || selectedEdge);
+
+  return (
+    <div className="space-y-3">
+      {/* ===== TOOLBAR ===== */}
+      {showToolbar && isInteractive && (
+        <div className="space-y-2">
+          {/* Hardware */}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-medium text-gray-500">Hardware:</span>
+            {availableHardware.map((hw) => (
+              <button
+                key={hw.type}
+                type="button"
+                onClick={() => addHardware(hw)}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium transition hover:border-accent hover:text-accent dark:border-white/10 dark:bg-white/5"
+              >
+                <hw.icon size={14} />
+                {hw.type}
+              </button>
+            ))}
+          </div>
+
+          {/* Cable Type */}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-medium text-gray-500">Jenis Kabel:</span>
+            {availableCables.map((cable) => (
+              <button
+                key={cable.id}
+                type="button"
+                onClick={() => setSelectedCable(cable)}
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition ${
+                  selectedCable.id === cable.id
+                    ? "border-accent bg-accent/10 text-accent"
+                    : "border-gray-200 bg-white hover:border-gray-300 dark:border-white/10 dark:bg-white/5"
+                }`}
+              >
+                <span
+                  className="h-2.5 w-2.5 rounded-full"
+                  style={{ backgroundColor: cable.color }}
+                />
+                {cable.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="flex gap-3">
+        {/* Canvas */}
+        <div
+          ref={reactFlowWrapper}
+          className="flex-1 overflow-hidden rounded-xl border border-gray-200 dark:border-white/10"
+          style={{ height: `${height}px` }}
+        >
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={isInteractive ? onNodesChangeInternal : undefined}
+            onEdgesChange={isInteractive ? onEdgesChangeInternal : undefined}
+            onConnect={onConnect}
+            onInit={setReactFlowInstance}
+            onNodeClick={onNodeClick}
+            onEdgeClick={onEdgeClick}
+            onEdgesDelete={onEdgesDelete}
+            nodeTypes={nodeTypes}
+            fitView
+            fitViewOptions={{ padding: 0.2, minZoom: 0.4, maxZoom: 1.2 }}
+            minZoom={0.2}
+            maxZoom={2}
+            defaultEdgeOptions={{ type: "smoothstep" }}
+            attributionPosition="bottom-left"
+            nodesDraggable={isInteractive}
+            nodesConnectable={isInteractive}
+            elementsSelectable={isInteractive}
+            edgesUpdatable={isInteractive}
+            edgesReconnectable={isInteractive}
+            reconnectRadius={20}
+            deleteKeyCode={isInteractive ? ["Backspace", "Delete"] : null}
+          >
+            <Background gap={16} size={1} />
+            <Controls showInteractive={isInteractive} />
+            <MiniMap
+              nodeStrokeWidth={3}
+              zoomable
+              pannable
+              className="!bg-gray-50 dark:!bg-gray-900"
+            />
+          </ReactFlow>
+        </div>
+
+        {/* Side panel - Node */}
+        {showSidePanels && selectedNode && (
+          <div className="w-56 shrink-0 rounded-xl border border-gray-200 bg-white p-4 dark:border-white/10 dark:bg-gray-900">
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-sm font-semibold">Edit Device</p>
+              <button
+                type="button"
+                onClick={deleteSelected}
+                className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-500"
+              >
+                <Trash2 size={15} />
+              </button>
+            </div>
+
+            <label className="mb-1 block text-xs font-medium text-gray-500">
+              Nama Device
+            </label>
+            <input
+              type="text"
+              value={selectedNode.data.label || ""}
+              onChange={(e) => updateLabel(e.target.value)}
+              placeholder={selectedNode.data.type}
+              className="input-field mb-3 text-xs"
+            />
+
+            <label className="mb-1 block text-xs font-medium text-gray-500">
+              Note / Keterangan
+            </label>
+            <textarea
+              value={selectedNode.data.note || ""}
+              onChange={(e) => updateNote(e.target.value)}
+              placeholder="Contoh: Port 1 ke switch utama..."
+              className="input-field h-24 resize-none text-xs"
+            />
+          </div>
+        )}
+
+        {/* Side panel - Edge/Kabel */}
+        {showSidePanels && selectedEdge && (
+          <div className="w-56 shrink-0 rounded-xl border border-gray-200 bg-white p-4 dark:border-white/10 dark:bg-gray-900">
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-sm font-semibold">Kabel</p>
+              <button
+                type="button"
+                onClick={deleteSelectedEdge}
+                className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-500"
+              >
+                <Trash2 size={15} />
+              </button>
+            </div>
+
+            <p className="mb-2 text-xs text-gray-500">
+              {selectedEdge.label || "Kabel"}
+            </p>
+
+            <label className="mb-1.5 block text-xs font-medium text-gray-500">
+              Ubah Jenis Kabel
+            </label>
+            <div className="space-y-1">
+              {availableCables.map((cable) => (
+                <button
+                  key={cable.id}
+                  type="button"
+                  onClick={() => changeCableType(cable)}
+                  className={`flex w-full items-center gap-2 rounded-lg border px-2.5 py-1.5 text-xs transition ${
+                    selectedEdge.data?.cableType === cable.id
+                      ? "border-accent bg-accent/10 text-accent"
+                      : "border-gray-200 hover:border-gray-300 dark:border-white/10"
+                  }`}
+                >
+                  <span
+                    className="h-2.5 w-2.5 rounded-full"
+                    style={{ backgroundColor: cable.color }}
+                  />
+                  {cable.label}
+                </button>
+              ))}
+            </div>
+
+            <p className="mt-3 text-[10px] text-gray-400">
+              Drag ujung kabel untuk pindah tujuan.
+              <br />
+              Tekan Delete untuk hapus.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {showToolbar && (
+        <button
+          type="button"
+          onClick={exportToPng}
+          className="btn-secondary inline-flex items-center gap-1.5 text-xs"
+        >
+          <Download size={14} />
+          Export PNG
+        </button>
+      )}
+    </div>
+  );
+}

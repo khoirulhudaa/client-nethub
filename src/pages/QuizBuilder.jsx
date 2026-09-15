@@ -1,0 +1,532 @@
+import {
+    ArrowLeft,
+    CheckSquare,
+    Network,
+    Plus,
+    Save,
+    Trash2
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import api from "../api/axios";
+import { useAuth } from "../context/AuthContext";
+import TopologyCanvas, { CABLE_TYPES } from "./TopologyCanvas";
+
+const CATEGORIES = ["Topology", "Maintenance", "Fixing", "Installation", "Hardware"];
+
+const emptyQuestion = () => ({
+  type: "multiple_choice",
+  questionText: "",
+  explanation: "",
+  points: 10,
+  options: [
+    { text: "", isCorrect: false },
+    { text: "", isCorrect: false },
+    { text: "", isCorrect: false },
+    { text: "", isCorrect: false },
+  ],
+  allowMultiple: false,
+  correctTopology: { nodes: [], edges: [] },
+  allowedHardware: [],
+  allowedCables: [],
+  matchThreshold: 0.85,
+});
+
+export default function QuizBuilder() {
+  const { id } = useParams(); // kalau edit
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const isEdit = Boolean(id);
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("Topology");
+  const [tags, setTags] = useState("");
+  const [isPublished, setIsPublished] = useState(false);
+  const [questions, setQuestions] = useState([emptyQuestion()]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  // Load existing quiz jika edit
+  useEffect(() => {
+    if (!isEdit) return;
+    api
+      .get(`/quizzes/${id}`)
+      .then(({ data }) => {
+        const q = data.quiz;
+        setTitle(q.title);
+        setDescription(q.description || "");
+        setCategory(q.category);
+        setTags((q.tags || []).join(", "));
+        setIsPublished(q.isPublished);
+        setQuestions(q.questions.length ? q.questions : [emptyQuestion()]);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Gagal memuat quiz");
+      });
+  }, [id, isEdit]);
+
+  const current = questions[activeIndex];
+
+  const updateQuestion = (index, patch) => {
+    setQuestions((prev) =>
+      prev.map((q, i) => (i === index ? { ...q, ...patch } : q))
+    );
+  };
+
+  const addQuestion = () => {
+    if (questions.length >= 20) {
+      alert("Maksimal 20 soal per quiz");
+      return;
+    }
+    setQuestions((prev) => [...prev, emptyQuestion()]);
+    setActiveIndex(questions.length);
+  };
+
+  const removeQuestion = (index) => {
+    if (questions.length <= 1) return;
+    const next = questions.filter((_, i) => i !== index);
+    setQuestions(next);
+    setActiveIndex(Math.max(0, index - 1));
+  };
+
+  const addOption = () => {
+    if (current.options.length >= 6) return;
+    updateQuestion(activeIndex, {
+      options: [...current.options, { text: "", isCorrect: false }],
+    });
+  };
+
+  const removeOption = (optIdx) => {
+    if (current.options.length <= 2) return;
+    updateQuestion(activeIndex, {
+      options: current.options.filter((_, i) => i !== optIdx),
+    });
+  };
+
+  const handleSave = async (publish = false) => {
+    if (!title.trim()) {
+      setError("Judul wajib diisi");
+      return;
+    }
+    if (questions.length < 5) {
+      setError("Minimal 5 soal");
+      return;
+    }
+    if (questions.length > 15) {
+      setError("Maksimal 15 soal");
+      return;
+    }
+
+    // Validasi dasar
+    for (let i = 0; i < questions.length; i++) {
+      const q = questions[i];
+      if (!q.questionText.trim()) {
+        setError(`Soal #${i + 1} belum diisi teks pertanyaan`);
+        setActiveIndex(i);
+        return;
+      }
+      if (q.type === "multiple_choice") {
+        const hasCorrect = q.options.some((o) => o.isCorrect);
+        if (!hasCorrect) {
+          setError(`Soal #${i + 1} (Pilihan Ganda) belum punya jawaban benar`);
+          setActiveIndex(i);
+          return;
+        }
+      }
+      if (q.type === "topology") {
+        if (!q.correctTopology?.nodes?.length) {
+          setError(`Soal #${i + 1} (Topology) belum punya kunci jawaban`);
+          setActiveIndex(i);
+          return;
+        }
+      }
+    }
+
+    setSaving(true);
+    setError("");
+
+    const payload = {
+      title: title.trim(),
+      description: description.trim(),
+      category,
+      tags: tags
+        .split(",")
+        .map((t) => t.trim().toLowerCase())
+        .filter(Boolean),
+      questions,
+      isPublished: publish || isPublished,
+    };
+
+    try {
+      if (isEdit) {
+        await api.put(`/quizzes/${id}`, payload);
+      } else {
+        await api.post("/quizzes", payload);
+      }
+      navigate("/quizzes");
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || "Gagal menyimpan quiz");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="mx-auto max-w-7xl space-y-6 pb-16">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate("/quizzes")}
+            className="rounded-lg py-2 text-gray-500 hover:bg-gray-100"
+          >
+            <ArrowLeft size={18} />
+          </button>
+          <div>
+            <h1 className="text-xl font-semibold">
+              {isEdit ? "Edit Quiz" : "Buat Quiz Baru"}
+            </h1>
+            <p className="text-sm text-gray-500">
+              Minimal 5 soal 
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => handleSave(false)}
+            disabled={saving}
+            className="btn-secondary inline-flex items-center gap-1.5 text-sm"
+          >
+            <Save size={15} />
+            Simpan Draft
+          </button>
+          <button
+            onClick={() => handleSave(true)}
+            disabled={saving}
+            className="btn-primary inline-flex items-center gap-1.5 text-sm"
+          >
+            <Save size={15} />
+            {saving ? "Menyimpan..." : "Publish"}
+          </button>
+        </div>
+      </div>
+
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
+
+      {/* Meta */}
+      <div className="surface-card grid gap-4 rounded-xl border border-gray-200 bg-white p-5 sm:grid-cols-2">
+        <div className="sm:col-span-2">
+          <label className="mb-1 block text-xs font-medium text-gray-500">
+            Judul Quiz
+          </label>
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Contoh: Topology Dasar Kantor"
+            className="input-field"
+          />
+        </div>
+
+        <div className="sm:col-span-2">
+          <label className="mb-1 block text-xs font-medium text-gray-500">
+            Deskripsi singkat
+          </label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={2}
+            className="input-field resize-none"
+            placeholder="Apa yang akan dipelajari di quiz ini?"
+          />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-xs font-medium text-gray-500">
+            Kategori
+          </label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="input-field"
+          >
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c} className="dark:text-black">
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="mb-1 block text-xs font-medium text-gray-500">
+            Tags (pisahkan koma)
+          </label>
+          <input
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+            placeholder="mikrotik, switch, utp"
+            className="input-field"
+          />
+        </div>
+      </div>
+
+        {/* Question List + Editor */}
+        <div className="space-y-5">
+        {/* ===== Daftar Soal (horizontal) ===== */}
+        <div className="surface-card rounded-xl border border-gray-200 bg-white p-3">
+            <div className="mb-2 flex items-center justify-between px-1">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                Soal ({questions.length}/20)
+            </p>
+            <button
+                type="button"
+                onClick={addQuestion}
+                disabled={questions.length >= 15}
+                className="inline-flex items-center gap-1 rounded-md border border-dashed border-gray-300 px-2.5 py-1 text-xs text-gray-500 transition hover:border-accent hover:text-accent disabled:opacity-40"
+            >
+                <Plus size={13} />
+                Tambah
+            </button>
+            </div>
+
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
+            {questions.map((q, i) => (
+                <button
+                key={i}
+                type="button"
+                onClick={() => setActiveIndex(i)}
+                className={`group relative flex w-max shrink-0 items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition ${
+                    activeIndex === i
+                    ? "border-accent bg-accent/10 text-accent shadow-sm"
+                    : "border-gray-200 bg-white hover:border-gray-300 dark:border-white/10 dark:bg-white/5"
+                }`}
+                >
+                {/* Nomor */}
+                <span
+                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-xs font-semibold ${
+                    activeIndex === i
+                        ? "bg-accent text-white"
+                        : "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300"
+                    }`}
+                >
+                    {i + 1}
+                </span>
+
+                {/* Icon tipe */}
+                <span className="shrink-0">
+                    {q.type === "topology" ? (
+                    <Network size={13} className="text-blue-500" />
+                    ) : (
+                    <CheckSquare size={13} className="text-emerald-500" />
+                    )}
+                </span>
+                </button>
+            ))}
+            </div>
+        </div>
+
+        {/* ===== Editor Soal Aktif ===== */}
+        <div className="surface-card flex-1 space-y-5 rounded-xl border border-gray-200 bg-white p-5">
+            <div className="flex items-center justify-between">
+            <h3 className="font-medium">Soal #{activeIndex + 1}</h3>
+            <button
+                type="button"
+                onClick={() => removeQuestion(activeIndex)}
+                disabled={questions.length <= 1}
+                className="rounded p-1.5 text-gray-400 transition hover:bg-red-50 hover:text-red-500 disabled:opacity-30"
+                title="Hapus soal ini"
+            >
+                <Trash2 size={16} />
+            </button>
+            </div>
+
+            {/* Tipe soal */}
+            <div className="flex gap-3">
+            <button
+                type="button"
+                onClick={() => updateQuestion(activeIndex, { type: "multiple_choice" })}
+                className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition ${
+                current.type === "multiple_choice"
+                    ? "border-accent bg-accent/10 text-accent"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+            >
+                <CheckSquare size={16} /> Pilihan Ganda
+            </button>
+            <button
+                type="button"
+                onClick={() => updateQuestion(activeIndex, { type: "topology" })}
+                className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition ${
+                current.type === "topology"
+                    ? "border-accent bg-accent/10 text-accent"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+            >
+                <Network size={16} /> Praktek Topology
+            </button>
+            </div>
+
+            {/* Teks pertanyaan */}
+            <div>
+            <label className="mb-1 block text-xs font-medium text-gray-500">
+                Pertanyaan
+            </label>
+            <textarea
+                value={current.questionText}
+                onChange={(e) =>
+                updateQuestion(activeIndex, { questionText: e.target.value })
+                }
+                rows={3}
+                className="input-field resize-none"
+                placeholder="Tuliskan pertanyaan di sini..."
+            />
+            </div>
+
+            {/* Points */}
+            <div className="w-32">
+            <label className="mb-1 block text-xs font-medium text-gray-500">
+                Poin
+            </label>
+            <input
+                type="number"
+                min={1}
+                max={100}
+                value={current.points}
+                onChange={(e) =>
+                updateQuestion(activeIndex, {
+                    points: Number(e.target.value) || 10,
+                })
+                }
+                className="input-field"
+            />
+            </div>
+
+            {/* ===== MULTIPLE CHOICE ===== */}
+            {current.type === "multiple_choice" && (
+            <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                <label className="text-xs font-medium text-gray-500">
+                    Opsi Jawaban
+                </label>
+                <label className="flex items-center gap-2 text-xs">
+                    <input
+                    type="checkbox"
+                    checked={current.allowMultiple}
+                    onChange={(e) =>
+                        updateQuestion(activeIndex, {
+                        allowMultiple: e.target.checked,
+                        })
+                    }
+                    />
+                    Boleh pilih lebih dari 1
+                </label>
+                </div>
+
+                {current.options.map((opt, oi) => (
+                <div key={oi} className="flex items-center gap-2">
+                    <input
+                    type={current.allowMultiple ? "checkbox" : "radio"}
+                    name={`correct-${activeIndex}`}
+                    checked={opt.isCorrect}
+                    onChange={() => {
+                        const newOpts = current.options.map((o, i) => ({
+                        ...o,
+                        isCorrect: current.allowMultiple
+                            ? i === oi
+                            ? !o.isCorrect
+                            : o.isCorrect
+                            : i === oi,
+                        }));
+                        updateQuestion(activeIndex, { options: newOpts });
+                    }}
+                    />
+                    <input
+                    value={opt.text}
+                    onChange={(e) => {
+                        const newOpts = [...current.options];
+                        newOpts[oi] = { ...newOpts[oi], text: e.target.value };
+                        updateQuestion(activeIndex, { options: newOpts });
+                    }}
+                    placeholder={`Opsi ${oi + 1}`}
+                    className="input-field flex-1 text-sm"
+                    />
+                    <button
+                    type="button"
+                    onClick={() => removeOption(oi)}
+                    className="rounded p-1 text-gray-400 hover:text-red-500"
+                    >
+                    <Trash2 size={14} />
+                    </button>
+                </div>
+                ))}
+
+                <button
+                type="button"
+                onClick={addOption}
+                className="text-xs text-accent hover:underline"
+                >
+                + Tambah opsi
+                </button>
+            </div>
+            )}
+
+            {/* ===== TOPOLOGY ===== */}
+            {current.type === "topology" && (
+            <div className="space-y-4">
+                <div className="rounded-lg bg-blue-50 p-3 text-sm text-blue-800 dark:bg-blue-500/10 dark:text-blue-300">
+                <p className="font-medium">Kunci Jawaban Topology</p>
+                <p className="mt-1 text-xs">
+                    Susun topology yang benar di bawah. User harus meniru susunan
+                    hardware + jenis kabel yang sama.
+                </p>
+                </div>
+
+                {/* Canvas kunci jawaban */}
+                <TopologyCanvas
+                value={current.correctTopology}
+                onChange={(topo) =>
+                    updateQuestion(activeIndex, { correctTopology: topo })
+                }
+                mode="editor"
+                allowedHardware={
+                    current.allowedHardware?.length
+                    ? current.allowedHardware
+                    : null
+                }
+                allowedCables={
+                    current.allowedCables?.length ? current.allowedCables : null
+                }
+                height={380}
+                />
+            </div>
+            )}
+
+            {/* Explanation */}
+            <div>
+            <label className="mb-1 block text-xs font-medium text-gray-500">
+                Penjelasan (ditampilkan setelah submit)
+            </label>
+            <textarea
+                value={current.explanation}
+                onChange={(e) =>
+                updateQuestion(activeIndex, { explanation: e.target.value })
+                }
+                rows={2}
+                className="input-field resize-none"
+                placeholder="Opsional – penjelasan jawaban benar"
+            />
+            </div>
+        </div>
+        </div>
+    </div>
+  );
+}
