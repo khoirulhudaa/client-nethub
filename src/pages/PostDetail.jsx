@@ -104,6 +104,8 @@ const PostDetail = () => {
   const [deleting, setDeleting] = useState(false);
   const [sidebarType, setSidebarType] = useState(null); 
   const [selectedStep, setSelectedStep] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
 
   const [showShare, setShowShare] = useState(false);
 
@@ -126,7 +128,41 @@ const PostDetail = () => {
 
   useEffect(() => {
     load();
-  }, [load]);
+    if (user && post?.author?._id) {
+      // Cek apakah user sudah follow author ini
+      // Cara sederhana: cek dari user.following (kalau AuthContext menyimpan data lengkap)
+      // Atau buat request ke /auth/me/following
+      const checkFollow = async () => {
+        try {
+          const { data } = await api.get("/auth/me/following");
+          const followingIds = data.following.map((u) => u._id);
+          setIsFollowing(followingIds.includes(post.author._id));
+        } catch {
+          // ignore
+        }
+      };
+      if (user) checkFollow();
+    }
+}, [user, post?.author?._id]);
+
+const handleFollow = async () => {
+  if (!user) {
+    toast.error("Login dulu untuk follow author");
+    return;
+  }
+  if (user.id === post.author._id) return;
+
+  setFollowLoading(true);
+  try {
+    const { data } = await api.post(`/auth/follow/${post.author._id}`);
+    setIsFollowing(data.following);
+    toast.success(data.following ? "Berhasil follow" : "Unfollow berhasil");
+  } catch (err) {
+    toast.error(err?.response?.data?.message || "Gagal follow");
+  } finally {
+    setFollowLoading(false);
+  }
+};
 
   const isOwner = user?.id === post?.author?._id;
 
@@ -339,15 +375,38 @@ const PostDetail = () => {
         📝 {post.title}
       </h1>
 
-      <Link to={`/authors/${post.author._id}`} className="mb-6 flex w-fit items-center gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-soft text-sm font-semibold text-accent">
-          {post.author.name?.[0]?.toUpperCase()}
-        </div>
-        <div>
-          <p className="text-sm font-medium">{post.author.name}</p>
-          <p className="text-xs text-gray-400">{post.author.title}</p>
-        </div>
-      </Link>
+      <div className="mb-6 flex items-center justify-between">
+        <Link to={`/authors/${post.author._id}`} className="flex w-fit items-center gap-2">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-soft text-sm font-semibold text-accent">
+            {post.author.name?.[0]?.toUpperCase()}
+          </div>
+          <div>
+            <p className="text-sm font-medium">{post.author.name}</p>
+            <p className="text-xs text-gray-400">{post.author.title}</p>
+          </div>
+        </Link>
+
+        {/* Tombol Follow */}
+        {user && user.id !== post.author._id && (
+          <button
+            onClick={handleFollow}
+            disabled={followLoading}
+            className={`rounded-xl px-4 py-1.5 text-sm font-medium transition ${
+              isFollowing
+                ? "border border-gray-300 bg-transparent text-gray-600 hover:bg-gray-100 dark:border-white/20 dark:text-gray-300"
+                : "bg-accent text-white hover:opacity-90"
+            }`}
+          >
+            {followLoading ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : isFollowing ? (
+              "Following"
+            ) : (
+              "Subscribe"
+            )}
+          </button>
+        )}
+      </div>
       
       <div className="w-full bg-slate-200 dark:bg-slate-500 p-0 overflow-hidden rounded-2xl">
         {post.coverImage && (

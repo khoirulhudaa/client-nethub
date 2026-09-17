@@ -1,10 +1,11 @@
+import { Loader2, Network } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Network, Loader2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
 
+
 const Login = () => {
-  const { login } = useAuth();
+  const { login, loginAsGuest } = useAuth();  // ← tambahkan loginAsGuest
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
@@ -64,10 +65,32 @@ const Login = () => {
               placeholder="••••••••"
             />
           </div>
-          <button type="submit" disabled={loading} className="btn-primary w-full">
-            {loading && <Loader2 size={16} className="animate-spin" />}
-            Sign In
-          </button>
+          <div className="w-full flex items-center gap-2.5">
+            <button type="submit" disabled={loading} className="btn-primary w-full">
+              {loading && <Loader2 size={16} className="animate-spin" />}
+              Sign In
+            </button>
+            <button
+              type="button"
+              disabled={loading}
+              onClick={async () => {
+                setError("");
+                setLoading(true);
+                try {
+                  await loginAsGuest();
+                  navigate("/");
+                } catch (err) {
+                  console.log('error', err)
+                  setError(err.response?.data?.message || "Gagal masuk sebagai guest");
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              className="mt-3 w-full rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50 dark:border-white/10 dark:text-gray-300"
+            >
+              Guest (hanya baca)
+            </button>
+          </div>
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-500">

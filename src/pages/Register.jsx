@@ -75,10 +75,34 @@ const Register = () => {
               placeholder="At least 6 characters"
             />
           </div>
-          <button type="submit" disabled={loading} className="btn-primary w-full">
-            {loading && <Loader2 size={16} className="animate-spin" />}
-            Create Account
-          </button>
+          <div className="w-full flex items-center gap-2.5">
+            <button type="submit" disabled={loading} className="btn-primary w-full">
+              {loading && <Loader2 size={16} className="animate-spin" />}
+              Create Account
+            </button>
+            <button
+                type="button"
+                onClick={async () => {
+                  setLoading(true);
+                  try {
+                    // Panggil API guest
+                    const { data } = await api.post("/auth/guest");
+                    // Simpan token & user ke AuthContext (sesuaikan dengan cara login biasa)
+                    localStorage.setItem("token", data.token);
+                    // Atau panggil fungsi dari AuthContext
+                    // await loginAsGuest(data);
+                    navigate("/");
+                  } catch {
+                    setError("Gagal masuk sebagai guest");
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
+                className="w-full rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-900 dark:border-white/10 dark:text-gray-300"
+              >
+                Guest (hanya baca)
+              </button>
+          </div>
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-500">

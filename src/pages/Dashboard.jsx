@@ -18,33 +18,32 @@ import PostCard from "../components/Post/PostCard.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 
 // --- Welcome / greeting row -------------------------------------------------
-const WelcomeRow = ({ userName = "there", onNewPost }) => {
-  const today = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   return (
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        {/* <p className="text-xs font-medium uppercase tracking-wide text-accent">{today}</p> */}
         <h1 className="mt-1 text-2xl font-semibold tracking-tight">
           {greeting}, {userName}.
         </h1>
         <p className="mt-1 text-sm text-gray-500">
-          Your network is quiet. Here&apos;s what the community is learning.
+          {isGuest
+            ? "Kamu sedang dalam mode Guest. Daftar untuk bisa membuat guide."
+            : "Your network is quiet. Here's what the community is learning."}
         </p>
       </div>
-      <button
-        onClick={onNewPost}
-        className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:opacity-90"
-      >
-        <Plus size={16} /> New post
-      </button>
+
+      {/* Hanya tampilkan tombol New post jika BUKAN guest */}
+      {!isGuest && (
+        <button
+          onClick={onNewPost}
+          className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:opacity-90"
+        >
+          <Plus size={16} /> New post
+        </button>
+      )}
     </div>
   );
 };
@@ -333,6 +332,7 @@ const Dashboard = () => {
         <WelcomeRow
           userName={user?.name || "there"}
           onNewPost={() => navigate("/create")}
+          isGuest={user?.isGuest || user?.role === "guest"}
         />
       )}
 

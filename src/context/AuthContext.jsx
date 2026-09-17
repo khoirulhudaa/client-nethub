@@ -10,13 +10,13 @@ export const AuthProvider = ({ children }) => {
   });
   const [loading, setLoading] = useState(true);
 
-  // Persistent session: re-validate token on load
   useEffect(() => {
     const token = localStorage.getItem("nethub_token");
     if (!token) {
       setLoading(false);
       return;
     }
+
     api
       .get("/auth/me")
       .then(({ data }) => {
@@ -49,6 +49,13 @@ export const AuthProvider = ({ children }) => {
     return data.user;
   };
 
+  // ===== GUEST LOGIN =====
+  const loginAsGuest = async () => {
+    const { data } = await api.post("/auth/guest");
+    persistSession(data.token, data.user);
+    return data.user;
+  };
+
   const logout = () => {
     localStorage.removeItem("nethub_token");
     localStorage.removeItem("nethub_user");
@@ -63,7 +70,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, register, login, logout, updateProfile }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        register,
+        login,
+        loginAsGuest,   // ← export ini
+        logout,
+        updateProfile,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
