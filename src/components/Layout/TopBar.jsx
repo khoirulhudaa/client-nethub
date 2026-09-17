@@ -29,86 +29,89 @@ const TopBar = ({ onMenuClick }) => {
   };
 
   return (
-    <header className="surface-card sticky top-0 z-20 flex h-16 items-center gap-3 rounded-none border-b px-4 sm:px-5 lg:pr-9">
-      {/* Mobile menu */}
-      <button
-        onClick={onMenuClick}
-        className="rounded-control p-2 text-gray-500 hover:bg-black/5 dark:hover:bg-white/10 lg:hidden"
-      >
-        <Menu size={20} />
-      </button>
-
-      {/* Search */}
-      <form onSubmit={handleSearch} className="relative w-full max-w-md">
-        <Search
-          size={16}
-          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-        />
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search guides, tags, categories…"
-          className="input-field pl-9"
-        />
-      </form>
-
-      {/* Quick links — desktop */}
-      <div className="ml-2 hidden items-center gap-3 md:flex">
-        <TopLink to="/trending" icon={Flame} label="Trending" />
-        <TopLink to="/tools/subnet" icon={Calculator} label="Subnet" />
-        <TopLink to="/practice" icon={PencilRuler} label="Practice" />
-      </div>
-
-      <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
-        {/* New post — hanya user login */}
-        {!isGuest && (
-          <button
-            onClick={() => navigate("/create")}
-            className="hidden items-center h-10 gap-1.5 rounded-xl border-[2px] border-white/15 px-3 py-2 text-sm font-medium text-white transition hover:opacity-90 sm:inline-flex"
-          >
-            <Plus size={16} />
-          </button>
-        )}
-
-        {/* Notification placeholder */}
+    <header className="w-full surface-card sticky top-0 z-20 border-r border-white/10 flex h-16 items-center gap-3 py-0 rounded-none border-b px-3 sm:px-3">
+      <div className="w-[100%] border-r border-white/10 flex justify-between h-full items-center pr-6">
         <button
-          type="button"
-          className="relative rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
-          title="Notifications"
-          onClick={() => {
-            // nanti bisa buka dropdown notifikasi
-          }}
+          onClick={onMenuClick}
+          className="rounded-control p-2 text-gray-500 hover:bg-black/5 dark:hover:bg-white/10 lg:hidden"
         >
-          <Bell size={18} />
-          {/* Badge contoh */}
-          <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-accent" />
+          <Menu size={20} />
         </button>
 
-        {/* Theme toggle */}
-        <button
-          onClick={toggleTheme}
-          className="rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
-          title="Toggle theme"
-        >
-          {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
-        </button>
+        {/* Search */}
+        <form onSubmit={handleSearch} className="relative w-full max-w-md">
+          <Search
+            size={16}
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search guides, tags, categories…"
+            className="input-field pl-9"
+          />
+        </form>
 
-        {/* Avatar singkat */}
-        <Link
-          to={isGuest ? "#" : "/profile"}
-          className="ml-0.5 flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-blue-500 text-sm font-semibold text-white ring-1"
-          title={user?.name || "Profile"}
-        >
-          {user?.avatar ? (
-            <img
-              src={user.avatar}
-              alt={user.name}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            user?.name?.[0]?.toUpperCase() || "G"
+        {/* Quick links — desktop */}
+        <div className="ml-2 hidden items-center gap-3 md:flex">
+          <TopLink to="/trending" icon={Flame} label="Trending" />
+          <TopLink to="/tools/subnet" icon={Calculator} label="Subnet" />
+          <TopLink to="/practice" icon={PencilRuler} label="Practice" />
+        </div>
+
+        <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
+          {/* New post — hanya user login */}
+          {!isGuest && (
+            <button
+              onClick={() => navigate("/create")}
+              className="hidden items-center h-10 gap-1.5 rounded-xl border-[2px] border-white/15 px-3 py-2 text-sm font-medium text-white transition hover:opacity-90 sm:inline-flex"
+            >
+              <Plus size={16} />
+            </button>
           )}
-        </Link>
+
+          {/* Notification placeholder */}
+          <button
+            type="button"
+            className="relative rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+            title="Notifications"
+            onClick={() => {
+              // nanti bisa buka dropdown notifikasi
+            }}
+          >
+            <Bell size={18} />
+            {/* Badge contoh */}
+            <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-accent" />
+          </button>
+
+          {/* Theme toggle */}
+          <button
+            onClick={toggleTheme}
+            className="rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+            title="Toggle theme"
+          >
+            {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+          </button>
+
+          <div>
+            {/* Avatar singkat */}
+            <Link
+              to={isGuest ? "#" : "/profile"}
+              className="ml-0.5 flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-blue-500 text-sm font-semibold text-white ring-1"
+              title={user?.name || "Profile"}
+            >
+              {user?.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                user?.name?.[0]?.toUpperCase() || "G"
+              )}
+            </Link>
+          </div>
+        </div>
       </div>
     </header>
   );
