@@ -30,8 +30,8 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
         </h1>
         <p className="mt-1 text-sm text-gray-500">
           {isGuest
-            ? "Kamu sedang dalam mode Guest. Daftar untuk bisa membuat guide."
-            : "Your network is quiet. Here's what the community is learning."}
+            ? "You are currently in Guest mode. Sign up to create guides"
+            : "Your network is quiet. Here's what the community is learning"}
         </p>
       </div>
 
