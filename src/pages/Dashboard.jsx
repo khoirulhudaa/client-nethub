@@ -80,7 +80,7 @@ const GuestJumbotron = ({ onRegister }) => {
 // --- Welcome / greeting row -------------------------------------------------
 const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const greeting = hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
 
   return (
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
