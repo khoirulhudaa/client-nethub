@@ -145,7 +145,7 @@ const Sidebar = ({ onNavigate }) => {
       </div>
 
       {/* Search */}
-      <form onSubmit={handleSearch} className="mb-0 py-4 px-2 border-x border-b border-white/10">
+      <form onSubmit={handleSearch} className="mb-0 pt-7 py-4 px-2 border-x border-b border-white/10">
         <div className="relative">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input

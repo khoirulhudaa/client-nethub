@@ -85,7 +85,7 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
   return (
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight">
+        <h1 className="mt-[-4px] text-2xl font-semibold tracking-tight">
           {greeting}, {userName}.
         </h1>
         <p className="mt-1 text-sm text-gray-500">
@@ -318,7 +318,38 @@ const Dashboard = () => {
   const [localSearch, setLocalSearch] = useState(search);
   const [signal, setSignal] = useState(null);
 
-  // Ambil data dari 1 endpoint utama
+  // Stats overview (hanya di-load sekali, tidak ikut filter)
+  const [stats, setStats] = useState({
+    totalGuides: 0,
+    totalReads: 0,
+    totalCategories: 0,
+  });
+
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  // 1) Stats global — HANYA sekali saat mount
+  useEffect(() => {
+    setStatsLoading(true);
+    api
+      .get("/posts", { params: { limit: 100 } }) // tanpa category/search
+      .then(({ data }) => {
+        const posts = data.posts || [];
+        const pinned = data.pinned || [];
+        const all = [...pinned, ...posts];
+
+        const totalReads = all.reduce((sum, p) => sum + (p.views || 0), 0);
+
+        setStats({
+          totalGuides: data.total ?? posts.length,
+          totalReads,
+          totalCategories: data.categories?.length || 0,
+        });
+      })
+      .catch(() => {})
+      .finally(() => setStatsLoading(false));
+  }, []); // ← dependency kosong = tidak refetch saat ganti category
+
+  // 2) List posts — berubah saat category/search
   useEffect(() => {
     setLoading(true);
     api
@@ -328,13 +359,17 @@ const Dashboard = () => {
       .finally(() => setLoading(false));
   }, [category, search]);
 
-  // Handle Signal Connection (Browser API)
+  // Signal browser
   useEffect(() => {
     const conn =
       navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     if (!conn) return;
     const update = () =>
-      setSignal({ effectiveType: conn.effectiveType, downlink: conn.downlink, rtt: conn.rtt });
+      setSignal({
+        effectiveType: conn.effectiveType,
+        downlink: conn.downlink,
+        rtt: conn.rtt,
+      });
     update();
     conn.addEventListener("change", update);
     return () => conn.removeEventListener("change", update);
@@ -343,6 +378,8 @@ const Dashboard = () => {
   useEffect(() => {
     setLocalSearch(search);
   }, [search]);
+
+  const isGuest = user?.isGuest || user?.role === "guest";
 
   // Menghitung statistik langsung dari data pos yang diterima
   const categoryStats = useMemo(() => {
@@ -409,7 +446,7 @@ const Dashboard = () => {
         )
       }
 
-      <div className="px-7 py-7 sm:px-7 sm:py-7 relative bg-white/5 rounded-xl">
+      <div className="px-7 py-7 sm:px-4 sm:py-4 relative bg-white/5 rounded-xl">
         {/* Header Search & Title */}
         <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
