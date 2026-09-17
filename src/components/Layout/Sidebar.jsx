@@ -135,7 +135,7 @@ const Sidebar = ({ onNavigate }) => {
     }`;
 
   return (
-    <aside className="flex h-full w-[18vw] shrink-0 flex-col overflow-y-auto rounded-none border-l border-white/5 bg-[#0c0c18] px-3">
+    <aside className="flex h-full w-[18.5vw] shrink-0 flex-col overflow-y-auto rounded-none border-l border-white/5 bg-[#0c0c18] px-3">
       {/* Logo */}
       <div className="border-x border-white/10 mb-0 z-[22] flex !h-[64px] items-center gap-2 border-b border-white/10 px-2">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-white">
