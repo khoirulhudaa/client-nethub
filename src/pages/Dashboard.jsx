@@ -423,7 +423,7 @@ const Dashboard = () => {
   }, [search, category]);
 
   return (
-    <div className="mx-auto max-w-7xl border-none shadow-none">
+    <div className="mx-auto max-w-full border-none shadow-none">
       {/* ===== GUEST → Jumbotron | USER → Welcome + Metrics ===== */}
       {
         user?.isGuest || user?.role === "guest" ? (
