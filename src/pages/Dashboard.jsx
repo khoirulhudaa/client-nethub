@@ -444,7 +444,7 @@ const Dashboard = () => {
                 onClick={() => updateParam("category", "")}
                 className={`rounded-xl border px-3 py-1.5 text-sm transition ${
                   !category
-                    ? "border-accent bg-accent text-white"
+                    ? "border-accent bg-blue-600 text-white"
                     : "border-gray-200 bg-white text-gray-600 hover:border-accent/50"
                 }`}
               >
@@ -456,7 +456,7 @@ const Dashboard = () => {
                   onClick={() => updateParam("category", item)}
                   className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-sm transition ${
                     category === item
-                      ? "border-accent bg-accent text-white"
+                      ? "border-accent bg-blue-600 text-white"
                       : "border-gray-200 bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
                   }`}
                 >

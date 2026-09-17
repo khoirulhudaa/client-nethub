@@ -80,8 +80,8 @@ const Sidebar = ({ onNavigate }) => {
   const [openGroups, setOpenGroups] = useState({
     categories: true,
     discover: true,
-    quiz: true,
-    library: true,
+    quiz: false,
+    library: false,
   });
 
   const toggleGroup = (key) => {

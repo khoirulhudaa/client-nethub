@@ -27,7 +27,8 @@ const Login = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface-light px-4 dark:bg-surface-dark">
-      <div className="surface-card w-full max-w-2xl p-8">
+      <img src="/hero.jpg" alt="hero" className="w-screen h-screen absolute z-[1] opacity-15" />
+      <div className="surface-card w-full max-w-2xl p-8 z-[22]">
         <div className="mb-6 flex flex-col items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent text-white">
             <Network size={22} />
@@ -86,9 +87,9 @@ const Login = () => {
                   setLoading(false);
                 }
               }}
-              className="mt-3 w-full rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50 dark:border-white/10 dark:text-gray-300"
+              className="w-full rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-slate-950 dark:border-white/10 dark:text-gray-300"
             >
-              Guest (hanya baca)
+              Guest - read only
             </button>
           </div>
         </form>
