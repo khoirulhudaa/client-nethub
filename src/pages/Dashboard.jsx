@@ -83,10 +83,10 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
   const greeting = hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
 
   return (
-    <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="border-b border-white/10 pl-5 mb-6 h-[65px] pb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 className="mt-[-4px] text-2xl font-semibold tracking-tight">
-          {greeting}, {userName}.
+        <h1 className="mt-[-6px] text-2xl font-semibold tracking-tight">
+          {greeting}, {userName}
         </h1>
         <p className="mt-1 text-sm text-gray-500">
           {isGuest
@@ -144,7 +144,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
   }
 
   return (
-    <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4 pl-5">
       <MetricCard
         icon={Wifi}
         iconClass="bg-blue-50 text-blue-600 dark:bg-white dark:text-black"
@@ -180,14 +180,6 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
     </div>
   );
 };
-
-// --- Category counts grid ----------------------------------------------------
-const categoryTone = [
-  "bg-blue-50 text-blue-600",
-  "bg-purple-50 text-purple-600",
-  "bg-orange-50 text-orange-600",
-  "bg-emerald-50 text-emerald-600",
-];
 
 // --- Topology lab ------------------------------------------------------------
 const Card1 = () => {
@@ -423,7 +415,7 @@ const Dashboard = () => {
   }, [search, category]);
 
   return (
-    <div className="mx-auto max-w-full border-none shadow-none">
+    <div className="mx-auto max-w-full border-r border-white/10 pr-6 shadow-none">
       {/* ===== GUEST → Jumbotron | USER → Welcome + Metrics ===== */}
       {
         user?.isGuest || user?.role === "guest" ? (
@@ -446,120 +438,125 @@ const Dashboard = () => {
         )
       }
 
-      <div className="px-7 py-7 sm:px-4 sm:py-4 relative bg-white/5 rounded-xl">
-        {/* Header Search & Title */}
-        <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-accent">
-              New Knowledge
-            </p>
-            <h2 className="text-xl font-semibold tracking-tight">{headingText}</h2>
-          </div>
-        </header>
 
-        <div className="w-full flex items-center gap-2.5 mb-6">
-          <form
-            className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 shadow-sm sm:w-72"
-            onSubmit={(e) => {
-              e.preventDefault();
-              updateParam("search", localSearch);
-            }}
-          >
-            <Search size={16} className="text-gray-400" />
-            <input
-              value={localSearch}
-              onChange={(e) => setLocalSearch(e.target.value)}
-              placeholder="Search guides"
-              className="w-full bg-transparent text-sm outline-none"
-            />
-          </form>
+      <div className="border-t border-white/10 mb-6"></div>
 
-          {/* Categories Bar */}
-          {data.categories?.length > 0 && (
-            <div className="flex flex-wrap items-center gap-x-2.5">
-              <button
-                onClick={() => updateParam("category", "")}
-                className={`rounded-xl border px-3 py-1.5 text-sm transition ${
-                  !category
-                    ? "border-accent bg-blue-600 text-white"
-                    : "border-gray-200 bg-white text-gray-600 hover:border-accent/50"
-                }`}
-              >
-                All guides
-              </button>
-              {data.categories.map((item) => (
+      <div className="pl-6">
+        <div className="px-7 py-7 sm:px-4 w-full sm:py-4 relative bg-white/5 rounded-xl">
+          {/* Header Search & Title */}
+          <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-accent">
+                New Knowledge
+              </p>
+              <h2 className="text-xl font-semibold tracking-tight">{headingText}</h2>
+            </div>
+          </header>
+
+          <div className="w-full flex items-center gap-2.5 mb-6">
+            <form
+              className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 shadow-sm sm:w-72"
+              onSubmit={(e) => {
+                e.preventDefault();
+                updateParam("search", localSearch);
+              }}
+            >
+              <Search size={16} className="text-gray-400" />
+              <input
+                value={localSearch}
+                onChange={(e) => setLocalSearch(e.target.value)}
+                placeholder="Search guides"
+                className="w-full bg-transparent text-sm outline-none"
+              />
+            </form>
+
+            {/* Categories Bar */}
+            {data.categories?.length > 0 && (
+              <div className="flex flex-wrap items-center gap-x-2.5">
                 <button
-                  key={item}
-                  onClick={() => updateParam("category", item)}
-                  className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-sm transition ${
-                    category === item
+                  onClick={() => updateParam("category", "")}
+                  className={`rounded-xl border px-3 py-1.5 text-sm transition ${
+                    !category
                       ? "border-accent bg-blue-600 text-white"
-                      : "border-gray-200 bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
+                      : "border-gray-200 bg-white text-gray-600 hover:border-accent/50"
                   }`}
                 >
-                  <Box size={14} />
-                  {item}
+                  All guides
                 </button>
-              ))}
+                {data.categories.map((item) => (
+                  <button
+                    key={item}
+                    onClick={() => updateParam("category", item)}
+                    className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-sm transition ${
+                      category === item
+                        ? "border-accent bg-blue-600 text-white"
+                        : "border-gray-200 bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
+                    }`}
+                  >
+                    <Box size={14} />
+                    {item}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Content Area */}
+          {loading ? (
+            <div className="flex justify-center py-24">
+              <Loader2 className="animate-spin text-accent" size={28} />
             </div>
+          ) : (
+            <>
+              {/* Section Pinned Hero */}
+              {showOverviewSections && data.pinned?.length > 0 && (
+                <section className="mb-8">
+                  <div className="mb-3 flex items-center gap-2 text-sm font-medium text-gray-500">
+                    <Sparkles size={15} />
+                    <span>Pinned</span>
+                  </div>
+                  <PinnedHero pinned={data.pinned} />
+                </section>
+              )}
+
+              {/* Posts Grid */}
+              <section className="mb-8">
+                {data.posts.length === 0 ? (
+                  <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
+                    <img src="/notFound.png" alt="No guides" className="h-24 w-24 mb-1.5" />
+                    <p className="font-medium">No guides here yet</p>
+                    <p className="text-sm text-gray-500">
+                      Be the first to publish one for this category.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                    {data.posts.map((post) => (
+                      <PostCard key={post._id} post={post} />
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              {/* Category Count Grid & Interactive Tools */}
+              {showOverviewSections && (
+                <>
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-wide text-accent">
+                      Network brands
+                    </p>
+                    <h2 className="text-xl font-semibold tracking-tight">{'Popular Brands'}</h2>
+                  </div>
+                  <div className="mb-0 mt-7 grid grid-cols-1 gap-5 lg:grid-cols-3">
+                    <Card2 />
+                    <Card1 />
+                    <Card3 />
+                  </div>
+                </>
+              )}
+            </>
           )}
         </div>
-
-        {/* Content Area */}
-        {loading ? (
-          <div className="flex justify-center py-24">
-            <Loader2 className="animate-spin text-accent" size={28} />
-          </div>
-        ) : (
-          <>
-            {/* Section Pinned Hero */}
-            {showOverviewSections && data.pinned?.length > 0 && (
-              <section className="mb-8">
-                <div className="mb-3 flex items-center gap-2 text-sm font-medium text-gray-500">
-                  <Sparkles size={15} />
-                  <span>Pinned</span>
-                </div>
-                <PinnedHero pinned={data.pinned} />
-              </section>
-            )}
-
-            {/* Posts Grid */}
-            <section className="mb-8">
-              {data.posts.length === 0 ? (
-                <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
-                  <img src="/notFound.png" alt="No guides" className="h-24 w-24 mb-1.5" />
-                  <p className="font-medium">No guides here yet</p>
-                  <p className="text-sm text-gray-500">
-                    Be the first to publish one for this category.
-                  </p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                  {data.posts.map((post) => (
-                    <PostCard key={post._id} post={post} />
-                  ))}
-                </div>
-              )}
-            </section>
-
-            {/* Category Count Grid & Interactive Tools */}
-            {showOverviewSections && (
-              <>
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-accent">
-                    Network brands
-                  </p>
-                  <h2 className="text-xl font-semibold tracking-tight">{'Popular Brands'}</h2>
-                </div>
-                <div className="mb-8 mt-7 grid grid-cols-1 gap-5 lg:grid-cols-3">
-                  <Card2 />
-                  <Card1 />
-                  <Card3 />
-                </div>
-              </>
-            )}
-          </>
-        )}
       </div>
     </div>
   );

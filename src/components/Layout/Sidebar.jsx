@@ -195,17 +195,17 @@ const Sidebar = ({ onNavigate }) => {
       {!collapsed && (
         <form
           onSubmit={handleSearch}
-          className="mb-0 border-x border-b border-white/10 px-2 py-4 pt-7"
+          className="mb-0 border-x border-b border-white/10 px-2 py-4 pt-5"
         >
-          <div className="relative">
+          <div className="relative h-[50px] top-[4px]">
             <Search
               size={15}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute left-3 top-[44%] -translate-y-1/2 text-gray-400"
             />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari guide..."
+              placeholder="Search guide..."
               className="input-field w-full py-2 pl-9 text-sm"
             />
           </div>

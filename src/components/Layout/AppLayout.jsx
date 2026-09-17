@@ -25,7 +25,7 @@ const AppLayout = () => {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar onMenuClick={() => setMobileOpen(true)} />
-        <main className="flex-1 overflow-y-auto px-4 py-4 md:py-5 sm:px-4 lg:px-5 rounded-none surface-card">
+        <main className="flex-1 overflow-y-auto pl-4 py-4 md:py-5 sm:pl-4 lg:pl-0 rounded-none surface-card">
           <Outlet />
         </main>
       </div>
