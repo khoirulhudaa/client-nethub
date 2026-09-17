@@ -4,6 +4,7 @@ import {
   ChevronRight,
   Eye,
   Loader2,
+  Network,
   Plus,
   Search,
   Sparkles,
@@ -16,6 +17,65 @@ import api from "../api/axios.js";
 import PinnedHero from "../components/Post/PinnedHero.jsx";
 import PostCard from "../components/Post/PostCard.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+
+
+const GuestJumbotron = ({ onRegister }) => {
+  return (
+    <section className="relative mb-10 overflow-hidden rounded-3xl border border-gray-200 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:border-white/10">
+      {/* Background image / pattern */}
+      <div className="absolute inset-0 opacity-15 top-0 left-0">
+        <img
+          src="/hero.jpg"   // ganti dengan gambar kamu, atau hapus kalau tidak ada
+          alt="hero"
+          className="h-full w-full object-cover"
+        />
+      </div>
+
+      {/* Decorative blobs */}
+      <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-accent/30 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-16 -right-16 h-56 w-56 rounded-full bg-blue-500/20 blur-3xl" />
+
+      <div className="relative z-10 flex flex-col items-start gap-6 px-7 py-8 sm:px-7 sm:py-8 lg:flex-row lg:items-center lg:justify-between">
+        {/* Text content */}
+        <div className="max-w-xl">
+
+          <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            Explore networking guides.
+            <br />
+            <span className="text-accent">Share your knowledge.</span>
+          </h1>
+
+          <p className="mt-4 text-base leading-relaxed text-gray-300">
+            You are reading as a guest. Sign up for free to create guides, share topologies, write step-by-step instructions, and help the networking community.
+          </p>
+
+          <div className="mt-7 flex flex-wrap items-center gap-3">
+            <button
+              onClick={onRegister}
+              className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-accent/25 transition hover:opacity-90"
+            >
+              Sign up as a Guider
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2.5}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </button>
+
+            <span className="text-sm text-gray-400">
+              Free forever
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 // --- Welcome / greeting row -------------------------------------------------
 const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
@@ -50,7 +110,7 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
 
 // --- Metric cards ------------------------------------------------------------
 const MetricCard = ({ icon: Icon, iconClass, label, value, delta, deltaTone = "positive" }) => (
-  <div className="surface-card flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-[#1E1E2A] bg-white dark:bg-slate-900 p-4 shadow-sm">
+  <div className="surface-card flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-[#1E1E2A] bg-white dark:bg-white/5 p-4 shadow-sm">
     <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${iconClass}`}>
       <Icon size={16} />
     </div>
@@ -327,139 +387,143 @@ const Dashboard = () => {
 
   return (
     <div className="mx-auto max-w-7xl border-none shadow-none">
-      {/* Overview Greeting */}
-      {showOverviewSections && (
-        <WelcomeRow
-          userName={user?.name || "there"}
-          onNewPost={() => navigate("/create")}
-          isGuest={user?.isGuest || user?.role === "guest"}
-        />
-      )}
+      {/* ===== GUEST → Jumbotron | USER → Welcome + Metrics ===== */}
+      {
+        user?.isGuest || user?.role === "guest" ? (
+          <GuestJumbotron onRegister={() => navigate("/register")} />
+        ) : (
+          <>
+            <WelcomeRow
+              userName={user?.name || "there"}
+              onNewPost={() => navigate("/create")}
+              isGuest={false}
+            />
+            <MetricGrid
+              signal={signal}
+              totalGuides={totalGuides}
+              totalReads={totalReads}
+              totalCategories={totalCategories}
+              loading={loading}
+            />
+          </>
+        )
+      }
 
-      {/* Grid Metrics */}
-      {showOverviewSections && (
-        <MetricGrid
-          signal={signal}
-          totalGuides={totalGuides}
-          totalReads={totalReads}
-          totalCategories={totalCategories}
-          loading={loading}
-        />
-      )}
+      <div className="px-7 py-7 sm:px-7 sm:py-7 relative bg-white/5 rounded-xl">
+        {/* Header Search & Title */}
+        <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-accent">
+              New Knowledge
+            </p>
+            <h2 className="text-xl font-semibold tracking-tight">{headingText}</h2>
+          </div>
+        </header>
 
-      {/* Header Search & Title */}
-      <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-accent">
-            New Knowledge
-          </p>
-          <h2 className="text-xl font-semibold tracking-tight">{headingText}</h2>
-        </div>
-      </header>
+        <div className="w-full flex items-center gap-2.5 mb-6">
+          <form
+            className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 shadow-sm sm:w-72"
+            onSubmit={(e) => {
+              e.preventDefault();
+              updateParam("search", localSearch);
+            }}
+          >
+            <Search size={16} className="text-gray-400" />
+            <input
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              placeholder="Search guides"
+              className="w-full bg-transparent text-sm outline-none"
+            />
+          </form>
 
-      <div className="w-full flex items-center gap-2.5 mb-6">
-        <form
-          className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 shadow-sm sm:w-72"
-          onSubmit={(e) => {
-            e.preventDefault();
-            updateParam("search", localSearch);
-          }}
-        >
-          <Search size={16} className="text-gray-400" />
-          <input
-            value={localSearch}
-            onChange={(e) => setLocalSearch(e.target.value)}
-            placeholder="Search guides"
-            className="w-full bg-transparent text-sm outline-none"
-          />
-        </form>
-
-        {/* Categories Bar */}
-        {data.categories?.length > 0 && (
-          <div className="flex flex-wrap items-center gap-x-2.5">
-            <button
-              onClick={() => updateParam("category", "")}
-              className={`rounded-xl border px-3 py-1.5 text-sm transition ${
-                !category
-                  ? "border-accent bg-accent text-white"
-                  : "border-gray-200 bg-white text-gray-600 hover:border-accent/50"
-              }`}
-            >
-              All guides
-            </button>
-            {data.categories.map((item) => (
+          {/* Categories Bar */}
+          {data.categories?.length > 0 && (
+            <div className="flex flex-wrap items-center gap-x-2.5">
               <button
-                key={item}
-                onClick={() => updateParam("category", item)}
-                className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-sm transition ${
-                  category === item
+                onClick={() => updateParam("category", "")}
+                className={`rounded-xl border px-3 py-1.5 text-sm transition ${
+                  !category
                     ? "border-accent bg-accent text-white"
-                    : "border-gray-200 bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
+                    : "border-gray-200 bg-white text-gray-600 hover:border-accent/50"
                 }`}
               >
-                <Box size={14} />
-                {item}
+                All guides
               </button>
-            ))}
+              {data.categories.map((item) => (
+                <button
+                  key={item}
+                  onClick={() => updateParam("category", item)}
+                  className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-sm transition ${
+                    category === item
+                      ? "border-accent bg-accent text-white"
+                      : "border-gray-200 bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
+                  }`}
+                >
+                  <Box size={14} />
+                  {item}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Content Area */}
+        {loading ? (
+          <div className="flex justify-center py-24">
+            <Loader2 className="animate-spin text-accent" size={28} />
           </div>
+        ) : (
+          <>
+            {/* Section Pinned Hero */}
+            {showOverviewSections && data.pinned?.length > 0 && (
+              <section className="mb-8">
+                <div className="mb-3 flex items-center gap-2 text-sm font-medium text-gray-500">
+                  <Sparkles size={15} />
+                  <span>Pinned</span>
+                </div>
+                <PinnedHero pinned={data.pinned} />
+              </section>
+            )}
+
+            {/* Posts Grid */}
+            <section className="mb-8">
+              {data.posts.length === 0 ? (
+                <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
+                  <img src="/notFound.png" alt="No guides" className="h-24 w-24 mb-1.5" />
+                  <p className="font-medium">No guides here yet</p>
+                  <p className="text-sm text-gray-500">
+                    Be the first to publish one for this category.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                  {data.posts.map((post) => (
+                    <PostCard key={post._id} post={post} />
+                  ))}
+                </div>
+              )}
+            </section>
+
+            {/* Category Count Grid & Interactive Tools */}
+            {showOverviewSections && (
+              <>
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-wide text-accent">
+                    Network brands
+                  </p>
+                  <h2 className="text-xl font-semibold tracking-tight">{'Popular Brands'}</h2>
+                </div>
+                <div className="mb-8 mt-7 grid grid-cols-1 gap-5 lg:grid-cols-3">
+                  <Card2 />
+                  <Card1 />
+                  <Card3 />
+                </div>
+              </>
+            )}
+          </>
         )}
       </div>
-
-      {/* Content Area */}
-      {loading ? (
-        <div className="flex justify-center py-24">
-          <Loader2 className="animate-spin text-accent" size={28} />
-        </div>
-      ) : (
-        <>
-          {/* Section Pinned Hero */}
-          {showOverviewSections && data.pinned?.length > 0 && (
-            <section className="mb-8">
-              <div className="mb-3 flex items-center gap-2 text-sm font-medium text-gray-500">
-                <Sparkles size={15} />
-                <span>Pinned</span>
-              </div>
-              <PinnedHero pinned={data.pinned} />
-            </section>
-          )}
-
-          {/* Posts Grid */}
-          <section className="mb-8">
-            {data.posts.length === 0 ? (
-              <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
-                <img src="/notFound.png" alt="No guides" className="h-24 w-24 mb-1.5" />
-                <p className="font-medium">No guides here yet</p>
-                <p className="text-sm text-gray-500">
-                  Be the first to publish one for this category.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                {data.posts.map((post) => (
-                  <PostCard key={post._id} post={post} />
-                ))}
-              </div>
-            )}
-          </section>
-
-          {/* Category Count Grid & Interactive Tools */}
-          {showOverviewSections && (
-            <>
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-accent">
-                  Network brands
-                </p>
-                <h2 className="text-xl font-semibold tracking-tight">{'Popular Brands'}</h2>
-              </div>
-              <div className="mb-8 mt-7 grid grid-cols-1 gap-5 lg:grid-cols-3">
-                <Card2 />
-                <Card1 />
-                <Card3 />
-              </div>
-            </>
-          )}
-        </>
-      )}
     </div>
   );
 };

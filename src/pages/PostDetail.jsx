@@ -109,6 +109,8 @@ const PostDetail = () => {
 
   const [showShare, setShowShare] = useState(false);
 
+  const isGuest = user?.isGuest || user?.role === "guest";
+
   const load = useCallback(async () => {
     setLoading(true);
     const { data } = await api.get(`/posts/${slug}`);
@@ -376,7 +378,7 @@ const handleFollow = async () => {
       </h1>
 
       <div className="mb-6 flex items-center justify-between">
-        <Link to={`/authors/${post.author._id}`} className="flex w-fit items-center gap-2">
+        <Link to={`/authors/detail/${post.author._id}`} className="flex w-fit items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-soft text-sm font-semibold text-accent">
             {post.author.name?.[0]?.toUpperCase()}
           </div>
@@ -419,7 +421,7 @@ const handleFollow = async () => {
         </h2>
 
       <article
-        className="mt-6 rounded-3xl border border-gray-100 bg-white dark:border-white/5 dark:bg-white/[0.03] px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none dark:prose-invert prose-headings:font-semibold text-white/70 prose-a:text-accent"
+        className="rounded-3xl text-justify border border-gray-100 bg-white dark:border-white/5 dark:bg-white/[0.03] px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none dark:prose-invert prose-headings:font-semibold text-white/70 prose-a:text-accent"
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
 

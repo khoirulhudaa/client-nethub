@@ -14,18 +14,18 @@
   }
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+    scrollbar-color: rgba(100, 100, 100, 0.363) transparent;
   }
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
   ::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(211, 210, 210, 0.918);
     border-radius: 999px;
   }
   .dark ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgb(170, 169, 169);
   }
 }
 
@@ -100,4 +100,8 @@
 /* Dark mode support */
 .dark .ck-content pre {
   background: #0d1117 !important;
+}
+
+html {
+  font-family: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
 }

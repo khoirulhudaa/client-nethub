@@ -15,6 +15,9 @@ import Register from "./pages/Register.jsx";
 import TakeQuiz from "./pages/TakeQuiz.jsx";
 import TopologyPractice from "./pages/TopologyPractice.jsx";
 import PCBuildCanvas from "./pages/PCBuildCanvas.jsx";
+import AuthorBio from "./pages/AuthorBio.jsx";
+import Trending from "./pages/Trending.jsx";
+import SubnetCalculator from "./pages/SubnetCalculator.jsx";
 
 function App() {
   return (
@@ -41,6 +44,9 @@ function App() {
         <Route path="/quizzes" element={<Quizzes />} />
         <Route path="/topology-practice" element={<TopologyPractice />} />
         <Route path="quiz-builder" element={<QuizBuilder />} />
+        <Route path="/trending" element={<Trending />} />
+        <Route path="/tools/subnet" element={<SubnetCalculator />} />
+        <Route path="/authors/detail/:id" element={<AuthorBio />} />
         <Route path="/pc-build-practice" element={<PCBuildCanvas />} />
       </Route>
     </Routes>

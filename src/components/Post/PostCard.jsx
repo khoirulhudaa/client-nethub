@@ -57,7 +57,11 @@ const PostCard = ({ post, featured = false }) => {
           {post.title}
         </h3>
 
-        {post.excerpt && <p className="line-clamp-2 text-sm text-gray-500 dark:text-gray-400">{post.excerpt}</p>}
+        <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400 line-clamp-2">
+          {post.content
+            ? post.content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()
+            : post.excerpt}
+        </p>
 
         <div className="mt-auto flex items-center justify-between pt-2">
           <div className="flex items-center gap-2">
