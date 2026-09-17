@@ -37,6 +37,7 @@ const CreatePost = () => {
   const [similarImages, setSimilarImages] = useState([]);
   const [searchingSimilar, setSearchingSimilar] = useState(false);
   const [referencesImages, setReferencesImages] = useState([]); // max 4
+  const [codeBlocks, setCodeBlocks] = useState([]);
 
   // Load data saat edit
   useEffect(() => {
@@ -56,6 +57,7 @@ const CreatePost = () => {
         setGallery(post.gallery || []);
         setSteps(post.steps || []);
         setCustomTables(post.customTables || []);
+        setCodeBlocks(post.codeBlocks || []);
         setFlowchart(post.flowchart || { nodes: [], edges: [] });
         setReferencesImages(post.referencesImages || []); // ← tambah
       }
@@ -221,6 +223,7 @@ const CreatePost = () => {
         tags: tagsArray,
         gallery,
         topology,
+        codeBlocks,
         referencesImages,
         steps,
         customTables,
@@ -235,13 +238,6 @@ const CreatePost = () => {
     } finally {
       setSaving(false);
     }
-  };
-
-  const loadTemplate = (template) => {
-    if (topology.nodes?.length > 0 && !confirm("Ganti topology saat ini dengan template?")) {
-      return;
-    }
-    setTopology(template.data);
   };
 
   return (
@@ -888,6 +884,104 @@ const CreatePost = () => {
             {steps.length === 0 && (
               <p className="py-6 text-center text-sm text-gray-400">
                 Belum ada step. Klik “+ Tambah Step”.
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* ===== Code / Command Blocks ===== */}
+        <div className="surface-card p-6">
+          <div className="mb-3 flex items-center justify-between">
+            <div>
+              <label className="block text-sm font-medium">Code / Command Blocks</label>
+              <p className="text-xs text-gray-500">
+                Tambahkan perintah CLI, script, atau potongan kode. Sangat berguna untuk guide networking.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() =>
+                setCodeBlocks((prev) => [
+                  ...prev,
+                  { title: "", language: "bash", code: "" },
+                ])
+              }
+              className="btn-secondary text-xs"
+            >
+              + Tambah Code Block
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            {codeBlocks.map((block, idx) => (
+              <div
+                key={idx}
+                className="rounded-2xl border border-gray-200 p-4 dark:border-white/10"
+              >
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                  <input
+                    className="input-field max-w-xs"
+                    value={block.title}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setCodeBlocks((prev) =>
+                        prev.map((b, i) => (i === idx ? { ...b, title: val } : b))
+                      );
+                    }}
+                    placeholder="Judul (contoh: Setup VLAN 10)"
+                  />
+
+                  <div className="flex items-center gap-2">
+                    <select
+                      className="input-field w-36 text-xs"
+                      value={block.language}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setCodeBlocks((prev) =>
+                          prev.map((b, i) =>
+                            i === idx ? { ...b, language: val } : b
+                          )
+                        );
+                      }}
+                    >
+                      <option className="text-black" value="bash">Bash / Shell</option>
+                      <option className="text-black" value="routeros">RouterOS</option>
+                      <option className="text-black" value="javascript">JavaScript</option>
+                      <option className="text-black" value="python">Python</option>
+                      <option className="text-black" value="json">JSON</option>
+                      <option className="text-black" value="text">Plain Text</option>
+                    </select>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setCodeBlocks((prev) => prev.filter((_, i) => i !== idx))
+                      }
+                      className="text-xs text-red-500 hover:underline"
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                </div>
+
+                <textarea
+                  className="input-field min-h-[140px] font-mono text-sm"
+                  value={block.code}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setCodeBlocks((prev) =>
+                      prev.map((b, i) => (i === idx ? { ...b, code: val } : b))
+                    );
+                  }}
+                  placeholder={`# Contoh perintah\n/interface bridge add name=bridge1\n/ip address add address=192.168.88.1/24 interface=bridge1`}
+                  spellCheck={false}
+                />
+              </div>
+            ))}
+
+            {codeBlocks.length === 0 && (
+              <p className="py-6 text-center text-sm text-gray-400">
+                Belum ada code block. Klik “+ Tambah Code Block”.
               </p>
             )}
           </div>

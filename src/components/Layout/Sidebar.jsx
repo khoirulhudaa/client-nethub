@@ -57,7 +57,7 @@ const handleSearch = (e) => {
 };
 
   return (
-    <aside className="bg-[#0c0c18] flex h-full w-70 shrink-0 flex-col border-r rounded-none px-4 pb-6">
+    <aside className="bg-[#0c0c18] flex h-full w-70 shrink-0 flex-col border-r-1 border-white/5 rounded-none px-4 pb-6">
       <div className="mb-6 !h-[64px] z-[22] border-b border-white/10 flex items-center gap-2 px-2">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-white">
           <Network size={18} />

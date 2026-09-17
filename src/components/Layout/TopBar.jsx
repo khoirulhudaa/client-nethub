@@ -14,7 +14,7 @@ const TopBar = ({ onMenuClick }) => {
   };
 
   return (
-    <header className="surface-card rounded-none sticky top-0 z-20 flex h-16 items-center gap-3 border-b px-4 sm:px-6">
+    <header className="surface-card rounded-none sticky top-0 z-20 flex h-16 items-center gap-3 border-b-1 px-4 sm:px-6">
       <button
         onClick={onMenuClick}
         className="rounded-control p-2 text-gray-500 hover:bg-black/5 dark:hover:bg-white/10 lg:hidden"

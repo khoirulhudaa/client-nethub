@@ -1,4 +1,4 @@
-import { Bookmark, Heart, Link2, Linkedin, Loader2, Pencil, Pin, Share2, Trash2 } from "lucide-react";
+import { Bookmark, Clipboard, Heart, Link2, Linkedin, Loader2, Pencil, Pin, Share2, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -9,6 +9,83 @@ import CategoryPill from "../components/UI/CategoryPill.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import FlowchartCanvas from "./FlowchartCanvas.jsx";
 import TopologyCanvas from "./TopologyCanvas.jsx";
+
+const CodeBlockItem = ({ block }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(block.code);
+      setCopied(true);
+      toast.success("Code berhasil disalin");
+
+      // Kembali ke "Copy" setelah 2 detik
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Gagal menyalin code");
+    }
+  };
+
+  return (
+    <div className="group relative overflow-hidden rounded-3xl border border-gray-100 bg-white dark:border-white/5 dark:bg-white/[0.03]">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-gray-100 px-5 py-3 dark:border-white/5">
+        <div className="flex items-center gap-3">
+          <span className="text-[11px] font-medium tracking-widest text-gray-400">
+            {block.language?.toUpperCase() || "CODE"}
+          </span>
+          {block.title && (
+            <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
+              {block.title}
+            </span>
+          )}
+        </div>
+
+        <button
+          type="button"
+          onClick={handleCopy}
+          className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+            copied
+              ? "bg-blue-600 text-white"
+              : "bg-gray-50 text-gray-600 hover:bg-accent hover:text-white dark:bg-white/5 dark:text-gray-300"
+          }`}
+        >
+          {copied ? (
+            <>
+              {/* Check icon */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-3.5 w-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4.5 12.75l6 6 9-13.5"
+                />
+              </svg>
+              Copied!
+            </>
+          ) : (
+            <>
+              {/* Copy icon */}
+              <Clipboard size={12} className="relative top-[-1px]" />
+              Copy
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Code */}
+      <pre className="overflow-x-auto p-5 text-[13px] leading-relaxed text-gray-800 dark:text-gray-200">
+        <code className="font-mono whitespace-pre">{block.code}</code>
+      </pre>
+    </div>
+  );
+};
 
 const PostDetail = () => {
   const { slug } = useParams();
@@ -278,14 +355,32 @@ const PostDetail = () => {
         )}
       </div>
 
+       <h2 className="mt-6 mb-5 text-sm font-medium tracking-widest text-gray-400 uppercase">
+          Description
+        </h2>
+
       <article
-        className="mt-6 prose prose-sm max-w-none dark:prose-invert prose-headings:font-semibold text-white/70 prose-a:text-accent"
+        className="mt-6 rounded-3xl border border-gray-100 bg-white dark:border-white/5 dark:bg-white/[0.03] px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none dark:prose-invert prose-headings:font-semibold text-white/70 prose-a:text-accent"
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
 
+      {post.codeBlocks?.length > 0 && (
+        <div className="mt-6">
+          <h2 className="mb-5 text-sm font-medium tracking-widest text-gray-400 uppercase">
+            Commands & Code
+          </h2>
+
+          <div className="space-y-5">
+            {post.codeBlocks.map((block, idx) => (
+              <CodeBlockItem key={idx} block={block} />
+            ))}
+          </div>
+        </div>
+      )}
+
       {post.referencesImages?.length > 0 && (
-        <div className="mt-14">
-          <h2 className="mb-8 text-sm font-medium tracking-widest text-gray-400 uppercase">
+        <div className="mt-6">
+          <h2 className="mb-5 text-sm font-medium tracking-widest text-gray-400 uppercase">
             Reference by Upload
           </h2>
 
@@ -369,7 +464,7 @@ const PostDetail = () => {
       {/* ===== Step-by-step Wizard (Zigzag + Clickable) ===== */}
       {post.steps?.length > 0 && (
         <div className="mt-14">
-          <h2 className="mb-8 text-sm font-medium tracking-widest text-gray-400 uppercase">
+          <h2 className="mb-5 text-sm font-medium tracking-widest text-gray-400 uppercase">
             Step-by-step Guide
           </h2>
 
@@ -472,7 +567,7 @@ const PostDetail = () => {
 
       {/* ===== Custom Tables ===== */}
       {post.customTables?.length > 0 && (
-        <div className="mt-10">
+        <div className="mt-6">
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-400">
             GRADIENTS
           </h2>
@@ -591,8 +686,8 @@ const PostDetail = () => {
         ))}
       </div>
 
-      <div className="mt-8">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-400">Comments</h2>
+      <div className="mt-6">
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-400">Comments</h2>
         <div className="surface-card p-5">
           <div className="mb-4 flex gap-2">
             <input
