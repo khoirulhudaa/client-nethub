@@ -22,7 +22,7 @@ const PostCard = ({ post, featured = false }) => {
   return (
     <Link
       to={`/posts/${post.slug}`}
-      className={`hover-lift surface-card group relative flex flex-col overflow-hidden ${
+      className={`hover-lift surface-card border !border-white/20 group active:scale-[0.99] duration-100 relative flex flex-col overflow-hidden ${
         featured ? "h-full" : ""
       }`}
     >

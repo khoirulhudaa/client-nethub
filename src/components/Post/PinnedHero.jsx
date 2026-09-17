@@ -1,24 +1,38 @@
 import PostCard from "./PostCard.jsx";
 
-// Renders pinned posts as a hero grid — the main pin occupies the large left
-// hero card, and up to two secondary pins stack on the right.
+// Layout:
+// - Kiri (lebih lebar / col-span-2): 2 card
+// - Kanan: 2 card (stack)
+// Maksimal 4 pinned
 const PinnedHero = ({ pinned }) => {
   if (!pinned?.length) return null;
 
-  const [main, ...rest] = pinned;
+  const items = pinned.slice(0, 4); // max 4
+  const leftCards = items.slice(0, 2);
+  const rightCards = items.slice(2, 4);
 
   return (
     <section className="mb-8">
-      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-400">Pinned Guides</h2>
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-400">
+        Pinned Guides
+      </h2>
+
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <PostCard post={main} featured />
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1">
-          {rest.slice(0, 2).map((post) => (
+        {/* Kiri — lebih lebar */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 lg:col-span-2">
+          {leftCards.map((post) => (
             <PostCard key={post._id} post={post} />
           ))}
         </div>
+
+        {/* Kanan — stack 2 card */}
+        {rightCards.length > 0 && (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1">
+            {rightCards.map((post) => (
+              <PostCard key={post._id} post={post} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

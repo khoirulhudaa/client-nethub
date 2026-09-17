@@ -20,6 +20,8 @@ import {
   HardDriveDownload,
   Monitor,
   Phone,
+  Keyboard,    
+  Power,
   Printer,
   Router,
   Server,
@@ -27,6 +29,12 @@ import {
   StickyNote,
   Trash2,
   Wifi,
+  Network,
+  Laptop,
+  Smartphone,
+  Mouse,
+  Cloud,
+  Zap,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { validateConnection } from "../../../server/src/utils/cableRules";
@@ -35,6 +43,43 @@ import { validateConnection } from "../../../server/src/utils/cableRules";
 const HardwareNode = ({ data, selected }) => {
   const Icon = data.icon || Router;
 
+  // Device yang ingin ditampilkan berbeda (peripheral)
+  const isPeripheral = ["Monitor", "Mouse", "Keyboard"].includes(data.type);
+
+  // Warna khusus untuk peripheral (hijau)
+  const peripheralColor = "#16a34a"; // green-600
+
+  if (isPeripheral) {
+    return (
+      <div
+        className={`flex flex-col items-center justify-center rounded-xl border-2 bg-white p-2.5 shadow-md transition dark:bg-gray-900 ${
+          selected
+            ? "border-green-500 ring-2 ring-green-500/30"
+            : "border-green-200 dark:border-green-500/30"
+        }`}
+        style={{ minWidth: 70, minHeight: 70 }}
+      >
+        <Handle type="target" position={Position.Top} className="!bg-green-500" />
+        <Handle type="source" position={Position.Bottom} className="!bg-green-500" />
+        <Handle type="source" position={Position.Right} className="!bg-green-500" />
+        <Handle type="target" position={Position.Left} className="!bg-green-500" />
+
+        <div
+          className="flex h-10 w-10 items-center justify-center rounded-lg"
+          style={{ backgroundColor: `${peripheralColor}15`, color: peripheralColor }}
+        >
+          <Icon size={22} />
+        </div>
+
+        {/* Label kecil di bawah (opsional, bisa dihapus kalau mau pure icon saja) */}
+        {/* <p className="mt-1.5 text-[10px] font-medium text-green-700 dark:text-green-400">
+          {data.label || data.type}
+        </p> */}
+      </div>
+    );
+  }
+
+  // ===== Tampilan normal untuk hardware lain =====
   return (
     <div
       className={`min-w-[140px] rounded-xl border-2 bg-white p-3 shadow-md transition dark:bg-gray-900 ${
@@ -76,26 +121,60 @@ const nodeTypes = {
 
 /* ====================== Hardware Types ====================== */
 export const HARDWARE_TYPES = [
+  // Core Network
   { type: "Router", icon: Router },
   { type: "MikroTik", icon: Router },
   { type: "Switch", icon: HardDrive },
-  { type: "Server", icon: Server },
-  { type: "PC", icon: Monitor },
-  { type: "Access Point", icon: Wifi },
+  { type: "Switch PoE", icon: HardDrive },
+  { type: "Hub", icon: Network },
+  { type: "Bridge", icon: Network },
   { type: "Firewall", icon: Shield },
-  { type: "Printer/FC", icon: Printer },
-  { type: "CCTV", icon: Camera },
+  { type: "Load Balancer", icon: Network },
+  { type: "Modem", icon: Router },
+  { type: "Media Converter", icon: Network },
+  { type: "HTB", icon: Network },
+  { type: "Wireless", icon: Wifi },
+
+  // Server & Storage
+  { type: "Server", icon: Server },
+  { type: "NAS", icon: HardDrive },
+
+  // End Devices
+  { type: "PC", icon: Monitor },
+  { type: "Laptop", icon: Laptop },
+  { type: "Smartphone", icon: Smartphone },
+  { type: "Monitor", icon: Monitor },
+  { type: "Mouse", icon: Mouse },
+  { type: "Keyboard", icon: Keyboard },
+
+  // Wireless & Access
+  { type: "Access Point", icon: Wifi },
+
+  // CCTV & Security
+  { type: "CCTV IP", icon: Camera },
+  { type: "CCTV Analog", icon: Camera },
   { type: "DVR/DVR", icon: HardDriveDownload },
+  { type: "PSU DVR", icon: Power },
+
+  // Peripheral & Other
+  { type: "Printer/FC", icon: Printer },
   { type: "Telepon", icon: Phone },
+  { type: "UPS", icon: Zap },
+  { type: "Cloud", icon: Cloud },
 ];
 
-/* ====================== Cable Types ====================== */
+// ====================== Cable Types (SUPER LENGKAP) ======================
 export const CABLE_TYPES = [
-  { id: "utp", label: "UTP / LAN", color: "#22c55e", style: "solid" },
+  { id: "utp", label: "LAN", color: "#22c55e", style: "solid" },
   { id: "fiber", label: "Fiber Optic", color: "#f59e0b", style: "dashed" },
-  { id: "coaxial", label: "Coaxial", color: "#ef4444", style: "solid" },
-  { id: "serial", label: "Serial / Console", color: "#8b5cf6", style: "dotted" },
+  { id: "coaxial", label: "Coaxial (RG6)", color: "#ef4444", style: "solid" },
+  { id: "rg59", label: "RG59", color: "#dc2626", style: "solid" },
+  { id: "serial", label: "Console", color: "#8b5cf6", style: "dotted" },
   { id: "power", label: "Power", color: "#64748b", style: "solid" },
+  { id: "bnc", label: "BNC", color: "#f97316", style: "solid" },
+  { id: "hdmi", label: "HDMI", color: "#0ea5e9", style: "solid" },
+  { id: "vga", label: "VGA", color: "#6366f1", style: "solid" },
+  { id: "usb", label: "USB", color: "#14b8a6", style: "solid" },
   { id: "wireless", label: "Wireless", color: "#06b6d4", style: "dashed" },
 ];
 
@@ -108,7 +187,7 @@ export default function TopologyCanvas({
   allowedHardware = null, // array of type string, null = semua
   allowedCables = null, // array of cable id, null = semua
   showToolbar = true,
-  height = 420,
+  height = 620,
 }) {
   const [nodes, setNodes, onNodesChange] = useNodesState(value.nodes || []);
   const [edges, setEdges, onEdgesChange] = useEdgesState(value.edges || []);
@@ -118,6 +197,7 @@ export default function TopologyCanvas({
   const [selectedCable, setSelectedCable] = useState(CABLE_TYPES[0]);
   const [selectedEdge, setSelectedEdge] = useState(null);
   const [connectionWarnings, setConnectionWarnings] = useState([]); // array of { edgeId, message }
+  const [hardwareSearch, setHardwareSearch] = useState("");
 
   // Filter berdasarkan allowed*
   const availableHardware = allowedHardware
@@ -437,14 +517,14 @@ export default function TopologyCanvas({
       {showToolbar && isInteractive && (
         <div className="space-y-2">
           {/* Hardware */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-gray-500">Hardware:</span>
+          <div className="grid grid-cols-8 items-center gap-2">
+            {/* <span className="text-xs font-medium text-gray-500">Hardware:</span> */}
             {availableHardware.map((hw) => (
               <button
                 key={hw.type}
                 type="button"
                 onClick={() => addHardware(hw)}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium transition hover:border-accent hover:text-accent dark:border-white/10 dark:bg-white/5"
+                className="inline-flex w-full items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium transition hover:border-accent hover:text-accent dark:border-white/10 dark:bg-white/5"
               >
                 <hw.icon size={14} />
                 {hw.type}
@@ -454,7 +534,7 @@ export default function TopologyCanvas({
 
           {/* Cable Type */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-gray-500">Jenis Kabel:</span>
+            {/* <span className="text-xs font-medium text-gray-500">Jenis Kabel:</span> */}
             {availableCables.map((cable) => (
               <button
                 key={cable.id}
@@ -524,8 +604,14 @@ export default function TopologyCanvas({
             reconnectRadius={20}
             deleteKeyCode={isInteractive ? ["Backspace", "Delete"] : null}
           >
-            <Background gap={16} size={1} />
-            <Controls showInteractive={isInteractive} />
+            <Background 
+              variant="dots" 
+              gap={16} 
+              size={1.2} 
+              color="#64748b" 
+              className="opacity-40"
+            />
+            {/* <Controls showInteractive={isInteractive} /> */}
             <MiniMap
               nodeStrokeWidth={3}
               zoomable
@@ -590,9 +676,6 @@ export default function TopologyCanvas({
               {selectedEdge.label || "Kabel"}
             </p>
 
-            <label className="mb-1.5 block text-xs font-medium text-gray-500">
-              Ubah Jenis Kabel
-            </label>
             <div className="space-y-1">
               {availableCables.map((cable) => (
                 <button
@@ -613,17 +696,11 @@ export default function TopologyCanvas({
                 </button>
               ))}
             </div>
-
-            <p className="mt-3 text-[10px] text-gray-400">
-              Drag ujung kabel untuk pindah tujuan.
-              <br />
-              Tekan Delete untuk hapus.
-            </p>
           </div>
         )}
       </div>
 
-      {showToolbar && (
+      {/* {showToolbar && (
         <button
           type="button"
           onClick={exportToPng}
@@ -632,7 +709,7 @@ export default function TopologyCanvas({
           <Download size={14} />
           Export PNG
         </button>
-      )}
+      )} */}
     </div>
   );
 }

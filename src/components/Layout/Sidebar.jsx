@@ -6,6 +6,7 @@ import {
   HelpCircle,
   LayoutGrid,
   LogOut,
+  Monitor,
   Network,
   PencilRuler,
   Search,
@@ -21,14 +22,15 @@ const categoryLinks = [
   { label: "Topology", icon: Network, to: "/?category=Topology", category: "Topology" },
   { label: "Installation", icon: Boxes, to: "/?category=Installation", category: "Installation" },
   { label: "Maintenance", icon: Wrench, to: "/?category=Maintenance", category: "Maintenance" },
-  { label: "Fixing Error", icon: ShieldAlert, to: "/?category=Fixing", category: "Fixing" },
+  // { label: "Fixing Error", icon: ShieldAlert, to: "/?category=Fixing", category: "Fixing" },
   { label: "Soft & Hardware", icon: HardDrive, to: "/?category=Hardware", category: "Hardware" },
 ];
 
 const quizLinks = [
-  { label: "Creation Quiz", icon: HelpCircle, to: "/quiz-builder" },
-  { label: "Learn Network", icon: Brain, to: "/quizzes" },
-  { label: "Practice now", icon: PencilRuler, to: "/topology-practice" }, // ← baru
+  { label: "Build Quiz", icon: HelpCircle, to: "/quiz-builder" },
+  { label: "Test Network", icon: Brain, to: "/quizzes" },
+  { label: "Build Computer", icon: Monitor, to: "/pc-build-practice" }, // ← baru
+  { label: "Practice Topology", icon: PencilRuler, to: "/topology-practice" }, // ← baru
 ];
 
 const Sidebar = ({ onNavigate }) => {
@@ -55,18 +57,13 @@ const handleSearch = (e) => {
 };
 
   return (
-    <aside className="glass-panel flex h-full w-64 shrink-0 flex-col border-r px-4 py-6">
-      <div className="mb-8 flex items-center gap-2 px-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-white">
+    <aside className="bg-[#0c0c18] flex h-full w-70 shrink-0 flex-col border-r rounded-none px-4 pb-6">
+      <div className="mb-6 !h-[64px] z-[22] border-b border-white/10 flex items-center gap-2 px-2">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-white">
           <Network size={18} />
         </div>
-        <span className="text-[15px] font-semibold tracking-tight">NetHub</span>
+        <span className="text-[16px] font-semibold ml-2 tracking-tight">NetHub</span>
       </div>
-
-      {/* <button onClick={() => { navigate("/create"); onNavigate?.(); }} className="btn-primary mb-6 py-3 flex items-start justify-start text-left w-max">
-        <PlusCircle size={16} />
-        New Guide
-      </button> */}
 
       <form onSubmit={handleSearch} className="mb-4 px-1">
         <div className="relative">

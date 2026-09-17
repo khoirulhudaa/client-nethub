@@ -1,5 +1,6 @@
 import {
   BookOpen,
+  Box,
   ChevronRight,
   Eye,
   Loader2,
@@ -28,9 +29,9 @@ const WelcomeRow = ({ userName = "there", onNewPost }) => {
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   return (
-    <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <p className="text-xs font-medium uppercase tracking-wide text-accent">{today}</p>
+        {/* <p className="text-xs font-medium uppercase tracking-wide text-accent">{today}</p> */}
         <h1 className="mt-1 text-2xl font-semibold tracking-tight">
           {greeting}, {userName}.
         </h1>
@@ -50,20 +51,20 @@ const WelcomeRow = ({ userName = "there", onNewPost }) => {
 
 // --- Metric cards ------------------------------------------------------------
 const MetricCard = ({ icon: Icon, iconClass, label, value, delta, deltaTone = "positive" }) => (
-  <div className="surface-card flex flex-col gap-2 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+  <div className="surface-card flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-[#1E1E2A] bg-white dark:bg-slate-900 p-4 shadow-sm">
     <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${iconClass}`}>
       <Icon size={16} />
     </div>
-    <span className="text-sm text-gray-500">{label}</span>
-    <strong className="text-xl font-semibold">{value}</strong>
+    <span className="text-sm text-gray-500 dark:text-white">{label}</span>
+    <strong className="text-xl font-semibold text-gray-900 dark:text-white">{value}</strong>
     <small className="text-xs text-gray-400">
       <span
         className={
           deltaTone === "positive"
-            ? "text-emerald-600"
+            ? "text-emerald-600 dark:text-emerald-400"
             : deltaTone === "neutral"
-            ? "text-gray-500"
-            : "text-rose-600"
+            ? "text-gray-500 dark:text-white/60"
+            : "text-rose-600 dark:text-rose-400"
         }
       >
         {delta}
@@ -77,7 +78,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
     return (
       <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-[104px] animate-pulse rounded-xl border border-gray-200 bg-gray-100" />
+          <div key={i} className="h-[104px] animate-pulse rounded-xl border border-white bg-gray-100" />
         ))}
       </div>
     );
@@ -87,7 +88,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
     <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
       <MetricCard
         icon={Wifi}
-        iconClass="bg-blue-50 text-blue-600"
+        iconClass="bg-blue-50 text-blue-600 dark:bg-white dark:text-black"
         label="Signal condition"
         value={signal ? signal.effectiveType.toUpperCase() : "N/A"}
         delta={signal ? `${signal.downlink} Mbps · ${signal.rtt}ms RTT` : "Not supported by this browser"}
@@ -95,7 +96,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
       />
       <MetricCard
         icon={BookOpen}
-        iconClass="bg-purple-50 text-purple-600"
+        iconClass="bg-purple-50 text-purple-600 dark:bg-white dark:text-black"
         label="Total guides"
         value={totalGuides}
         delta="Across all categories"
@@ -103,7 +104,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
       />
       <MetricCard
         icon={Eye}
-        iconClass="bg-orange-50 text-orange-600"
+        iconClass="bg-orange-50 text-orange-600 dark:bg-white dark:text-black"
         label="Total reads"
         value={totalReads}
         delta="All-time views"
@@ -111,7 +112,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
       />
       <MetricCard
         icon={Tag}
-        iconClass="bg-emerald-50 text-emerald-600"
+        iconClass="bg-emerald-50 text-emerald-600 dark:bg-white dark:text-black"
         label="Categories"
         value={totalCategories}
         delta="Active categories"
@@ -129,37 +130,6 @@ const categoryTone = [
   "bg-emerald-50 text-emerald-600",
 ];
 
-const CategoryCountGrid = ({ items = [], loading }) => {
-  if (loading) {
-    return (
-      <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-[104px] animate-pulse rounded-xl border border-gray-200 bg-gray-100" />
-        ))}
-      </div>
-    );
-  }
-
-  if (items.length === 0) return null;
-
-  return (
-    <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-      {items.map((item, index) => (
-        <div
-          key={item.category}
-          className="surface-card flex flex-col gap-2 rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
-        >
-          <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${categoryTone[index % categoryTone.length]}`}>
-            <BookOpen size={16} />
-          </div>
-          <span className="text-sm text-gray-500">{item.category}</span>
-          <strong className="text-xl font-semibold">{item.count}</strong>
-        </div>
-      ))}
-    </div>
-  );
-};
-
 // --- Topology lab ------------------------------------------------------------
 const Card1 = () => {
   const [selected, setSelected] = useState("Core switch");
@@ -174,7 +144,7 @@ const Card1 = () => {
     <section className="surface-card rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
       <div className="mb-1 flex items-start justify-between">
         <a target="_blank" href="https://mikrotik.com/" rel="noopener noreferrer">
-          <button className="flex items-center gap-1 text-sm font-medium text-accent hover:underline">
+          <button className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white hover:underline">
             Open web <ChevronRight size={14} />
           </button>
         </a>
@@ -212,7 +182,7 @@ const Card2 = () => {
     <section className="surface-card rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
       <div className="mb-1 flex items-start justify-between">
         <a target="_blank" href="https://ui.com/" rel="noopener noreferrer">
-          <button className="flex items-center gap-1 text-sm font-medium text-accent hover:underline">
+          <button className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white hover:underline">
             Open web <ChevronRight size={14} />
           </button>
         </a>
@@ -250,7 +220,7 @@ const Card3 = () => {
     <section className="surface-card rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
       <div className="mb-1 flex items-start justify-between">
         <a target="_blank" href="https://www.tp-link.com/" rel="noopener noreferrer">
-          <button className="flex items-center gap-1 text-sm font-medium text-accent hover:underline">
+          <button className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white hover:underline">
             Open web <ChevronRight size={14} />
           </button>
         </a>
@@ -357,7 +327,7 @@ const Dashboard = () => {
   }, [search, category]);
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="mx-auto max-w-7xl border-none shadow-none">
       {/* Overview Greeting */}
       {showOverviewSections && (
         <WelcomeRow
@@ -385,9 +355,11 @@ const Dashboard = () => {
           </p>
           <h2 className="text-xl font-semibold tracking-tight">{headingText}</h2>
         </div>
+      </header>
 
+      <div className="w-full flex items-center gap-2.5 mb-6">
         <form
-          className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm sm:w-72"
+          className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 shadow-sm sm:w-72"
           onSubmit={(e) => {
             e.preventDefault();
             updateParam("search", localSearch);
@@ -401,36 +373,37 @@ const Dashboard = () => {
             className="w-full bg-transparent text-sm outline-none"
           />
         </form>
-      </header>
 
-      {/* Categories Bar */}
-      {data.categories?.length > 0 && (
-        <div className="mb-6 flex flex-wrap items-center gap-x-2.5">
-          <button
-            onClick={() => updateParam("category", "")}
-            className={`rounded-xl border px-3 py-1.5 text-sm transition ${
-              !category
-                ? "border-accent bg-accent text-white"
-                : "border-gray-200 bg-white text-gray-600 hover:border-accent/50"
-            }`}
-          >
-            All guides
-          </button>
-          {data.categories.map((item) => (
+        {/* Categories Bar */}
+        {data.categories?.length > 0 && (
+          <div className="flex flex-wrap items-center gap-x-2.5">
             <button
-              key={item}
-              onClick={() => updateParam("category", item)}
+              onClick={() => updateParam("category", "")}
               className={`rounded-xl border px-3 py-1.5 text-sm transition ${
-                category === item
+                !category
                   ? "border-accent bg-accent text-white"
                   : "border-gray-200 bg-white text-gray-600 hover:border-accent/50"
               }`}
             >
-              {item}
+              All guides
             </button>
-          ))}
-        </div>
-      )}
+            {data.categories.map((item) => (
+              <button
+                key={item}
+                onClick={() => updateParam("category", item)}
+                className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-sm transition ${
+                  category === item
+                    ? "border-accent bg-accent text-white"
+                    : "border-gray-200 bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
+                }`}
+              >
+                <Box size={14} />
+                {item}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Content Area */}
       {loading ? (

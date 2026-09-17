@@ -7,7 +7,7 @@
     -webkit-font-smoothing: antialiased;
   }
   body {
-    @apply font-sans text-[#1D1D1F] dark:text-[#F5F5F7] transition-colors duration-200;
+    @apply font-sans text-[#1D1D1F] dark:text-[#F5F5F7] bg-[#12121B] transition-colors duration-200;
   }
   ::selection {
     @apply bg-accent/20;
@@ -35,7 +35,7 @@
   }
 
   .surface-card {
-    @apply bg-white/80 dark:bg-white/[0.04] border border-border-light dark:border-border-dark rounded-card shadow-soft dark:shadow-soft-dark transition-all duration-200 ease-fluid;
+    @apply bg-white/80 dark:bg-[#0c0c18] border border-border-light dark:border-border-dark rounded-card shadow-soft dark:shadow-soft-dark transition-all duration-200 ease-fluid;
   }
 
   .btn-primary {

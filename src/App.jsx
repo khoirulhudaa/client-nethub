@@ -14,6 +14,7 @@ import Quizzes from "./pages/Quizzes.jsx";
 import Register from "./pages/Register.jsx";
 import TakeQuiz from "./pages/TakeQuiz.jsx";
 import TopologyPractice from "./pages/TopologyPractice.jsx";
+import PCBuildCanvas from "./pages/PCBuildCanvas.jsx";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
         <Route path="/quizzes" element={<Quizzes />} />
         <Route path="/topology-practice" element={<TopologyPractice />} />
         <Route path="quiz-builder" element={<QuizBuilder />} />
+        <Route path="/pc-build-practice" element={<PCBuildCanvas />} />
       </Route>
     </Routes>
   );
