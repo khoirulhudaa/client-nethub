@@ -200,7 +200,7 @@ const Sidebar = ({ onNavigate }) => {
           <div className="relative h-[50px] top-[4px]">
             <Search
               size={15}
-              className="absolute left-3 top-[44%] -translate-y-1/2 text-gray-400"
+              className="absolute left-3 top-[38%] -translate-y-1/2 text-gray-400"
             />
             <input
               value={search}
