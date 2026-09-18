@@ -82,8 +82,8 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
   const greeting = hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
 
   return (
-    <div className="border-b border-white/10 px-5 mb-6 h-[85px] pt-4 pb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div>
+    <div className="border-b border-white/10 px-5 mb-6 h-[11vh] pt-4 pb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="relative">
         <h1 className="mt-[-5px] text-xl font-semibold tracking-tight">
           {greeting}, {userName}
         </h1>

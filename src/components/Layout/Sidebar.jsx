@@ -161,23 +161,23 @@ const Sidebar = ({ onNavigate }) => {
 
   return (
     <aside
-      className={`relative flex h-full shrink-0 flex-col overflow-y-auto overflow-x-hidden border-l border-white/5 bg-[#0c0c18] transition-all duration-300 ${
+      className={`relative flex h-screen shrink-0 flex-col overflow-y-hidden overflow-x-hidden border-l border-white/5 bg-[#0c0c18] transition-all duration-300 ${
         collapsed ? "w-[72px] px-2" : "w-[18.5vw] px-3"
       }`}
     >
 
       <img src="/sidebar.png" alt="wallpaper-sidebar" className="rotate-[4deg] scale-[2] w-full h-screen object-cover absolute z-0 top-0 opacity-5 left-0" />
       
-      <div className="z-10 relative">
+      <div className="z-10 relative h-screen">
         {/* Logo + toggle */}
         <div
-          className={`mb-0 z-[22] flex !h-[64px] items-center border-b border-white/10 ${
+          className={`mb-0 z-[22] flex h-[8.6vh] items-center border-b border-white/10 ${
             collapsed
               ? "justify-center border-x-0"
               : "justify-between gap-2 border-x border-white/10 px-2"
           }`}
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 h-[10%]">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent text-white">
               <Network size={18} />
             </div>
@@ -213,7 +213,7 @@ const Sidebar = ({ onNavigate }) => {
         )}
 
         <nav
-          className={`flex flex-1 flex-col gap-0.5 ${
+          className={`flex flex-1 flex-col h-[82.4vh] gap-0.5 ${
             collapsed ? "" : "border-x border-b border-white/10"
           }`}
         >
@@ -344,7 +344,7 @@ const Sidebar = ({ onNavigate }) => {
         </nav>
 
         {/* Profile */}
-        <div className={`mt-auto border-t border-white/10 ${collapsed ? "py-3" : ""}`}>
+        <div className={`h-[9%] mt-auto border-t border-white/10 ${collapsed ? "py-3" : ""}`}>
           <NavLink
             to={isGuest ? "#" : "/profile"}
             onClick={onNavigate}
