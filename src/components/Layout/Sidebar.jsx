@@ -166,303 +166,300 @@ const Sidebar = ({ onNavigate }) => {
       }`}
     >
 
-    <div
-        className="pointer-events-none absolute inset-0 z-0 hidden dark:block"
-        style={{
-          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px)",
-          backgroundSize: "22px 22px",
-        }}
-      />
-      {/* Logo + toggle */}
-      <div
-        className={`mb-0 z-[22] flex !h-[64px] items-center border-b border-white/10 ${
-          collapsed
-            ? "justify-center border-x-0"
-            : "justify-between gap-2 border-x border-white/10 px-2"
-        }`}
-      >
-        <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent text-white">
-            <Network size={18} />
+      <img src="/sidebar.png" alt="wallpaper-sidebar" className="rotate-[4deg] scale-[2] w-full h-screen object-cover absolute z-0 top-0 opacity-5 left-0" />
+      
+      <div className="z-10 relative">
+        {/* Logo + toggle */}
+        <div
+          className={`mb-0 z-[22] flex !h-[64px] items-center border-b border-white/10 ${
+            collapsed
+              ? "justify-center border-x-0"
+              : "justify-between gap-2 border-x border-white/10 px-2"
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent text-white">
+              <Network size={18} />
+            </div>
+            {!collapsed && (
+              <span className="ml-1 text-[16px] font-semibold tracking-tight">
+                NetHub
+              </span>
+            )}
           </div>
+
           {!collapsed && (
-            <span className="ml-1 text-[16px] font-semibold tracking-tight">
-              NetHub
-            </span>
+            <button
+              type="button"
+              onClick={() => setCollapsed(true)}
+              className="relative left-2 rounded-lg p-1.5 text-gray-400 transition hover:bg-white/10 hover:text-white"
+              title="Collapse sidebar"
+            >
+              <ChevronLeft size={16} />
+            </button>
           )}
         </div>
 
-        {!collapsed && (
+        {/* Tombol expand saat collapsed */}
+        {collapsed && (
           <button
             type="button"
-            onClick={() => setCollapsed(true)}
-            className="relative left-2 rounded-lg p-1.5 text-gray-400 transition hover:bg-white/10 hover:text-white"
-            title="Collapse sidebar"
+            onClick={() => setCollapsed(false)}
+            className="mx-auto mt-3 flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-white/10 hover:text-white"
+            title="Expand sidebar"
           >
-            <ChevronLeft size={16} />
+            <ChevronRight size={16} />
           </button>
         )}
-      </div>
 
-      {/* Tombol expand saat collapsed */}
-      {collapsed && (
-        <button
-          type="button"
-          onClick={() => setCollapsed(false)}
-          className="mx-auto mt-3 flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-white/10 hover:text-white"
-          title="Expand sidebar"
+        <nav
+          className={`flex flex-1 flex-col gap-0.5 ${
+            collapsed ? "" : "border-x border-b border-white/10"
+          }`}
         >
-          <ChevronRight size={16} />
-        </button>
-      )}
+          {/* Categories */}
+          <NavGroup
+            title="Categories"
+            open={openGroups.categories}
+            onToggle={() => toggleGroup("categories")}
+            collapsed={collapsed}
+          >
+            {categoryLinks.map(({ label, icon: Icon, to, category }) => {
+              const isCategoryActive =
+                category === null
+                  ? !currentCategory && location.pathname === "/"
+                  : currentCategory === category;
 
-      <nav
-        className={`flex flex-1 flex-col gap-0.5 ${
-          collapsed ? "" : "border-x border-b border-white/10"
-        }`}
-      >
-        {/* Categories */}
-        <NavGroup
-          title="Categories"
-          open={openGroups.categories}
-          onToggle={() => toggleGroup("categories")}
-          collapsed={collapsed}
-        >
-          {categoryLinks.map(({ label, icon: Icon, to, category }) => {
-            const isCategoryActive =
-              category === null
-                ? !currentCategory && location.pathname === "/"
-                : currentCategory === category;
+              return (
+                <div key={label} className={collapsed ? "" : "mb-1.5 px-2"}>
+                  <NavLink
+                    to={to}
+                    onClick={onNavigate}
+                    title={collapsed ? label : undefined}
+                    className={linkClass(isCategoryActive)}
+                  >
+                    <Icon size={17} />
+                    {!collapsed && label}
+                  </NavLink>
+                </div>
+              );
+            })}
+          </NavGroup>
 
-            return (
-              <div key={label} className={collapsed ? "" : "mb-1.5 px-2"}>
+          {/* Discover */}
+          <NavGroup
+            title="Discover"
+            open={openGroups.discover}
+            onToggle={() => toggleGroup("discover")}
+            collapsed={collapsed}
+          >
+            {discoverLinks.map(({ label, icon: Icon, to }) => (
+              <div key={label} className={collapsed ? "" : "px-2"}>
                 <NavLink
                   to={to}
                   onClick={onNavigate}
                   title={collapsed ? label : undefined}
-                  className={linkClass(isCategoryActive)}
+                  className={({ isActive }) => linkClass(isActive)}
                 >
                   <Icon size={17} />
                   {!collapsed && label}
                 </NavLink>
               </div>
-            );
-          })}
-        </NavGroup>
+            ))}
+          </NavGroup>
 
-        {/* Discover */}
-        <NavGroup
-          title="Discover"
-          open={openGroups.discover}
-          onToggle={() => toggleGroup("discover")}
-          collapsed={collapsed}
-        >
-          {discoverLinks.map(({ label, icon: Icon, to }) => (
-            <div key={label} className={collapsed ? "" : "px-2"}>
-              <NavLink
-                to={to}
-                onClick={onNavigate}
-                title={collapsed ? label : undefined}
-                className={({ isActive }) => linkClass(isActive)}
-              >
-                <Icon size={17} />
-                {!collapsed && label}
-              </NavLink>
-            </div>
-          ))}
-        </NavGroup>
-
-        {/* Quiz */}
-        <NavGroup
-          title="Quiz"
-          open={openGroups.quiz}
-          onToggle={() => toggleGroup("quiz")}
-          collapsed={collapsed}
-        >
-          {filteredQuizLinks.map(({ label, icon: Icon, to }) => (
-            <div key={label} className={collapsed ? "" : "px-2"}>
-              <NavLink
-                to={to}
-                onClick={onNavigate}
-                title={collapsed ? label : undefined}
-                className={({ isActive }) => linkClass(isActive)}
-              >
-                <Icon size={17} />
-                {!collapsed && label}
-              </NavLink>
-            </div>
-          ))}
-        </NavGroup>
-
-        {/* Library */}
-        {!isGuest && (
+          {/* Quiz */}
           <NavGroup
-            title="Library"
-            open={openGroups.library}
-            onToggle={() => toggleGroup("library")}
+            title="Quiz"
+            open={openGroups.quiz}
+            onToggle={() => toggleGroup("quiz")}
             collapsed={collapsed}
           >
-            <div className={collapsed ? "" : "px-2"}>
-              <NavLink
-                to="/my-posts"
-                onClick={onNavigate}
-                title={collapsed ? "My Guides" : undefined}
-                className={({ isActive }) =>
-                  collapsed
-                    ? linkClass(isActive)
-                    : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
-                        isActive
-                          ? "bg-accent-soft text-accent"
-                          : "text-gray-600 hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
-                      }`
-                }
-              >
-                <FileText size={17} />
-                {!collapsed && "My Guides"}
-              </NavLink>
-            </div>
-          </NavGroup>
-        )}
-
-        {/* Admin — hanya superAdmin */}
-        {isSuperAdmin && (
-          <NavGroup
-            title="Admin"
-            open={openGroups.admin ?? true}
-            onToggle={() => toggleGroup("admin")}
-            collapsed={collapsed}
-          >
-            <div className={collapsed ? "" : "px-2"}>
-              <NavLink
-                to="/admin/announcements"
-                onClick={onNavigate}
-                title={collapsed ? "Pengumuman" : undefined}
-                className={({ isActive }) => linkClass(isActive)}
-              >
-                <Bell size={17} />
-                {!collapsed && "Announcement"}
-              </NavLink>
-            </div>
-          </NavGroup>
-        )}
-      </nav>
-
-      {/* Profile */}
-      <div className={`mt-auto border-t border-white/10 ${collapsed ? "py-3" : ""}`}>
-        <NavLink
-          to={isGuest ? "#" : "/profile"}
-          onClick={onNavigate}
-          title={collapsed ? user?.name : undefined}
-          className={({ isActive }) =>
-            collapsed
-              ? `mx-auto flex h-10 w-10 items-center justify-center overflow-hidden rounded-full ${
-                  isActive && !isGuest ? "ring-2 ring-accent" : ""
-                }`
-              : `flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors ${
-                  isActive && !isGuest
-                    ? "border-accent/40 bg-accent-soft"
-                    : "border-border-light hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]"
-                }`
-          }
-        >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-accent-soft text-sm font-semibold text-accent">
-            {user?.avatar ? (
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              user?.name?.[0]?.toUpperCase() || "G"
-            )}
-          </div>
-
-          {!collapsed && (
-            <>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{user?.name}</p>
-                <p className="truncate text-xs text-gray-400">
-                  {isGuest ? "Guest Reader" : user?.title}
-                </p>
+            {filteredQuizLinks.map(({ label, icon: Icon, to }) => (
+              <div key={label} className={collapsed ? "" : "px-2"}>
+                <NavLink
+                  to={to}
+                  onClick={onNavigate}
+                  title={collapsed ? label : undefined}
+                  className={({ isActive }) => linkClass(isActive)}
+                >
+                  <Icon size={17} />
+                  {!collapsed && label}
+                </NavLink>
               </div>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleLogoutClick();          // ← ganti
-                }}
-                className="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-black/5 hover:text-red-500 dark:hover:bg-white/10"
-                title="Log out"
-              >
-                <LogOut size={16} />
-              </button>
-            </>
+            ))}
+          </NavGroup>
+
+          {/* Library */}
+          {!isGuest && (
+            <NavGroup
+              title="Library"
+              open={openGroups.library}
+              onToggle={() => toggleGroup("library")}
+              collapsed={collapsed}
+            >
+              <div className={collapsed ? "" : "px-2"}>
+                <NavLink
+                  to="/my-posts"
+                  onClick={onNavigate}
+                  title={collapsed ? "My Guides" : undefined}
+                  className={({ isActive }) =>
+                    collapsed
+                      ? linkClass(isActive)
+                      : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
+                          isActive
+                            ? "bg-accent-soft text-accent"
+                            : "text-gray-600 hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
+                        }`
+                  }
+                >
+                  <FileText size={17} />
+                  {!collapsed && "My Guides"}
+                </NavLink>
+              </div>
+            </NavGroup>
           )}
-        </NavLink>
 
-        {/* ===== LOGOUT CONFIRMATION MODAL ===== */}
-        {showLogoutModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            {/* Backdrop */}
-            <div
-              className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-              onClick={() => !loggingOut && setShowLogoutModal(false)}
-            />
+          {/* Admin — hanya superAdmin */}
+          {isSuperAdmin && (
+            <NavGroup
+              title="Admin"
+              open={openGroups.admin ?? true}
+              onToggle={() => toggleGroup("admin")}
+              collapsed={collapsed}
+            >
+              <div className={collapsed ? "" : "px-2"}>
+                <NavLink
+                  to="/admin/announcements"
+                  onClick={onNavigate}
+                  title={collapsed ? "Pengumuman" : undefined}
+                  className={({ isActive }) => linkClass(isActive)}
+                >
+                  <Bell size={17} />
+                  {!collapsed && "Announcement"}
+                </NavLink>
+              </div>
+            </NavGroup>
+          )}
+        </nav>
 
-            {/* Modal box */}
-            <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-gray-900">
-              <div className="p-6">
-                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/20">
-                  <LogOut size={22} className="text-red-600 dark:text-red-400" />
+        {/* Profile */}
+        <div className={`mt-auto border-t border-white/10 ${collapsed ? "py-3" : ""}`}>
+          <NavLink
+            to={isGuest ? "#" : "/profile"}
+            onClick={onNavigate}
+            title={collapsed ? user?.name : undefined}
+            className={({ isActive }) =>
+              collapsed
+                ? `mx-auto flex h-10 w-10 items-center justify-center overflow-hidden rounded-full ${
+                    isActive && !isGuest ? "ring-2 ring-accent" : ""
+                  }`
+                : `flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors ${
+                    isActive && !isGuest
+                      ? "border-accent/40 bg-accent-soft"
+                      : "border-border-light hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]"
+                  }`
+            }
+          >
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-accent-soft text-sm font-semibold text-accent">
+              {user?.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                user?.name?.[0]?.toUpperCase() || "G"
+              )}
+            </div>
+
+            {!collapsed && (
+              <>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">{user?.name}</p>
+                  <p className="truncate text-xs text-gray-400">
+                    {isGuest ? "Guest Reader" : user?.title}
+                  </p>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleLogoutClick();          // ← ganti
+                  }}
+                  className="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-black/5 hover:text-red-500 dark:hover:bg-white/10"
+                  title="Log out"
+                >
+                  <LogOut size={16} />
+                </button>
+              </>
+            )}
+          </NavLink>
+
+          {/* ===== LOGOUT CONFIRMATION MODAL ===== */}
+          {showLogoutModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+              {/* Backdrop */}
+              <div
+                className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+                onClick={() => !loggingOut && setShowLogoutModal(false)}
+              />
+
+              {/* Modal box */}
+              <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-gray-900">
+                <div className="p-6">
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/20">
+                    <LogOut size={22} className="text-red-600 dark:text-red-400" />
+                  </div>
+
+                  <h3 className="text-center text-lg font-semibold">
+                    Keluar akun?
+                  </h3>
+                  <p className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
+                    Kamu akan keluar dari akun
+                  </p>
                 </div>
 
-                <h3 className="text-center text-lg font-semibold">
-                  Keluar akun?
-                </h3>
-                <p className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
-                  Kamu akan keluar dari akun
-                </p>
-              </div>
-
-              <div className="flex gap-3 border-t border-gray-100 bg-gray-50 px-6 py-4 dark:border-white/5 dark:bg-white/5">
-                <button
-                  type="button"
-                  disabled={loggingOut}
-                  onClick={() => setShowLogoutModal(false)}
-                  className="flex-1 active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-gray-200"
-                >
-                  Batal
-                </button>
-                <button
-                  type="button"
-                  disabled={loggingOut}
-                  onClick={confirmLogout}
-                  className="flex-1 active:scale-[0.99] duration-100 rounded-xl bg-red-600 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
-                >
-                  {loggingOut ? (
-                    <span className="inline-flex items-center justify-center gap-2">
-                      <Loader2 size={15} className="animate-spin" />
-                      Keluar...
-                    </span>
-                  ) : (
-                    "Ya, Keluar"
-                  )}
-                </button>
+                <div className="flex gap-3 border-t border-gray-100 bg-gray-50 px-6 py-4 dark:border-white/5 dark:bg-white/5">
+                  <button
+                    type="button"
+                    disabled={loggingOut}
+                    onClick={() => setShowLogoutModal(false)}
+                    className="flex-1 active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-gray-200"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="button"
+                    disabled={loggingOut}
+                    onClick={confirmLogout}
+                    className="flex-1 active:scale-[0.99] duration-100 rounded-xl bg-red-600 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
+                  >
+                    {loggingOut ? (
+                      <span className="inline-flex items-center justify-center gap-2">
+                        <Loader2 size={15} className="animate-spin" />
+                        Keluar...
+                      </span>
+                    ) : (
+                      "Ya, Keluar"
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Logout icon saat collapsed */}
-        {collapsed && (
-          <button
-            onClick={handleLogoutClick}
-            className="mx-auto mt-2 flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-white/10 hover:text-red-400"
-            title="Log out"
-          >
-            <LogOut size={15} />
-          </button>
-        )}
+          {/* Logout icon saat collapsed */}
+          {collapsed && (
+            <button
+              onClick={handleLogoutClick}
+              className="mx-auto mt-2 flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-white/10 hover:text-red-400"
+              title="Log out"
+            >
+              <LogOut size={15} />
+            </button>
+          )}
+        </div>
       </div>
     </aside>
   );
