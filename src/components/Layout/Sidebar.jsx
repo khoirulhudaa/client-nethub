@@ -165,6 +165,14 @@ const Sidebar = ({ onNavigate }) => {
         collapsed ? "w-[72px] px-2" : "w-[18.5vw] px-3"
       }`}
     >
+
+    <div
+        className="pointer-events-none absolute inset-0 z-0 hidden dark:block"
+        style={{
+          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px)",
+          backgroundSize: "22px 22px",
+        }}
+      />
       {/* Logo + toggle */}
       <div
         className={`mb-0 z-[22] flex !h-[64px] items-center border-b border-white/10 ${
@@ -188,7 +196,7 @@ const Sidebar = ({ onNavigate }) => {
           <button
             type="button"
             onClick={() => setCollapsed(true)}
-            className="rounded-lg p-1.5 text-gray-400 transition hover:bg-white/10 hover:text-white"
+            className="relative left-2 rounded-lg p-1.5 text-gray-400 transition hover:bg-white/10 hover:text-white"
             title="Collapse sidebar"
           >
             <ChevronLeft size={16} />

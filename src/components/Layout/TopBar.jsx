@@ -86,6 +86,15 @@ const TopBar = ({ onMenuClick }) => {
 
   return (
     <header className="w-full surface-card sticky top-0 z-20 border-r border-white/10 flex h-16 items-center gap-3 py-0 rounded-none border-b px-3 sm:px-3">
+
+      <div
+        className="pointer-events-none absolute inset-0 z-0 hidden dark:block"
+        style={{
+          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px)",
+          backgroundSize: "22px 22px",
+        }}
+      />
+      
       <div className="w-[100%] border-r border-white/10 flex justify-between h-full items-center pr-6">
         <button
           onClick={onMenuClick}
