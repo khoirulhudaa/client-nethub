@@ -18,6 +18,7 @@ import PCBuildCanvas from "./pages/PCBuildCanvas.jsx";
 import AuthorBio from "./pages/AuthorBio.jsx";
 import Trending from "./pages/Trending.jsx";
 import SubnetCalculator from "./pages/SubnetCalculator.jsx";
+import AnnouncementsAdmin from "./pages/AnnouncementsAdmin.jsx";
 
 function App() {
   return (
@@ -48,6 +49,9 @@ function App() {
         <Route path="/tools/subnet" element={<SubnetCalculator />} />
         <Route path="/authors/detail/:id" element={<AuthorBio />} />
         <Route path="/pc-build-practice" element={<PCBuildCanvas />} />
+
+        {/* SuperAdmin only */}
+        <Route path="admin/announcements" element={<AnnouncementsAdmin />} />
       </Route>
     </Routes>
   );

@@ -1,4 +1,5 @@
 import {
+  Bell,
   Boxes,
   Brain,
   Calculator,
@@ -91,12 +92,15 @@ const Sidebar = ({ onNavigate }) => {
   }, [collapsed]);
 
   const isGuest = user?.isGuest || user?.role === "guest";
+  const isSuperAdmin = user?.role === "superAdmin";
+  console.log(user)
 
   const [openGroups, setOpenGroups] = useState({
     categories: true,
     discover: true,
     quiz: false,
     library: false,
+    admin: true,
   });
 
   const toggleGroup = (key) => {
@@ -192,7 +196,7 @@ const Sidebar = ({ onNavigate }) => {
       )}
 
       {/* Search — hanya saat expanded */}
-      {!collapsed && (
+      {/* {!collapsed && (
         <form
           onSubmit={handleSearch}
           className="mb-0 border-x border-b border-white/10 px-2 py-4 pt-5"
@@ -210,7 +214,7 @@ const Sidebar = ({ onNavigate }) => {
             />
           </div>
         </form>
-      )}
+      )} */}
 
       <nav
         className={`flex flex-1 flex-col gap-0.5 ${
@@ -315,6 +319,28 @@ const Sidebar = ({ onNavigate }) => {
               >
                 <FileText size={17} />
                 {!collapsed && "My Guides"}
+              </NavLink>
+            </div>
+          </NavGroup>
+        )}
+
+        {/* Admin — hanya superAdmin */}
+        {isSuperAdmin && (
+          <NavGroup
+            title="Admin"
+            open={openGroups.admin ?? true}
+            onToggle={() => toggleGroup("admin")}
+            collapsed={collapsed}
+          >
+            <div className={collapsed ? "" : "px-2"}>
+              <NavLink
+                to="/admin/announcements"
+                onClick={onNavigate}
+                title={collapsed ? "Pengumuman" : undefined}
+                className={({ isActive }) => linkClass(isActive)}
+              >
+                <Bell size={17} />
+                {!collapsed && "Pengumuman"}
               </NavLink>
             </div>
           </NavGroup>

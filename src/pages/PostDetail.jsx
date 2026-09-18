@@ -378,7 +378,7 @@ const handleFollow = async () => {
       </h1>
 
       <div className="mb-6 flex items-center justify-between">
-        <Link to={`/authors/detail/${post.author._id}`} className="flex w-fit items-center gap-2">
+        <Link to={`/authors/detail/${post.author._id}`} className="flex w-fit active:scale-[0.98] hover:brightness-75 items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-soft text-sm font-semibold text-accent">
             {post.author.name?.[0]?.toUpperCase()}
           </div>

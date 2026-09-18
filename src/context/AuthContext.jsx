@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }) => {
       .get("/auth/me")
       .then(({ data }) => {
         setUser(data.user);
+        console.log(data.user)
         localStorage.setItem("nethub_user", JSON.stringify(data.user));
       })
       .catch(() => {

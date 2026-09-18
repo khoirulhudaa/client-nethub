@@ -134,7 +134,7 @@ const AuthorBio = () => {
     : null;
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
       {/* ===== Header ===== */}
       <div className="surface-card mb-6 overflow-hidden rounded-2xl border border-gray-200 dark:border-white/10 dark:bg-white/[0.03]">
         {/* Cover strip */}
@@ -227,7 +227,7 @@ const AuthorBio = () => {
       {/* ===== Guides ===== */}
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-400">
-          Guides oleh {author.name}
+          Guides By {author.name}
         </h2>
         <span className="text-xs text-gray-400">{posts.length} guide</span>
       </div>

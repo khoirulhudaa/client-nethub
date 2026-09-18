@@ -42,19 +42,16 @@ export default function Quizzes() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
+    <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-medium uppercase tracking-wide text-accent">
             Quiz Network
           </p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight">
+          <h1 className="text-xl font-semibold tracking-tight">
             Materi Quiz dari Komunitas
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Latihan pilihan ganda & praktek topology
-          </p>
         </div>
 
         {user && (

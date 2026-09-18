@@ -16,11 +16,13 @@ const MyPosts = () => {
   }, []);
 
   return (
-    <div className="mx-auto max-w-6xl">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">My Guides</h1>
-          <p className="mt-1 text-sm text-gray-500">Everything you've published on NetHub.</p>
+         <div className="flex text-left items-center gap-2 text-accent">
+            <span className="text-xs font-semibold uppercase tracking-wide">Creation</span>
+          </div>
+          <h1 className="text-xl text-left font-semibold tracking-tight">My Guides</h1>
         </div>
         <Link to="/create" className="btn-primary">
           <PlusCircle size={16} />

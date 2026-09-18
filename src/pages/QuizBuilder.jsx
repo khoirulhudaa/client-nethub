@@ -223,7 +223,7 @@ export default function QuizBuilder() {
     };
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 pb-16">
+    <div className="mx-auto max-w-7xl space-y-6 pb-16 px-4 py-6 sm:px-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -237,9 +237,6 @@ export default function QuizBuilder() {
             <h1 className="text-xl font-semibold">
               {isEdit ? "Edit Quiz" : "Buat Quiz Baru"}
             </h1>
-            <p className="text-sm text-gray-500">
-              Minimal 5 soal 
-            </p>
           </div>
         </div>
 

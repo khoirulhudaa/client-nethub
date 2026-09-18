@@ -4,7 +4,6 @@ import {
   ChevronRight,
   Eye,
   Loader2,
-  Network,
   Plus,
   Search,
   Sparkles,
@@ -21,7 +20,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 
 const GuestJumbotron = ({ onRegister }) => {
   return (
-    <section className="relative mb-10 overflow-hidden rounded-3xl border border-gray-200 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:border-white/10">
+    <section className="relative mb-7 overflow-hidden rounded-3xl border border-gray-200 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:border-white/10">
       {/* Background image / pattern */}
       <div className="absolute inset-0 opacity-15 top-0 left-0">
         <img
@@ -419,7 +418,9 @@ const Dashboard = () => {
       {/* ===== GUEST → Jumbotron | USER → Welcome + Metrics ===== */}
       {
         user?.isGuest || user?.role === "guest" ? (
-          <GuestJumbotron onRegister={() => navigate("/register")} />
+          <div className="w-full px-6 pt-6">
+            <GuestJumbotron onRegister={() => navigate("/register")} />
+          </div>
         ) : (
           <>
             <WelcomeRow
