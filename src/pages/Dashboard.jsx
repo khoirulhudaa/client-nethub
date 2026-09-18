@@ -1,12 +1,16 @@
 import {
   BookOpen,
   Box,
+  Brain,
   ChevronRight,
+  Diamond,
   Eye,
   Loader2,
+  Medal,
   Plus,
   Search,
   Sparkles,
+  Star,
   Tag,
   Wifi
 } from "lucide-react";
@@ -309,25 +313,22 @@ const Dashboard = () => {
   const [localSearch, setLocalSearch] = useState(search);
   const [signal, setSignal] = useState(null);
 
-  // Stats overview (hanya di-load sekali, tidak ikut filter)
   const [stats, setStats] = useState({
     totalGuides: 0,
     totalReads: 0,
     totalCategories: 0,
   });
-
   const [statsLoading, setStatsLoading] = useState(true);
 
-  // 1) Stats global — HANYA sekali saat mount
+  // Stats global (sekali saja)
   useEffect(() => {
     setStatsLoading(true);
     api
-      .get("/posts", { params: { limit: 100 } }) // tanpa category/search
+      .get("/posts", { params: { limit: 100 } })
       .then(({ data }) => {
         const posts = data.posts || [];
         const pinned = data.pinned || [];
         const all = [...pinned, ...posts];
-
         const totalReads = all.reduce((sum, p) => sum + (p.views || 0), 0);
 
         setStats({
@@ -338,19 +339,34 @@ const Dashboard = () => {
       })
       .catch(() => {})
       .finally(() => setStatsLoading(false));
-  }, []); // ← dependency kosong = tidak refetch saat ganti category
+  }, []);
 
-  // 2) List posts — berubah saat category/search
+  // Fetch posts — HANYA berdasarkan category (search dihandle lokal)
   useEffect(() => {
     setLoading(true);
     api
-      .get("/posts", { params: { category, search } })
+      .get("/posts", { params: { category } }) // ← search dihapus dari API
       .then(({ data }) => setData(data))
       .catch((err) => console.error("Error fetching posts:", err))
       .finally(() => setLoading(false));
-  }, [category, search]);
+  }, [category]);
 
-  // Signal browser
+  // Sync localSearch dari URL
+  useEffect(() => {
+    setLocalSearch(search);
+  }, [search]);
+
+  // Debounce: update URL search param setelah user berhenti mengetik 400ms
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (localSearch !== search) {
+        updateParam("search", localSearch.trim());
+      }
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [localSearch]);
+
+  // Network signal
   useEffect(() => {
     const conn =
       navigator.connection || navigator.mozConnection || navigator.webkitConnection;
@@ -366,37 +382,27 @@ const Dashboard = () => {
     return () => conn.removeEventListener("change", update);
   }, []);
 
-  useEffect(() => {
-    setLocalSearch(search);
-  }, [search]);
-
   const isGuest = user?.isGuest || user?.role === "guest";
 
-  // Menghitung statistik langsung dari data pos yang diterima
-  const categoryStats = useMemo(() => {
-    if (!data.posts || data.posts.length === 0) return [];
-    
-    // Kelompokkan & hitung jumlah post per kategori
-    const counts = data.posts.reduce((acc, post) => {
-      const cat = post.category || "Uncategorized";
-      acc[cat] = (acc[cat] || 0) + 1;
-      return acc;
-    }, {});
+  // === CLIENT-SIDE FILTER BY TITLE (utama) ===
+  const filteredPosts = useMemo(() => {
+    if (!data.posts) return [];
+    if (!search.trim()) return data.posts;
 
-    return Object.keys(counts).map((cat) => ({
-      category: cat,
-      count: counts[cat],
-    }));
-  }, [data.posts]);
+    const q = search.toLowerCase().trim();
+    return data.posts.filter((post) => {
+      const title = (post.title || "").toLowerCase();
+      const excerpt = (post.excerpt || post.description || post.content || "").toLowerCase();
+      return title.includes(q) || excerpt.includes(q);
+    });
+  }, [data.posts, search]);
 
-  // Menghitung total reads (jumlah akumulasi views dari seluruh post)
+  // Stats dari data yang sudah difilter (atau tetap pakai stats global)
+  const totalGuides = filteredPosts.length;
   const totalReads = useMemo(() => {
-    if (!data.posts) return 0;
-    return data.posts.reduce((sum, post) => sum + (post.views || 0), 0);
-  }, [data.posts]);
-
-  const totalGuides = data.total || data.posts?.length || 0;
-  const totalCategories = data.categories?.length || categoryStats.length || 0;
+    return filteredPosts.reduce((sum, post) => sum + (post.views || 0), 0);
+  }, [filteredPosts]);
+  const totalCategories = data.categories?.length || 0;
 
   const updateParam = (key, value) => {
     const next = new URLSearchParams(searchParams);
@@ -415,63 +421,78 @@ const Dashboard = () => {
 
   return (
     <div className="mx-auto max-w-full border-r border-white/10 pr-0 shadow-none">
-      {/* ===== GUEST → Jumbotron | USER → Welcome + Metrics ===== */}
-      {
-        user?.isGuest || user?.role === "guest" ? (
-          <div className="w-full px-6 pt-6">
-            <GuestJumbotron onRegister={() => navigate("/register")} />
-          </div>
-        ) : (
-          <>
-            <WelcomeRow
-              userName={user?.name || "there"}
-              onNewPost={() => navigate("/create")}
-              isGuest={false}
-            />
-            <MetricGrid
-              signal={signal}
-              totalGuides={totalGuides}
-              totalReads={totalReads}
-              totalCategories={totalCategories}
-              loading={loading}
-            />
-          </>
-        )
-      }
-
+      {/* Guest / Welcome tetap sama */}
+      {user?.isGuest || user?.role === "guest" ? (
+        <div className="w-full px-6 pt-6">
+          <GuestJumbotron onRegister={() => navigate("/register")} />
+        </div>
+      ) : (
+        <>
+          <WelcomeRow
+            userName={user?.name || "there"}
+            onNewPost={() => navigate("/create")}
+            isGuest={false}
+          />
+          <MetricGrid
+            signal={signal}
+            totalGuides={totalGuides}
+            totalReads={totalReads}
+            totalCategories={totalCategories}
+            loading={loading}
+          />
+        </>
+      )}
 
       <div className="border-t border-white/10 mb-6"></div>
 
       <div className="px-6 pb-6">
         <div className="px-7 py-7 sm:px-4 w-full sm:py-4 relative bg-white/5 rounded-xl">
-          {/* Header Search & Title */}
+          {/* Header */}
           <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-medium uppercase tracking-wide text-accent">
                 New Knowledge
               </p>
-              <h2 className="text-xl font-semibold tracking-tight">{headingText}</h2>
+              <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mt-1">
+                <Brain size={17} />
+                <span className="relative top-[-1.2px]">
+                  {headingText}
+                </span>
+              </h2>
             </div>
           </header>
 
+          {/* Search + Categories */}
           <div className="w-full flex items-center gap-2.5 mb-6">
             <form
               className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 shadow-sm sm:w-72"
               onSubmit={(e) => {
                 e.preventDefault();
-                updateParam("search", localSearch);
+                updateParam("search", localSearch.trim());
               }}
             >
               <Search size={16} className="text-gray-400" />
               <input
                 value={localSearch}
                 onChange={(e) => setLocalSearch(e.target.value)}
-                placeholder="Search guides"
-                className="w-full bg-transparent text-sm outline-none"
+                placeholder="Search by title..."
+                className="w-full bg-transparent text-black text-sm outline-none"
               />
+              {localSearch && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLocalSearch("");
+                    updateParam("search", "");
+                  }}
+                  className="text-gray-400 hover:text-gray-600 text-xs"
+                >
+                  ✕
+                </button>
+              )}
             </form>
 
-            {/* Categories Bar */}
+            {/* Categories bar tetap sama */}
             {data.categories?.length > 0 && (
               <div className="flex flex-wrap items-center gap-x-2.5">
                 <button
@@ -502,17 +523,45 @@ const Dashboard = () => {
             )}
           </div>
 
-          {/* Content Area */}
+          {/* Content */}
           {loading ? (
             <div className="flex justify-center py-24">
               <Loader2 className="animate-spin text-accent" size={28} />
             </div>
           ) : (
             <>
-              {/* Section Pinned Hero */}
               {showOverviewSections && data.pinned?.length > 0 && (
                 <section className="mb-8">
-                  <div className="mb-3 flex items-center gap-2 text-sm font-medium text-gray-500">
+                  <PinnedHero pinned={data.pinned} />
+                </section>
+              )}
+
+              {/* Posts Grid — pakai filteredPosts */}
+              <section className="mb-8">
+                {filteredPosts.length === 0 ? (
+                  <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
+                    <img src="/notFound.png" alt="No guides" className="h-24 w-24 mb-1.5" />
+                    <p className="font-medium">
+                      {search ? `No guides found for "${search}"` : "No guides here yet"}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {search
+                        ? "Try a different keyword or clear the search."
+                        : "Be the first to publish one for this category."}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                    {filteredPosts.map((post) => (
+                      <PostCard key={post._id} post={post} />
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              {localSearch && data.pinned?.length > 0 && (
+                <section className="mb-8">
+                  <div className="mb-3 flex items-center gap-2 text-sm font-medium text-white/50">
                     <Sparkles size={15} />
                     <span>Pinned</span>
                   </div>
@@ -520,35 +569,19 @@ const Dashboard = () => {
                 </section>
               )}
 
-              {/* Posts Grid */}
-              <section className="mb-8">
-                {data.posts.length === 0 ? (
-                  <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
-                    <img src="/notFound.png" alt="No guides" className="h-24 w-24 mb-1.5" />
-                    <p className="font-medium">No guides here yet</p>
-                    <p className="text-sm text-gray-500">
-                      Be the first to publish one for this category.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                    {data.posts.map((post) => (
-                      <PostCard key={post._id} post={post} />
-                    ))}
-                  </div>
-                )}
-              </section>
-
-              <div className="border-t border-white/10 mb-6"></div>
-
-              {/* Category Count Grid & Interactive Tools */}
+              {/* Brand cards tetap sama */}
               {showOverviewSections && (
                 <>
                   <div>
                     <p className="text-xs font-medium uppercase tracking-wide text-accent">
                       Network brands
                     </p>
-                    <h2 className="text-xl font-semibold tracking-tight">{'Popular Brands'}</h2>
+                    <h2 className="flex items-center text-lg mt-1 font-medium tracking-tight">
+                      <Box size={17} className="mr-2" />
+                      <span className="relative top-[-1.7px]">
+                        Reference brands
+                      </span>
+                    </h2>
                   </div>
                   <div className="mb-0 mt-7 grid grid-cols-1 gap-5 lg:grid-cols-3">
                     <Card2 />

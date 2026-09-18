@@ -1,3 +1,4 @@
+import { Pin } from "lucide-react";
 import PostCard from "./PostCard.jsx";
 
 // Layout:
@@ -13,8 +14,11 @@ const PinnedHero = ({ pinned }) => {
 
   return (
     <section className="mb-8">
-      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-400">
-        Pinned Guides
+      <h2 className="mb-3 flex items-center text-lg font-semibold tracking-tight text-white">
+        <Pin size={17} />
+        <span className="relative top-[-2px] ml-1">
+          Your pinned
+        </span>
       </h2>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
