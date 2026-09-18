@@ -33,13 +33,13 @@ const categoryLinks = [
 const discoverLinks = [
   { label: "Trending", icon: Flame, to: "/trending" },
   { label: "Subnet Calc", icon: Calculator, to: "/tools/subnet" },
-  { label: "Collection", icon: Box, to: "/hardware" },
+  { label: "Collection Card", icon: Box, to: "/hardware" },
 ];
 
 const quizLinks = [
-  { label: "Build Quiz", icon: HelpCircle, to: "/quiz-builder" },
-  { label: "Test Network", icon: Brain, to: "/quizzes" },
-  { label: "Practice", icon: PencilRuler, to: "/practice" },
+  { label: "Build Exam", icon: HelpCircle, to: "/quiz-builder" },
+  { label: "Go Practice", icon: PencilRuler, to: "/practice" },
+  { label: "Test Knowledge", icon: Brain, to: "/quizzes" },
 ];
 
 const NavGroup = ({ title, open, onToggle, collapsed, children }) => {
@@ -49,11 +49,11 @@ const NavGroup = ({ title, open, onToggle, collapsed, children }) => {
   }
 
   return (
-    <div className="pt-2">
+    <div className="pt-2 px-1">
       <button
         type="button"
         onClick={onToggle}
-        className="mb-1 flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400 transition hover:bg-white/[0.04] hover:text-gray-200"
+        className="mb-1 flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400 transition hover:text-gray-200"
       >
         <span>{title}</span>
         <ChevronDown
@@ -171,7 +171,7 @@ const Sidebar = ({ onNavigate }) => {
       <div className="z-10 relative h-screen">
         {/* Logo + toggle */}
         <div
-          className={`mb-0 z-[22] flex h-[8.6vh] items-center border-b border-white/10 ${
+          className={`mb-0 z-[22] px-3 flex h-[8.6vh] items-center border-b border-white/10 ${
             collapsed
               ? "justify-center border-x-0"
               : "justify-between gap-2 border-x border-white/10 px-2"
@@ -398,7 +398,7 @@ const Sidebar = ({ onNavigate }) => {
 
           {/* ===== LOGOUT CONFIRMATION MODAL ===== */}
           {showLogoutModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
               {/* Backdrop */}
               <div
                 className="absolute inset-0 bg-black/70 backdrop-blur-sm"

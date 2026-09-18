@@ -376,7 +376,7 @@ const handleFollow = async () => {
         )}
       </div>
 
-      <h1 className="mb-3 text-2xl w-max rounded-xl p-2 px-1 font-semibold tracking-tight bg-white/5 border border-white/20">
+      <h1 className="mb-3 text-2xl w-max rounded-xl p-2 px-1 pr-2.5 font-semibold tracking-tight bg-white/5 border border-white/20">
         📝 {post.title}
       </h1>
 

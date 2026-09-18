@@ -178,7 +178,7 @@ export default function TakeQuizes() {
       </div>
 
       {/* Social bar */}
-      <div className="surface-card flex flex-wrap items-center gap-4 rounded-xl border border-gray-200 bg-white px-4 py-3">
+      <div className="surface-card bg-white dark:bg-white/5 flex flex-wrap items-center gap-4 rounded-xl border border-gray-200 px-4 py-3">
         <button
           onClick={toggleLike}
           className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm transition ${
@@ -315,7 +315,7 @@ export default function TakeQuizes() {
 
       {/* Soal */}
       {!submitted && (
-        <div className="surface-card rounded-xl border border-gray-200 bg-white p-5">
+        <div className="surface-card bg-white dark:bg-white/5 rounded-xl border border-gray-200 p-5">
           {/* Progress */}
           <div className="mb-4 flex items-center justify-between text-sm text-gray-500">
             <span>
@@ -439,7 +439,7 @@ export default function TakeQuizes() {
       )}
 
       {/* Comments */}
-      <div className="surface-card rounded-xl border border-gray-200 bg-white p-5">
+      <div className="surface-card rounded-xl border border-gray-200 sur-white dark:bg-white/5 p-5">
         <h3 className="mb-4 font-medium">
           Komentar ({comments.length})
         </h3>

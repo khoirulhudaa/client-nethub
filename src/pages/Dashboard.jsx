@@ -26,7 +26,7 @@ const GuestJumbotron = ({ onRegister }) => {
   return (
     <section className="relative mb-7 overflow-hidden rounded-3xl border border-gray-200 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:border-white/10">
       {/* Background image / pattern */}
-      <div className="absolute inset-0 opacity-15 top-0 left-0">
+      <div className="absolute inset-0 opacity-10 top-0 left-0">
         <img
           src="/hero.jpg"   // ganti dengan gambar kamu, atau hapus kalau tidak ada
           alt="hero"
@@ -38,7 +38,7 @@ const GuestJumbotron = ({ onRegister }) => {
       <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-accent/30 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-16 -right-16 h-56 w-56 rounded-full bg-blue-500/20 blur-3xl" />
 
-      <div className="relative z-10 flex flex-col items-start gap-6 px-7 py-8 sm:px-7 sm:py-8 lg:flex-row lg:items-center lg:justify-between">
+      <div className="relative z-2 flex flex-col items-start gap-6 px-7 py-8 sm:px-7 sm:py-8 lg:flex-row lg:items-center lg:justify-between">
         {/* Text content */}
         <div className="max-w-xl">
 

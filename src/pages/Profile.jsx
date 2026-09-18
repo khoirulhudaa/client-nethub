@@ -558,7 +558,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="mx-auto max-w-7xl p-6">
       {/* Header */}
       <div className="surface-card mb-6 flex flex-col gap-4 rounded-xl border border-border-light bg-white p-6 sm:flex-row sm:items-center sm:justify-between dark:border-border-dark">
         <div className="flex items-center gap-4">

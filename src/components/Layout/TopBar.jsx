@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   Flame,
   Info,
+  LogOut,
   Menu,
   Moon,
   X,
@@ -13,6 +14,8 @@ import {
   Plus,
   Search,
   Sun,
+  User,
+  BookOpen,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -22,12 +25,14 @@ import api from "../../api/axios.js";
 
 const TopBar = ({ onMenuClick }) => {
   const [openNotif, setOpenNotif] = useState(false);
+  const [openProfile, setOpenProfile] = useState(false);
   const [announcements, setAnnouncements] = useState([]);
   const [notifLoading, setNotifLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const notifRef = useRef(null);
+  const profileRef = useRef(null);
   const { theme, toggleTheme } = useTheme();
-  const { user } = useAuth();
+  const { user, logout } = useAuth(); // pastikan logout ada di AuthContext
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
@@ -59,18 +64,25 @@ const TopBar = ({ onMenuClick }) => {
     fetchAnnouncements();
   }, []);
 
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) {
         setOpenNotif(false);
       }
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setOpenProfile(false);
+      }
     };
-    if (openNotif) document.addEventListener("mousedown", handleClickOutside);
+    if (openNotif || openProfile) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [openNotif]);
+  }, [openNotif, openProfile]);
 
   const openNotifications = () => {
     setOpenNotif((prev) => !prev);
+    setOpenProfile(false); // tutup profile kalau buka notif
     if (!openNotif && announcements.length) {
       const ids = announcements.map((a) => a._id);
       localStorage.setItem("nethub_read_announcements", JSON.stringify(ids));
@@ -84,9 +96,14 @@ const TopBar = ({ onMenuClick }) => {
     navigate(`/?search=${encodeURIComponent(query.trim())}`);
   };
 
+  const handleLogout = () => {
+    setOpenProfile(false);
+    logout?.(); // panggil fungsi logout dari AuthContext
+    navigate("/"); // atau ke halaman login sesuai flow kamu
+  };
+
   return (
     <header className="w-full surface-card h-[8.6vh] sticky top-0 z-20 border-r border-white/10 flex h-16 items-center gap-3 py-0 rounded-none border-b px-3 sm:px-3">
-
       <div
         className="pointer-events-none absolute top-[1.5px] inset-0 z-0 hidden dark:block"
         style={{
@@ -94,7 +111,7 @@ const TopBar = ({ onMenuClick }) => {
           backgroundSize: "20px 20px",
         }}
       />
-      
+
       <div className="w-[100%] border-r border-white/10 flex justify-between h-full items-center pr-6">
         <button
           onClick={onMenuClick}
@@ -135,7 +152,7 @@ const TopBar = ({ onMenuClick }) => {
             </button>
           )}
 
-          {/* Notification placeholder */}
+          {/* Notification */}
           <div className="relative" ref={notifRef}>
             <button
               type="button"
@@ -153,10 +170,10 @@ const TopBar = ({ onMenuClick }) => {
 
             {openNotif && (
               <div className="absolute right-[122%] top-full z-50 mt-2 w-[min(100vw-2rem,360px)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-white/10 dark:bg-[#12121a]">
+                {/* ... isi notifikasi tetap sama ... */}
                 <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-white/10">
                   <div>
                     <p className="text-sm font-semibold">Pengumuman</p>
-                    {/* <p className="text-xs text-gray-500">{announcements.length} aktif</p> */}
                   </div>
                   <button
                     type="button"
@@ -247,11 +264,15 @@ const TopBar = ({ onMenuClick }) => {
             {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
           </button>
 
-          <div>
-            {/* Avatar singkat */}
-            <Link
-              to={isGuest ? "#" : "/profile"}
-              className="ml-0.5 flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-blue-500 text-sm font-semibold text-white ring-1"
+          {/* ===== PROFILE DROPDOWN ===== */}
+          <div className="relative" ref={profileRef}>
+            <button
+              type="button"
+              onClick={() => {
+                setOpenProfile((prev) => !prev);
+                setOpenNotif(false);
+              }}
+              className="ml-0.5 flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-blue-500 text-sm font-semibold text-white ring-1 transition hover:opacity-90"
               title={user?.name || "Profile"}
             >
               {user?.avatar ? (
@@ -263,7 +284,74 @@ const TopBar = ({ onMenuClick }) => {
               ) : (
                 user?.name?.[0]?.toUpperCase() || "G"
               )}
-            </Link>
+            </button>
+
+            {openProfile && (
+              <div className="absolute shadow-2xl right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-white/10 dark:bg-[#12121a]">
+                {/* Header */}
+                <div className="border-b border-gray-100 px-4 py-3 dark:border-white/10">
+                  <p className="truncate text-sm font-semibold">
+                    {user?.name || "Guest"}
+                  </p>
+                  {user?.email && (
+                    <p className="truncate text-xs text-gray-500">{user.email}</p>
+                  )}
+                </div>
+
+                <div className="py-1.5">
+                  {!isGuest ? (
+                    <>
+                      {/* Menu untuk user yang sudah login */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setOpenProfile(false);
+                          navigate("/profile");
+                        }}
+                        className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition hover:bg-black/[0.03] dark:text-gray-200 dark:hover:bg-white/[0.05]"
+                      >
+                        <User size={16} className="text-gray-400" />
+                        View profile
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setOpenProfile(false);
+                          navigate("/my-posts"); // sesuaikan route
+                        }}
+                        className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition hover:bg-black/[0.03] dark:text-gray-200 dark:hover:bg-white/[0.05]"
+                      >
+                        <BookOpen size={16} className="text-gray-400" />
+                        My Guides
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10"
+                      >
+                        <LogOut size={16} />
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    /* Menu untuk Guest */
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOpenProfile(false);
+                        navigate("/register"); // atau "/auth/register" sesuai route kamu
+                      }}
+                      className="flex w-[94%] rounded-xl mx-auto items-center gap-2 px-2.5 active:scale-[0.99] duration-100 py-2.5 text-left text-sm text-white transition bg-blue-500"
+                    >
+                      <User size={16} />
+                      Register
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
