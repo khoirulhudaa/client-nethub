@@ -20,6 +20,14 @@ const TYPE_OPTIONS = [
   { value: "important", label: "Important", color: "bg-rose-500" },
 ];
 
+const emptyForm = {
+  title: "",
+  content: "",
+  type: "info",
+  isActive: true,
+  expiresAt: "",
+};
+
 const AnnouncementsAdmin = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -27,16 +35,10 @@ const AnnouncementsAdmin = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [showPanel, setShowPanel] = useState(false);
   const [editing, setEditing] = useState(null); // null = create
 
-  const [form, setForm] = useState({
-    title: "",
-    content: "",
-    type: "info",
-    isActive: true,
-    expiresAt: "",
-  });
+  const [form, setForm] = useState(emptyForm);
 
   // Guard: hanya superAdmin
   useEffect(() => {
@@ -63,14 +65,8 @@ const AnnouncementsAdmin = () => {
 
   const openCreate = () => {
     setEditing(null);
-    setForm({
-      title: "",
-      content: "",
-      type: "info",
-      isActive: true,
-      expiresAt: "",
-    });
-    setShowModal(true);
+    setForm(emptyForm);
+    setShowPanel(true);
   };
 
   const openEdit = (item) => {
@@ -84,7 +80,13 @@ const AnnouncementsAdmin = () => {
         ? new Date(item.expiresAt).toISOString().slice(0, 16)
         : "",
     });
-    setShowModal(true);
+    setShowPanel(true);
+  };
+
+  const closePanel = () => {
+    setShowPanel(false);
+    setEditing(null);
+    setForm(emptyForm);
   };
 
   const handleSubmit = async (e) => {
@@ -107,7 +109,7 @@ const AnnouncementsAdmin = () => {
         await api.post("/announcements", payload);
       }
 
-      setShowModal(false);
+      closePanel();
       fetchAnnouncements();
     } catch (err) {
       alert(err.response?.data?.message || "Failed to save");
@@ -120,6 +122,8 @@ const AnnouncementsAdmin = () => {
     if (!confirm("Yakin ingin menghapus pengumuman ini?")) return;
     try {
       await api.delete(`/announcements/${id}`);
+      // Jika sedang edit item yang dihapus, tutup panel
+      if (editing?._id === id) closePanel();
       fetchAnnouncements();
     } catch (err) {
       alert("Gagal menghapus");
@@ -136,11 +140,11 @@ const AnnouncementsAdmin = () => {
   };
 
   if (user?.role !== "superAdmin") {
-    return null; // atau loading
+    return null;
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+    <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px">
       {/* Header */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -149,14 +153,12 @@ const AnnouncementsAdmin = () => {
               SuperAdmin
             </span>
           </div>
-          <h1 className="text-xl font-semibold tracking-tight">
-            Pengumuman
-          </h1>
+          <h1 className="text-xl font-semibold tracking-tight">Pengumuman</h1>
         </div>
 
         <button
           onClick={openCreate}
-          className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:opacity-90"
+          className="inline-flex active:scale-[0.98] items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:opacity-90"
         >
           <Plus size={16} />
           Buat Pengumuman
@@ -177,9 +179,10 @@ const AnnouncementsAdmin = () => {
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-2 gap-3.5 px-7 py-7 sm:px-4 w-full sm:py-4 relative bg-white/5 rounded-xl">
           {announcements.map((item) => {
-            const typeInfo = TYPE_OPTIONS.find((t) => t.value === item.type) || TYPE_OPTIONS[0];
+            const typeInfo =
+              TYPE_OPTIONS.find((t) => t.value === item.type) || TYPE_OPTIONS[0];
             const isExpired =
               item.expiresAt && new Date(item.expiresAt) < new Date();
 
@@ -190,8 +193,8 @@ const AnnouncementsAdmin = () => {
                   !item.isActive || isExpired ? "opacity-60" : ""
                 }`}
               >
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                <div className="min-w-0 flex-1">
+                  <div className="mb-1.5 flex flex-wrap items-center gap-2">
                     <span
                       className={`inline-block h-2 w-2 rounded-full ${typeInfo.color}`}
                     />
@@ -213,14 +216,12 @@ const AnnouncementsAdmin = () => {
                   <h3 className="font-semibold text-gray-900 dark:text-white">
                     {item.title}
                   </h3>
-                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+                  <p className="mt-1 line-clamp-2 text-sm text-gray-600 dark:text-gray-300">
                     {item.content}
                   </p>
 
                   <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-gray-400">
-                    <span>
-                      Oleh {item.createdBy?.name || "Unknown"}
-                    </span>
+                    <span>Oleh {item.createdBy?.name || "Unknown"}</span>
                     <span>·</span>
                     <span>
                       {new Date(item.createdAt).toLocaleDateString("id-ID", {
@@ -242,7 +243,7 @@ const AnnouncementsAdmin = () => {
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center gap-1.5 shrink-0">
+                <div className="flex shrink-0 items-center gap-1.5">
                   <button
                     onClick={() => handleToggle(item._id)}
                     className="rounded-lg p-2 text-gray-500 transition hover:bg-black/5 dark:hover:bg-white/10"
@@ -277,110 +278,130 @@ const AnnouncementsAdmin = () => {
         </div>
       )}
 
-      {/* Modal Create / Edit */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-white p-6 shadow-xl dark:bg-[#12121a]">
-            <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-lg font-semibold">
-                {editing ? "Edit Pengumuman" : "Buat Pengumuman Baru"}
-              </h2>
-              <button
-                onClick={() => setShowModal(false)}
-                className="rounded-lg p-1.5 text-gray-500 hover:bg-black/5 dark:hover:bg-white/10"
-              >
-                <X size={18} />
-              </button>
+      {/* ===== RIGHT SIDEBAR PANEL ===== */}
+      {/* Backdrop */}
+      <div
+        className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 ${
+          showPanel ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+        onClick={closePanel}
+      />
+
+      {/* Panel */}
+      <aside
+        className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-white/10 bg-white shadow-2xl transition-transform duration-300 ease-out dark:bg-[#12121a] ${
+          showPanel ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        {/* Panel header */}
+        <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+          <div>
+            <h2 className="text-md font-semibold">
+              {editing ? "Edit Pengumuman" : "Buat Pengumuman"}
+            </h2>
+          </div>
+          <button
+            onClick={closePanel}
+            className="rounded-lg p-2 active:scale-[0.98] text-gray-500 transition hover:bg-black/5 dark:hover:bg-white/10"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Form */}
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-1 flex-col overflow-y-auto"
+        >
+          <div className="flex-1 space-y-5 px-5 py-5">
+            <div>
+              <label className="mb-1.5 block text-sm font-medium">Judul</label>
+              <input
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                className="input-field w-full"
+                placeholder="Contoh: Maintenance terjadwal"
+                required
+                maxLength={150}
+                autoFocus
+              />
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="mb-1.5 block text-sm font-medium">Judul</label>
-                <input
-                  value={form.title}
-                  onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  className="input-field w-full"
-                  placeholder="Contoh: Maintenance terjadwal"
-                  required
-                  maxLength={150}
-                />
-              </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium">Isi</label>
+              <textarea
+                value={form.content}
+                onChange={(e) => setForm({ ...form, content: e.target.value })}
+                className="input-field w-full min-h-[140px] resize-y"
+                placeholder="Tulis isi pengumuman..."
+                required
+              />
+            </div>
 
-              <div>
-                <label className="mb-1.5 block text-sm font-medium">Isi</label>
-                <textarea
-                  value={form.content}
-                  onChange={(e) => setForm({ ...form, content: e.target.value })}
-                  className="input-field w-full min-h-[120px] resize-y"
-                  placeholder="Tulis isi pengumuman..."
-                  required
-                />
-              </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium">Tipe</label>
+              <select
+                value={form.type}
+                onChange={(e) => setForm({ ...form, type: e.target.value })}
+                className="input-field w-full"
+              >
+                {TYPE_OPTIONS.map((t) => (
+                  <option key={t.value} value={t.value} className="text-black">
+                    {t.label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium">Tipe</label>
-                  <select
-                    value={form.type}
-                    onChange={(e) => setForm({ ...form, type: e.target.value })}
-                    className="input-field w-full"
-                  >
-                    {TYPE_OPTIONS.map((t) => (
-                      <option key={t.value} value={t.value}>
-                        {t.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium">
-                    Kadaluarsa (opsional)
-                  </label>
-                  <input
-                    type="datetime-local"
-                    value={form.expiresAt}
-                    onChange={(e) =>
-                      setForm({ ...form, expiresAt: e.target.value })
-                    }
-                    className="input-field w-full"
-                  />
-                </div>
-              </div>
-
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={form.isActive}
-                  onChange={(e) =>
-                    setForm({ ...form, isActive: e.target.checked })
-                  }
-                  className="rounded"
-                />
-                Aktifkan pengumuman
+            <div>
+              <label className="mb-1.5 block text-sm font-medium">
+                Kadaluarsa (opsional)
               </label>
+              <input
+                type="datetime-local"
+                value={form.expiresAt}
+                onChange={(e) =>
+                  setForm({ ...form, expiresAt: e.target.value })
+                }
+                className="input-field w-full"
+              />
+            </div>
 
-              <div className="flex justify-end gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="rounded-xl px-4 py-2 text-sm font-medium text-gray-600 hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white transition hover:opacity-90 disabled:opacity-60"
-                >
-                  {saving && <Loader2 size={16} className="animate-spin" />}
-                  {editing ? "Simpan Perubahan" : "Buat Pengumuman"}
-                </button>
-              </div>
-            </form>
+            <label className="flex items-center gap-2.5 text-sm">
+              <input
+                type="checkbox"
+                checked={form.isActive}
+                onChange={(e) =>
+                  setForm({ ...form, isActive: e.target.checked })
+                }
+                className="h-4 w-4 rounded"
+              />
+              Aktifkan pengumuman
+            </label>
           </div>
-        </div>
-      )}
+
+          {/* Footer actions */}
+          <div className="border-t border-white/10 px-5 py-4">
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={closePanel}
+                className="flex-1 rounded-xl px-4 active:scale-[0.98] py-2.5 text-sm font-medium text-gray-600 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                disabled={saving}
+                className="inline-flex flex-1 active:scale-[0.98] items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90 disabled:opacity-60"
+              >
+                {saving && <Loader2 size={16} className="animate-spin" />}
+                {editing ? "Simpan" : "Buat"}
+              </button>
+            </div>
+          </div>
+        </form>
+      </aside>
     </div>
   );
 };

@@ -107,7 +107,7 @@ const SubnetCalculator = () => {
         <h1 className="text-xl font-semibold tracking-tight">Subnet Calculator</h1>
       </div>
 
-      <div className="surface-card rounded-2xl border border-gray-200 bg-white p-6 dark:border-white/10 dark:bg-white/[0.03]">
+      <div className="surface-card rounded-2xl border border-gray-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]">
         {/* Input */}
         <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>

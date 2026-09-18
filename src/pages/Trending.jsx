@@ -60,7 +60,7 @@ const Trending = () => {
           <p className="text-sm text-gray-500">Coba periode yang lebih panjang.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 rounded-xl border border-gray-200 !bg-white/5 p-5 surface-card">
           {posts.map((post, idx) => (
             <div key={post._id} className="relative">
               {idx < 3 && (

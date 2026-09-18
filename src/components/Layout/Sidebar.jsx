@@ -340,7 +340,7 @@ const Sidebar = ({ onNavigate }) => {
                 className={({ isActive }) => linkClass(isActive)}
               >
                 <Bell size={17} />
-                {!collapsed && "Pengumuman"}
+                {!collapsed && "Announcement"}
               </NavLink>
             </div>
           </NavGroup>

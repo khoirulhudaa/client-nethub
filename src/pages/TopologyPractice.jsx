@@ -81,7 +81,7 @@ export default function TopologyPractice() {
   const edgeCount = topology.edges?.length || 0;
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 px-2 pb-16">
+    <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 pb-16">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
@@ -92,12 +92,9 @@ export default function TopologyPractice() {
             <ArrowLeft size={18} />
           </button>
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">
+            <h1 className="text-xl font-semibold tracking-tight">
               Latihan Topology
             </h1>
-            <p className="mt-1 text-sm text-gray-500">
-              Susun perangkat & kabel sesuai skenario yang dipilih
-            </p>
           </div>
         </div>
 

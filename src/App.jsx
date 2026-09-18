@@ -19,6 +19,7 @@ import AuthorBio from "./pages/AuthorBio.jsx";
 import Trending from "./pages/Trending.jsx";
 import SubnetCalculator from "./pages/SubnetCalculator.jsx";
 import AnnouncementsAdmin from "./pages/AnnouncementsAdmin.jsx";
+import PracticeHub from "./pages/PracticeHub.jsx";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
         <Route path="my-posts" element={<MyPosts />} />
         <Route path="profile" element={<Profile />} />
         <Route path="/quizzes/:id" element={<TakeQuiz />} />
+        <Route path="/practice" element={<PracticeHub />} /> 
         <Route path="/quizzes" element={<Quizzes />} />
         <Route path="/topology-practice" element={<TopologyPractice />} />
         <Route path="quiz-builder" element={<QuizBuilder />} />

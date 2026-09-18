@@ -1,6 +1,5 @@
 import {
   Background,
-  Controls,
   Handle,
   MarkerType,
   MiniMap,
@@ -8,33 +7,32 @@ import {
   ReactFlow,
   addEdge,
   useEdgesState,
-  useNodesState,
+  useNodesState
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { toPng } from "html-to-image";
 import {
   AlertTriangle,
   Camera,
-  Download,
+  Cloud,
   HardDrive,
   HardDriveDownload,
+  Keyboard,
+  Laptop,
   Monitor,
+  Mouse,
+  Network,
   Phone,
-  Keyboard,    
   Power,
   Printer,
   Router,
   Server,
   Shield,
+  Smartphone,
   StickyNote,
   Trash2,
   Wifi,
-  Network,
-  Laptop,
-  Smartphone,
-  Mouse,
-  Cloud,
-  Zap,
+  Zap
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { validateConnection } from "../../../server/src/utils/cableRules";

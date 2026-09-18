@@ -442,7 +442,7 @@ const Dashboard = () => {
 
       <div className="border-t border-white/10 mb-6"></div>
 
-      <div className="px-6">
+      <div className="px-6 pb-6">
         <div className="px-7 py-7 sm:px-4 w-full sm:py-4 relative bg-white/5 rounded-xl">
           {/* Header Search & Title */}
           <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

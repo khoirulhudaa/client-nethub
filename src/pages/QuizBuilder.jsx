@@ -266,10 +266,12 @@ export default function QuizBuilder() {
         </div>
       )}
 
+      
+
       {/* Meta */}
-      <div className="surface-card grid gap-4 rounded-xl border border-gray-200 bg-white p-5 sm:grid-cols-2">
+      <div className="surface-card grid grid-cols-1 gap-4 border border-gray-200 px-7 py-7 sm:px-4 w-full sm:py-4 relative !bg-white/5 rounded-xl">
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-xs font-medium text-gray-500">
+          <label className="mb-1 block text-xs font-medium text-white">
             Judul Quiz
           </label>
           <input
@@ -281,7 +283,7 @@ export default function QuizBuilder() {
         </div>
 
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-xs font-medium text-gray-500">
+          <label className="mb-1 block text-xs font-medium text-white">
             Deskripsi singkat
           </label>
           <textarea
@@ -293,40 +295,42 @@ export default function QuizBuilder() {
           />
         </div>
 
-        <div>
-          <label className="mb-1 block text-xs font-medium text-gray-500">
-            Kategori
-          </label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="input-field"
-          >
-            {CATEGORIES.map((c) => (
-              <option key={c} value={c} className="dark:text-black">
-                {c}
-              </option>
-            ))}
-          </select>
-        </div>
+        <div className="w-full flex gap-3.5"> 
+          <div className="w-full">
+            <label className="mb-1 block text-xs font-medium text-white">
+              Kategori
+            </label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="input-field !w-full"
+            >
+              {CATEGORIES.map((c) => (
+                <option key={c} value={c} className="dark:text-black">
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div>
-          <label className="mb-1 block text-xs font-medium text-gray-500">
-            Tags (pisahkan koma)
-          </label>
-          <input
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            placeholder="mikrotik, switch, utp"
-            className="input-field"
-          />
+          <div className="w-full">
+            <label className="mb-1 block text-xs font-medium text-white">
+              Tags (pisahkan koma)
+            </label>
+            <input
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
+              placeholder="mikrotik, switch, utp"
+              className="input-field !w-full"
+            />
+          </div>
         </div>
       </div>
 
         {/* Question List + Editor */}
         <div className="space-y-5">
         {/* ===== Daftar Soal (horizontal) ===== */}
-        <div className="surface-card rounded-xl border border-gray-200 bg-white p-3">
+        <div className="surface-card rounded-xl border border-gray-200 w-full relative !bg-white/5 p-3">
             <div className="mb-2 flex items-center justify-between px-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
                 Soal ({questions.length}/15)
@@ -379,7 +383,7 @@ export default function QuizBuilder() {
         </div>
 
         {/* ===== Editor Soal Aktif ===== */}
-        <div className="surface-card flex-1 space-y-5 rounded-xl border border-gray-200 bg-white p-5">
+        <div className="surface-card flex-1 space-y-5 rounded-xl border border-gray-200 !bg-white/5 p-5">
             <div className="flex items-center justify-between">
             <h3 className="font-medium">Soal #{activeIndex + 1}</h3>
             <button
@@ -421,7 +425,7 @@ export default function QuizBuilder() {
 
             {/* Teks pertanyaan */}
             <div>
-            <label className="mb-1 block text-xs font-medium text-gray-500">
+            <label className="mb-1 block text-xs font-medium text-white">
                 Pertanyaan
             </label>
             <textarea
@@ -437,7 +441,7 @@ export default function QuizBuilder() {
 
             {/* Points */}
             <div className="w-32">
-            <label className="mb-1 block text-xs font-medium text-gray-500">
+            <label className="mb-1 block text-xs font-medium text-white">
                 Poin
             </label>
             <input
@@ -458,7 +462,7 @@ export default function QuizBuilder() {
             {current.type === "multiple_choice" && (
             <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                <label className="text-xs font-medium text-gray-500">
+                <label className="text-xs font-medium text-white">
                     Opsi Jawaban
                 </label>
                 <label className="flex items-center gap-2 text-xs">
@@ -556,7 +560,7 @@ export default function QuizBuilder() {
 
             {/* Explanation */}
             <div>
-            <label className="mb-1 block text-xs font-medium text-gray-500">
+            <label className="mb-1 block text-xs font-medium text-white">
                 Penjelasan (ditampilkan setelah submit)
             </label>
             <textarea

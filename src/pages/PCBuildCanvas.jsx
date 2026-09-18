@@ -417,12 +417,12 @@ export default function PCBuildCanvas() {
 
   // ====================== HALAMAN UTAMA ======================
   return (
-    <div className="surface-card min-h-screen bg-white p-4 md:p-6">
+    <div className="surface-card min-h-screen bg-white px-4 py-6 sm:px-6">
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold">
+            <h1 className="text-xl font-medium">
               Build CPU
             </h1>
             <p className="text-sm text-gray-500">Drag komponen → Pasang kabel → Selesai</p>

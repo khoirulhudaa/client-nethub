@@ -64,7 +64,7 @@ const TopBar = ({ onMenuClick }) => {
           {!isGuest && (
             <button
               onClick={() => navigate("/create")}
-              className="hidden items-center h-10 gap-1.5 rounded-xl border-[2px] border-white/15 px-3 py-2 text-sm font-medium text-white transition hover:opacity-90 sm:inline-flex"
+              className="hidden items-center active:scale-[0.98] hover:bg-white/5 h-10 gap-1.5 rounded-xl border-[2px] border-white/15 px-3 py-2 text-sm font-medium text-white transition hover:opacity-90 sm:inline-flex"
             >
               <Plus size={16} />
             </button>
