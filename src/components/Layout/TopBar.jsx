@@ -18,6 +18,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useTheme } from "../../context/ThemeContext.jsx";
+import api from "../../api/axios.js";
 
 const TopBar = ({ onMenuClick }) => {
   const [openNotif, setOpenNotif] = useState(false);
@@ -146,7 +147,7 @@ const TopBar = ({ onMenuClick }) => {
                 <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-white/10">
                   <div>
                     <p className="text-sm font-semibold">Pengumuman</p>
-                    <p className="text-xs text-gray-500">{announcements.length} aktif</p>
+                    {/* <p className="text-xs text-gray-500">{announcements.length} aktif</p> */}
                   </div>
                   <button
                     type="button"
@@ -173,23 +174,36 @@ const TopBar = ({ onMenuClick }) => {
                         const meta = TYPE_META[item.type] || TYPE_META.info;
                         const Icon = meta.icon;
                         return (
-                          <li key={item._id} className="px-4 py-3 hover:bg-black/[0.02] dark:hover:bg-white/[0.03]">
-                            <div className="flex gap-3">
-                              <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${meta.bg} ${meta.color}`}>
-                                <Icon size={15} />
+                          <li key={item._id}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setOpenNotif(false);
+                                navigate(`/announcements/${item._id}`);
+                              }}
+                              className="w-full px-4 py-3 text-left hover:bg-black/[0.02] dark:hover:bg-white/[0.03]"
+                            >
+                              <div className="flex gap-3">
+                                <div
+                                  className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${meta.bg} ${meta.color}`}
+                                >
+                                  <Icon size={15} />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-sm font-medium">{item.title}</p>
+                                  <p className="mt-0.5 line-clamp-2 text-xs text-gray-500">
+                                    {item.content}
+                                  </p>
+                                  <p className="mt-1.5 text-[11px] text-gray-400">
+                                    {new Date(item.createdAt).toLocaleDateString("id-ID", {
+                                      day: "numeric",
+                                      month: "short",
+                                      year: "numeric",
+                                    })}
+                                  </p>
+                                </div>
                               </div>
-                              <div className="min-w-0 flex-1">
-                                <p className="text-sm font-medium">{item.title}</p>
-                                <p className="mt-0.5 line-clamp-2 text-xs text-gray-500">{item.content}</p>
-                                <p className="mt-1.5 text-[11px] text-gray-400">
-                                  {new Date(item.createdAt).toLocaleDateString("id-ID", {
-                                    day: "numeric",
-                                    month: "short",
-                                    year: "numeric",
-                                  })}
-                                </p>
-                              </div>
-                            </div>
+                            </button>
                           </li>
                         );
                       })}

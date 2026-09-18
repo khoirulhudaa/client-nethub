@@ -126,7 +126,7 @@ export default function Quizzes() {
             <Link
               key={quiz._id}
               to={`/quizzes/${quiz._id}`}
-              className="surface-card group flex flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-accent/40 hover:shadow-md"
+              className="surface-card bg-white dark:bg-white/5 group flex flex-col rounded-xl border border-gray-200 p-5 transition hover:border-accent/40 hover:shadow-md"
             >
               <div className="mb-3 flex items-start justify-between gap-2">
                 <div className="rounded-full bg-accent/10 px-2.5 py-0.5 flex items-center text-xs font-medium text-accent">

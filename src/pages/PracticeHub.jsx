@@ -67,13 +67,10 @@ const PracticeHub = () => {
           </span>
         </div>
         <h1 className="text-xl font-semibold tracking-tight">Pilih latihan</h1>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Pilih mode practice yang ingin kamu coba. Setiap lab mengasah skill praktis.
-        </p>
       </div>
 
       {/* Practice cards */}
-      <div className="mb-6 grid gap-4 sm:grid-cols-2 sm:gap-3">
+      <div className="mb-6 surface-card bg-white dark:bg-white/5 p-4 grid gap-4 sm:grid-cols-2 sm:gap-3">
         {practices.map((item) => {
           const Icon = item.icon;
           return (
@@ -117,7 +114,7 @@ const PracticeHub = () => {
       </div>
 
       {/* Tips section — isi ruang bawah */}
-      <section className="mb-6">
+      <section className="mb-6 surface-card bg-white dark:bg-white/5 p-4">
         <div className="mb-4 flex items-center gap-2">
           <Lightbulb size={16} className="text-amber-500" />
           <h2 className="text-sm font-semibold tracking-tight text-gray-800 dark:text-gray-200">

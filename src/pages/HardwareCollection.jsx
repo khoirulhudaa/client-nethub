@@ -245,11 +245,11 @@ const HardwareCard3D = ({ item, onEdit, onDelete, isAdmin }) => {
             style={{
               background: `linear-gradient(145deg, ${accent}, ${accent}cc 40%, #1a1a1a 100%)`,
               padding: "6px",
-              boxShadow: `
-                0 0 0 1px rgba(255,255,255,0.15),
-                0 18px 40px -10px ${accent}66,
-                0 8px 16px rgba(0,0,0,0.4)
-              `,
+            //   boxShadow: `
+            //     0 0 0 1px rgba(255,255,255,0.15),
+            //     0 18px 40px -10px ${accent}66,
+            //     0 8px 16px rgba(0,0,0,0.4)
+            //   `,
             }}
           >
             <div
@@ -409,14 +409,14 @@ const HardwareCard3D = ({ item, onEdit, onDelete, isAdmin }) => {
 
           {/* BACK */}
           <div
-            className="absolute inset-0 overflow-hidden rounded-[14px] [backface-visibility:hidden] [transform:rotateY(180deg)]"
+            className="absolute inset-0 flex flex-col justify-end items-end overflow-hidden rounded-[14px] [backface-visibility:hidden] [transform:rotateY(180deg)]"
             style={{
               background: `linear-gradient(145deg, ${accent}, #1a1a1a)`,
               padding: "6px",
               boxShadow: `0 18px 40px -10px ${accent}55`,
             }}
           >
-            <div className="flex h-full flex-col items-center justify-center rounded-[10px] bg-[#0d0d14] p-4 text-center">
+            <div className="flex h-[80%] w-full mt-auto flex-col items-center justify-center rounded-[10px] bg-[#0d0d14] p-4 text-center">
               <span
                 className="mb-3 flex h-12 w-12 items-center justify-center rounded-full text-white"
                 style={{ background: el.color }}
@@ -433,7 +433,7 @@ const HardwareCard3D = ({ item, onEdit, onDelete, isAdmin }) => {
                 </p>
               )}
               <p className="mt-auto pt-4 text-[9px] text-gray-600">
-                Hardware Collection
+                3D
               </p>
             </div>
           </div>
@@ -677,17 +677,21 @@ const HardwareCollections = () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-0 pt-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {items.map((item) => (
-            <HardwareCard3D
-              key={item._id}
-              item={item}
-              isAdmin={isAdmin}
-              onEdit={openEdit}
-              onDelete={handleDelete}
-            />
-          ))}
-        </div>
+        <div className="grid grid-cols-1 border-x border-y border-white/10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+  {items.map((item) => (
+    <div
+      key={item._id}
+      className="border-b border-white/10 px-3 py-4 sm:border-r sm:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0 xl:[&:nth-child(3n)]:border-r xl:[&:nth-child(4n)]:border-r-0"
+    >
+      <HardwareCard3D
+        item={item}
+        isAdmin={isAdmin}
+        onEdit={openEdit}
+        onDelete={handleDelete}
+      />
+    </div>
+  ))}
+</div>
       )}
 
       {/* Panel kanan */}

@@ -171,7 +171,7 @@ const AnnouncementsAdmin = () => {
           <Loader2 className="animate-spin text-accent" size={28} />
         </div>
       ) : announcements.length === 0 ? (
-        <div className="surface-card flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed py-16 text-center">
+        <div className="surface-card bg-white dark:bg-white/5 flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed py-16 text-center">
           <Bell size={32} className="text-gray-400" />
           <p className="font-medium">Belum ada pengumuman</p>
           <p className="text-sm text-gray-500">
@@ -189,7 +189,7 @@ const AnnouncementsAdmin = () => {
             return (
               <div
                 key={item._id}
-                className={`flex flex-col gap-3 rounded-xl border border-white/10 p-4 sm:flex-row sm:items-start sm:justify-between ${
+                className={`surface-card bg-white dark:bg-white/5 flex flex-col gap-3 rounded-xl border border-white/10 p-4 sm:flex-row sm:items-start sm:justify-between ${
                   !item.isActive || isExpired ? "opacity-60" : ""
                 }`}
               >

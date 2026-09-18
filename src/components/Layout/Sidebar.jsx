@@ -13,11 +13,10 @@ import {
   HelpCircle,
   LayoutGrid,
   LogOut,
-  Monitor,
+  Loader2,
   Network,
   PencilRuler,
-  Search,
-  Wrench,
+  Wrench
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
@@ -83,6 +82,8 @@ const Sidebar = ({ onNavigate }) => {
   const [searchParams] = useSearchParams();
   const currentCategory = searchParams.get("category");
   const [search, setSearch] = useState("");
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   // Collapse state (persist di localStorage)
   const [collapsed, setCollapsed] = useState(() => {
@@ -119,9 +120,19 @@ const Sidebar = ({ onNavigate }) => {
     });
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
+  const handleLogoutClick = () => {
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = async () => {
+    setLoggingOut(true);
+    try {
+      logout();
+      navigate("/login");
+    } finally {
+      setLoggingOut(false);
+      setShowLogoutModal(false);
+    }
   };
 
   const handleSearch = (e) => {
@@ -196,27 +207,6 @@ const Sidebar = ({ onNavigate }) => {
           <ChevronRight size={16} />
         </button>
       )}
-
-      {/* Search — hanya saat expanded */}
-      {/* {!collapsed && (
-        <form
-          onSubmit={handleSearch}
-          className="mb-0 border-x border-b border-white/10 px-2 py-4 pt-5"
-        >
-          <div className="relative h-[50px] top-[4px]">
-            <Search
-              size={15}
-              className="absolute left-3 top-[38%] -translate-y-1/2 text-gray-400"
-            />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search guide..."
-              className="input-field w-full py-2 pl-9 text-sm"
-            />
-          </div>
-        </form>
-      )} */}
 
       <nav
         className={`flex flex-1 flex-col gap-0.5 ${
@@ -391,7 +381,7 @@ const Sidebar = ({ onNavigate }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  handleLogout();
+                  handleLogoutClick();          // ← ganti
                 }}
                 className="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-black/5 hover:text-red-500 dark:hover:bg-white/10"
                 title="Log out"
@@ -402,10 +392,63 @@ const Sidebar = ({ onNavigate }) => {
           )}
         </NavLink>
 
+        {/* ===== LOGOUT CONFIRMATION MODAL ===== */}
+        {showLogoutModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+              onClick={() => !loggingOut && setShowLogoutModal(false)}
+            />
+
+            {/* Modal box */}
+            <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-gray-900">
+              <div className="p-6">
+                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/20">
+                  <LogOut size={22} className="text-red-600 dark:text-red-400" />
+                </div>
+
+                <h3 className="text-center text-lg font-semibold">
+                  Keluar akun?
+                </h3>
+                <p className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
+                  Kamu akan keluar dari akun
+                </p>
+              </div>
+
+              <div className="flex gap-3 border-t border-gray-100 bg-gray-50 px-6 py-4 dark:border-white/5 dark:bg-white/5">
+                <button
+                  type="button"
+                  disabled={loggingOut}
+                  onClick={() => setShowLogoutModal(false)}
+                  className="flex-1 active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-gray-200"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  disabled={loggingOut}
+                  onClick={confirmLogout}
+                  className="flex-1 active:scale-[0.99] duration-100 rounded-xl bg-red-600 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
+                >
+                  {loggingOut ? (
+                    <span className="inline-flex items-center justify-center gap-2">
+                      <Loader2 size={15} className="animate-spin" />
+                      Keluar...
+                    </span>
+                  ) : (
+                    "Ya, Keluar"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Logout icon saat collapsed */}
         {collapsed && (
           <button
-            onClick={handleLogout}
+            onClick={handleLogoutClick}
             className="mx-auto mt-2 flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-white/10 hover:text-red-400"
             title="Log out"
           >

@@ -109,7 +109,7 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
 
 // --- Metric cards ------------------------------------------------------------
 const MetricCard = ({ icon: Icon, iconClass, label, value, delta, deltaTone = "positive" }) => (
-  <div className="surface-card flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-[#1E1E2A] bg-white dark:bg-white/5 p-4 shadow-sm">
+  <div className="surface-card bg-white dark:bg-white/5 flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-[#1E1E2A] p-4 shadow-sm">
     <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${iconClass}`}>
       <Icon size={16} />
     </div>

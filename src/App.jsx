@@ -21,6 +21,7 @@ import SubnetCalculator from "./pages/SubnetCalculator.jsx";
 import AnnouncementsAdmin from "./pages/AnnouncementsAdmin.jsx";
 import PracticeHub from "./pages/PracticeHub.jsx";
 import HardwareCollection from "./pages/hardwareCollection.jsx";
+import AnnouncementDetail from "./pages/AnnouncementDetail.jsx";
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
         <Route path="quiz-builder" element={<QuizBuilder />} />
         <Route path="/trending" element={<Trending />} />
         <Route path="/tools/subnet" element={<SubnetCalculator />} />
+        <Route path="/announcements/:id" element={<AnnouncementDetail />} />
         <Route path="/authors/detail/:id" element={<AuthorBio />} />
         <Route path="/pc-build-practice" element={<PCBuildCanvas />} />
 
