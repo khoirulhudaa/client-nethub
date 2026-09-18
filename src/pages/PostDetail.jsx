@@ -130,6 +130,9 @@ const PostDetail = () => {
 
   useEffect(() => {
     load();
+  }, [load])
+
+  useEffect(() => {
     if (user && post?.author?._id) {
       // Cek apakah user sudah follow author ini
       // Cara sederhana: cek dari user.following (kalau AuthContext menyimpan data lengkap)

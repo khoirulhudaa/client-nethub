@@ -45,7 +45,11 @@ const AuthorBio = () => {
     ])
       .then(async ([authorRes, postsRes]) => {
         const authorData = authorRes.data.user;
-        const postList = postsRes.data.posts || [];
+
+        // Gabungkan pinned + posts
+        const pinned = postsRes.data.pinned || [];
+        const normal = postsRes.data.posts || [];
+        const postList = [...pinned, ...normal];
 
         setAuthor(authorData);
         setPosts(postList);
@@ -57,13 +61,13 @@ const AuthorBio = () => {
         );
 
         setStats({
-            guides: postsRes.data.total ?? postList.length,
-            totalViews,
-            totalLikes,
-            followers: authorData.followersCount || 0,
-            following: authorData.followingCount || 0,
+          guides: postsRes.data.total + pinned.length, // atau postList.length
+          totalViews,
+          totalLikes,
+          followers: authorData.followersCount || 0,
+          following: authorData.followingCount || 0,
         });
-
+        
         // Cek follow status (skip guest & own profile)
         if (user && !isGuest && !isOwnProfile) {
           try {
@@ -72,7 +76,7 @@ const AuthorBio = () => {
             console.log("following ids:", ids);
             console.log("author id dari URL:", String(id));
             console.log("match?", ids.includes(String(id)));
-            setIsFollowing(ids);
+            setIsFollowing(ids.includes(String(id)));
           } catch {
             // ignore
           }
@@ -201,7 +205,7 @@ const AuthorBio = () => {
             </p>
           ) : (
             <p className="mb-5 text-sm italic text-gray-400">
-              Belum ada bio.
+              Belum ada bio
             </p>
           )}
 
@@ -219,7 +223,7 @@ const AuthorBio = () => {
             <StatPill icon={Eye} label="Views" value={stats.totalViews} />
             <StatPill icon={Heart} label="Likes" value={stats.totalLikes} />
             <StatPill icon={Users} label="Followers" value={stats.followers} />
-            <StatPill icon={UserPlus} label="Following" value={isFollowing.length} />
+            <StatPill icon={UserPlus} label="Following" value={stats.following} />
           </div>
         </div>
       </div>
@@ -235,7 +239,7 @@ const AuthorBio = () => {
       {posts.length === 0 ? (
         <div className="surface-card rounded-xl border border-gray-200 py-14 text-center dark:border-white/10">
           <p className="text-sm text-gray-500">
-            Belum ada guide dari author ini.
+            Belum ada guide dari author ini
           </p>
         </div>
       ) : (

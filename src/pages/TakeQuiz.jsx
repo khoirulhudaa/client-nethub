@@ -12,7 +12,7 @@ import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import TopologyCanvas from "./TopologyCanvas";
 
-export default function TakeQuiz() {
+export default function TakeQuizes() {
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -161,19 +161,18 @@ export default function TakeQuiz() {
   const isLast = currentQ === quiz.questions.length - 1;
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 pb-16">
+    <div className="mx-auto max-w-7xl space-y-6 pb-16 p-6">
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/quizzes")}
-            className="mt-1 rounded-lg py-2 text-gray-500 hover:bg-gray-100"
+            className="rounded-lg relative top-[2px] py-2 text-gray-500 hover:bg-gray-100"
           >
             <ArrowLeft size={18} />
           </button>
           <div>
             <h1 className="text-xl font-semibold">{quiz.title}</h1>
-            <p className="mt-1 text-sm text-gray-500">{quiz.description}</p>
           </div>
         </div>
       </div>

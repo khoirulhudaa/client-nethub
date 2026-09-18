@@ -214,7 +214,7 @@ const Sidebar = ({ onNavigate }) => {
 
         <nav
           className={`flex flex-1 flex-col h-[82.4vh] gap-0.5 ${
-            collapsed ? "" : "border-x border-b border-white/10"
+            collapsed ? "" : "border-x border-white/10"
           }`}
         >
           {/* Categories */}
