@@ -147,35 +147,6 @@ const PracticeHub = () => {
           })}
         </div>
       </section>
-
-      {/* Quick info */}
-      <section className="rounded-2xl border border-gray-200 bg-gradient-to-br from-slate-50 to-white p-5 dark:border-white/10 dark:from-white/[0.04] dark:to-transparent sm:p-4">
-        <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
-          Apa bedanya kedua lab ini?
-        </h2>
-        <div className="mt-3 grid gap-4 text-sm text-gray-600 dark:text-gray-400 sm:grid-cols-2">
-          <div>
-            <p className="font-medium text-gray-800 dark:text-gray-200">
-              Topology Practice
-            </p>
-            <p className="mt-1 text-xs leading-relaxed">
-              Fokus pada desain jaringan: router, switch, access point, dan
-              bagaimana perangkat saling terhubung. Cocok untuk yang belajar
-              networking dasar hingga menengah.
-            </p>
-          </div>
-          <div>
-            <p className="font-medium text-gray-800 dark:text-gray-200">
-              PC Build Practice
-            </p>
-            <p className="mt-1 text-xs leading-relaxed">
-              Fokus pada hardware: merakit PC, memilih komponen yang kompatibel,
-              dan memahami spesifikasi. Cocok untuk yang ingin paham sisi fisik
-              perangkat.
-            </p>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };
