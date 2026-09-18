@@ -4,6 +4,10 @@ import {
   Monitor,
   ChevronRight,
   PencilRuler,
+  Lightbulb,
+  Target,
+  Clock,
+  BookOpen,
 } from "lucide-react";
 
 const practices = [
@@ -31,26 +35,45 @@ const practices = [
   },
 ];
 
+const tips = [
+  {
+    icon: Target,
+    title: "Fokus satu lab dulu",
+    text: "Selesaikan satu practice sampai paham alurnya sebelum pindah ke lab lain.",
+  },
+  {
+    icon: Clock,
+    title: "Latihan singkat tapi rutin",
+    text: "15–20 menit setiap hari lebih efektif daripada sesi panjang sekali seminggu.",
+  },
+  {
+    icon: BookOpen,
+    title: "Baca guide terkait",
+    text: "Setelah practice, buka guide di Dashboard untuk memperdalam konsep yang baru dilatih.",
+  },
+];
+
 const PracticeHub = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
       {/* Header */}
       <div className="mb-6">
-        <div className="mb-2 flex items-center gap-2 text-accent">
-          <PencilRuler size={16} />
+        <div className="mb-1.5 flex items-center gap-2 text-accent">
+          <PencilRuler size={15} />
           <span className="text-xs font-medium uppercase tracking-wide">
             Practice Lab
           </span>
         </div>
-        <h1 className="text-xl font-semibold tracking-tight">
-          Pilih latihan
-        </h1>
+        <h1 className="text-xl font-semibold tracking-tight">Pilih latihan</h1>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          Pilih mode practice yang ingin kamu coba. Setiap lab mengasah skill praktis.
+        </p>
       </div>
 
-      {/* Cards */}
-      <div className="grid gap-5 sm:grid-cols-2">
+      {/* Practice cards */}
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 sm:gap-3">
         {practices.map((item) => {
           const Icon = item.icon;
           return (
@@ -58,33 +81,32 @@ const PracticeHub = () => {
               key={item.id}
               type="button"
               onClick={() => navigate(item.path)}
-              className="group relative flex flex-col active:scale-[0.99] overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 text-left shadow-sm transition hover:border-accent/40 hover:shadow-md dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-accent/30"
+              className="group relative flex min-h-[200px] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm transition hover:border-accent/40 hover:shadow-md active:scale-[0.99] dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-accent/30 sm:p-4"
             >
-              {/* Soft gradient bg */}
               <div
                 className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${item.accent} opacity-0 transition group-hover:opacity-100`}
               />
 
               <div className="relative z-10 flex flex-1 flex-col">
-                <div className="mb-4 flex items-start justify-between">
+                <div className="mb-3 flex items-start justify-between">
                   <div
-                    className={`flex h-11 w-11 items-center justify-center rounded-xl ${item.iconBg}`}
+                    className={`flex h-10 w-10 items-center justify-center rounded-xl sm:h-11 sm:w-11 ${item.iconBg}`}
                   >
-                    <Icon size={22} />
+                    <Icon size={20} />
                   </div>
                   <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-[11px] font-medium text-gray-500 dark:bg-white/10 dark:text-gray-400">
                     {item.tag}
                   </span>
                 </div>
 
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h2 className="text-base font-semibold text-gray-900 dark:text-white sm:text-md">
                   {item.title}
                 </h2>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+                <p className="mt-1.5 flex-1 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
                   {item.description}
                 </p>
 
-                <div className="mt-5 flex items-center gap-1.5 text-sm font-medium text-accent hover:text-blue-400 transition group-hover:gap-2.5">
+                <div className="mt-4 flex items-center gap-1.5 text-xs font-medium text-accent transition group-hover:gap-2.5 group-hover:text-blue-400">
                   Mulai latihan
                   <ChevronRight size={16} />
                 </div>
@@ -93,6 +115,67 @@ const PracticeHub = () => {
           );
         })}
       </div>
+
+      {/* Tips section — isi ruang bawah */}
+      <section className="mb-6">
+        <div className="mb-4 flex items-center gap-2">
+          <Lightbulb size={16} className="text-amber-500" />
+          <h2 className="text-sm font-semibold tracking-tight text-gray-800 dark:text-gray-200">
+            Tips latihan efektif
+          </h2>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-3">
+          {tips.map((tip) => {
+            const TipIcon = tip.icon;
+            return (
+              <div
+                key={tip.title}
+                className="rounded-xl border border-gray-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]"
+              >
+                <div className="mb-2.5 flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300">
+                  <TipIcon size={16} />
+                </div>
+                <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+                  {tip.title}
+                </h3>
+                <p className="mt-1 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+                  {tip.text}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Quick info */}
+      <section className="rounded-2xl border border-gray-200 bg-gradient-to-br from-slate-50 to-white p-5 dark:border-white/10 dark:from-white/[0.04] dark:to-transparent sm:p-4">
+        <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
+          Apa bedanya kedua lab ini?
+        </h2>
+        <div className="mt-3 grid gap-4 text-sm text-gray-600 dark:text-gray-400 sm:grid-cols-2">
+          <div>
+            <p className="font-medium text-gray-800 dark:text-gray-200">
+              Topology Practice
+            </p>
+            <p className="mt-1 text-xs leading-relaxed">
+              Fokus pada desain jaringan: router, switch, access point, dan
+              bagaimana perangkat saling terhubung. Cocok untuk yang belajar
+              networking dasar hingga menengah.
+            </p>
+          </div>
+          <div>
+            <p className="font-medium text-gray-800 dark:text-gray-200">
+              PC Build Practice
+            </p>
+            <p className="mt-1 text-xs leading-relaxed">
+              Fokus pada hardware: merakit PC, memilih komponen yang kompatibel,
+              dan memahami spesifikasi. Cocok untuk yang ingin paham sisi fisik
+              perangkat.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
