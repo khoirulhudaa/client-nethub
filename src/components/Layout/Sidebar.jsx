@@ -1,5 +1,6 @@
 import {
   Bell,
+  Box,
   Boxes,
   Brain,
   Calculator,
@@ -33,6 +34,7 @@ const categoryLinks = [
 const discoverLinks = [
   { label: "Trending", icon: Flame, to: "/trending" },
   { label: "Subnet Calc", icon: Calculator, to: "/tools/subnet" },
+  { label: "Collection", icon: Box, to: "/hardware" },
 ];
 
 const quizLinks = [

@@ -189,7 +189,7 @@ const AnnouncementsAdmin = () => {
             return (
               <div
                 key={item._id}
-                className={`surface-card flex flex-col gap-3 rounded-xl border p-4 sm:flex-row sm:items-start sm:justify-between ${
+                className={`flex flex-col gap-3 rounded-xl border border-white/10 p-4 sm:flex-row sm:items-start sm:justify-between ${
                   !item.isActive || isExpired ? "opacity-60" : ""
                 }`}
               >
