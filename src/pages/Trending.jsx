@@ -136,7 +136,7 @@ const QuizCard = ({ quiz, type }) => {
         <HelpCircle size={20} />
       </div>
 
-      <h4 className="line-clamp-2 text-base font-semibold group-hover:text-accent">
+      <h4 className="line-clamp-2 hover:underline text-base font-semibold group-hover:text-blue-400">
         {quiz.title}
       </h4>
 
@@ -257,40 +257,6 @@ const Trending = () => {
           ))}
         </div>
       </div>
-
-      {/* Stats */}
-      {!loading && posts.length > 0 && (
-        <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <StatCard
-            icon={BookOpen}
-            label="Trending Guides"
-            value={stats.totalPosts}
-            sub={`in last ${period === 3650 ? "all time" : `${period} days`}`}
-          />
-          <StatCard
-            icon={Eye}
-            label="Total Views"
-            value={stats.totalViews.toLocaleString()}
-            sub="across trending guides"
-          />
-          <StatCard
-            icon={Heart}
-            label="Total Likes"
-            value={stats.totalLikes.toLocaleString()}
-            sub="community engagement"
-          />
-          <StatCard
-            icon={Award}
-            label="Top Guide"
-            value="#1"
-            sub={
-              stats.topTitle.length > 28
-                ? stats.topTitle.slice(0, 28) + "…"
-                : stats.topTitle
-            }
-          />
-        </div>
-      )}
 
       {/* Chart + Guides */}
       {loading ? (
