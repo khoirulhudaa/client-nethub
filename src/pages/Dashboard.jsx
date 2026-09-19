@@ -446,11 +446,11 @@ const Dashboard = () => {
       <div className="border-t border-white/10 mb-6"></div>
 
       <div className="px-6 pb-6">
-        <div className="px-7 py-7 sm:px-4 w-full sm:py-4 relative bg-gradient-to-br from-blue-400 to-blue-900 dark:bg-white/5 rounded-xl">
+        <div className="px-7 py-7 sm:px-4 w-full sm:py-4 relative rounded-xl bg-gradient-to-br from-blue-400 to-blue-900 dark:bg-white/5 dark:bg-none">
           {/* Header */}
           <header className="mb-6 mt-1 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-white dark:text-accent">
+              <p className="text-xs font-medium uppercase tracking-wide text-white dark:text-blue-500">
                 New Knowledge
               </p>
               <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mt-1">
@@ -573,7 +573,7 @@ const Dashboard = () => {
               {showOverviewSections && (
                 <>
                   <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-white dark:text-accent">
+                    <p className="text-xs font-medium uppercase tracking-wide text-white dark:text-blue-500">
                       Network brands
                     </p>
                     <h2 className="flex items-center text-lg mt-1 font-medium tracking-tight">
