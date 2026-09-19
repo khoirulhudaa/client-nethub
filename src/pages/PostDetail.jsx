@@ -529,7 +529,15 @@ const isOwner = user?.id === post?.author?._id;
   return (
     <div className="surface-card p-6 mx-auto max-w-7xl pb-16">
       <div className="mb-4 flex items-center justify-between">
-        <CategoryPill category={post.category} />
+        <div className="w-max flex items-center gap-2.5">
+          <CategoryPill category={post.category} />
+          {isCompleted && (
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
+              <CheckCircle2 size={13} />
+              Sudah dibaca
+            </div>
+          )}
+        </div>
         {isOwner && (
           <div className="flex items-center gap-2">
             <button onClick={handlePin} className="btn-secondary px-3 py-1.5 text-xs">
@@ -551,12 +559,6 @@ const isOwner = user?.id === post?.author?._id;
         )}
       </div>
 
-      {isCompleted && (
-        <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
-          <CheckCircle2 size={13} />
-          Sudah dibaca
-        </div>
-      )}
       <h1 className="mb-3 text-2xl w-max rounded-xl p-2 px-1 pr-2.5 font-semibold tracking-tight bg-white/5 border border-white/20">
         📝 {post.title}
       </h1>
