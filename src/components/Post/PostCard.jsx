@@ -62,13 +62,13 @@ const PostCard = ({ post, featured = false }) => {
       }`}
     >
       {post.isPinned && (
-        <div className="absolute left-3 top-3 z-[9] flex items-center gap-1 rounded-full bg-accent px-2.5 py-1 text-[11px] font-medium text-white shadow-sm">
+        <div className="absolute left-3 top-3 z-[9] flex items-center gap-1 rounded-lg bg-accent px-2.5 py-1 text-[11px] font-medium text-white shadow-sm">
           <Pin size={11} />
           Pinned
         </div>
       )}
 
-      <div className={`relative overflow-hidden bg-gray-100 dark:bg-white/5 ${featured ? "h-56" : "h-40"}`}>
+      <div className={`relative overflow-hidden bg-gray-100 dark:bg-slate-200 ${featured ? "h-56" : "h-40"}`}>
         {post.coverImage ? (
           <img
             src={post.coverImage}

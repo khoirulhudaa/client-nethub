@@ -19,6 +19,8 @@
     "@tiptap/extension-code-block-lowlight": "^3.31.3",
     "@xyflow/react": "^12.11.6",
     "axios": "^1.7.2",
+    "highcharts": "^13.1.0",
+    "highcharts-react-official": "^3.2.3",
     "html-to-image": "^1.11.13",
     "lowlight": "^3.3.0",
     "lucide-react": "^0.400.0",

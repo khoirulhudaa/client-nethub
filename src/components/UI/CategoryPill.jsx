@@ -12,7 +12,7 @@ const CategoryPill = ({ category }) => {
   const style = CATEGORY_STYLES[category] || CATEGORY_STYLES.Topology;
   const Icon = style.icon;
   return (
-    <span className={`pill gap-1 ${style.className}`}>
+    <span className={`pill rounded-lg gap-1 ${style.className}`}>
       <Icon size={12} />
       {category}
     </span>
