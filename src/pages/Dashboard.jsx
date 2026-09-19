@@ -423,7 +423,7 @@ const Dashboard = () => {
     <div className="mx-auto max-w-full border-r border-white/10 pr-0 shadow-none">
       {/* Guest / Welcome tetap sama */}
       {user?.isGuest || user?.role === "guest" ? (
-        <div className="w-full px-6 pt-6">
+        <div className="w-full px-4 pt-6">
           <GuestJumbotron onRegister={() => navigate("/register")} />
         </div>
       ) : (
@@ -445,10 +445,10 @@ const Dashboard = () => {
 
       <div className="border-t border-white/10 mb-6"></div>
 
-      <div className="px-6 pb-6">
-        <div className="px-7 py-7 sm:px-4 w-full sm:py-4 relative rounded-xl bg-gradient-to-br from-blue-400 to-blue-900 dark:bg-white/5 dark:bg-none">
+      <div className="px-4 pb-6">
+        <div className="px-0 py-7 sm:px-0 w-full sm:py-4 relative rounded-xl bg-gradient-to-br from-blue-400 to-blue-900 dark:bg-white/5 dark:bg-none">
           {/* Header */}
-          <header className="mb-6 mt-1 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <header className="mt-1 px-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-medium uppercase tracking-wide text-white dark:text-blue-500">
                 New Knowledge
@@ -463,7 +463,7 @@ const Dashboard = () => {
           </header>
 
           {/* Search + Categories */}
-          <div className="w-full flex items-center gap-2.5 mb-6">
+          <div className="w-full p-4 flex items-center gap-2.5">
             <form
               className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 shadow-sm sm:w-72"
               onSubmit={(e) => {
@@ -531,13 +531,13 @@ const Dashboard = () => {
           ) : (
             <>
               {showOverviewSections && data.pinned?.length > 0 && (
-                <section className="mb-8">
+                <section className="mb-8 px-4">
                   <PinnedHero pinned={data.pinned} />
                 </section>
               )}
 
               {/* Posts Grid — pakai filteredPosts */}
-              <section className="mb-8">
+              <section className="mb-8 border-t px-4 border-white/10 pt-7">
                 {filteredPosts.length === 0 ? (
                   <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
                     <img src="/notFound.png" alt="No guides" className="h-24 w-24 mb-1.5" />
@@ -572,7 +572,7 @@ const Dashboard = () => {
               {/* Brand cards tetap sama */}
               {showOverviewSections && (
                 <>
-                  <div>
+                  <div className="w-full border-t px-4 border-white/10 pt-7">
                     <p className="text-xs font-medium uppercase tracking-wide text-white dark:text-blue-500">
                       Network brands
                     </p>
@@ -583,7 +583,7 @@ const Dashboard = () => {
                       </span>
                     </h2>
                   </div>
-                  <div className="mb-2 mt-4 grid grid-cols-1 gap-5 lg:grid-cols-3">
+                  <div className="mb-2 mt-4 px-4 grid grid-cols-1 gap-5 lg:grid-cols-3">
                     <Card2 />
                     <Card1 />
                     <Card3 />
