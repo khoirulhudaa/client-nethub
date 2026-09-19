@@ -82,7 +82,7 @@ const PostCard = ({ post, featured = false }) => {
         )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-3 p-5">
+      <div className="flex flex-1 flex-col gap-3 p-3.5 py-4">
         <div className="flex items-center justify-between gap-2">
           <CategoryPill category={post.category} />
           
