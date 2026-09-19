@@ -57,7 +57,7 @@ const PostCard = ({ post, featured = false }) => {
   return (
     <Link
       to={`/posts/${post.slug}`}
-      className={`hover-lift surface-card border !border-white/20 group active:scale-[0.99] duration-100 relative flex flex-col overflow-hidden ${
+      className={`hover-lift bg-slate-200 rounded-xl dark:surface-card border !border-white/20 group active:scale-[0.99] duration-100 relative flex flex-col overflow-hidden ${
         featured ? "h-full" : ""
       }`}
     >

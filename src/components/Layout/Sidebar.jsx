@@ -385,7 +385,7 @@ const Sidebar = ({ onNavigate }) => {
                   }`
             }
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white dark:bg-accent-soft text-sm font-semibold text-accent">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white dark:bg-accent-soft text-sm font-semibold text-accent">
               {user?.avatar ? (
                 <img
                   src={user.avatar}

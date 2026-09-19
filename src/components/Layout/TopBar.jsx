@@ -115,7 +115,7 @@ const TopBar = ({ onMenuClick }) => {
       <div className="w-[100%] border-r border-white/10 flex justify-between h-full items-center pr-6">
         <button
           onClick={onMenuClick}
-          className="rounded-control p-2 text-gray-500 hover:bg-black/5 dark:hover:bg-white/10 lg:hidden"
+          className="dark:border-none border-slate-300 border rounded-control p-2 text-gray-500 hover:bg-black/5 dark:hover:bg-white/10 lg:hidden"
         >
           <Menu size={20} />
         </button>
@@ -149,7 +149,7 @@ const TopBar = ({ onMenuClick }) => {
           {!isGuest && (
             <button
               onClick={() => navigate("/create")}
-              className="hidden items-center active:scale-[0.98] hover:bg-white/5 h-10 gap-1.5 rounded-xl border-[2px] border-white/15 px-3 py-2 text-sm font-medium text-white transition hover:opacity-90 sm:inline-flex"
+              className="hidden items-center active:scale-[0.98] hover:bg-white/5 h-10 gap-1.5 rounded-xl border-[2px] border-slate-300 dark:border-white/15 px-3 py-2 text-sm font-medium text-gray-500 dark:text-white transition hover:opacity-90 sm:inline-flex"
             >
               <Plus size={16} />
             </button>
@@ -159,7 +159,7 @@ const TopBar = ({ onMenuClick }) => {
           <div className="relative" ref={notifRef}>
             <button
               type="button"
-              className="relative rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+              className="relative dark:border-none border-slate-300 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
               title="Notifications"
               onClick={openNotifications}
             >
@@ -261,7 +261,7 @@ const TopBar = ({ onMenuClick }) => {
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+            className="dark:border-none border-slate-300 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
             title="Toggle theme"
           >
             {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}

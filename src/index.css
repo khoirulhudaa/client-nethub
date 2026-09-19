@@ -35,7 +35,7 @@
   }
 
   .surface-card {
-    @apply bg-white/80 dark:bg-[#0c0c18] border border-border-light dark:border-border-dark rounded-card shadow-soft dark:shadow-soft-dark transition-all duration-200 ease-fluid;
+    @apply bg-slate-200 dark:bg-[#0c0c18] border border-border-light dark:border-border-dark rounded-card shadow-soft dark:shadow-soft-dark transition-all duration-200 ease-fluid;
   }
 
   .btn-primary {

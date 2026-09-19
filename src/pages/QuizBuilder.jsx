@@ -269,9 +269,9 @@ export default function QuizBuilder() {
       
 
       {/* Meta */}
-      <div className="surface-card grid grid-cols-1 gap-4 border border-gray-200 px-7 py-7 sm:px-4 w-full sm:py-4 relative !bg-white/5 rounded-xl">
+      <div className="grid grid-cols-1 gap-4 border border-gray-200 px-7 py-7 sm:px-4 w-full sm:py-4 relative bg-slate-200 !dark:bg-white/5 rounded-xl">
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-xs font-medium text-white">
+          <label className="mb-1 block text-xs font-medium text-black dark:text-white">
             Judul Quiz
           </label>
           <input
@@ -283,7 +283,7 @@ export default function QuizBuilder() {
         </div>
 
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-xs font-medium text-white">
+          <label className="mb-1 block text-xs font-medium text-black dark:text-white">
             Deskripsi singkat
           </label>
           <textarea
@@ -297,7 +297,7 @@ export default function QuizBuilder() {
 
         <div className="w-full flex gap-3.5"> 
           <div className="w-full">
-            <label className="mb-1 block text-xs font-medium text-white">
+            <label className="mb-1 block text-xs font-medium text-black dark:text-white">
               Kategori
             </label>
             <select
@@ -314,7 +314,7 @@ export default function QuizBuilder() {
           </div>
 
           <div className="w-full">
-            <label className="mb-1 block text-xs font-medium text-white">
+            <label className="mb-1 block text-xs font-medium text-black dark:text-white">
               Tags (pisahkan koma)
             </label>
             <input
@@ -330,9 +330,9 @@ export default function QuizBuilder() {
         {/* Question List + Editor */}
         <div className="space-y-5">
         {/* ===== Daftar Soal (horizontal) ===== */}
-        <div className="surface-card rounded-xl border border-gray-200 w-full relative !bg-white/5 p-3">
+        <div className="rounded-xl border border-gray-200 w-full relative bg-slate-200 !dark:bg-white/5 p-3">
             <div className="mb-2 flex items-center justify-between px-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+            <p className="text-xs font-semibold uppercase tracking-wide dark:text-gray-400">
                 Soal ({questions.length}/15)
             </p>
             <button
@@ -383,7 +383,7 @@ export default function QuizBuilder() {
         </div>
 
         {/* ===== Editor Soal Aktif ===== */}
-        <div className="surface-card flex-1 space-y-5 rounded-xl border border-gray-200 !bg-white/5 p-5">
+        <div className="flex-1 space-y-5 rounded-xl border border-gray-200 bg-slate-200 !dark:bg-white/5 p-5">
             <div className="flex items-center justify-between">
             <h3 className="font-medium">Soal #{activeIndex + 1}</h3>
             <button
@@ -425,7 +425,7 @@ export default function QuizBuilder() {
 
             {/* Teks pertanyaan */}
             <div>
-            <label className="mb-1 block text-xs font-medium text-white">
+            <label className="mb-1 block text-xs font-medium text-black dark:text-white">
                 Pertanyaan
             </label>
             <textarea
@@ -441,7 +441,7 @@ export default function QuizBuilder() {
 
             {/* Points */}
             <div className="w-32">
-            <label className="mb-1 block text-xs font-medium text-white">
+            <label className="mb-1 block text-xs font-medium text-black dark:text-white">
                 Poin
             </label>
             <input
@@ -462,7 +462,7 @@ export default function QuizBuilder() {
             {current.type === "multiple_choice" && (
             <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                <label className="text-xs font-medium text-white">
+                <label className="text-xs font-medium text-black dark:text-white">
                     Opsi Jawaban
                 </label>
                 <label className="flex items-center gap-2 text-xs">
@@ -560,7 +560,7 @@ export default function QuizBuilder() {
 
             {/* Explanation */}
             <div>
-            <label className="mb-1 block text-xs font-medium text-white">
+            <label className="mb-1 block text-xs font-medium text-black dark:text-white">
                 Penjelasan (ditampilkan setelah submit)
             </label>
             <textarea
