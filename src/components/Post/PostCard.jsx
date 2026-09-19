@@ -62,7 +62,7 @@ const PostCard = ({ post, featured = false }) => {
       }`}
     >
       {post.isPinned && (
-        <div className="absolute left-3 top-3 z-10 flex items-center gap-1 rounded-full bg-accent px-2.5 py-1 text-[11px] font-medium text-white shadow-sm">
+        <div className="absolute left-3 top-3 z-[9] flex items-center gap-1 rounded-full bg-accent px-2.5 py-1 text-[11px] font-medium text-white shadow-sm">
           <Pin size={11} />
           Pinned
         </div>
