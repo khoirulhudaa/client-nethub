@@ -16,7 +16,8 @@ import {
   Loader2,
   Network,
   PencilRuler,
-  Wrench
+  Wrench,
+  BookOpen
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
@@ -298,6 +299,7 @@ const Sidebar = ({ onNavigate }) => {
               onToggle={() => toggleGroup("library")}
               collapsed={collapsed}
             >
+              {/* My Guides */}
               <div className={collapsed ? "" : "px-2"}>
                 <NavLink
                   to="/my-posts"
@@ -314,7 +316,28 @@ const Sidebar = ({ onNavigate }) => {
                   }
                 >
                   <FileText size={17} />
-                  {!collapsed && "My Guides"}
+                  {!collapsed && "My Guide"}
+                </NavLink>
+              </div>
+
+              {/* Reading List / Learning Path */}
+              <div className={collapsed ? "" : "px-2 mt-1"}>
+                <NavLink
+                  to="/reading-list"
+                  onClick={onNavigate}
+                  title={collapsed ? "Reading List" : undefined}
+                  className={({ isActive }) =>
+                    collapsed
+                      ? linkClass(isActive)
+                      : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
+                          isActive
+                            ? "bg-accent-soft text-accent"
+                            : "text-gray-600 hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
+                        }`
+                  }
+                >
+                  <BookOpen size={17} />
+                  {!collapsed && "Reading List"}
                 </NavLink>
               </div>
             </NavGroup>

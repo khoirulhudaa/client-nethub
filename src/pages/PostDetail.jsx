@@ -484,7 +484,7 @@ const handleFollow = async () => {
             <button
               type="button"
               onClick={() => setSidebarType("topology")}
-              className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-gray-50 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:bg-white/5 dark:hover:border-accent"
+              className="group flex items-center active:scale-[0.99] duration-100 gap-4 rounded-2xl border border-gray-200 bg-gray-50 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:bg-white/5 dark:hover:border-accent"
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -788,7 +788,7 @@ const handleFollow = async () => {
               <button
                 type="button"
                 onClick={() => setSidebarType(null)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-white/10"
+                className="flex h-8 w-8 bg-red-500/20 items-center justify-center rounded-lg text-white transition hover:bg-red-500/80 hover:text-white"
               >
                 ✕
               </button>

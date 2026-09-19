@@ -22,6 +22,7 @@ import AnnouncementsAdmin from "./pages/AnnouncementsAdmin.jsx";
 import PracticeHub from "./pages/PracticeHub.jsx";
 import HardwareCollection from "./pages/hardwareCollection.jsx";
 import AnnouncementDetail from "./pages/AnnouncementDetail.jsx";
+import ReadingListPage from "./pages/ReadingListPage.jsx";
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
         <Route path="/trending" element={<Trending />} />
         <Route path="/tools/subnet" element={<SubnetCalculator />} />
         <Route path="/announcements/:id" element={<AnnouncementDetail />} />
+        <Route path="/reading-list" element={<ReadingListPage />} />
         <Route path="/authors/detail/:id" element={<AuthorBio />} />
         <Route path="/pc-build-practice" element={<PCBuildCanvas />} />
 

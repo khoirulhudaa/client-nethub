@@ -1,6 +1,6 @@
+import { FileText, Loader2, PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Loader2, PlusCircle } from "lucide-react";
 import api from "../api/axios.js";
 import PostCard from "../components/Post/PostCard.jsx";
 
@@ -20,9 +20,10 @@ const MyPosts = () => {
       <div className="mb-6 flex items-center justify-between">
         <div>
          <div className="flex text-left items-center gap-2 text-accent">
+            <FileText size={17} />
             <span className="text-xs font-semibold uppercase tracking-wide">Creation</span>
           </div>
-          <h1 className="text-xl text-left font-semibold tracking-tight">My Guides</h1>
+          <h1 className="text-xl text-left font-semibold tracking-tight mt-1">My Guides</h1>
         </div>
         <Link to="/create" className="btn-primary">
           <PlusCircle size={16} />

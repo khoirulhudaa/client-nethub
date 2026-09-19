@@ -135,7 +135,7 @@ const TopBar = ({ onMenuClick }) => {
         </form>
 
         {/* Quick links — desktop */}
-        <div className="ml-2 hidden items-center gap-3 md:flex">
+        <div className="ml-3 hidden items-center gap-3 md:flex">
           <TopLink to="/trending" icon={Flame} label="Trending" />
           <TopLink to="/tools/subnet" icon={Calculator} label="Subnet" />
           <TopLink to="/practice" icon={PencilRuler} label="Practice" />
