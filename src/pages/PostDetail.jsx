@@ -559,7 +559,7 @@ const isOwner = user?.id === post?.author?._id;
         )}
       </div>
 
-      <h1 className="mb-3 text-2xl w-max rounded-xl p-2 px-1 pr-2.5 font-semibold tracking-tight bg-white/5 border border-white/20">
+      <h1 className="mb-3 text-2xl w-max rounded-xl p-2 px-1 pr-2.5 font-semibold tracking-tight bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/20">
         📝 {post.title}
       </h1>
 
