@@ -1,22 +1,6 @@
 import {
-  BookOpen,
-  CheckCircle2,
-  Circle,
-  ChevronUp,
-  ChevronDown,
-  Trash2,
-  Calendar,
-  Loader2,
-  ArrowRight,
-  Target,
-  Sparkles,
-  GripVertical,
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  DndContext,
   closestCenter,
+  DndContext,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -30,6 +14,20 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import {
+  ArrowRight,
+  BookOpen,
+  Calendar,
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  Circle,
+  GripVertical,
+  Target,
+  Trash2
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
@@ -146,7 +144,10 @@ const SortableItem = ({
               title={isCompleted ? "Tandai belum selesai" : "Tandai selesai"}
             >
               {isLoading ? (
-                <Loader2 size={16} className="animate-spin" />
+                <div className="flex justify-center flex-col h-full items-center text-center py-24">
+                  <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+                  <p className="mt-2">Load content ...</p>
+                </div>
               ) : isCompleted ? (
                 <CheckCircle2 size={16} />
               ) : (
@@ -316,8 +317,9 @@ const ReadingListPage = () => {
 
   if (loading) {
     return (
-      <div className="flex h-[70vh] items-center justify-center">
-        <Loader2 className="animate-spin text-accent" size={32} />
+      <div className="flex justify-center flex-col h-full items-center text-center py-24">
+        <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+        <p className="mt-2">Load content ...</p>
       </div>
     );
   }
@@ -333,7 +335,7 @@ const ReadingListPage = () => {
       </div>
 
       {/* Progress Card */}
-      <div className="mb-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
+      <div className="mb-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent">
@@ -423,18 +425,6 @@ const ReadingListPage = () => {
             </div>
           </SortableContext>
         </DndContext>
-      )}
-
-      {/* Tips */}
-      {list.length > 0 && (
-        <div className="mt-8 flex items-start gap-3 rounded-xl border border-accent/20 bg-accent/5 p-4 text-sm">
-          <Sparkles size={18} className="mt-0.5 shrink-0 text-accent" />
-          <p className="text-gray-600 dark:text-gray-300">
-            <strong>Tips:</strong> Kamu bisa seret icon{" "}
-            <GripVertical size={14} className="inline relative top-[-1.6px]" /> atau pakai tombol panah
-            untuk mengatur urutan.
-          </p>
-        </div>
       )}
     </div>
   );

@@ -1,18 +1,14 @@
+import Highcharts from "highcharts";
+import HighchartsReact from "highcharts-react-official";
 import {
-  Eye,
   Flame,
   Heart,
-  Loader2,
-  TrendingUp,
-  BookOpen,
-  Award,
-  Star,
   HelpCircle,
+  Star,
+  TrendingUp
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import Highcharts from "highcharts";
-import HighchartsReact from "highcharts-react-official";
 import api from "../api/axios.js";
 import PostCard from "../components/Post/PostCard.jsx";
 
@@ -294,9 +290,10 @@ const Trending = () => {
 
       {/* Chart + Guides */}
       {loading ? (
-        <div className="flex justify-center py-24">
-          <Loader2 className="animate-spin text-accent" size={28} />
-        </div>
+        <d  iv className="flex justify-center flex-col h-full items-center text-center py-24">
+          <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+          <p className="mt-2">Load content ...</p>
+        </d>
       ) : posts.length === 0 ? (
         <div className="mb-10 flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-gray-300 py-16 text-center dark:border-white/15">
           <Flame size={32} className="text-gray-400" />
@@ -344,8 +341,9 @@ const Trending = () => {
         </div>
 
         {quizLoading ? (
-          <div className="flex justify-center py-16">
-            <Loader2 className="animate-spin text-accent" size={26} />
+          <div className="flex justify-center flex-col h-full items-center text-center py-24">
+            <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+            <p className="mt-2">Load content ...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">

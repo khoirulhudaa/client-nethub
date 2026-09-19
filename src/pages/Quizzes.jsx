@@ -111,8 +111,9 @@ export default function Quizzes() {
 
       {/* List */}
       {loading ? (
-        <div className="flex justify-center py-24">
-          <Loader2 className="animate-spin text-accent" size={28} />
+        <div className="flex justify-center flex-col h-full items-center text-center py-24">
+          <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+          <p className="mt-2">Load content ...</p>
         </div>
       ) : quizzes.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-2 py-20 text-center">

@@ -628,7 +628,7 @@ const isOwner = user?.id === post?.author?._id;
             {highlightLoading ? (
               <div className="flex items-center gap-2 px-3 py-1.5 text-xs text-gray-500">
                 <Loader2 size={14} className="animate-spin" />
-                Menyimpan...
+                Saving...
               </div>
             ) : (
               <>

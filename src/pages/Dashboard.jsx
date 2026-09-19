@@ -527,7 +527,7 @@ const Dashboard = () => {
                   onClick={() => updateParam("category", "")}
                   className={`rounded-xl border px-3 py-1.5 text-sm transition ${
                     !category
-                      ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-white"
+                      ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft dark:text-slate-900 text-white"
                       : "border-gray-200 bg-white text-gray-600 hover:border-accent/50"
                   }`}
                 >
@@ -539,7 +539,7 @@ const Dashboard = () => {
                     onClick={() => updateParam("category", item)}
                     className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-sm transition ${
                       category === item
-                        ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-white"
+                        ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft dark:text-slate-900 text-white"
                         : "border-gray-200 bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
                     }`}
                   >
@@ -553,8 +553,11 @@ const Dashboard = () => {
 
           {/* Content */}
           {loading ? (
-            <div className="flex justify-center py-24">
-              <Loader2 className="animate-spin text-accent" size={28} />
+            <div className="p-4">
+              <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
+                <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+                <p className="mt-2">Load content ...</p>
+              </div>
             </div>
           ) : (
             <>
@@ -571,7 +574,7 @@ const Dashboard = () => {
                   <section className="mb-8 border-t px-4 border-white/10 pt-7">
                     {filteredPosts.length === 0 ? (
                       <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
-                        <img src="/notFound.png" alt="No guides" className="h-24 w-24 mb-1.5" />
+                        <img src="/notFound.png" alt="No guides" className="h-16 w-16 mb-1.5" />
                         <p className="font-medium">
                           {search ? `No guides found for "${search}"` : "No guides here yet"}
                         </p>
