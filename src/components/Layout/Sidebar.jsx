@@ -54,7 +54,7 @@ const NavGroup = ({ title, open, onToggle, collapsed, children }) => {
       <button
         type="button"
         onClick={onToggle}
-        className="mb-1 flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400 transition hover:text-gray-200"
+        className="mb-1 flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-white dark:text-gray-400 transition hover:text-gray-200"
       >
         <span>{title}</span>
         <ChevronDown
@@ -152,30 +152,31 @@ const Sidebar = ({ onNavigate }) => {
       ? `flex h-10 w-10 items-center justify-center rounded-xl transition ${
           active
             ? "bg-blue-600 text-white"
-            : "text-gray-400 hover:bg-white/[0.06] hover:text-white"
+            : "text-white dark:text-gray-400 hover:bg-white/[0.06] hover:text-white"
         }`
       : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
           active
             ? "bg-blue-600 text-white"
-            : "text-gray-600 hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
+            : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
         }`;
 
   return (
     <aside
-      className={`relative flex h-screen shrink-0 flex-col overflow-y-hidden overflow-x-hidden border-l border-white/5 bg-[#0c0c18] transition-all duration-300 ${
+      className={`relative flex h-screen shrink-0 z-[9999] flex-col overflow-y-hidden overflow-x-hidden border-l dark:border-white/5 dark:bg-[#0c0c18] transition-all duration-300 ${
         collapsed ? "w-[72px] px-2" : "w-[18.5vw] px-3"
       }`}
     >
 
-      <img src="/sidebar.png" alt="wallpaper-sidebar" className="rotate-[4deg] scale-[2] w-full h-screen object-cover absolute z-0 top-0 opacity-5 left-0" />
+      <img src="/sidebar.png" alt="wallpaper-sidebar" className="rotate-[4deg] scale-[2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-5 left-0" />
+      <img src="/hero.jpg" alt="wallpaper-sidebar" className="rotate-[4deg] scale-[2] w-full h-screen dark:hidden flex object-cover absolute opacity-90 z-0 top-0 left-0" />
       
       <div className="z-10 relative h-screen">
         {/* Logo + toggle */}
         <div
-          className={`mb-0 z-[22] px-3 flex h-[8.6vh] items-center border-b border-white/10 ${
+          className={`mb-0 z-[22] px-3 flex h-[8.6vh] items-center border-b border-white dark:border-white/10 ${
             collapsed
               ? "justify-center border-x-0"
-              : "justify-between gap-2 border-x border-white/10 px-2"
+              : "justify-between gap-2 border-x border-white/75 dark:border-white/10 px-2"
           }`}
         >
           <div className="flex items-center gap-2 h-[10%]">
@@ -183,7 +184,7 @@ const Sidebar = ({ onNavigate }) => {
               <Network size={18} />
             </div>
             {!collapsed && (
-              <span className="ml-1 text-[16px] font-semibold tracking-tight">
+              <span className="ml-1 text-white text-[16px] font-semibold tracking-tight">
                 NetHub
               </span>
             )}
@@ -215,7 +216,7 @@ const Sidebar = ({ onNavigate }) => {
 
         <nav
           className={`flex flex-1 flex-col h-[82.4vh] gap-0.5 ${
-            collapsed ? "" : "border-x border-white/10"
+            collapsed ? "" : "border-x dark:border-white/10"
           }`}
         >
           {/* Categories */}
@@ -311,7 +312,7 @@ const Sidebar = ({ onNavigate }) => {
                       : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
                           isActive
                             ? "bg-accent-soft text-accent"
-                            : "text-gray-600 hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
+                            : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
                         }`
                   }
                 >
@@ -333,7 +334,7 @@ const Sidebar = ({ onNavigate }) => {
                     : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
                         isActive
                           ? "bg-accent-soft text-accent"
-                          : "text-gray-600 hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
+                          : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
                       }`
                 }
               >
@@ -367,7 +368,7 @@ const Sidebar = ({ onNavigate }) => {
         </nav>
 
         {/* Profile */}
-        <div className={`h-[9%] mt-auto border-t border-white/10 ${collapsed ? "py-3" : ""}`}>
+        <div className={`h-[9%] mt-auto border-t dark:border-white/10 ${collapsed ? "py-3" : ""}`}>
           <NavLink
             to={isGuest ? "#" : "/profile"}
             onClick={onNavigate}
@@ -379,12 +380,12 @@ const Sidebar = ({ onNavigate }) => {
                   }`
                 : `flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors ${
                     isActive && !isGuest
-                      ? "border-accent/40 bg-accent-soft"
-                      : "border-border-light hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]"
+                      ? "dark:border-accent/40 bg-accent-soft"
+                      : "border-white hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]"
                   }`
             }
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-accent-soft text-sm font-semibold text-accent">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white dark:bg-accent-soft text-sm font-semibold text-accent">
               {user?.avatar ? (
                 <img
                   src={user.avatar}
@@ -399,8 +400,8 @@ const Sidebar = ({ onNavigate }) => {
             {!collapsed && (
               <>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{user?.name}</p>
-                  <p className="truncate text-xs text-gray-400">
+                  <p className="truncate text-sm text-white dark:text-gray-400 font-medium">{user?.name}</p>
+                  <p className="truncate text-xs text-white dark: text-gray-400">
                     {isGuest ? "Guest Reader" : user?.title}
                   </p>
                 </div>
@@ -410,7 +411,7 @@ const Sidebar = ({ onNavigate }) => {
                     e.stopPropagation();
                     handleLogoutClick();          // ← ganti
                   }}
-                  className="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-black/5 hover:text-red-500 dark:hover:bg-white/10"
+                  className="rounded-md p-1.5 text-white dark:text-gray-400 transition-colors hover:bg-black/5 hover:text-red-500 dark:hover:bg-white/10"
                   title="Log out"
                 >
                   <LogOut size={16} />
@@ -429,7 +430,7 @@ const Sidebar = ({ onNavigate }) => {
               />
 
               {/* Modal box */}
-              <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-gray-900">
+              <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-white bg-white shadow-2xl dark:border-white/10 dark:bg-gray-900">
                 <div className="p-6">
                   <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/20">
                     <LogOut size={22} className="text-red-600 dark:text-red-400" />
@@ -443,12 +444,12 @@ const Sidebar = ({ onNavigate }) => {
                   </p>
                 </div>
 
-                <div className="flex gap-3 border-t border-gray-100 bg-gray-50 px-6 py-4 dark:border-white/5 dark:bg-white/5">
+                <div className="flex gap-3 border-t border-white bg-gray-50 px-6 py-4 dark:border-white/5 dark:bg-white/5">
                   <button
                     type="button"
                     disabled={loggingOut}
                     onClick={() => setShowLogoutModal(false)}
-                    className="flex-1 active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-gray-200"
+                    className="flex-1 active:scale-[0.99] duration-100 rounded-xl border border-white bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-gray-200"
                   >
                     Batal
                   </button>

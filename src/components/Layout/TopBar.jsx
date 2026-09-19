@@ -103,7 +103,7 @@ const TopBar = ({ onMenuClick }) => {
   };
 
   return (
-    <header className="w-full surface-card h-[8.6vh] sticky top-0 z-2 border-r border-white/10 flex h-16 items-center gap-3 py-0 rounded-none border-b px-3 sm:px-3">
+    <header className="w-full surface-card h-[8.6vh] sticky top-0 z-[999] border-r border-white/10 flex h-16 items-center gap-3 py-0 rounded-none border-b px-3 sm:px-3">
       <div
         className="pointer-events-none absolute top-[1.5px] inset-0 z-0 hidden dark:block"
         style={{
@@ -172,7 +172,7 @@ const TopBar = ({ onMenuClick }) => {
             </button>
 
             {openNotif && (
-              <div className="absolute right-[122%] top-full z-50 mt-2 w-[min(100vw-2rem,360px)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-white/10 dark:bg-[#12121a]">
+              <div className="absolute right-[122%] top-full z-[99] mt-2 w-[min(100vw-2rem,360px)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-white/10 dark:bg-[#12121a]">
                 {/* ... isi notifikasi tetap sama ... */}
                 <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-white/10">
                   <div>

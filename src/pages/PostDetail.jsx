@@ -607,7 +607,7 @@ const isOwner = user?.id === post?.author?._id;
       {/* Description dengan support highlight */}
       <div className="relative" onMouseUp={handleMouseUp}>
         <article
-          className="rounded-2xl text-justify border border-gray-100 bg-white dark:bg-white/[0.03] px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none dark:prose-invert prose-headings:font-semibold text-white/70 prose-a:text-accent"
+          className="rounded-2xl text-justify border border-gray-100 bg-white dark:bg-white/[0.03] px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none dark:prose-invert prose-headings:font-semibold text-slate-500 dark:text-white/70 prose-a:text-accent"
           dangerouslySetInnerHTML={{
             __html: renderHighlightedContent(post.content),
           }}
@@ -1064,7 +1064,7 @@ const isOwner = user?.id === post?.author?._id;
           )}
         </div>
 
-        <span className="text-sm text-gray-400">{post.views} views</span>
+        <span className="text-sm text-slate-500 dark:text-gray-400">{post.views} views</span>
 
         {post.tags?.map((t) => (
           <span
@@ -1194,7 +1194,7 @@ const isOwner = user?.id === post?.author?._id;
 
       {/* ===== DELETE CONFIRMATION MODAL ===== */}
       {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[9999999999999] flex items-center justify-center p-4">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
