@@ -147,7 +147,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
   }
 
   return (
-    <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4 px-5">
+    <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4 px-5">
       <MetricCard
         icon={Wifi}
         iconClass="bg-blue-50 text-blue-600 dark:bg-white dark:text-black"
@@ -673,7 +673,7 @@ const Dashboard = () => {
                       </span>
                     </h2>
                   </div>
-                  <div className="mb-2 mt-4 px-4 grid grid-cols-1 gap-5 lg:grid-cols-3">
+                  <div className="mb-2 mt-4 px-4 grid grid-cols-1 gap-3 lg:grid-cols-3">
                     <Card2 />
                     <Card1 />
                     <Card3 />
