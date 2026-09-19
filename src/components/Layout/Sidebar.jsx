@@ -150,12 +150,12 @@ const Sidebar = ({ onNavigate }) => {
     collapsed
       ? `flex h-10 w-10 items-center justify-center rounded-xl transition ${
           active
-            ? "bg-gradient-to-br from-blue-400 to-blue-900 text-white"
+            ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-blue-950"
             : "text-white dark:text-gray-400 hover:bg-white/[0.06] hover:text-white"
         }`
       : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
           active
-            ? "bg-gradient-to-br from-blue-400 to-blue-900 text-white"
+            ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-blue-950"
             : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
         }`;
 
@@ -180,7 +180,7 @@ const Sidebar = ({ onNavigate }) => {
           }`}
         >
           <div className="flex items-center gap-2 h-[10%]">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-400 to-blue-900 text-white">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-accent">
               <Network size={18} />
             </div>
             {!collapsed && (
@@ -311,7 +311,7 @@ const Sidebar = ({ onNavigate }) => {
                       ? linkClass(isActive)
                       : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
                           isActive
-                            ? "bg-gradient-to-br from-blue-400 to-blue-900 dark:text-white text-accent"
+                            ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-blue-950"
                             : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
                         }`
                   }
@@ -333,7 +333,7 @@ const Sidebar = ({ onNavigate }) => {
                     ? linkClass(isActive)
                     : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
                         isActive
-                          ? "bg-gradient-to-br from-blue-400 to-blue-900 dark:text-white text-accent"
+                          ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-blue-950"
                           : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
                       }`
                 }
@@ -354,7 +354,7 @@ const Sidebar = ({ onNavigate }) => {
                     ? linkClass(isActive)
                     : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
                         isActive
-                          ? "bg-gradient-to-br from-blue-400 to-blue-900 dark:text-white text-accent"
+                          ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-blue-950"
                           : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
                       }`
                 }

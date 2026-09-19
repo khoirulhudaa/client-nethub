@@ -102,7 +102,7 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
       {!isGuest && (
         <button
           onClick={onNewPost}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-br from-blue-400 to-blue-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:opacity-90"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:opacity-90"
         >
           <Plus size={16} /> New post
         </button>
@@ -113,19 +113,19 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
 
 // --- Metric cards ------------------------------------------------------------
 const MetricCard = ({ icon: Icon, iconClass, label, value, delta, deltaTone = "positive" }) => (
-  <div className="bg-gradient-to-br from-blue-400 to-blue-900 dark:bg-white/5 flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-[#1E1E2A] p-4 shadow-sm">
+  <div className=" bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-[#1E1E2A] p-4 shadow-sm">
     <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${iconClass}`}>
       <Icon size={16} />
     </div>
-    <span className="text-sm text-white">{label}</span>
-    <strong className="text-xl font-semibold text-white">{value}</strong>
-    <small className="text-xs text-gray-400">
+    <span className="text-sm font-semibold text-blue-950">{label}</span>
+    <strong className="text-xl font-semibold text-blue-950">{value}</strong>
+    <small className="text-xs text-blue-950">
       <span
         className={
           deltaTone === "positive"
             ? "text-emerald-600 dark:text-emerald-400"
             : deltaTone === "neutral"
-            ? "text-white dark:text-white/60"
+            ? "text-white dark:text-blue-950"
             : "text-rose-600 dark:text-rose-400"
         }
       >
@@ -527,7 +527,7 @@ const Dashboard = () => {
                   onClick={() => updateParam("category", "")}
                   className={`rounded-xl border px-3 py-1.5 text-sm transition ${
                     !category
-                      ? "border-accent bg-blue-600 text-white"
+                      ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-white"
                       : "border-gray-200 bg-white text-gray-600 hover:border-accent/50"
                   }`}
                 >
@@ -539,7 +539,7 @@ const Dashboard = () => {
                     onClick={() => updateParam("category", item)}
                     className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-sm transition ${
                       category === item
-                        ? "border-accent bg-blue-600 text-white"
+                        ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-white"
                         : "border-gray-200 bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
                     }`}
                   >
