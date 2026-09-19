@@ -137,6 +137,9 @@ const TopBar = ({ onMenuClick }) => {
         {/* Quick links — desktop */}
         <div className="ml-3 hidden items-center gap-3 md:flex">
           <TopLink to="/trending" icon={Flame} label="Trending" />
+          {!isGuest && (
+            <TopLink to="/reading-list" icon={BookOpen} label="Reading List" />
+          )}
           <TopLink to="/tools/subnet" icon={Calculator} label="Subnet" />
           <TopLink to="/practice" icon={PencilRuler} label="Practice" />
         </div>

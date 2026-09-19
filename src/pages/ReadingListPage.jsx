@@ -201,6 +201,7 @@ const ReadingListPage = () => {
   const [stats, setStats] = useState({ total: 0, completed: 0, progress: 0, remaining: 0 });
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -210,6 +211,17 @@ const ReadingListPage = () => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+  
+  const isGuest = user?.isGuest || user?.role === "guest";
+
+  useEffect(() => {
+    if (!user || user.isGuest || user.role === "guest") {
+        // Jangan redirect, biarkan masuk tapi tampilkan empty + tombol login
+        setLoading(false);
+        return;
+    }
+    fetchReadingList();
+    }, [user]);
 
   const fetchReadingList = async () => {
     try {
@@ -224,13 +236,13 @@ const ReadingListPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (!user || user.isGuest || user.role === "guest") {
-      navigate("/");
-      return;
-    }
-    fetchReadingList();
-  }, [user]);
+//   useEffect(() => {
+//     if (!user || user.isGuest || user.role === "guest") {
+//       navigate("/");
+//       return;
+//     }
+//     fetchReadingList();
+//   }, [user]);
 
   const handleToggleComplete = async (postId) => {
     try {
@@ -329,7 +341,7 @@ const ReadingListPage = () => {
               <Target size={20} />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500">Progress Belajar</p>
+              <p className="text-sm font-medium text-gray-500">Learning Progress</p>
               <p className="text-md font-bold">
                 {stats.completed} / {stats.total}{" "}
               </p>
@@ -353,22 +365,40 @@ const ReadingListPage = () => {
       {/* Empty State */}
       {list.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 py-20 text-center dark:border-white/15">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5">
             <BookOpen size={28} className="text-gray-400" />
-          </div>
-          <h3 className="text-lg font-semibold">Belum ada guide di Reading List</h3>
-          <p className="mt-2 max-w-sm text-sm text-gray-500">
-            Tambahkan guide dari Dashboard dengan tombol “Add”.
-          </p>
-          <Link
-            to="/"
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
-          >
-            Jelajahi Guides
-            <ArrowRight size={16} />
-          </Link>
+            </div>
+
+            {isGuest ? (
+                <>
+                    <h3 className="text-lg font-semibold">Login to use Reading List</h3>
+                    <p className="mt-2 max-w-sm text-sm text-gray-500">
+                    Create your personal reading list, arrange the order, and track your progress.
+                    </p>
+                    <button
+                    onClick={() => navigate("/login")}
+                    className="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+                    >
+                    Login now
+                    </button>
+                </>
+                ) : (
+                <>
+                    <h3 className="text-lg font-semibold">No guides in your Reading List yet</h3>
+                    <p className="mt-2 max-w-sm text-sm text-gray-500">
+                    Add guides from the Dashboard using the “Add” button.
+                    </p>
+                    <Link
+                    to="/"
+                    className="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+                    >
+                    Explore Guides
+                    <ArrowRight size={16} />
+                    </Link>
+                </>
+                )}
         </div>
-      ) : (
+        ) : (
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}

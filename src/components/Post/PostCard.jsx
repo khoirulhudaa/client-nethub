@@ -32,7 +32,11 @@ const PostCard = ({ post, featured = false }) => {
     e.preventDefault();
     e.stopPropagation(); // biar tidak trigger Link
 
-    if (isGuest) return;
+    if (isGuest) {
+      toast.error("Login dulu untuk menambahkan ke Reading List");
+      // atau bisa buka modal login
+      return;
+    }
 
     try {
       setAdding(true);

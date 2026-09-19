@@ -1,4 +1,4 @@
-import { Bookmark, Clipboard, Heart, Link2, Linkedin, Loader2, Pencil, Pin, Share2, Trash2 } from "lucide-react";
+import { Bookmark, CheckCircle2, Circle, Clipboard, Heart, Link2, Linkedin, Loader2, Highlighter, Pencil, Pin, Share2, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -106,8 +106,28 @@ const PostDetail = () => {
   const [selectedStep, setSelectedStep] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
+  const [highlightLoading, setHighlightLoading] = useState(false);
 
   const [showShare, setShowShare] = useState(false);
+  // ===== STATE BARU =====
+  const [inReadingList, setInReadingList] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [readingListLoading, setReadingListLoading] = useState(false);
+
+  // Highlight
+  const [highlights, setHighlights] = useState([]); // array of { text, color }
+  const [showHighlightMenu, setShowHighlightMenu] = useState(false);
+  const [selectedText, setSelectedText] = useState("");
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+
+  // Warna stabilo
+  const HIGHLIGHT_COLORS = [
+    { name: "Kuning", value: "#fef08a" },
+    { name: "Hijau", value: "#bbf7d0" },
+    { name: "Biru", value: "#bae6fd" },
+    { name: "Pink", value: "#fbcfe8" },
+    { name: "Orange", value: "#fed7aa" },
+  ];
 
   const isGuest = user?.isGuest || user?.role === "guest";
 
@@ -169,7 +189,162 @@ const handleFollow = async () => {
   }
 };
 
-  const isOwner = user?.id === post?.author?._id;
+// Cek apakah guide ini ada di Reading List user
+const checkReadingListStatus = async () => {
+  if (!user || isGuest || !post?._id) return;
+  try {
+    const { data } = await api.get("/auth/me/reading-list");
+    const item = data.readingList?.find(
+      (i) => String(i.post?._id || i.post) === String(post._id)
+    );
+    if (item) {
+      setInReadingList(true);
+      setIsCompleted(!!item.completed);
+    } else {
+      setInReadingList(false);
+      setIsCompleted(false);
+    }
+  } catch (err) {
+    // ignore
+  }
+};
+
+// Panggil setelah post berhasil di-load
+useEffect(() => {
+  if (post?._id) {
+    checkReadingListStatus();
+  }
+}, [post?._id, user]);
+
+// Toggle Mark as Read / Completed
+const handleToggleCompleted = async () => {
+  if (!post?._id) return;
+  setReadingListLoading(true);
+  try {
+    if (!inReadingList) {
+      // Kalau belum ada di list, tambahkan dulu lalu tandai completed
+      await api.post("/auth/me/reading-list", { postId: post._id });
+      await api.patch(`/auth/me/reading-list/${post._id}/complete`);
+      setInReadingList(true);
+      setIsCompleted(true);
+      toast.success("Ditambahkan & ditandai sudah dibaca");
+    } else {
+      await api.patch(`/auth/me/reading-list/${post._id}/complete`);
+      setIsCompleted((prev) => !prev);
+      toast.success(isCompleted ? "Ditandai belum dibaca" : "Ditandai sudah dibaca");
+    }
+  } catch (err) {
+    toast.error(err?.response?.data?.message || "Gagal mengubah status");
+  } finally {
+    setReadingListLoading(false);
+  }
+};
+
+// Deteksi text selection
+const handleMouseUp = () => {
+  if (isGuest) {
+    // Optional: bisa langsung munculkan toast
+    // toast.error("Login dulu untuk menggunakan stabilo");
+    return;
+  }
+
+  const selection = window.getSelection();
+  const text = selection?.toString().trim();
+
+  if (text && text.length > 2) {
+    const range = selection.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+
+    setSelectedText(text);
+    setMenuPosition({
+      x: rect.left + rect.width / 2,
+      y: rect.top + window.scrollY - 50,
+    });
+    setShowHighlightMenu(true);
+  } else {
+    setShowHighlightMenu(false);
+  }
+};
+
+// ===== LOAD HIGHLIGHTS saat post siap =====
+useEffect(() => {
+  const loadHighlights = async () => {
+    if (!user || isGuest || !post?._id) return;
+    try {
+      const { data } = await api.get(`/auth/me/highlights/${post._id}`);
+      setHighlights(data.highlights || []);
+    } catch (err) {
+      // ignore
+    }
+  };
+  loadHighlights();
+}, [post?._id, user]);
+
+// ===== APPLY HIGHLIGHT (simpan ke backend) =====
+const applyHighlight = async (color) => {
+  if (!selectedText || !post?._id) return;
+
+  const newHighlight = { text: selectedText, color };
+
+  // 1. Langsung tampilkan dulu (Optimistic)
+  setHighlights((prev) => {
+    if (prev.some((h) => h.text === selectedText)) return prev;
+    return [...prev, newHighlight];
+  });
+
+  setShowHighlightMenu(false);
+  window.getSelection()?.removeAllRanges();
+  setHighlightLoading(true);
+
+  try {
+    const { data } = await api.post(`/auth/me/highlights/${post._id}`, {
+      text: selectedText,
+      color,
+    });
+    // 2. Sinkronkan dengan data server
+    setHighlights(data.highlights || []);
+    toast.success("Teks distabilo");
+  } catch (err) {
+    // 3. Kalau gagal → rollback
+    setHighlights((prev) => prev.filter((h) => h.text !== selectedText));
+    toast.error("Gagal menyimpan highlight");
+  } finally {
+    setHighlightLoading(false);
+  }
+};
+
+// Render content dengan highlight
+const renderHighlightedContent = (html) => {
+  if (!highlights.length) return html;
+
+  let result = html;
+  highlights.forEach(({ text, color }) => {
+    // Escape special regex characters
+    const escaped = text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regex = new RegExp(`(${escaped})`, "gi");
+    result = result.replace(
+      regex,
+      `<mark style="background-color: ${color}; padding: 1px 2px; border-radius: 3px;">$1</mark>`
+    );
+  });
+  return result;
+};
+
+// Hapus satu highlight
+const removeHighlight = async (text) => {
+  if (!post?._id) return;
+  try {
+    const { data } = await api.delete(`/auth/me/highlights/${post._id}`, {
+      data: { text },
+    });
+    setHighlights(data.highlights || []);
+    toast.success("Highlight dihapus");
+  } catch (err) {
+    toast.error("Gagal menghapus highlight");
+  }
+};
+
+const isOwner = user?.id === post?.author?._id;
 
   const handlePin = async () => {
     if (!post) return;
@@ -376,6 +551,12 @@ const handleFollow = async () => {
         )}
       </div>
 
+      {isCompleted && (
+        <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
+          <CheckCircle2 size={13} />
+          Sudah dibaca
+        </div>
+      )}
       <h1 className="mb-3 text-2xl w-max rounded-xl p-2 px-1 pr-2.5 font-semibold tracking-tight bg-white/5 border border-white/20">
         📝 {post.title}
       </h1>
@@ -423,10 +604,81 @@ const handleFollow = async () => {
           Description
         </h2>
 
-      <article
-        className="rounded-3xl text-justify border border-gray-100 bg-white dark:border-white/5 dark:bg-white/[0.03] px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none dark:prose-invert prose-headings:font-semibold text-white/70 prose-a:text-accent"
-        dangerouslySetInnerHTML={{ __html: post.content }}
-      />
+      {/* Description dengan support highlight */}
+      <div className="relative" onMouseUp={handleMouseUp}>
+        <article
+          className="rounded-2xl text-justify border border-gray-100 bg-white dark:bg-white/[0.03] px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none dark:prose-invert prose-headings:font-semibold text-white/70 prose-a:text-accent"
+          dangerouslySetInnerHTML={{
+            __html: renderHighlightedContent(post.content),
+          }}
+        />
+
+        {/* Floating Highlight Menu */}
+        {showHighlightMenu && (
+          <div
+            className="fixed z-50 flex items-center gap-1.5 rounded-2xl border border-gray-200 bg-white p-1.5 shadow-xl dark:border-white/10 dark:bg-gray-900"
+            style={{
+              left: menuPosition.x,
+              top: menuPosition.y,
+              transform: "translateX(-50%)",
+            }}
+          >
+            {highlightLoading ? (
+              <div className="flex items-center gap-2 px-3 py-1.5 text-xs text-gray-500">
+                <Loader2 size={14} className="animate-spin" />
+                Menyimpan...
+              </div>
+            ) : (
+              <>
+                {HIGHLIGHT_COLORS.map((c) => (
+                  <button
+                    key={c.value}
+                    onClick={() => applyHighlight(c.value)}
+                    disabled={highlightLoading}
+                    className="h-7 w-7 rounded-full border-2 border-white shadow-sm transition hover:scale-110 disabled:opacity-50"
+                    style={{ backgroundColor: c.value }}
+                    title={c.name}
+                  />
+                ))}
+                <button
+                  onClick={() => setShowHighlightMenu(false)}
+                  className="ml-1 rounded-lg px-2 py-1 text-xs text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10"
+                >
+                  ✕
+                </button>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+
+      {highlights.length > 0 && (
+        <div className="mt-4 rounded-2xl border border-gray-100 bg-gray-50 p-5 dark:border-white/5 dark:bg-white/[0.03]">
+          <div className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
+            <Highlighter size={15} />
+            Stabilo kamu ({highlights.length})
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {highlights.map((h, idx) => (
+              <div
+                key={idx}
+                className="group flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs"
+                style={{ backgroundColor: h.color }}
+              >
+                <span className="max-w-[200px] truncate text-gray-800">
+                  {h.text}
+                </span>
+                <button
+                  onClick={() => removeHighlight(h.text)}
+                  className="opacity-0 transition group-hover:opacity-100 text-gray-600 hover:text-red-600"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {post.codeBlocks?.length > 0 && (
         <div className="mt-6">
@@ -480,11 +732,11 @@ const handleFollow = async () => {
       {(post.topology?.nodes?.length > 0 || post.flowchart?.nodes?.length > 0) && (
         <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {/* Topology Card */}
-          {post.topology?.nodes?.length > 0 && (
+          {post.topology?.nodes?.length > 0 ? (
             <button
               type="button"
               onClick={() => setSidebarType("topology")}
-              className="group flex items-center active:scale-[0.99] duration-100 gap-4 rounded-2xl border border-gray-200 bg-gray-50 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:bg-white/5 dark:hover:border-accent"
+              className="group flex items-center active:scale-[0.99] duration-100 gap-4 rounded-2xl border border-gray-200 bg-gray-50 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-accent"
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -499,14 +751,34 @@ const handleFollow = async () => {
               </div>
               <span className="ml-auto text-gray-400 transition group-hover:text-accent">→</span>
             </button>
-          )}
-
-          {/* Flowchart Card */}
-          {post.flowchart?.nodes?.length > 0 && (
+          ): (
             <button
               type="button"
               onClick={() => setSidebarType("flowchart")}
-              className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-gray-50 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:bg-white/5 dark:hover:border-accent"
+              disabled
+              className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-gray-50 p-5 text-left transition dark:border-white/10 dark:bg-white/5"
+            >
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-semibold text-gray-800 dark:text-slate-600">Network Topology</p>
+                <p className="text-xs text-gray-600">
+                  {post.flowchart.nodes.length} steps · Klik untuk melihat
+                </p>
+              </div>
+              <span className="ml-auto text-gray-600 transition">→</span>
+            </button>
+          )}
+
+          {/* Flowchart Card */}
+          {post.flowchart?.nodes?.length > 0 ? (
+            <button
+              type="button"
+              onClick={() => setSidebarType("flowchart")}
+              className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-gray-50 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-accent"
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -520,6 +792,26 @@ const handleFollow = async () => {
                 </p>
               </div>
               <span className="ml-auto text-gray-400 transition group-hover:text-accent">→</span>
+            </button>
+          ): (
+             <button
+              type="button"
+              onClick={() => setSidebarType("flowchart")}
+              disabled
+              className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-gray-50 p-5 text-left transition dark:border-white/10 dark:bg-white/5"
+            >
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-semibold text-gray-800 dark:text-slate-600">Flowchart</p>
+                <p className="text-xs text-gray-600">
+                  {post.flowchart.nodes.length} steps · Klik untuk melihat
+                </p>
+              </div>
+              <span className="ml-auto text-gray-600 transition">→</span>
             </button>
           )}
         </div>
@@ -682,6 +974,40 @@ const handleFollow = async () => {
           <Bookmark size={16} className={bookmarked ? "fill-accent text-accent" : ""} />
           {bookmarked ? "Saved" : "Save"}
         </button>
+
+        {/* Mark as Read */}
+        {!isGuest && (
+          <button
+            onClick={() => {
+              if (isGuest) {
+                toast.error("Login dulu untuk menandai sudah dibaca");
+                // atau navigate("/login");
+                return;
+              }
+              handleToggleCompleted();
+            }}
+            disabled={readingListLoading}
+            className={`flex items-center gap-1.5 text-sm font-medium transition ${
+              isCompleted
+                ? "text-emerald-600"
+                : "text-gray-500 hover:text-emerald-600"
+            }`}
+          >
+            {readingListLoading ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : isCompleted ? (
+              <>
+                <CheckCircle2 size={16} className="fill-emerald-100" />
+                Sudah dibaca
+              </>
+            ) : (
+              <>
+                <Circle size={16} />
+                Tandai dibaca
+              </>
+            )}
+          </button>
+        )}
 
         {/* ===== SHARE BUTTON ===== */}
         <div className="relative">
