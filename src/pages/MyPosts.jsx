@@ -22,7 +22,7 @@ const MyPosts = () => {
          <div className="flex text-left items-center gap-2 text-accent">
             <span className="text-xs font-semibold uppercase tracking-wide">Creation</span>
           </div>
-          <h1 className="text-xl text-left font-semibold tracking-tight mt-1">My Guides</h1>
+          <h1 className="text-xl text-left font-semibold tracking-tight">My Guides</h1>
         </div>
         <Link to="/create" className="btn-primary">
           <PlusCircle size={16} />

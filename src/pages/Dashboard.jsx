@@ -312,6 +312,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [localSearch, setLocalSearch] = useState(search);
   const [signal, setSignal] = useState(null);
+  const [pinnedFirst, setPinnedFirst] = useState(true); // true = Pinned di atas
 
   const [stats, setStats] = useState({
     totalGuides: 0,
@@ -460,6 +461,33 @@ const Dashboard = () => {
                 </span>
               </h2>
             </div>
+
+            {/* Tombol tukar posisi */}
+            {showOverviewSections && data.pinned?.length > 0 && (
+              <button
+                onClick={() => setPinnedFirst((prev) => !prev)}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/20"
+                title={pinnedFirst ? "Show posts first" : "Show pinned first"}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="17 1 21 5 17 9" />
+                  <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                  <polyline points="7 23 3 19 7 15" />
+                  <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+                </svg>
+                {pinnedFirst ? "Posts first" : "Pinned first"}
+              </button>
+            )}
           </header>
 
           {/* Search + Categories */}
@@ -530,37 +558,99 @@ const Dashboard = () => {
             </div>
           ) : (
             <>
-              {showOverviewSections && data.pinned?.length > 0 && (
-                <section className="mb-8 px-4">
-                  <PinnedHero pinned={data.pinned} />
-                </section>
+              {/* ========== PINNED FIRST ========== */}
+              {pinnedFirst ? (
+                <>
+                  {showOverviewSections && data.pinned?.length > 0 && (
+                    <section className="mb-8 px-4">
+                      <PinnedHero pinned={data.pinned} />
+                    </section>
+                  )}
+
+                  {/* Posts Grid */}
+                  <section className="mb-8 border-t px-4 border-white/10 pt-7">
+                    {filteredPosts.length === 0 ? (
+                      <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
+                        <img src="/notFound.png" alt="No guides" className="h-24 w-24 mb-1.5" />
+                        <p className="font-medium">
+                          {search ? `No guides found for "${search}"` : "No guides here yet"}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {search
+                            ? "Try a different keyword or clear the search."
+                            : "Be the first to publish one for this category."}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                        {filteredPosts.map((post) => (
+                          <PostCard key={post._id} post={post} />
+                        ))}
+                      </div>
+                    )}
+                  </section>
+                </>
+              ) : (
+                /* ========== POSTS FIRST ========== */
+                <>
+                  {/* Posts Grid */}
+                 <section className="mb-8 border-t px-4 border-white/10 pt-7">
+                    {filteredPosts.length === 0 ? (
+                      <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
+                        <img src="/notFound.png" alt="No guides" className="h-24 w-24 mb-1.5" />
+                        <p className="font-medium">
+                          {search ? `No guides found for "${search}"` : "No guides here yet"}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {search
+                            ? "Try a different keyword or clear the search."
+                            : "Be the first to publish one for this category."}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                        {filteredPosts.map((post) => (
+                          <PostCard key={post._id} post={post} />
+                        ))}
+
+                        {/* Placeholder cards jika post kurang dari 3 */}
+                        {filteredPosts.length < 3 &&
+                          Array.from({ length: 3 - filteredPosts.length }).map((_, index) => (
+                            <button
+                              key={`empty-${index}`}
+                              onClick={() => navigate("/create")}
+                              className="group flex min-h-[280px] flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-white/25 bg-white/5 p-6 text-center transition hover:border-white/40 hover:bg-white/10"
+                            >
+                              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition group-hover:scale-110">
+                                <Plus size={22} />
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-white">Create your guide</p>
+                                <p className="mt-1 text-xs text-white/60">
+                                  Share your knowledge with the community
+                                </p>
+                              </div>
+                            </button>
+                          ))}
+                      </div>
+                    )}
+                  </section>
+                  {/* Pinned di bawah */}
+                  {showOverviewSections && data.pinned?.length > 0 && (
+                    <section className="mb-8 px-4">
+                      <div className="mb-3 flex items-center gap-2 text-sm font-medium text-white/70">
+                        <Sparkles size={15} />
+                        <span>Pinned</span>
+                      </div>
+                      <PinnedHero pinned={data.pinned} />
+                    </section>
+                  )}
+                </>
               )}
 
-              {/* Posts Grid — pakai filteredPosts */}
-              <section className="mb-8 border-t px-4 border-white/10 pt-7">
-                {filteredPosts.length === 0 ? (
-                  <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
-                    <img src="/notFound.png" alt="No guides" className="h-24 w-24 mb-1.5" />
-                    <p className="font-medium">
-                      {search ? `No guides found for "${search}"` : "No guides here yet"}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {search
-                        ? "Try a different keyword or clear the search."
-                        : "Be the first to publish one for this category."}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                    {filteredPosts.map((post) => (
-                      <PostCard key={post._id} post={post} />
-                    ))}
-                  </div>
-                )}
-              </section>
-
+              {/* Saat sedang search, tetap tampilkan pinned di bawah (opsional) */}
               {localSearch && data.pinned?.length > 0 && (
-                <section className="mb-8">
+                <section className="mb-8 px-4">
                   <div className="mb-3 flex items-center gap-2 text-sm font-medium text-white/50">
                     <Sparkles size={15} />
                     <span>Pinned</span>
@@ -569,7 +659,7 @@ const Dashboard = () => {
                 </section>
               )}
 
-              {/* Brand cards tetap sama */}
+              {/* Brand cards */}
               {showOverviewSections && (
                 <>
                   <div className="w-full border-t px-4 border-white/10 pt-7">

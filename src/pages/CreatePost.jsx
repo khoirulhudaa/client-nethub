@@ -241,12 +241,12 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="mx-auto max-w-7xl pb-16 p-4">
-      <h1 className="mb-1 text-2xl font-semibold tracking-tight">
+    <div className="mx-auto max-w-7xl pb-16 p-6">
+      <h1 className="text-xl font-semibold tracking-tight">
         {isEditing ? "Edit Guide" : "Publish a New Guide"}
       </h1>
-      <p className="mb-6 text-sm text-gray-500">
-        Share a maintenance walkthrough, a fix, an install checklist, or a topology / hardware breakdown.
+      <p className="mb-4 text-sm text-gray-500">
+        Share a maintenance walkthrough, a fix, an install checklist, or a topology
       </p>
 
       {error && (
@@ -257,7 +257,7 @@ const CreatePost = () => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* ===== Basic Info ===== */}
-        <div className="surface-card space-y-4 p-6">
+        <div className="surface-card dark:bg-white/5 space-y-4 p-6">
           <div>
             <label className="mb-1.5 block text-sm font-medium">Title item</label>
             <input
@@ -327,7 +327,7 @@ const CreatePost = () => {
             <label className="mb-1.5 block text-sm font-medium">Cover image</label>
 
             {form.coverImage ? (
-              <div className="relative group inline-block">
+              <div className="relative group dark:bg-white/5 inline-block">
                 <img
                   src={form.coverImage}
                   alt="Cover"
@@ -343,7 +343,7 @@ const CreatePost = () => {
               </div>
             ) : (
               <label
-                className="flex h-40 w-full max-w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed surface-card border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent"
+                className="flex h-40 w-full max-w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed surface-card border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent dark:bg-white/5"
                 onDragOver={(e) => {
                   e.preventDefault();
                   e.currentTarget.classList.add("border-accent", "text-accent");
@@ -495,7 +495,7 @@ const CreatePost = () => {
         </div>
 
         {/* ===== Content ===== */}
-        <div className="surface-card p-6">
+        <div className="surface-card dark:bg-white/5 p-6">
           <label className="mb-2 block text-sm font-medium">Content</label>
           <RichTextEditor
             value={form.content}
@@ -504,7 +504,7 @@ const CreatePost = () => {
         </div>
 
         {/* ===== Topology Canvas ===== */}
-        <div className="surface-card p-6">
+        <div className="surface-card dark:bg-white/5 p-6">
           <label className="mb-2 block text-sm font-medium">
             Network Topology
           </label>
@@ -532,7 +532,7 @@ const CreatePost = () => {
         </div>
 
         {/* ===== Custom Tables ===== */}
-        <div className="surface-card p-6">
+        <div className="surface-card dark:bg-white/5 p-6">
           <div className="mb-3 flex items-center justify-between">
             <div>
               <label className="block text-sm font-medium">Custom Table</label>
@@ -709,7 +709,7 @@ const CreatePost = () => {
         </div>
 
         {/* ===== Flowchart Canvas ===== */}
-        <div className="surface-card p-6">
+        <div className="surface-card dark:bg-white/5 p-6">
           <label className="mb-2 block text-sm font-medium">Flowchart</label>
           <p className="mb-3 text-xs text-gray-500">
             Drag shape dari palette, hubungkan dengan garis, lalu edit label.
@@ -718,7 +718,7 @@ const CreatePost = () => {
         </div>
 
         {/* ===== Step-by-step Wizard (Upload Image) ===== */}
-        <div className="surface-card p-6">
+        <div className="surface-card dark:bg-white/5 p-6">
           <div className="mb-3 flex items-center justify-between">
             <div>
               <label className="block text-sm font-medium">Step-by-step Wizard</label>
@@ -795,7 +795,7 @@ const CreatePost = () => {
                     </div>
                   ) : (
                     <label
-                      className="surface-card flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent"
+                      className="surface-card dark:bg-white/5 flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent"
                       onDragOver={(e) => {
                         e.preventDefault();
                         e.currentTarget.classList.add("border-accent", "text-accent");
@@ -890,7 +890,7 @@ const CreatePost = () => {
         </div>
 
         {/* ===== Code / Command Blocks ===== */}
-        <div className="surface-card p-6">
+        <div className="surface-card dark:bg-white/5 p-6">
           <div className="mb-3 flex items-center justify-between">
             <div>
               <label className="block text-sm font-medium">Code / Command Blocks</label>

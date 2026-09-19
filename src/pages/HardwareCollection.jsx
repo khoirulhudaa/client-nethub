@@ -600,7 +600,7 @@ const HardwareCollections = () => {
     <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="mb-1 flex items-center gap-2 text-accent">
+          <div className="flex items-center gap-2 text-accent">
             <span className="text-xs font-medium uppercase tracking-wide">
               Collection
             </span>
@@ -676,7 +676,7 @@ const HardwareCollections = () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 border-x border-y border-white/10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 border-x border-t rounded-xl border-white/10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {items.map((item) => (
             <div
               key={item._id}
