@@ -229,7 +229,7 @@ export default function QuizBuilder() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/quizzes")}
-            className="rounded-lg py-2 text-gray-500 hover:bg-gray-100"
+            className="rounded-lg py-2 text-black dark:text-white hover:bg-gray-100"
           >
             <ArrowLeft size={18} />
           </button>
@@ -269,7 +269,7 @@ export default function QuizBuilder() {
       
 
       {/* Meta */}
-      <div className="grid grid-cols-1 gap-4 border border-gray-200 px-7 py-7 sm:px-4 w-full sm:py-4 relative bg-slate-200 !dark:bg-white/5 rounded-xl">
+      <div className="grid grid-cols-1 gap-4 border border-gray-200 px-7 py-7 sm:px-4 w-full sm:py-4 relative dark:border-white/5 bg-slate-200 dark:bg-white/[0.03] rounded-xl">
         <div className="sm:col-span-2">
           <label className="mb-1 block text-xs font-medium text-black dark:text-white">
             Judul Quiz
@@ -330,7 +330,7 @@ export default function QuizBuilder() {
         {/* Question List + Editor */}
         <div className="space-y-5">
         {/* ===== Daftar Soal (horizontal) ===== */}
-        <div className="rounded-xl border border-gray-200 w-full relative bg-slate-200 !dark:bg-white/5 p-3">
+        <div className="rounded-xl border border-gray-200 w-full relative dark:border-white/5 bg-slate-200 dark:bg-white/[0.03] p-3">
             <div className="mb-2 flex items-center justify-between px-2">
             <p className="text-xs font-semibold uppercase tracking-wide dark:text-gray-400">
                 Soal ({questions.length}/15)
@@ -383,7 +383,7 @@ export default function QuizBuilder() {
         </div>
 
         {/* ===== Editor Soal Aktif ===== */}
-        <div className="flex-1 space-y-5 rounded-xl border border-gray-200 bg-slate-200 !dark:bg-white/5 p-5">
+        <div className="flex-1 space-y-5 rounded-xl border border-gray-200 dark:border-white/5 bg-slate-200 dark:bg-white/[0.03] p-5">
             <div className="flex items-center justify-between">
             <h3 className="font-medium">Soal #{activeIndex + 1}</h3>
             <button

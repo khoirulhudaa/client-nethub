@@ -601,7 +601,6 @@ const HardwareCollections = () => {
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="mb-1 flex items-center gap-2 text-accent">
-            <Box size={15} />
             <span className="text-xs font-medium uppercase tracking-wide">
               Collection
             </span>
@@ -678,20 +677,20 @@ const HardwareCollections = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 border-x border-y border-white/10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-  {items.map((item) => (
-    <div
-      key={item._id}
-      className="border-b border-white/10 px-3 py-4 sm:border-r sm:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0 xl:[&:nth-child(3n)]:border-r xl:[&:nth-child(4n)]:border-r-0"
-    >
-      <HardwareCard3D
-        item={item}
-        isAdmin={isAdmin}
-        onEdit={openEdit}
-        onDelete={handleDelete}
-      />
-    </div>
-  ))}
-</div>
+          {items.map((item) => (
+            <div
+              key={item._id}
+              className="border-b border-white/10 px-3 py-4 sm:border-r sm:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0 xl:[&:nth-child(3n)]:border-r xl:[&:nth-child(4n)]:border-r-0"
+            >
+              <HardwareCard3D
+                item={item}
+                isAdmin={isAdmin}
+                onEdit={openEdit}
+                onDelete={handleDelete}
+              />
+            </div>
+          ))}
+        </div>
       )}
 
       {/* Panel kanan */}

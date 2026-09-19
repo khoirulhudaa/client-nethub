@@ -20,7 +20,6 @@ const MyPosts = () => {
       <div className="mb-6 flex items-center justify-between">
         <div>
          <div className="flex text-left items-center gap-2 text-accent">
-            <FileText size={17} />
             <span className="text-xs font-semibold uppercase tracking-wide">Creation</span>
           </div>
           <h1 className="text-xl text-left font-semibold tracking-tight mt-1">My Guides</h1>

@@ -1,4 +1,4 @@
-import { Loader2 } from "lucide-react";
+import { Flame, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import api from "../api/axios.js";
 import PostCard from "../components/Post/PostCard.jsx";

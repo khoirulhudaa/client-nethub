@@ -325,12 +325,11 @@ const ReadingListPage = () => {
   return (
     <div className="mx-auto max-w-7xl p-6">
       {/* Header */}
-      <div className="mb-8">
-        <div className="mb-1 flex items-center gap-2 text-accent">
-          <BookOpen size={17} />
+      <div className="mb-6">
+        <div className="flex items-center gap-2 text-accent">
           <span className="text-xs font-semibold uppercase tracking-wider">Library</span>
         </div>
-        <h1 className="text-xl font-bold tracking-tight">Reading List</h1>
+        <h1 className="text-xl font-medium tracking-tight">Reading List</h1>
       </div>
 
       {/* Progress Card */}

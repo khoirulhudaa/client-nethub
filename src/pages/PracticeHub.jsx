@@ -60,8 +60,7 @@ const PracticeHub = () => {
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
       {/* Header */}
       <div className="mb-6">
-        <div className="mb-1.5 flex items-center gap-2 text-accent">
-          <PencilRuler size={15} />
+        <div className="flex items-center gap-2 text-accent">
           <span className="text-xs font-medium uppercase tracking-wide">
             Practice Lab
           </span>
