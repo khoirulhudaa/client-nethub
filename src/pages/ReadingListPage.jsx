@@ -402,7 +402,7 @@ const ReadingListPage = () => {
           <Sparkles size={18} className="mt-0.5 shrink-0 text-accent" />
           <p className="text-gray-600 dark:text-gray-300">
             <strong>Tips:</strong> Kamu bisa seret icon{" "}
-            <GripVertical size={14} className="inline" /> atau pakai tombol panah
+            <GripVertical size={14} className="inline relative top-[-1.6px]" /> atau pakai tombol panah
             untuk mengatur urutan.
           </p>
         </div>
