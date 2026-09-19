@@ -241,7 +241,7 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="mx-auto max-w-7xl pb-16">
+    <div className="mx-auto max-w-7xl pb-16 p-4">
       <h1 className="mb-1 text-2xl font-semibold tracking-tight">
         {isEditing ? "Edit Guide" : "Publish a New Guide"}
       </h1>
