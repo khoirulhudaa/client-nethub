@@ -84,7 +84,7 @@ const PracticeHub = () => {
                 className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${item.accent} opacity-0 transition group-hover:opacity-100`}
               />
 
-              <div className="relative z-10 flex flex-1 flex-col">
+              <div className="relative z-2 flex flex-1 flex-col">
                 <div className="mb-3 flex items-start justify-between">
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-xl sm:h-11 sm:w-11 ${item.iconBg}`}

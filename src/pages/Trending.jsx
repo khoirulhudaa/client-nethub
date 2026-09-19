@@ -64,7 +64,7 @@ const Trending = () => {
           {posts.map((post, idx) => (
             <div key={post._id} className="relative">
               {idx < 3 && (
-                <span className="absolute left-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-accent text-xs font-bold text-white shadow">
+                <span className="absolute right-3 top-2 z-[99] flex h-7 w-7 items-center justify-center rounded-full bg-white text-xs font-bold text-blue-600 shadow">
                   #{idx + 1}
                 </span>
               )}
