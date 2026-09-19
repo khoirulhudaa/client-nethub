@@ -151,12 +151,12 @@ const Sidebar = ({ onNavigate }) => {
     collapsed
       ? `flex h-10 w-10 items-center justify-center rounded-xl transition ${
           active
-            ? "bg-blue-600 text-white"
+            ? "bg-gradient-to-br from-blue-400 to-blue-900 text-white"
             : "text-white dark:text-gray-400 hover:bg-white/[0.06] hover:text-white"
         }`
       : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
           active
-            ? "bg-blue-600 text-white"
+            ? "bg-gradient-to-br from-blue-400 to-blue-900 text-white"
             : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
         }`;
 
@@ -180,7 +180,7 @@ const Sidebar = ({ onNavigate }) => {
           }`}
         >
           <div className="flex items-center gap-2 h-[10%]">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent text-white">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-400 to-blue-900 text-white">
               <Network size={18} />
             </div>
             {!collapsed && (
@@ -311,7 +311,7 @@ const Sidebar = ({ onNavigate }) => {
                       ? linkClass(isActive)
                       : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
                           isActive
-                            ? "bg-accent-soft text-accent"
+                            ? "bg-gradient-to-br from-blue-400 to-blue-900-soft text-accent"
                             : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
                         }`
                   }
@@ -333,7 +333,7 @@ const Sidebar = ({ onNavigate }) => {
                     ? linkClass(isActive)
                     : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
                         isActive
-                          ? "bg-accent-soft text-accent"
+                          ? "bg-gradient-to-br from-blue-400 to-blue-900-soft text-accent"
                           : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
                       }`
                 }
@@ -380,12 +380,12 @@ const Sidebar = ({ onNavigate }) => {
                   }`
                 : `flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors ${
                     isActive && !isGuest
-                      ? "dark:border-accent/40 bg-accent-soft"
+                      ? "dark:border-accent/40 bg-gradient-to-br from-blue-400 to-blue-900-soft"
                       : "border-white hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]"
                   }`
             }
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white dark:bg-accent-soft text-sm font-semibold text-accent">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-sm font-semibold text-accent">
               {user?.avatar ? (
                 <img
                   src={user.avatar}
@@ -396,28 +396,29 @@ const Sidebar = ({ onNavigate }) => {
                 user?.name?.[0]?.toUpperCase() || "G"
               )}
             </div>
-
-            {!collapsed && (
-              <>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm text-white dark:text-gray-400 font-medium">{user?.name}</p>
-                  <p className="truncate text-xs text-white dark: text-gray-400">
-                    {isGuest ? "Guest Reader" : user?.title}
-                  </p>
-                </div>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleLogoutClick();          // ← ganti
-                  }}
-                  className="rounded-md p-1.5 text-white dark:text-gray-400 transition-colors hover:bg-black/5 hover:text-red-500 dark:hover:bg-white/10"
-                  title="Log out"
-                >
-                  <LogOut size={16} />
-                </button>
-              </>
-            )}
+              {!collapsed && (
+                <>
+                  <div className="min-w-0 flex-1 overflow-hidden">
+                    <p className="truncate text-sm font-medium text-white dark:text-gray-400">
+                      {user?.name}
+                    </p>
+                    <p className="truncate text-xs text-white dark:text-gray-400">
+                      {isGuest ? "Guest Reader" : user?.title}
+                    </p>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleLogoutClick();
+                    }}
+                    className="shrink-0 rounded-md p-1.5 text-white transition-colors hover:bg-black/5 hover:text-red-500 dark:text-gray-400 dark:hover:bg-white/10"
+                    title="Log out"
+                  >
+                    <LogOut size={16} />
+                  </button>
+                </>
+              )}
           </NavLink>
 
           {/* ===== LOGOUT CONFIRMATION MODAL ===== */}

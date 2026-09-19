@@ -39,7 +39,7 @@ const TopBar = ({ onMenuClick }) => {
   const isGuest = user?.isGuest || user?.role === "guest";
 
   const TYPE_META = {
-    info: { icon: Info, color: "text-blue-500", bg: "bg-blue-500/10" },
+    info: { icon: Info, color: "text-blue-500", bg: "bg-gradient-to-br from-blue-400 to-blue-900/10" },
     warning: { icon: AlertTriangle, color: "text-amber-500", bg: "bg-amber-500/10" },
     success: { icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-500/10" },
     important: { icon: Ban, color: "text-rose-500", bg: "bg-rose-500/10" },
@@ -103,7 +103,7 @@ const TopBar = ({ onMenuClick }) => {
   };
 
   return (
-    <header className="w-full surface-card h-[8.6vh] sticky top-0 z-[999] border-r border-white/10 flex h-16 items-center gap-3 py-0 rounded-none border-b px-3 sm:px-3">
+    <header className="w-full surface-card h-[8.6vh] sticky top-0 z-[999] border-r border-white/10 flex h-16 items-center gap-3 py-0 rounded-none border-b px-3 sm:px-[11px]">
       <div
         className="pointer-events-none absolute top-[1.5px] inset-0 z-0 hidden dark:block"
         style={{
@@ -165,7 +165,7 @@ const TopBar = ({ onMenuClick }) => {
             >
               <Bell size={18} />
               {unreadCount > 0 && (
-                <span className="absolute right-1.5 top-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-accent px-1 text-[10px] font-semibold text-white">
+                <span className="absolute right-1.5 top-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-blue-900 px-1 text-[10px] font-semibold text-white">
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}
@@ -248,7 +248,7 @@ const TopBar = ({ onMenuClick }) => {
                         setOpenNotif(false);
                         navigate("/admin/announcements");
                       }}
-                      className="w-full rounded-lg py-2 text-center text-xs font-medium text-accent hover:bg-accent/10"
+                      className="w-full rounded-lg py-2 text-center text-xs font-medium text-accent hover:bg-gradient-to-br from-blue-400 to-blue-900/10"
                     >
                       Kelola pengumuman
                     </button>
@@ -263,7 +263,7 @@ const TopBar = ({ onMenuClick }) => {
             onClick={toggleTheme}
             className="dark:border-none border-slate-300 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
             title="Toggle theme"
-          >
+            >
             {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
           </button>
 
@@ -275,7 +275,8 @@ const TopBar = ({ onMenuClick }) => {
                 setOpenProfile((prev) => !prev);
                 setOpenNotif(false);
               }}
-              className="ml-0.5 flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-blue-500 text-sm font-semibold text-white ring-1 transition hover:opacity-90"
+              className="ml-0.5 flex h-10 w-10 items-center justify-center dark:border-[2px] dark:border-white/15 border-slate-300 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+              // className="ml-0.5 flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-transparent text-sm font-semibold text-white ring-1 transition hover:opacity-90"
               title={user?.name || "Profile"}
             >
               {user?.avatar ? (
@@ -346,7 +347,7 @@ const TopBar = ({ onMenuClick }) => {
                         setOpenProfile(false);
                         navigate("/register"); // atau "/auth/register" sesuai route kamu
                       }}
-                      className="flex w-[94%] rounded-xl mx-auto items-center gap-2 px-2.5 active:scale-[0.99] duration-100 py-2.5 text-left text-sm text-white transition bg-blue-500"
+                      className="flex w-[94%] rounded-xl mx-auto items-center gap-2 px-2.5 active:scale-[0.99] duration-100 py-2.5 text-left text-sm text-white transition bg-gradient-to-br from-blue-400 to-blue-900"
                     >
                       <User size={16} />
                       Register

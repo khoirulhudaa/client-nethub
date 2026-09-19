@@ -102,7 +102,7 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
       {!isGuest && (
         <button
           onClick={onNewPost}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:opacity-90"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-br from-blue-400 to-blue-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:opacity-90"
         >
           <Plus size={16} /> New post
         </button>
@@ -113,19 +113,19 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
 
 // --- Metric cards ------------------------------------------------------------
 const MetricCard = ({ icon: Icon, iconClass, label, value, delta, deltaTone = "positive" }) => (
-  <div className="surface-card bg-white dark:bg-white/5 flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-[#1E1E2A] p-4 shadow-sm">
+  <div className="bg-gradient-to-br from-blue-400 to-blue-900 dark:bg-white/5 flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-[#1E1E2A] p-4 shadow-sm">
     <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${iconClass}`}>
       <Icon size={16} />
     </div>
-    <span className="text-sm text-gray-500 dark:text-white">{label}</span>
-    <strong className="text-xl font-semibold text-gray-900 dark:text-white">{value}</strong>
+    <span className="text-sm text-white">{label}</span>
+    <strong className="text-xl font-semibold text-white">{value}</strong>
     <small className="text-xs text-gray-400">
       <span
         className={
           deltaTone === "positive"
             ? "text-emerald-600 dark:text-emerald-400"
             : deltaTone === "neutral"
-            ? "text-gray-500 dark:text-white/60"
+            ? "text-white dark:text-white/60"
             : "text-rose-600 dark:text-rose-400"
         }
       >
@@ -446,16 +446,16 @@ const Dashboard = () => {
       <div className="border-t border-white/10 mb-6"></div>
 
       <div className="px-6 pb-6">
-        <div className="px-7 py-7 sm:px-4 w-full sm:py-4 relative bg-white/5 rounded-xl">
+        <div className="px-7 py-7 sm:px-4 w-full sm:py-4 relative bg-gradient-to-br from-blue-400 to-blue-900 dark:bg-white/5 rounded-xl">
           {/* Header */}
-          <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <header className="mb-6 mt-1 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-accent">
+              <p className="text-xs font-medium uppercase tracking-wide text-white dark:text-accent">
                 New Knowledge
               </p>
               <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mt-1">
-                <Brain size={17} />
-                <span className="relative top-[-1.2px]">
+                <Brain size={17} className="text-white" />
+                <span className="relative top-[-1.2px] text-white">
                   {headingText}
                 </span>
               </h2>
@@ -573,17 +573,17 @@ const Dashboard = () => {
               {showOverviewSections && (
                 <>
                   <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-accent">
+                    <p className="text-xs font-medium uppercase tracking-wide text-white dark:text-accent">
                       Network brands
                     </p>
                     <h2 className="flex items-center text-lg mt-1 font-medium tracking-tight">
-                      <Box size={17} className="mr-2" />
-                      <span className="relative top-[-1.7px]">
+                      <Box size={17} className="mr-2 text-white" />
+                      <span className="relative top-[-1.7px] text-white">
                         Reference brands
                       </span>
                     </h2>
                   </div>
-                  <div className="mb-0 mt-7 grid grid-cols-1 gap-5 lg:grid-cols-3">
+                  <div className="mb-2 mt-4 grid grid-cols-1 gap-5 lg:grid-cols-3">
                     <Card2 />
                     <Card1 />
                     <Card3 />
