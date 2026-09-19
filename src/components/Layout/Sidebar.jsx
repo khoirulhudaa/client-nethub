@@ -34,7 +34,6 @@ const categoryLinks = [
 const discoverLinks = [
   { label: "Trending", icon: Flame, to: "/trending" },
   { label: "Subnet Calc", icon: Calculator, to: "/tools/subnet" },
-  { label: "Collection Card", icon: Box, to: "/hardware" },
 ];
 
 const quizLinks = [
@@ -167,6 +166,7 @@ const Sidebar = ({ onNavigate }) => {
       }`}
     >
 
+      {/* <img src="/hero.jpg" alt="wallpaper-sidebar" className="rotate-[4deg] scale-[2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-5 left-0" /> */}
       <img src="/sidebar.png" alt="wallpaper-sidebar" className="rotate-[4deg] scale-[2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-5 left-0" />
       <img src="/hero.jpg" alt="wallpaper-sidebar" className="rotate-[4deg] scale-[2] w-full h-screen dark:hidden flex object-cover absolute opacity-90 z-0 top-0 left-0" />
       
@@ -272,7 +272,7 @@ const Sidebar = ({ onNavigate }) => {
 
           {/* Quiz */}
           <NavGroup
-            title="Quiz"
+            title="Practice"
             open={openGroups.quiz}
             onToggle={() => toggleGroup("quiz")}
             collapsed={collapsed}
@@ -311,7 +311,7 @@ const Sidebar = ({ onNavigate }) => {
                       ? linkClass(isActive)
                       : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
                           isActive
-                            ? "bg-gradient-to-br from-blue-400 to-blue-900-soft text-accent"
+                            ? "bg-gradient-to-br from-blue-400 to-blue-900 dark:text-white text-accent"
                             : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
                         }`
                   }
@@ -333,13 +333,34 @@ const Sidebar = ({ onNavigate }) => {
                     ? linkClass(isActive)
                     : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
                         isActive
-                          ? "bg-gradient-to-br from-blue-400 to-blue-900-soft text-accent"
+                          ? "bg-gradient-to-br from-blue-400 to-blue-900 dark:text-white text-accent"
                           : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
                       }`
                 }
               >
                 <BookOpen size={17} />
                 {!collapsed && "Reading List"}
+              </NavLink>
+            </div>
+
+            {/* Collection Card */}
+            <div className={collapsed ? "" : "px-2 mt-1"}>
+              <NavLink
+                to="/hardware"
+                onClick={onNavigate}
+                title={collapsed ? "Hardware" : undefined}
+                className={({ isActive }) =>
+                  collapsed
+                    ? linkClass(isActive)
+                    : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
+                        isActive
+                          ? "bg-gradient-to-br from-blue-400 to-blue-900 dark:text-white text-accent"
+                          : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
+                      }`
+                }
+              >
+                <Box size={17} />
+                {!collapsed && "Collection Card"}
               </NavLink>
             </div>
           </NavGroup>
