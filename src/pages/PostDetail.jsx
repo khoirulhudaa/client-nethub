@@ -1080,7 +1080,7 @@ const isOwner = user?.id === post?.author?._id;
 
       <div className="mt-6">
         <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-400">Comments</h2>
-        <div className="surface-card p-5">
+        <div className="surface-card shadow-none bg-slate-200 dark:bg-white/[0.03] p-5">
           <div className="mb-4 flex gap-2">
             <input
               value={commentText}
