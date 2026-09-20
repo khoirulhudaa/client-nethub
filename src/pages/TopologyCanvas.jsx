@@ -35,7 +35,7 @@ import {
   Zap
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { validateConnection } from "../../../server/src/utils/cableRules";
+import { validateConnection } from "../utils/cableRules";
 
 /* ====================== Custom Node ====================== */
 const HardwareNode = ({ data, selected }) => {
