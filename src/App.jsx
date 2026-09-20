@@ -20,7 +20,7 @@ import Trending from "./pages/Trending.jsx";
 import SubnetCalculator from "./pages/SubnetCalculator.jsx";
 import AnnouncementsAdmin from "./pages/AnnouncementsAdmin.jsx";
 import PracticeHub from "./pages/PracticeHub.jsx";
-import HardwareCollection from "./pages/hardwareCollection.jsx";
+import HardwareCollection from "./pages/HardwareCollection.jsx";
 import AnnouncementDetail from "./pages/AnnouncementDetail.jsx";
 import ReadingListPage from "./pages/ReadingListPage.jsx";
 
