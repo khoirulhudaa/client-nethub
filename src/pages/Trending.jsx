@@ -290,10 +290,12 @@ const Trending = () => {
 
       {/* Chart + Guides */}
       {loading ? (
-        <d  iv className="flex justify-center flex-col h-full items-center text-center py-24">
-          <img src="/cloud.png" alt="icon-cloud" className="w-20" />
-          <p className="mt-2">Load content ...</p>
-        </d>
+        <div className="">
+            <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
+              <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+              <p className="mt-2">Load content ...</p>
+            </div>
+          </div>
       ) : posts.length === 0 ? (
         <div className="mb-10 flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-gray-300 py-16 text-center dark:border-white/15">
           <Flame size={32} className="text-gray-400" />
@@ -341,9 +343,11 @@ const Trending = () => {
         </div>
 
         {quizLoading ? (
-          <div className="flex justify-center flex-col h-full items-center text-center py-24">
-            <img src="/cloud.png" alt="icon-cloud" className="w-20" />
-            <p className="mt-2">Load content ...</p>
+          <div className="">
+            <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
+              <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+              <p className="mt-2">Load content ...</p>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">

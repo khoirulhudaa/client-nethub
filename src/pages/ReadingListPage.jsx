@@ -144,9 +144,11 @@ const SortableItem = ({
               title={isCompleted ? "Tandai belum selesai" : "Tandai selesai"}
             >
               {isLoading ? (
-                <div className="flex justify-center flex-col h-full items-center text-center py-24">
-                  <img src="/cloud.png" alt="icon-cloud" className="w-20" />
-                  <p className="mt-2">Load content ...</p>
+                <div className="py-4">
+                  <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
+                    <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+                    <p className="mt-2">Load content ...</p>
+                  </div>
                 </div>
               ) : isCompleted ? (
                 <CheckCircle2 size={16} />
@@ -317,9 +319,11 @@ const ReadingListPage = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center flex-col h-full items-center text-center py-24">
-        <img src="/cloud.png" alt="icon-cloud" className="w-20" />
-        <p className="mt-2">Load content ...</p>
+      <div className="p-4">
+        <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
+          <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+          <p className="mt-2">Load content ...</p>
+        </div>
       </div>
     );
   }
