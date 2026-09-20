@@ -43,7 +43,8 @@ const HardwareNode = ({ data, selected }) => {
 
   // Device yang ingin ditampilkan berbeda (peripheral)
   const isPeripheral = ["Monitor", "Mouse", "Keyboard"].includes(data.type);
-
+  console.log('ok')
+  console.log('ok')
   // Warna khusus untuk peripheral (hijau)
   const peripheralColor = "#16a34a"; // green-600
 
