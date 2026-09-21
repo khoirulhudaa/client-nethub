@@ -3,14 +3,10 @@ import {
   Box,
   Brain,
   ChevronRight,
-  Diamond,
   Eye,
-  Loader2,
-  Medal,
   Plus,
   Search,
   Sparkles,
-  Star,
   Tag,
   Wifi
 } from "lucide-react";
@@ -86,7 +82,7 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
   const greeting = hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
 
   return (
-    <div className="border-b border-white/10 px-5 mb-6 h-[11vh] pt-4 pb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="relative h-max border-b border-white/10 px-0 md:px-5 mb-6 md:h-[11vh] pt-4 pb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="relative">
         <h1 className="mt-[-5px] text-xl font-semibold tracking-tight">
           {greeting}, {userName}
@@ -102,7 +98,7 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
       {!isGuest && (
         <button
           onClick={onNewPost}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90"
+          className="relative w-full flex md:inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90"
         >
           <Plus size={16} /> New post
         </button>
@@ -147,7 +143,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
   }
 
   return (
-    <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4 px-5">
+    <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4 md:px-5">
       <MetricCard
         icon={Wifi}
         iconClass="bg-blue-50 text-blue-600 dark:bg-white dark:text-black"
@@ -428,7 +424,7 @@ const Dashboard = () => {
           <GuestJumbotron onRegister={() => navigate("/register")} />
         </div>
       ) : (
-        <>
+        <div className="w-full h-max">
           <WelcomeRow
             userName={user?.name || "there"}
             onNewPost={() => navigate("/create")}
@@ -441,12 +437,12 @@ const Dashboard = () => {
             totalCategories={totalCategories}
             loading={loading}
           />
-        </>
+        </div>
       )}
 
       <div className="border-t border-white/10 mb-6"></div>
 
-      <div className="px-4 pb-6">
+      <div className="md:px-4 pb-6">
         <div className="px-0 py-7 sm:px-0 w-full sm:py-4 relative rounded-xl bg-gradient-to-br from-blue-400 to-blue-900 dark:bg-white/5 dark:bg-none">
           {/* Header */}
           <header className="mt-1 px-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -466,7 +462,7 @@ const Dashboard = () => {
             {showOverviewSections && data.pinned?.length > 0 && (
               <button
                 onClick={() => setPinnedFirst((prev) => !prev)}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/20"
+                className="w-max inline-flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/20"
                 title={pinnedFirst ? "Show posts first" : "Show pinned first"}
               >
                 <svg
@@ -491,9 +487,9 @@ const Dashboard = () => {
           </header>
 
           {/* Search + Categories */}
-          <div className="w-full p-4 flex items-center gap-2.5">
+          <div className="w-full px-4 py-2 md:p-4 md:flex items-center gap-2.5">
             <form
-              className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 shadow-sm sm:w-72"
+              className="flex md:mb-0 mb-2 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 shadow-sm sm:w-72"
               onSubmit={(e) => {
                 e.preventDefault();
                 updateParam("search", localSearch.trim());
@@ -520,34 +516,53 @@ const Dashboard = () => {
               )}
             </form>
 
-            {/* Categories bar tetap sama */}
+            {/* Categories bar — responsive: pills di desktop, dropdown di mobile */}
             {data.categories?.length > 0 && (
-              <div className="flex flex-wrap items-center gap-x-2.5">
-                <button
-                  onClick={() => updateParam("category", "")}
-                  className={`rounded-xl border px-3 py-1.5 text-sm transition ${
-                    !category
-                      ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft dark:text-slate-900 text-white"
-                      : "border-gray-200 bg-white text-gray-600 hover:border-accent/50"
-                  }`}
-                >
-                  All guides
-                </button>
-                {data.categories.map((item) => (
+              <>
+                {/* Mobile: dropdown selector */}
+                <div className="sm:hidden">
+                  <select
+                    value={category || ""}
+                    onChange={(e) => updateParam("category", e.target.value)}
+                    className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-600 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700"
+                  >
+                    <option value="">All guides</option>
+                    {data.categories.map((item) => (
+                      <option key={item} value={item}>
+                        {item}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Desktop: pill buttons */}
+                <div className="hidden sm:flex flex-wrap items-center gap-x-2.5">
                   <button
-                    key={item}
-                    onClick={() => updateParam("category", item)}
-                    className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-sm transition ${
-                      category === item
+                    onClick={() => updateParam("category", "")}
+                    className={`rounded-xl border px-3 py-1.5 text-sm transition ${
+                      !category
                         ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft dark:text-slate-900 text-white"
-                        : "border-gray-200 bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
+                        : "border-gray-200 bg-white text-gray-600 hover:border-accent/50"
                     }`}
                   >
-                    <Box size={14} />
-                    {item}
+                    All guides
                   </button>
-                ))}
-              </div>
+                  {data.categories.map((item) => (
+                    <button
+                      key={item}
+                      onClick={() => updateParam("category", item)}
+                      className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-sm transition ${
+                        category === item
+                          ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft dark:text-slate-900 text-white"
+                          : "border-gray-200 bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
+                      }`}
+                    >
+                      <Box size={14} />
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
           </div>
 
@@ -565,7 +580,7 @@ const Dashboard = () => {
               {pinnedFirst ? (
                 <>
                   {showOverviewSections && data.pinned?.length > 0 && (
-                    <section className="mb-8 px-4">
+                    <section className="mb-8 px-4 md:mt-0 mt-4">
                       <PinnedHero pinned={data.pinned} />
                     </section>
                   )}

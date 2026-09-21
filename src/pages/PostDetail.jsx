@@ -1,4 +1,4 @@
-import { Bookmark, CheckCircle2, Circle, Clipboard, Heart, Link2, Linkedin, Loader2, Highlighter, Pencil, Pin, Share2, Trash2 } from "lucide-react";
+import { Bookmark, CheckCircle2, Circle, Clipboard, Heart, Link2, Linkedin, Loader2, Highlighter, Pencil, Pin, Share2, Trash2, Eye } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -29,7 +29,7 @@ const CodeBlockItem = ({ block }) => {
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-gray-100 bg-white dark:border-white/5 dark:bg-white/[0.03]">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-gray-100 px-5 py-3 dark:border-white/5">
+      <div className="flex items-center justify-between border-b border-gray-100 px-3 md:px-5 py-3 dark:border-white/5">
         <div className="flex items-center gap-3">
           <span className="text-[11px] font-medium tracking-widest text-gray-400">
             {block.language?.toUpperCase() || "CODE"}
@@ -527,10 +527,12 @@ const isOwner = user?.id === post?.author?._id;
   }
 
   return (
-    <div className="p-6 mx-auto max-w-7xl pb-16">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="md:p-6 mx-auto max-w-7xl pb-16">
+      <div className="mb-4 flex items-center md:justify-between">
         <div className="w-max flex items-center gap-2.5">
-          <CategoryPill category={post.category} />
+          <div className="md:flex hidden">
+            <CategoryPill category={post.category} />
+          </div>
           {isCompleted && (
             <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
               <CheckCircle2 size={13} />
@@ -559,8 +561,8 @@ const isOwner = user?.id === post?.author?._id;
         )}
       </div>
 
-      <h1 className="mb-3 text-2xl w-max rounded-xl p-2 px-1 pr-2.5 font-semibold tracking-tight bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/20">
-        📝 {post.title}
+      <h1 className="mb-3 max-w-full w-max truncate rounded-xl p-2 px-1 pr-2.5 text-xl sm:text-2xl font-semibold tracking-tight bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/20">
+        📝 {post.title} 
       </h1>
 
       <div className="mb-6 flex items-center justify-between">
@@ -602,14 +604,14 @@ const isOwner = user?.id === post?.author?._id;
         )}
       </div>
 
-       <h2 className="mt-6 mb-5 text-sm font-medium tracking-widest text-gray-400 uppercase">
-          Description
-        </h2>
+      <h2 className="mt-6 mb-5 text-sm font-medium tracking-widest text-gray-400 uppercase">
+        Description
+      </h2>
 
       {/* Description dengan support highlight */}
       <div className="relative" onMouseUp={handleMouseUp}>
         <article
-          className="rounded-2xl text-justify border border-gray-100 bg-slate-200 dark:bg-white/[0.03] px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none dark:prose-invert prose-headings:font-semibold text-slate-500 dark:text-white/70 prose-a:text-accent"
+          className="rounded-2xl md:text-justify border border-gray-100 bg-slate-200 dark:bg-white/[0.03] px-3 md:px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none break-words [overflow-wrap:anywhere] dark:prose-invert prose-headings:font-semibold text-slate-500 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
           dangerouslySetInnerHTML={{
             __html: renderHighlightedContent(post.content),
           }}
@@ -655,7 +657,7 @@ const isOwner = user?.id === post?.author?._id;
       </div>
 
       {highlights.length > 0 && (
-        <div className="mt-4 rounded-2xl border border-gray-100 bg-slate-200 p-5 dark:border-white/5 dark:bg-white/[0.03]">
+        <div className="mt-4 rounded-2xl border border-gray-100 bg-slate-200 p-3 md:p-5 dark:border-white/5 dark:bg-white/[0.03]">
           <div className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
             <Highlighter size={15} />
             Stabilo kamu ({highlights.length})
@@ -961,126 +963,133 @@ const isOwner = user?.id === post?.author?._id;
         </div>
       )}
 
-      <div className="mt-6 flex items-center gap-4 border-y border-border-light py-4 dark:border-border-dark">
-        <button
-          onClick={handleLike}
-          className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
-            liked ? "text-red-500" : "text-gray-500 hover:text-red-500"
-          }`}
-        >
-          <Heart size={16} className={liked ? "fill-red-500" : ""} />
-          {likesCount}
-        </button>
-
-        <button onClick={handleBookmark} className="flex items-center gap-1.5 text-sm">
-          <Bookmark size={16} className={bookmarked ? "fill-accent text-accent" : ""} />
-          {bookmarked ? "Saved" : "Save"}
-        </button>
-
-        {/* Mark as Read */}
-        {!isGuest && (
+      <div className="mt-6 md:flex items-center gap-4 border-y border-border-light py-4 dark:border-border-dark">
+        <div className="w-max flex items-center gap-3">
           <button
-            onClick={() => {
-              if (isGuest) {
-                toast.error("Login dulu untuk menandai sudah dibaca");
-                // atau navigate("/login");
-                return;
-              }
-              handleToggleCompleted();
-            }}
-            disabled={readingListLoading}
-            className={`flex items-center gap-1.5 text-sm font-medium transition ${
-              isCompleted
-                ? "text-emerald-600"
-                : "text-gray-500 hover:text-emerald-600"
+            onClick={handleLike}
+            className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
+              liked ? "text-red-500" : "text-gray-500 hover:text-red-500"
             }`}
           >
-            {readingListLoading ? (
-              <Loader2 size={16} className="animate-spin" />
-            ) : isCompleted ? (
+            <Heart size={16} className={liked ? "fill-red-500" : ""} />
+            {likesCount}
+          </button>
+
+          <button onClick={handleBookmark} className="flex items-center gap-1.5 text-sm">
+            <Bookmark size={16} className={bookmarked ? "fill-accent text-accent" : ""} />
+            {bookmarked ? "Saved" : "Save"}
+          </button>
+
+          {/* Mark as Read */}
+          {!isGuest && (
+            <button
+              onClick={() => {
+                if (isGuest) {
+                  toast.error("Login dulu untuk menandai sudah dibaca");
+                  // atau navigate("/login");
+                  return;
+                }
+                handleToggleCompleted();
+              }}
+              disabled={readingListLoading}
+              className={`flex w-max items-center gap-1.5 text-sm font-medium transition ${
+                isCompleted
+                  ? "text-emerald-600"
+                  : "text-gray-500 hover:text-emerald-600"
+              }`}
+            >
+              {readingListLoading ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : isCompleted ? (
+                <>
+                  <CheckCircle2 size={16} className="fill-emerald-100" />
+                  Sudah dibaca
+                </>
+              ) : (
+                <div className="w-max flex items-center gap-1.5">
+                  <Circle size={16} />
+                  <span className="w-max flex items-center">
+                    Tandai dibaca
+                  </span>
+                </div>
+              )}
+            </button>
+          )}
+
+          {/* ===== SHARE BUTTON ===== */}
+          <div className="relative">
+            <button
+              onClick={() => setShowShare((v) => !v)}
+              className="flex items-center gap-1.5 text-sm text-gray-500 transition hover:text-accent"
+            >
+              <Share2 size={16} />
+              Share
+            </button>
+
+            {showShare && (
               <>
-                <CheckCircle2 size={16} className="fill-emerald-100" />
-                Sudah dibaca
-              </>
-            ) : (
-              <>
-                <Circle size={16} />
-                Tandai dibaca
+                {/* Backdrop untuk menutup dropdown */}
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setShowShare(false)}
+                />
+
+                <div className="absolute left-0 top-full z-20 mt-2 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/10 dark:bg-gray-900">
+                  <button
+                    onClick={copyLink}
+                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-200 dark:text-gray-200 dark:hover:bg-white/5"
+                  >
+                    <Link2 size={16} />
+                    Salin Link
+                  </button>
+
+                  <a
+                    href={shareLinks.whatsapp}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setShowShare(false)}
+                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-200 dark:text-gray-200 dark:hover:bg-white/5"
+                  >
+                    <span className="flex h-4 w-4 items-center justify-center text-[13px] font-bold text-green-600">
+                      WA
+                    </span>
+                    WhatsApp
+                  </a>
+
+                  <a
+                    href={shareLinks.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setShowShare(false)}
+                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-200 dark:text-gray-200 dark:hover:bg-white/5"
+                  >
+                    <Linkedin size={16} className="text-blue-700" />
+                    LinkedIn
+                  </a>
+                </div>
               </>
             )}
-          </button>
-        )}
-
-        {/* ===== SHARE BUTTON ===== */}
-        <div className="relative">
-          <button
-            onClick={() => setShowShare((v) => !v)}
-            className="flex items-center gap-1.5 text-sm text-gray-500 transition hover:text-accent"
-          >
-            <Share2 size={16} />
-            Share
-          </button>
-
-          {showShare && (
-            <>
-              {/* Backdrop untuk menutup dropdown */}
-              <div
-                className="fixed inset-0 z-10"
-                onClick={() => setShowShare(false)}
-              />
-
-              <div className="absolute left-0 top-full z-20 mt-2 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/10 dark:bg-gray-900">
-                <button
-                  onClick={copyLink}
-                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-200 dark:text-gray-200 dark:hover:bg-white/5"
-                >
-                  <Link2 size={16} />
-                  Salin Link
-                </button>
-
-                <a
-                  href={shareLinks.whatsapp}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setShowShare(false)}
-                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-200 dark:text-gray-200 dark:hover:bg-white/5"
-                >
-                  <span className="flex h-4 w-4 items-center justify-center text-[13px] font-bold text-green-600">
-                    WA
-                  </span>
-                  WhatsApp
-                </a>
-
-                <a
-                  href={shareLinks.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setShowShare(false)}
-                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-200 dark:text-gray-200 dark:hover:bg-white/5"
-                >
-                  <Linkedin size={16} className="text-blue-700" />
-                  LinkedIn
-                </a>
-              </div>
-            </>
-          )}
+          </div>
+          
+          <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-gray-400"><Eye size={16} />{post.views}</span>
         </div>
 
-        <span className="text-sm text-slate-500 dark:text-gray-400">{post.views} views</span>
+        <div className="w-max flex flex-wrap items-center gap-3 md:mt-0 mt-2.5">
 
-        {post.tags?.map((t) => (
-          <span
-            key={t}
-            className="pill bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-gray-400"
-          >
-            #{t}
-          </span>
-        ))}
+          {post.tags?.map((t) => (
+            <span
+              key={t}
+              className="pill w-max bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-gray-400"
+            >
+              #{t}
+            </span>
+          ))}
+        </div>
       </div>
 
       <div className="mt-6">
         <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-400">Comments</h2>
-        <div className="surface-card shadow-none bg-slate-200 dark:bg-white/[0.03] p-5">
+        <div className="surface-card shadow-none bg-slate-200 dark:bg-white/[0.03] p-3 md:p-5">
           <div className="mb-4 flex gap-2">
             <input
               value={commentText}

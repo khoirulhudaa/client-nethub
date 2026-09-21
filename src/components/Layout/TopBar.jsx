@@ -103,7 +103,7 @@ const TopBar = ({ onMenuClick }) => {
   };
 
   return (
-    <header className="w-full surface-card h-[8.6vh] sticky top-0 z-[999] border-r border-white/10 flex h-16 items-center gap-3 py-0 rounded-none border-b px-3 sm:px-[11px]">
+    <header className="w-full surface-card h-[8.6vh] sticky top-0 z-[999] border-r border-white/10 flex h-16 items-center gap-3 py-0 rounded-none border-b px-0 sm:px-[11px]">
       <div
         className="pointer-events-none absolute top-[1.5px] inset-0 z-0 hidden dark:block"
         style={{
@@ -121,7 +121,7 @@ const TopBar = ({ onMenuClick }) => {
         </button>
 
         {/* Search */}
-        <form onSubmit={handleSearch} className="relative w-full max-w-md">
+        <form onSubmit={handleSearch} className="relative w-full md:flex hidden max-w-md">
           <Search
             size={16}
             className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
