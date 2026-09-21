@@ -33,8 +33,8 @@ const ENDPOINTS = {
 };
 
 const TABS = [
-  { key: "overview", label: "Overview", icon: UserIcon },
-  { key: "guides", label: "My Guides", icon: FileText },
+  { key: "overview", label: "Info", icon: UserIcon },
+  { key: "guides", label: "Guides", icon: FileText },
   { key: "saved", label: "Saved", icon: BookmarkCheck },
   { key: "liked", label: "Liked", icon: Heart },
   { key: "account", label: "Account", icon: Lock },
@@ -592,7 +592,7 @@ const Profile = () => {
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 flex flex-wrap gap-3">
+      <div className="mb-6 flex flex-wrap gap-2 md:gap-3">
         {TABS.map((t) => (
           <TabButton key={t.key} active={tab === t.key} icon={t.icon} label={t.label} onClick={() => setTab(t.key)} />
         ))}
