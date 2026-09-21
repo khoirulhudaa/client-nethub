@@ -1116,7 +1116,7 @@ const isOwner = user?.id === post?.author?._id;
           />
 
           {/* Sidebar - full height */}
-          <div className="fixed right-0 top-0 z-50 flex h-full w-full max-w-7xl flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-[#12121b]">
+          <div className="fixed right-0 top-0 z-[9999] flex h-full w-full max-w-5xl flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-[#12121b]">
             {/* Header */}
             <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-white/10">
               <h3 className="text-base font-semibold">
