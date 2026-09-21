@@ -1,10 +1,19 @@
-import { useState } from "react";
 import {
-  Cpu, HardDrive, MemoryStick, CircuitBoard, Fan, Power, Box,
-  AlertTriangle, CheckCircle2, RotateCcw, Cable, Zap, Play,
-  Gamepad2, Briefcase, Video, Server, Wallet, ChevronRight,
-  Plug, Info, X
+  AlertTriangle,
+  Box,
+  Briefcase,
+  Cable,
+  CheckCircle2,
+  Cpu,
+  Gamepad2,
+  Info,
+  Power,
+  RotateCcw,
+  Server,
+  Video,
+  Wallet
 } from "lucide-react";
+import { useState } from "react";
 
 /* ====================== DATA ====================== */
 const PURPOSES = [
@@ -165,10 +174,10 @@ export default function PCBuilder() {
   // ===== RENDER: PURPOSE =====
   if (step === "purpose") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white flex items-center justify-center p-6">
+      <div className="min-h-screen bg-gradient-to-br from-white/5 to-slate-800 text-white flex items-center justify-center p-6">
         <div className="max-w-3xl w-full">
           <h1 className="text-3xl font-bold text-center mb-2">Rakit PC Simulator</h1>
-          <p className="text-center text-slate-400 mb-10">Pilih tujuanmu dulu, biar rekomendasinya pas</p>
+          <p className="text-center text-white mb-10">Pilih tujuanmu dulu, biar rekomendasinya pas</p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {PURPOSES.map(p => (
@@ -179,7 +188,7 @@ export default function PCBuilder() {
               >
                 <p.icon size={32} className="mb-4 text-blue-400 group-hover:scale-110 transition" />
                 <h3 className="font-semibold text-lg">{p.label}</h3>
-                <p className="text-sm text-slate-400 mt-1">{p.desc}</p>
+                <p className="text-sm text-white mt-1">{p.desc}</p>
               </button>
             ))}
           </div>
@@ -190,9 +199,9 @@ export default function PCBuilder() {
 
   // ===== RENDER: BUILD + WIRING =====
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen surface-card text-slate-100">
       {/* Top Bar */}
-      <div className="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+      <div className="border-b border-slate-800 bg-white/5 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h1 className="font-semibold">Rakit PC</h1>
@@ -203,7 +212,7 @@ export default function PCBuilder() {
           
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex items-center gap-2 text-sm">
-              <span className="text-slate-400">Komponen</span>
+              <span className="text-white">Komponen</span>
               <div className="w-24 h-1.5 bg-slate-700 rounded-full overflow-hidden">
                 <div className="h-full bg-blue-500 transition-all" style={{ width: `${(progress/7)*100}%` }} />
               </div>
@@ -212,7 +221,7 @@ export default function PCBuilder() {
             
             {step === "wiring" && (
               <div className="flex items-center gap-2 text-sm">
-                <span className="text-slate-400">Kabel</span>
+                <span className="text-white">Kabel</span>
                 <div className="w-20 h-1.5 bg-slate-700 rounded-full overflow-hidden">
                   <div className="h-full bg-emerald-500 transition-all" style={{ width: `${(wiredCount/neededCables.length)*100}%` }} />
                 </div>
@@ -220,7 +229,7 @@ export default function PCBuilder() {
               </div>
             )}
 
-            <button onClick={reset} className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white">
+            <button onClick={reset} className="flex items-center gap-1.5 text-sm text-white hover:text-white">
               <RotateCcw size={14} /> Reset
             </button>
           </div>
@@ -233,7 +242,7 @@ export default function PCBuilder() {
         <div className="lg:col-span-3 space-y-4">
           {step === "build" && (
             <>
-              <div className="bg-slate-900 rounded-xl border border-slate-800 p-3">
+              <div className="bg-white/5 rounded-xl border border-slate-800 p-3">
                 <p className="text-xs font-medium text-slate-500 mb-2">KATEGORI</p>
                 <div className="flex flex-wrap gap-1.5">
                   {Object.keys(COMPONENTS).map(cat => (
@@ -243,7 +252,7 @@ export default function PCBuilder() {
                       className={`px-2.5 py-1 rounded-lg text-xs capitalize transition ${
                         selectedCat === cat 
                           ? "bg-blue-600 text-white" 
-                          : "bg-slate-800 text-slate-400 hover:bg-slate-700"
+                          : "bg-slate-800 text-white hover:bg-slate-700"
                       }`}
                     >
                       {cat}
@@ -252,7 +261,7 @@ export default function PCBuilder() {
                 </div>
               </div>
 
-              <div className="bg-slate-900 rounded-xl border border-slate-800 p-3">
+              <div className="bg-white/5 rounded-xl border border-slate-800 p-3">
                 <p className="text-xs font-medium text-slate-500 mb-3">Drag ke slot</p>
                 <div className="space-y-2 max-h-[520px] overflow-y-auto">
                   {COMPONENTS[selectedCat].map(item => (
@@ -281,7 +290,7 @@ export default function PCBuilder() {
           )}
 
           {step === "wiring" && (
-            <div className="bg-slate-900 rounded-xl border border-slate-800 p-4">
+            <div className="bg-white/5 rounded-xl border border-slate-800 p-4">
               <p className="text-sm font-medium mb-3 flex items-center gap-2">
                 <Cable size={16} /> Daftar Kabel
               </p>
@@ -312,12 +321,8 @@ export default function PCBuilder() {
 
         {/* ===== CENTER: Visual Case ===== */}
         <div className="lg:col-span-5">
-          <div className="bg-slate-900 rounded-xl border border-slate-800 p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-medium flex items-center gap-2">
-                <Box size={16} /> 
-                {step === "wiring" ? "Pasang Kabel ke Pin" : "Casing"}
-              </h2>
+          <div className="bg-white/5 rounded-xl border border-slate-800 px-3">
+            <div className="flex items-center justify-between mb-3">
               {step === "build" && canWire && (
                 <button
                   onClick={() => setStep("wiring")}
@@ -329,7 +334,7 @@ export default function PCBuilder() {
               {step === "wiring" && (
                 <button
                   onClick={() => setStep("build")}
-                  className="text-sm text-slate-400 hover:text-white"
+                  className="text-sm text-white hover:text-white"
                 >
                   ← Kembali
                 </button>
@@ -337,10 +342,10 @@ export default function PCBuilder() {
             </div>
 
             {/* Visual Motherboard */}
-            <div className="relative mx-auto max-w-[400px] aspect-[1/1.3] bg-slate-950 rounded-lg border-4 border-slate-700 overflow-hidden">
+            <div className="relative mx-auto aspect-[1/1.3] bg-slate-950 rounded-lg border-4 border-slate-700 overflow-hidden">
               
               {/* Motherboard Area */}
-              <div className="absolute inset-2 bottom-[16%] bg-[#111827] rounded border border-slate-700">
+              <div className="absolute inset-2 bottom-[16%] bg-[#111827] border border-slate-700">
                 {/* PCB Grid */}
                 <div className="absolute inset-0 opacity-30" style={{
                   backgroundImage: "linear-gradient(#1e293b 1px, transparent 1px), linear-gradient(90deg, #1e293b 1px, transparent 1px)",
@@ -371,7 +376,7 @@ export default function PCBuilder() {
                   label="8-pin" 
                   installed={!!cables.cpu8} 
                   onDrop={onHeaderDrop}
-                  className="absolute right-3 top-14 w-5 h-9"
+                  className="absolute right-3 top-14 w-5 flex items-center justify-center h-9"
                   vertical
                 />
 
@@ -379,11 +384,22 @@ export default function PCBuilder() {
                 <div
                   onDrop={e => onDrop(e, "ram")}
                   onDragOver={e => e.preventDefault()}
-                  className={`absolute right-14 top-10 w-6 h-28 rounded border-2 border-dashed flex items-center justify-center ${
+                  className={`absolute right-14 top-72 w-40 h-5 rounded border-2 border-dashed flex items-center justify-center ${
                     build.ram ? "border-emerald-500 bg-emerald-500/20" : "border-blue-500/60 bg-blue-500/10"
                   }`}
                 >
-                  <span className="text-[9px] -rotate-90 whitespace-nowrap text-blue-300">
+                  <span className="text-[9px] whitespace-nowrap text-blue-300">
+                    {build.ram ? "RAM ✓" : "DDR"}
+                  </span>
+                </div>
+                <div
+                  onDrop={e => onDrop(e, "ram")}
+                  onDragOver={e => e.preventDefault()}
+                  className={`absolute right-14 top-64 w-40 h-5 rounded border-2 border-dashed flex items-center justify-center ${
+                    build.ram ? "border-emerald-500 bg-emerald-500/20" : "border-blue-500/60 bg-blue-500/10"
+                  }`}
+                >
+                  <span className="text-[9px] whitespace-nowrap text-blue-300">
                     {build.ram ? "RAM ✓" : "DDR"}
                   </span>
                 </div>
@@ -392,7 +408,7 @@ export default function PCBuilder() {
                 <div
                   onDrop={e => onDrop(e, "gpu")}
                   onDragOver={e => e.preventDefault()}
-                  className={`absolute left-6 right-16 top-32 h-7 rounded border-2 border-dashed flex items-center justify-center ${
+                  className={`absolute left-6 right-16 top-32 h-7 w-[70%] rounded border-2 border-dashed flex items-center justify-center ${
                     build.gpu ? "border-emerald-500 bg-emerald-500/20" : "border-purple-500/60 bg-purple-500/10"
                   }`}
                 >
@@ -418,7 +434,7 @@ export default function PCBuilder() {
                   label="24-pin" 
                   installed={!!cables.atx24} 
                   onDrop={onHeaderDrop}
-                  className="absolute right-2 top-52 w-4 h-16"
+                  className="absolute right-2 top-52 flex items-center justify-center w-4 h-16"
                   vertical
                 />
 
@@ -428,7 +444,7 @@ export default function PCBuilder() {
                 </div>
 
                 {/* FAN Headers */}
-                <div className="absolute left-28 top-3 flex gap-1">
+                <div className="absolute left-28 top-5 flex gap-1">
                   <Header id="cpu_fan" label="CPU_FAN" installed={!!cables.cpu_fan} onDrop={onHeaderDrop} className="px-1.5 py-0.5 text-[8px]" />
                   <Header id="sys_fan" label="SYS_FAN" installed={!!cables.sys_fan} onDrop={onHeaderDrop} className="px-1.5 py-0.5 text-[8px]" />
                 </div>
@@ -455,8 +471,8 @@ export default function PCBuilder() {
               <div
                 onDrop={e => onDrop(e, "psu")}
                 onDragOver={e => e.preventDefault()}
-                className={`absolute bottom-2 left-2 right-2 h-[14%] rounded border-2 border-dashed flex flex-col items-center justify-center ${
-                  build.psu ? "border-emerald-500 bg-emerald-500/10" : "border-orange-500/50"
+                className={`absolute bottom-1.5 left-2 right-2 h-[14%] border-2 border-dashed flex flex-col items-center justify-center ${
+                  build.psu ? "border-emerald-500 bg-white/5" : "border-orange-500/50 bg-white/5"
                 }`}
               >
                 <Power size={14} className="mb-0.5" />
@@ -510,12 +526,12 @@ export default function PCBuilder() {
           )}
 
           {/* Build Summary */}
-          <div className="bg-slate-900 rounded-xl border border-slate-800 p-4">
+          <div className="bg-white/5 rounded-xl border border-slate-800 p-4">
             <p className="text-sm font-medium mb-3">Ringkasan Build</p>
             <div className="space-y-2 text-sm">
               {requiredCats.map(cat => (
                 <div key={cat} className="flex justify-between items-center">
-                  <span className="text-slate-400 capitalize">{cat}</span>
+                  <span className="text-white capitalize">{cat}</span>
                   <span className={build[cat] ? "text-emerald-400" : "text-slate-600"}>
                     {build[cat]?.name || "—"}
                   </span>
@@ -543,7 +559,7 @@ export default function PCBuilder() {
           )}
 
           {step === "wiring" && !allWired && (
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 text-sm text-slate-400">
+            <div className="bg-white/5 border border-slate-800 rounded-xl p-4 text-sm text-white">
               <Info size={16} className="inline mr-2" />
               Tarik kabel dari panel kiri, lalu drop ke pin yang sesuai di motherboard.
             </div>
@@ -563,7 +579,7 @@ function Header({ id, label, installed, onDrop, className = "", vertical = false
       className={`rounded border text-center transition cursor-pointer ${
         installed 
           ? "border-emerald-500 bg-emerald-500/30 text-emerald-200" 
-          : "border-slate-600 bg-slate-800/80 text-slate-400 hover:border-slate-400"
+          : "border-slate-600 bg-slate-800/80 text-white hover:border-slate-400"
       } ${className}`}
     >
       <span className={vertical ? "text-[8px] font-medium" : ""} style={vertical ? { writingMode: "vertical-rl" } : {}}>
