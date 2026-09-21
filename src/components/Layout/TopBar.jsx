@@ -137,9 +137,6 @@ const TopBar = ({ onMenuClick }) => {
         {/* Quick links — desktop */}
         <div className="ml-3 hidden items-center gap-3 md:flex">
           <TopLink to="/trending" icon={Flame} label="Trending" />
-          {!isGuest && (
-            <TopLink to="/reading-list" icon={BookOpen} label="Reading List" />
-          )}
           <TopLink to="/tools/subnet" icon={Calculator} label="Subnet" />
           <TopLink to="/practice" icon={PencilRuler} label="Practice" />
         </div>
@@ -322,7 +319,19 @@ const TopBar = ({ onMenuClick }) => {
                         type="button"
                         onClick={() => {
                           setOpenProfile(false);
-                          navigate("/my-posts"); // sesuaikan route
+                          navigate("/reading-list");
+                        }}
+                        className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition hover:bg-black/[0.03] dark:text-gray-200 dark:hover:bg-white/[0.05]"
+                      >
+                        <BookOpen size={16} className="text-gray-400" />
+                        Reading List
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setOpenProfile(false);
+                          navigate("/my-posts");
                         }}
                         className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition hover:bg-black/[0.03] dark:text-gray-200 dark:hover:bg-white/[0.05]"
                       >
