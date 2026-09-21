@@ -274,10 +274,10 @@ export default function PCBuilder() {
 
   // ===== RENDER =====
   return (
-    <div className="min-h-screen p-6 text-slate-100">
+    <div className="min-h-screen nd:p-6 text-slate-100">
       {/* Top Bar */}
       <div className="border-b border-slate-800 bg-white/5 backdrop-blur sticky top-0 z-20 rounded-xl mb-4">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+        <div className="max-w-7xl mx-auto px-3 md:px-4 py-3 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <h1 className="font-bold text-md">Build CPU</h1>
             <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">
