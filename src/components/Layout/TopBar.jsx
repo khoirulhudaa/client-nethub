@@ -2,6 +2,7 @@ import {
   AlertTriangle,
   Ban,
   Bell,
+  BookOpen,
   Calculator,
   CheckCircle2,
   Flame,
@@ -9,19 +10,18 @@ import {
   LogOut,
   Menu,
   Moon,
-  X,
   PencilRuler,
   Plus,
   Search,
   Sun,
   User,
-  BookOpen,
+  X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import api from "../../api/axios.js";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useTheme } from "../../context/ThemeContext.jsx";
-import api from "../../api/axios.js";
 
 const TopBar = ({ onMenuClick }) => {
   const [openNotif, setOpenNotif] = useState(false);
@@ -103,7 +103,7 @@ const TopBar = ({ onMenuClick }) => {
   };
 
   return (
-    <header className="w-full surface-card h-[8.6vh] sticky top-0 z-[999] border-r border-white/10 flex h-16 items-center gap-3 py-0 rounded-none border-b px-0 sm:px-[11px]">
+    <header className="w-full surface-card h-[8.6vh] sticky top-0 z-[999] border-r border-white/10 flex h-16 items-center gap-3 py-0 rounded-none border-b px-0 md:px-[11px]">
       <div
         className="pointer-events-none absolute top-[1.5px] inset-0 z-0 hidden dark:block"
         style={{

@@ -1,14 +1,13 @@
-import { useNavigate } from "react-router-dom";
 import {
-  Network,
-  Monitor,
-  ChevronRight,
-  PencilRuler,
-  Lightbulb,
-  Target,
-  Clock,
   BookOpen,
+  ChevronRight,
+  Clock,
+  Lightbulb,
+  Monitor,
+  Network,
+  Target
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const practices = [
   {
@@ -57,9 +56,9 @@ const PracticeHub = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+    <div className="mx-auto max-w-7xl px-0 py-0 md:p-6">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-4 md:mb-6">
         <div className="flex items-center gap-2 text-accent">
           <span className="text-xs font-medium uppercase tracking-wide">
             Practice Lab

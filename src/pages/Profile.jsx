@@ -137,7 +137,7 @@ const OverviewTab = ({ profile, onSaved }) => {
   };
 
   return (
-    <div className="surface-card rounded-xl border border-border-light bg-white p-6 dark:border-border-dark">
+    <div className="surface-card rounded-xl border border-border-light bg-white p-3 md:p-6 dark:border-border-dark">
       <div className="mb-5 flex items-center justify-between">
         <h3 className="text-base font-semibold text-gray-900 dark:text-white">Intro & Biodata</h3>
         {!editing && (
@@ -558,9 +558,9 @@ const Profile = () => {
   }
 
   return (
-    <div className="mx-auto max-w-7xl p-6">
+    <div className="mx-auto max-w-7xl md:p-6">
       {/* Header */}
-      <div className="surface-card mb-6 flex flex-col gap-4 rounded-xl border border-border-light bg-white p-6 sm:flex-row sm:items-center sm:justify-between dark:border-border-dark">
+      <div className="surface-card mb-6 flex flex-col gap-4 rounded-xl border border-border-light bg-white p-3 md:p-6 sm:flex-row sm:items-center sm:justify-between dark:border-border-dark">
         <div className="flex items-center gap-4">
           <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-accent-soft text-xl font-semibold text-accent">
             {profile?.avatar ? (

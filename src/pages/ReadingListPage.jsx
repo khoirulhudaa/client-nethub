@@ -329,7 +329,7 @@ const ReadingListPage = () => {
   }
 
   return (
-    <div className="mx-auto max-w-7xl p-6">
+    <div className="mx-auto max-w-7xl md:p-6">
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-2 text-accent">

@@ -1,7 +1,6 @@
 import {
   BookOpen,
   Heart,
-  Loader2,
   MessageCircle,
   Plus,
   Search,
@@ -42,7 +41,7 @@ export default function Quizzes() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 px-0 py-0 md:py-6 md:px-6">
+    <div className="mx-auto max-w-7xl space-y-6 px-0 py-0 md:p-6">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
@@ -65,7 +64,7 @@ export default function Quizzes() {
       </div>
 
       {/* Search + Filter */}
-      <div className="flex flex-col p-3 md:py-7 md:px-4 w-full sm:py-4 relative bg-white/5 rounded-xl gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col p-3 md:py-7 md:px-4 w-full sm:py-4 relative bg-white/5 rounded-xl gap-4 md:flex-row md:items-center sm:justify-between">
         <form
           className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm sm:w-72"
           onSubmit={(e) => {

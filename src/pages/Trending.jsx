@@ -107,7 +107,7 @@ const ViewsChart = ({ posts }) => {
   if (top5.length === 0) return null;
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
+    <div className="rounded-2xl w-full border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
       <div className="mb-3 flex items-center gap-2">
         {/* <TrendingUp size={16} className="text-accent" /> */}
         <h3 className="text-sm font-semibold">Top 3 Guides by Views</h3>

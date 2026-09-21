@@ -16,7 +16,7 @@ const MyPosts = () => {
   }, []);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+    <div className="mx-auto max-w-7xl px-0 py-0 md:p-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
          <div className="flex text-left items-center gap-2 text-accent">
@@ -43,7 +43,7 @@ const MyPosts = () => {
           <p className="text-sm text-gray-500">Share your first fix, install guide, or topology diagram.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 px-7 py-7 sm:px-4 w-full sm:py-4 relative bg-white/5 rounded-xl">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 px-7 py-7 sm:px-4 w-full sm:py-4 relative bg-white/5 rounded-2xl">
           {posts.map((post) => (
             <PostCard key={post._id} post={post} />
           ))}

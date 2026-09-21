@@ -82,7 +82,7 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
   const greeting = hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
 
   return (
-    <div className="relative h-max border-b border-white/10 px-0 md:px-5 mb-6 sm:h-[11vh] pt-4 pb-4 flex flex-col gap-4 md:flex-row md:items-center sm:justify-between">
+    <div className="relative h-max border-b border-white/10 px-0 md:px-5 mb-6 md:h-[11vh] pt-4 pb-4 flex flex-col gap-4 md:flex-row md:items-center sm:justify-between">
       <div className="relative">
         <h1 className="mt-[-5px] text-xl font-semibold tracking-tight">
           {greeting}, {userName}
@@ -134,7 +134,7 @@ const MetricCard = ({ icon: Icon, iconClass, label, value, delta, deltaTone = "p
 const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading }) => {
   if (loading) {
     return (
-      <div className="mb-8 grid grid-cols-2 px-5 gap-4 lg:grid-cols-4">
+      <div className="mb-8 grid grid-cols-2 md:px-5 gap-4 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="h-[104px] animate-pulse rounded-xl border border-white bg-gray-100" />
         ))}

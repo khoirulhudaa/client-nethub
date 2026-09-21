@@ -163,7 +163,7 @@ export default function TakeQuizes() {
   const isLast = currentQ === quiz.questions.length - 1;
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 pb-16 p-6">
+    <div className="mx-auto max-w-7xl space-y-6 pb-16 md:p-6">
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
