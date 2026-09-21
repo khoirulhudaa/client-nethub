@@ -396,14 +396,8 @@ const Sidebar = ({ onNavigate }) => {
             title={collapsed ? user?.name : undefined}
             className={({ isActive }) =>
               collapsed
-                ? `mx-auto flex h-10 w-10 items-center justify-center overflow-hidden rounded-full ${
-                    isActive && !isGuest ? "ring-2 ring-accent" : ""
-                  }`
-                : `flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors ${
-                    isActive && !isGuest
-                      ? "dark:border-accent/40 text-slate-900 bg-gradient-to-br from-blue-100 to-blue-100"
-                      : "border-white hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]"
-                  }`
+                ? `mx-auto flex h-10 w-10 items-center justify-center overflow-hidden rounded-full`
+                : `flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors border-white hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]`
             }
           >
             <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-sm font-semibold text-accent">
@@ -420,10 +414,10 @@ const Sidebar = ({ onNavigate }) => {
               {!collapsed && (
                 <>
                   <div className="min-w-0 flex-1 overflow-hidden">
-                    <p className="truncate text-sm font-medium text-white dark:text-gray-900">
+                    <p className="truncate text-sm font-medium text-white dark:text-white/80">
                       {user?.name}
                     </p>
-                    <p className="truncate text-xs text-white dark:text-gray-900">
+                    <p className="truncate text-xs text-white dark:text-white/80">
                       {isGuest ? "Guest Reader" : user?.title}
                     </p>
                   </div>
