@@ -534,7 +534,7 @@ const isOwner = user?.id === post?.author?._id;
             <CategoryPill category={post.category} />
           </div>
           {isCompleted && (
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
+            <div className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
               <CheckCircle2 size={13} />
               Sudah dibaca
             </div>
@@ -583,8 +583,8 @@ const isOwner = user?.id === post?.author?._id;
             disabled={followLoading}
             className={`rounded-xl px-4 py-1.5 text-sm font-medium transition ${
               isFollowing
-                ? "border border-gray-300 bg-transparent text-gray-600 hover:bg-gray-100 dark:border-white/20 dark:text-gray-300"
-                : "bg-accent text-white hover:opacity-90"
+                ? "border border-gray-300 text-white bg-red-600 hover:bg-red-700 dark:border-white/40"
+                : "bg-blue-600 border dark:border-white/40 hover:bg-blue-700 text-white hover:opacity-90"
             }`}
           >
             {followLoading ? (

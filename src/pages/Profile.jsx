@@ -46,7 +46,7 @@ const TabButton = ({ active, icon: Icon, label, onClick, count }) => (
     onClick={onClick}
     className={`flex items-center gap-2 rounded-control px-3.5 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
       active
-        ? "bg-accent text-white"
+        ? "bg-gradient-to-br from-blue-400 to-blue-100 text-slate-900"
         : "text-gray-600 hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
     }`}
   >
@@ -54,7 +54,7 @@ const TabButton = ({ active, icon: Icon, label, onClick, count }) => (
     {label}
     {typeof count === "number" && (
       <span
-        className={`rounded-full px-1.5 py-0.5 text-[11px] font-semibold ${
+        className={`rounded-xl px-1.5 py-0.5 text-[11px] font-semibold ${
           active
             ? "bg-white/20 text-white"
             : "bg-black/[0.06] text-gray-500 dark:bg-white/[0.08] dark:text-gray-400"
@@ -287,7 +287,7 @@ const GuidesTab = () => {
               onClick={() => handlePin(post)}
               disabled={busyId === post._id}
               title={post.isPinned ? "Unpin" : "Pin"}
-              className="rounded-full bg-white/90 p-1.5 text-gray-600 shadow-sm backdrop-blur transition hover:text-accent disabled:opacity-50/90 dark:text-gray-300"
+              className="rounded-xl bg-white/90 p-1.5 text-gray-600 shadow-sm backdrop-blur transition hover:text-accent disabled:opacity-50/90 dark:text-gray-300"
             >
               {post.isPinned ? <PinOff size={14} /> : <Pin size={14} />}
             </button>
@@ -295,7 +295,7 @@ const GuidesTab = () => {
               onClick={() => handleDelete(post)}
               disabled={busyId === post._id}
               title="Hapus"
-              className="rounded-full bg-white/90 p-1.5 text-gray-600 shadow-sm backdrop-blur transition hover:text-red-500 disabled:opacity-50/90 dark:text-gray-300"
+              className="rounded-xl bg-white/90 p-1.5 text-gray-600 shadow-sm backdrop-blur transition hover:text-red-500 disabled:opacity-50/90 dark:text-gray-300"
             >
               <Trash2 size={14} />
             </button>
@@ -562,7 +562,7 @@ const Profile = () => {
       {/* Header */}
       <div className="surface-card mb-6 flex flex-col gap-4 rounded-xl border border-border-light bg-white p-3 md:p-6 sm:flex-row sm:items-center sm:justify-between dark:border-border-dark">
         <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-accent-soft text-xl font-semibold text-accent">
+          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-400 to-blue-100 text-xl font-semibold text-accent">
             {profile?.avatar ? (
               <img src={profile.avatar} alt={profile.name} className="h-full w-full object-cover" />
             ) : (

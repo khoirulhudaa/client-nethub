@@ -98,7 +98,7 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
       {!isGuest && (
         <button
           onClick={onNewPost}
-          className="relative w-full md:w-max flex md:inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90"
+          className="relative w-full md:w-max flex md:inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90"
         >
           <Plus size={16} /> New post
         </button>
@@ -109,7 +109,7 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
 
 // --- Metric cards ------------------------------------------------------------
 const MetricCard = ({ icon: Icon, iconClass, label, value, delta, deltaTone = "positive" }) => (
-  <div className=" bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-[#1E1E2A] p-4 shadow-sm">
+  <div className=" bg-gradient-to-br from-blue-400 to-blue-100 flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-[#1E1E2A] p-4 shadow-sm">
     <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${iconClass}`}>
       <Icon size={16} />
     </div>
@@ -121,7 +121,7 @@ const MetricCard = ({ icon: Icon, iconClass, label, value, delta, deltaTone = "p
           deltaTone === "positive"
             ? "text-emerald-600 dark:text-emerald-400"
             : deltaTone === "neutral"
-            ? "text-white dark:text-blue-950"
+            ? "text-blue-950"
             : "text-rose-600 dark:text-rose-400"
         }
       >
@@ -136,14 +136,14 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
     return (
       <div className="mb-8 grid grid-cols-2 md:px-5 gap-4 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-[104px] animate-pulse rounded-xl border border-white bg-gray-100" />
+          <div key={i} className="h-[104px] animate-pulse rounded-xl border border-white bg-white" />
         ))}
       </div>
     );
   }
 
   return (
-    <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4 md:px-5">
+    <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4 md:px-6">
       <MetricCard
         icon={Wifi}
         iconClass="bg-blue-50 text-blue-600 dark:bg-white dark:text-black"
@@ -442,7 +442,7 @@ const Dashboard = () => {
 
       <div className="border-t border-white/10 mb-6"></div>
 
-      <div className="md:px-4 pb-6">
+      <div className="md:px-6 pb-6">
         <div className="px-0 py-7 sm:px-0 w-full sm:py-4 relative rounded-xl bg-gradient-to-br from-blue-400 to-blue-900 dark:bg-white/5 dark:bg-none">
           {/* Header */}
           <header className="mt-1 px-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -541,7 +541,7 @@ const Dashboard = () => {
                     onClick={() => updateParam("category", "")}
                     className={`rounded-xl border px-3 py-1.5 text-sm transition ${
                       !category
-                        ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft dark:text-slate-900 text-white"
+                        ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 dark:text-slate-900 text-white"
                         : "border-gray-200 bg-white text-gray-600 hover:border-accent/50"
                     }`}
                   >
@@ -553,7 +553,7 @@ const Dashboard = () => {
                       onClick={() => updateParam("category", item)}
                       className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-sm transition ${
                         category === item
-                          ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-slate-900"
+                          ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-slate-900"
                           : "border-gray-200 bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
                       }`}
                     >
