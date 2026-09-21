@@ -1,16 +1,16 @@
 import {
-    ArrowLeft,
-    CheckSquare,
-    Network,
-    Plus,
-    Save,
-    Trash2
+  ArrowLeft,
+  CheckSquare,
+  Network,
+  Plus,
+  Save,
+  Trash2
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
-import TopologyCanvas, { CABLE_TYPES } from "./TopologyCanvas";
+import TopologyCanvas from "./TopologyCanvas";
 
 const CATEGORIES = ["Topology", "Maintenance", "Fixing", "Installation", "Hardware"];
 
@@ -223,19 +223,19 @@ export default function QuizBuilder() {
     };
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 pb-16 px-4 py-6 sm:px-6">
+    <div className="mx-auto max-w-7xl space-y-6 pb-16 px-0 py-0 md:py-6 md:px-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/quizzes")}
-            className="rounded-lg py-2 text-black dark:text-white hover:bg-gray-100"
+            className="rounded-lg py-2 text-black dark:text-white"
           >
             <ArrowLeft size={18} />
           </button>
           <div>
-            <h1 className="text-xl font-semibold">
-              {isEdit ? "Edit Quiz" : "Buat Quiz Baru"}
+            <h1 className="text-md w-max md:text-xl font-semibold">
+              {isEdit ? "Edit Quiz" : "Quiz Baru"}
             </h1>
           </div>
         </div>
@@ -244,15 +244,15 @@ export default function QuizBuilder() {
           <button
             onClick={() => handleSave(false)}
             disabled={saving}
-            className="btn-secondary inline-flex items-center gap-1.5 text-sm"
+            className="btn-secondary py-2 md:py-3 inline-flex items-center gap-1.5 text-sm"
           >
             <Save size={15} />
-            Simpan Draft
+              Draft
           </button>
           <button
             onClick={() => handleSave(true)}
             disabled={saving}
-            className="btn-primary inline-flex items-center gap-1.5 text-sm"
+            className="btn-primary py-2 md:py-3 inline-flex items-center gap-1.5 text-sm"
           >
             <Save size={15} />
             {saving ? "Menyimpan..." : "Publish"}
@@ -269,9 +269,9 @@ export default function QuizBuilder() {
       
 
       {/* Meta */}
-      <div className="grid grid-cols-1 gap-4 border border-gray-200 px-7 py-7 sm:px-4 w-full sm:py-4 relative dark:border-white/5 bg-slate-200 dark:bg-white/[0.03] rounded-xl">
+      <div className="grid grid-cols-1 gap-4 border border-gray-200 p-3 md:py-7 md:px-4 w-full sm:py-4 relative dark:border-white/5 bg-slate-200 dark:bg-white/[0.03] rounded-xl">
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-xs font-medium text-black dark:text-white">
+          <label className="mb-1 block text-sm md:text-xs font-medium text-black dark:text-white">
             Judul Quiz
           </label>
           <input
@@ -283,7 +283,7 @@ export default function QuizBuilder() {
         </div>
 
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-xs font-medium text-black dark:text-white">
+          <label className="mb-1 block text-sm md:text-xs font-medium text-black dark:text-white">
             Deskripsi singkat
           </label>
           <textarea
@@ -297,7 +297,7 @@ export default function QuizBuilder() {
 
         <div className="w-full flex gap-3.5"> 
           <div className="w-full">
-            <label className="mb-1 block text-xs font-medium text-black dark:text-white">
+            <label className="mb-1 block text-sm md:text-xs font-medium text-black dark:text-white">
               Kategori
             </label>
             <select
@@ -314,7 +314,7 @@ export default function QuizBuilder() {
           </div>
 
           <div className="w-full">
-            <label className="mb-1 block text-xs font-medium text-black dark:text-white">
+            <label className="mb-1 block text-sm md:text-xs font-medium text-black dark:text-white">
               Tags (pisahkan koma)
             </label>
             <input
@@ -330,16 +330,16 @@ export default function QuizBuilder() {
         {/* Question List + Editor */}
         <div className="space-y-5">
         {/* ===== Daftar Soal (horizontal) ===== */}
-        <div className="rounded-xl border border-gray-200 w-full relative dark:border-white/5 bg-slate-200 dark:bg-white/[0.03] p-3">
+        <div className="rounded-xl border border-gray-200 w-full relative dark:border-white/5 bg-slate-200 dark:bg-white/[0.03] p-1 md:p-3">
             <div className="mb-2 flex items-center justify-between px-2">
-            <p className="text-xs font-semibold uppercase tracking-wide dark:text-gray-400">
+            <p className="text-sm md:text-xs font-semibold uppercase tracking-wide dark:text-gray-400">
                 Soal ({questions.length}/15)
             </p>
             <button
                 type="button"
                 onClick={addQuestion}
                 disabled={questions.length >= 15}
-                className="inline-flex items-center gap-1 rounded-md border border-dashed border-gray-300 px-2.5 py-1 text-xs text-gray-500 transition hover:border-accent hover:text-accent disabled:opacity-40"
+                className="inline-flex items-center gap-1 rounded-md border border-dashed border-gray-300 px-2.5 py-1 text-sm md:text-xs text-gray-500 transition hover:border-accent hover:text-accent disabled:opacity-40"
             >
                 <Plus size={13} />
                 Tambah
@@ -360,7 +360,7 @@ export default function QuizBuilder() {
                 >
                 {/* Nomor */}
                 <span
-                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-xs font-semibold ${
+                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-sm md:text-xs font-semibold ${
                     activeIndex === i
                         ? "bg-accent text-white"
                         : "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300"
@@ -383,7 +383,7 @@ export default function QuizBuilder() {
         </div>
 
         {/* ===== Editor Soal Aktif ===== */}
-        <div className="flex-1 space-y-5 rounded-xl border border-gray-200 dark:border-white/5 bg-slate-200 dark:bg-white/[0.03] p-5">
+        <div className="flex-1 space-y-5 rounded-xl border border-gray-200 dark:border-white/5 bg-slate-200 dark:bg-white/[0.03] p-3 md:p-5">
             <div className="flex items-center justify-between">
             <h3 className="font-medium">Soal #{activeIndex + 1}</h3>
             <button
@@ -425,7 +425,7 @@ export default function QuizBuilder() {
 
             {/* Teks pertanyaan */}
             <div>
-            <label className="mb-1 block text-xs font-medium text-black dark:text-white">
+            <label className="mb-1 block text-sm md:text-xs font-medium text-black dark:text-white">
                 Pertanyaan
             </label>
             <textarea
@@ -441,7 +441,7 @@ export default function QuizBuilder() {
 
             {/* Points */}
             <div className="w-32">
-            <label className="mb-1 block text-xs font-medium text-black dark:text-white">
+            <label className="mb-1 block text-sm md:text-xs font-medium text-black dark:text-white">
                 Poin
             </label>
             <input
@@ -462,10 +462,10 @@ export default function QuizBuilder() {
             {current.type === "multiple_choice" && (
             <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                <label className="text-xs font-medium text-black dark:text-white">
+                <label className="text-sm md:text-xs font-medium text-black dark:text-white">
                     Opsi Jawaban
                 </label>
-                <label className="flex items-center gap-2 text-xs">
+                <label className="flex items-center gap-2 text-sm md:text-xs">
                     <input
                     type="checkbox"
                     checked={current.allowMultiple}
@@ -520,7 +520,7 @@ export default function QuizBuilder() {
                 <button
                 type="button"
                 onClick={addOption}
-                className="text-xs text-accent hover:underline"
+                className="text-sm md:text-xs text-accent hover:underline"
                 >
                 + Tambah opsi
                 </button>
@@ -532,7 +532,7 @@ export default function QuizBuilder() {
             <div className="space-y-4">
                 <div className="rounded-lg bg-blue-50 p-3 text-sm text-blue-800 dark:bg-blue-500/10 dark:text-blue-300">
                 <p className="font-medium">Kunci Jawaban Topology</p>
-                <p className="mt-1 text-xs">
+                <p className="mt-1 text-sm md:text-xs">
                     Susun topology yang benar di bawah. User harus meniru susunan
                     hardware + jenis kabel yang sama.
                 </p>
@@ -560,7 +560,7 @@ export default function QuizBuilder() {
 
             {/* Explanation */}
             <div>
-            <label className="mb-1 block text-xs font-medium text-black dark:text-white">
+            <label className="mb-1 block text-sm md:text-xs font-medium text-black dark:text-white">
                 Penjelasan (ditampilkan setelah submit)
             </label>
             <textarea

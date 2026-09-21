@@ -221,18 +221,17 @@ const Trending = () => {
   }, [posts]);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+    <div className="mx-auto max-w-7xl px-0 py-0 md:py-6 md:px-6">
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2 text-accent">
-            <Flame size={16} />
             <span className="text-xs font-semibold uppercase tracking-wide">
               Discover
             </span>
           </div>
           <h1 className="text-xl font-semibold tracking-tight">Trending</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="md:flex hidden mt-1 text-sm text-gray-500">
             Most popular guides and quizzes
           </p>
         </div>
@@ -254,40 +253,6 @@ const Trending = () => {
         </div>
       </div>
 
-      {/* Stats */}
-      {/* {!loading && posts.length > 0 && (
-        <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <StatCard
-            icon={BookOpen}
-            label="Trending Guides"
-            value={stats.totalPosts}
-            sub={`in last ${period === 3650 ? "all time" : `${period} days`}`}
-          />
-          <StatCard
-            icon={Eye}
-            label="Total Views"
-            value={stats.totalViews.toLocaleString()}
-            sub="across trending guides"
-          />
-          <StatCard
-            icon={Heart}
-            label="Total Likes"
-            value={stats.totalLikes.toLocaleString()}
-            sub="community engagement"
-          />
-          <StatCard
-            icon={Award}
-            label="Top Guide"
-            value="#1"
-            sub={
-              stats.topTitle.length > 28
-                ? stats.topTitle.slice(0, 28) + "…"
-                : stats.topTitle
-            }
-          />
-        </div>
-      )} */}
-
       {/* Chart + Guides */}
       {loading ? (
         <div className="">
@@ -303,8 +268,8 @@ const Trending = () => {
           <p className="text-sm text-gray-500">Try a longer period.</p>
         </div>
       ) : (
-        <>
-          <div className="mb-8">
+        <div>
+          <div className="mb-8 md:flex hidden">
             <ViewsChart posts={posts} />
           </div>
 
@@ -325,7 +290,7 @@ const Trending = () => {
               </div>
             ))}
           </div>
-        </>
+        </div>
       )}
 
       {/* ===================== TRENDING QUIZZES ===================== */}

@@ -82,7 +82,7 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
   const greeting = hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
 
   return (
-    <div className="relative h-max border-b border-white/10 px-0 md:px-5 mb-6 md:h-[11vh] pt-4 pb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="relative h-max border-b border-white/10 px-0 md:px-5 mb-6 sm:h-[11vh] pt-4 pb-4 flex flex-col gap-4 md:flex-row md:items-center sm:justify-between">
       <div className="relative">
         <h1 className="mt-[-5px] text-xl font-semibold tracking-tight">
           {greeting}, {userName}
@@ -98,7 +98,7 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
       {!isGuest && (
         <button
           onClick={onNewPost}
-          className="relative w-full flex md:inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90"
+          className="relative w-full md:w-max flex md:inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90"
         >
           <Plus size={16} /> New post
         </button>
