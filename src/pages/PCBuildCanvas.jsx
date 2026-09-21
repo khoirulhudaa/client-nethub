@@ -274,7 +274,7 @@ export default function PCBuilder() {
 
   // ===== RENDER =====
   return (
-    <div className="min-h-screen nd:p-6 text-slate-100">
+    <div className="min-h-screen md:p-6 text-slate-100">
       {/* Top Bar */}
       <div className="border-b border-slate-800 bg-white/5 backdrop-blur sticky top-0 z-20 rounded-xl mb-4">
         <div className="max-w-7xl mx-auto px-3 md:px-4 py-3 flex flex-wrap items-center justify-between gap-3">
