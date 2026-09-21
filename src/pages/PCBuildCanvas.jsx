@@ -280,7 +280,7 @@ export default function PCBuilder() {
         <div className="max-w-7xl mx-auto px-3 md:px-4 py-3 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <h1 className="font-bold text-md">Build CPU</h1>
-            <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">
+            <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-md">
               {mode === "visual" ? "Visual Mode" : "Form Mode"}
             </span>
           </div>
