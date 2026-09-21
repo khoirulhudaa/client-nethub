@@ -156,7 +156,7 @@ const TopBar = ({ onMenuClick }) => {
           <div className="relative" ref={notifRef}>
             <button
               type="button"
-              className="relative dark:border-none border-slate-300 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+              className="relative border-slate-300 dark:border-white/15 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
               title="Notifications"
               onClick={openNotifications}
             >
@@ -258,7 +258,7 @@ const TopBar = ({ onMenuClick }) => {
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="dark:border-none border-slate-300 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+            className="border-slate-300 dark:border-white/15 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
             title="Toggle theme"
             >
             {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
@@ -288,7 +288,7 @@ const TopBar = ({ onMenuClick }) => {
             </button>
 
             {openProfile && (
-              <div className="absolute shadow-2xl right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-white/10 dark:bg-[#12121a]">
+              <div className="absolute shadow-2xl right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-white/10 dark:bg-[#12121a]">
                 {/* Header */}
                 <div className="border-b border-gray-100 px-4 py-3 dark:border-white/10">
                   <p className="truncate text-sm font-semibold">
