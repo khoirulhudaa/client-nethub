@@ -168,7 +168,7 @@ const Sidebar = ({ onNavigate }) => {
 
       {/* <img src="/hero.jpg" alt="wallpaper-sidebar" className="rotate-[4deg] scale-[2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-5 left-0" /> */}
       <img src="/sidebar.png" alt="wallpaper-sidebar" className="rotate-[4deg] scale-[2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-5 left-0" />
-      <img src="/hero.jpg" alt="wallpaper-sidebar" className="rotate-[4deg] scale-[2] w-full h-screen dark:hidden flex object-cover absolute opacity-90 z-0 top-0 left-0" />
+      <img src="/hero.jpg" alt="wallpaper-sidebar" className="rotate-[4deg] scale-[2] w-full h-screen dark:hidden flex object-cover absolute brightness-[70%] z-0 top-0 left-0" />
       
       <div className="z-10 relative h-screen">
         {/* Logo + toggle */}

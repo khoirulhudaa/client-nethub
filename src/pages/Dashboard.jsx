@@ -553,7 +553,7 @@ const Dashboard = () => {
                       onClick={() => updateParam("category", item)}
                       className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-sm transition ${
                         category === item
-                          ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft dark:text-slate-900 text-white"
+                          ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-slate-900"
                           : "border-gray-200 bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
                       }`}
                     >
