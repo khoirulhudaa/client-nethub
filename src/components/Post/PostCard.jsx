@@ -57,7 +57,7 @@ const PostCard = ({ post, featured = false }) => {
   return (
     <Link
       to={`/posts/${post.slug}`}
-      className={`hover-lift bg-slate-200 rounded-xl dark:surface-card border !border-white/20 group active:scale-[0.99] duration-100 relative flex flex-col overflow-hidden ${
+      className={`bg-slate-200 rounded-xl dark:surface-card border !border-white/20 group active:scale-[0.99] duration-100 relative flex flex-col overflow-hidden ${
         featured ? "h-full" : ""
       }`}
     >
@@ -82,7 +82,7 @@ const PostCard = ({ post, featured = false }) => {
         )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-3 p-3.5 py-4">
+      <div className="flex flex-1 flex-col group-hover:bg-slate-900 gap-3 p-3.5 py-4">
         <div className="flex items-center justify-between gap-2">
           <CategoryPill category={post.category} />
           
