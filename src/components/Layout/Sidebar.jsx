@@ -427,7 +427,7 @@ const Sidebar = ({ onNavigate }) => {
                       e.stopPropagation();
                       handleLogoutClick();
                     }}
-                    className="shrink-0 rounded-md p-1.5 text-white transition-colors hover:bg-black/5 hover:text-red-500 dark:text-gray-900 dark:hover:bg-white/10"
+                    className="shrink-0 rounded-md p-1.5 text-white transition-colors hover:bg-black/5 hover:text-red-500 dark:text-white/90 dark:hover:bg-white/10"
                     title="Log out"
                   >
                     <LogOut size={16} />

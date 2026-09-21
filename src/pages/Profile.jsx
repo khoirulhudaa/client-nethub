@@ -47,7 +47,7 @@ const TabButton = ({ active, icon: Icon, label, onClick, count }) => (
     className={`flex items-center gap-2 rounded-control px-3.5 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
       active
         ? "bg-gradient-to-br from-blue-400 to-blue-100 text-slate-900"
-        : "text-gray-600 hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
+        : "text-gray-600 border border-white/10 hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
     }`}
   >
     <Icon size={16} />
@@ -73,7 +73,7 @@ const FieldLabel = ({ children }) => (
 );
 
 const EmptyState = ({ text }) => (
-  <div className="surface-card flex flex-col items-center justify-center gap-1 rounded-xl border border-border-light bg-white py-14 text-center dark:border-border-dark">
+  <div className="surface-card dark:bg-white/5 flex flex-col items-center justify-center gap-1 rounded-xl border border-border-light bg-white py-14 text-center dark:border-border-dark">
     <p className="text-sm text-gray-500 dark:text-gray-400">{text}</p>
   </div>
 );
@@ -137,7 +137,7 @@ const OverviewTab = ({ profile, onSaved }) => {
   };
 
   return (
-    <div className="surface-card rounded-xl border border-border-light bg-white p-3 md:p-6 dark:border-border-dark">
+    <div className="surface-card dark:bg-white/5 rounded-xl border border-border-light bg-white p-3 md:px-4 md:py-4 dark:border-border-dark">
       <div className="mb-5 flex items-center justify-between">
         <h3 className="text-base font-semibold text-gray-900 dark:text-white">Intro & Biodata</h3>
         {!editing && (
@@ -278,7 +278,7 @@ const GuidesTab = () => {
   if (posts.length === 0) return <EmptyState text="Kamu belum membuat guide apa pun." />;
 
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="surface-card dark:bg-white/5 rounded-xl border border-border-light bg-white p-3 md:px-4 md:py-4 dark:border-border-dark grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
       {posts.map((post) => (
         <div key={post._id} className="relative">
           <PostCard post={post} />
@@ -319,7 +319,12 @@ const SavedTab = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  return <PostGrid posts={posts} loading={loading} emptyText="Belum ada guide yang kamu simpan." />;
+  return (
+    <div className="surface-card dark:bg-white/5 rounded-xl border border-border-light bg-white p-3 md:px-4 md:py-4 dark:border-border-dark">
+      <PostGrid posts={posts} loading={loading} emptyText="Belum ada guide yang kamu simpan." />
+    </div>
+  )
+  
 };
 
 // --- Liked tab -------------------------------------------------------------------
@@ -335,7 +340,12 @@ const LikedTab = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  return <PostGrid posts={posts} loading={loading} emptyText="Belum ada guide yang kamu sukai." />;
+  return (
+    <div className="surface-card dark:bg-white/5 rounded-xl border border-border-light bg-white p-3 md:px-4 md:py-4 dark:border-border-dark">
+      <PostGrid posts={posts} loading={loading} emptyText="Belum ada guide yang kamu sukai." />
+    </div>
+    
+  );
 };
 
 // --- Account settings tab: username / email / password -------------------------
@@ -404,7 +414,7 @@ const AccountTab = ({ profile, onSaved }) => {
       {/* Username */}
       <form
         onSubmit={submitUsername}
-        className="surface-card rounded-xl border border-border-light bg-white p-6 dark:border-border-dark"
+        className="surface-card dark:bg-white/5 rounded-xl border border-border-light bg-white p-4 dark:border-border-dark"
       >
         <div className="mb-4 flex items-center gap-2">
           <UserIcon size={16} className="text-accent" />
@@ -433,7 +443,7 @@ const AccountTab = ({ profile, onSaved }) => {
       {/* Email */}
       <form
         onSubmit={submitEmail}
-        className="surface-card rounded-xl border border-border-light bg-white p-6 dark:border-border-dark"
+        className="surface-card dark:bg-white/5 rounded-xl border border-border-light bg-white p-4 dark:border-border-dark"
       >
         <div className="mb-4 flex items-center gap-2">
           <Mail size={16} className="text-accent" />
@@ -475,7 +485,7 @@ const AccountTab = ({ profile, onSaved }) => {
       {/* Password */}
       <form
         onSubmit={submitPassword}
-        className="surface-card rounded-xl border border-border-light bg-white p-6 dark:border-border-dark"
+        className="surface-card dark:bg-white/5 rounded-xl border border-border-light bg-white p-4 dark:border-border-dark"
       >
         <div className="mb-4 flex items-center gap-2">
           <Lock size={16} className="text-accent" />
@@ -560,7 +570,7 @@ const Profile = () => {
   return (
     <div className="mx-auto max-w-7xl md:p-6">
       {/* Header */}
-      <div className="surface-card mb-6 flex flex-col gap-4 rounded-xl border border-border-light bg-white p-3 md:p-6 sm:flex-row sm:items-center sm:justify-between dark:border-border-dark">
+      <div className="surface-card dark:bg-white/5 mb-6 flex flex-col gap-4 rounded-xl border border-border-light bg-white p-3 md:p-4 sm:flex-row sm:items-center sm:justify-between dark:border-border-dark">
         <div className="flex items-center gap-4">
           <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-400 to-blue-100 text-xl font-semibold text-accent">
             {profile?.avatar ? (
@@ -582,7 +592,7 @@ const Profile = () => {
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 flex flex-wrap gap-1.5">
+      <div className="mb-6 flex flex-wrap gap-3">
         {TABS.map((t) => (
           <TabButton key={t.key} active={tab === t.key} icon={t.icon} label={t.label} onClick={() => setTab(t.key)} />
         ))}
