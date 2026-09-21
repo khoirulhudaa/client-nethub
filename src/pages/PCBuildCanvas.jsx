@@ -323,7 +323,7 @@ export default function PCBuilder() {
           {step === "build" && (
             <div className="bg-white/5 rounded-xl border border-slate-800 p-3">
               {/* Mode toggle dipindah ke sini biar nempel sama kategori/form */}
-              <div className="flex bg-slate-800 rounded-lg p-1 mb-3">
+              <div className="flex bg-slate-800 border border-white/10 rounded-lg p-1 mb-3">
                 <button
                   onClick={() => setMode("visual")}
                   className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs transition ${
@@ -350,7 +350,7 @@ export default function PCBuilder() {
                       <button
                         key={cat}
                         onClick={() => setSelectedCat(cat)}
-                        className={`px-2.5 py-1 rounded-lg text-xs capitalize transition ${
+                        className={`px-2.5 py-1 rounded-lg text-xs uppercase transition ${
                           selectedCat === cat ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700"
                         }`}
                       >
