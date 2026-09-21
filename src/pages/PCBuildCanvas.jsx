@@ -199,7 +199,7 @@ export default function PCBuilder() {
 
   // ===== RENDER: BUILD + WIRING =====
   return (
-    <div className="min-h-screen surface-card text-slate-100 p-6">
+    <div className="min-h-screen surface-card text-slate-100 p-4 md:p-6">
       {/* Top Bar */}
       <div className="border-b border-slate-800 bg-white/5 backdrop-blur sticky rounded-xl top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
