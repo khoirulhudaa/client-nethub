@@ -162,7 +162,7 @@ const Sidebar = ({ onNavigate }) => {
   return (
     <aside
       className={`relative flex h-screen shrink-0 z-[9999] flex-col overflow-y-hidden overflow-x-hidden border-l dark:border-white/5 dark:bg-[#0c0c18] transition-all duration-300 ${
-        collapsed ? "w-[72px] px-2" : "w-[18.5vw] px-3"
+        collapsed ? "w-[72px] px-2" : "w-screen md:w-[18.5vw] px-3"
       }`}
     >
 

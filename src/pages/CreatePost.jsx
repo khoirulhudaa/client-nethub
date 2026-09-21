@@ -241,11 +241,11 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="mx-auto max-w-7xl pb-16 p-6">
-      <h1 className="text-xl font-semibold tracking-tight">
+    <div className="mx-auto max-w-7xl pb-16 md:p-6">
+      <h1 className="text-xl md:mb-0 mb-4 font-semibold tracking-tight">
         {isEditing ? "Edit Guide" : "Publish a New Guide"}
       </h1>
-      <p className="mb-4 text-sm text-gray-500">
+      <p className="mb-4 text-sm md:flex hidden text-gray-500">
         Share a maintenance walkthrough, a fix, an install checklist, or a topology
       </p>
 
@@ -257,7 +257,7 @@ const CreatePost = () => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* ===== Basic Info ===== */}
-        <div className="surface-card dark:bg-white/5 space-y-4 p-6">
+        <div className="surface-card rounded-lg md:rounded-xl dark:bg-white/5 space-y-4 p-3 md:p-6">
           <div>
             <label className="mb-1.5 block text-sm font-medium">Title item</label>
             <input
@@ -495,7 +495,7 @@ const CreatePost = () => {
         </div>
 
         {/* ===== Content ===== */}
-        <div className="surface-card dark:bg-white/5 p-6">
+        <div className="surface-card dark:bg-white/5 p-3 md:p-6">
           <label className="mb-2 block text-sm font-medium">Content</label>
           <RichTextEditor
             value={form.content}
@@ -504,27 +504,13 @@ const CreatePost = () => {
         </div>
 
         {/* ===== Topology Canvas ===== */}
-        <div className="surface-card dark:bg-white/5 p-6">
+        <div className="surface-card dark:bg-white/5 p-3 md:p-6">
           <label className="mb-2 block text-sm font-medium">
             Network Topology
           </label>
           <p className="mb-3 text-xs text-gray-500">
             Drag & drop hardware, hubungkan dengan kabel, dan tambahkan note pada setiap perangkat.
           </p>
-            {/* <div className="flex mb-2 flex-wrap items-center gap-2">
-              <span className="text-xs font-medium text-gray-500">Template:</span>
-              {TOPOLOGY_TEMPLATES.map((t) => (
-                  <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => loadTemplate(t)}
-                  className="rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs hover:border-accent hover:text-accent dark:border-white/10 dark:bg-white/5"
-                  title={t.description}
-                  >
-                  {t.name}
-                  </button>
-              ))}
-            </div> */}
           <TopologyCanvas
             value={topology}
             onChange={setTopology}
@@ -532,11 +518,11 @@ const CreatePost = () => {
         </div>
 
         {/* ===== Custom Tables ===== */}
-        <div className="surface-card dark:bg-white/5 p-6">
-          <div className="mb-3 flex items-center justify-between">
+        <div className="surface-card dark:bg-white/5 p-3 md:p-6">
+          <div className="mb-3 md:flex items-center justify-between">
             <div>
               <label className="block text-sm font-medium">Custom Table</label>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs md:flex hidden text-gray-500">
                 Jumlah baris & kolom fleksibel, isi langsung di tempat.
               </p>
             </div>
@@ -553,7 +539,7 @@ const CreatePost = () => {
                   },
                 ])
               }
-              className="btn-secondary text-xs"
+              className="btn-secondary text-xs md:mt-0 mt-2 md:w-max w-full"
             >
               + Tambah Table
             </button>
@@ -709,20 +695,20 @@ const CreatePost = () => {
         </div>
 
         {/* ===== Flowchart Canvas ===== */}
-        <div className="surface-card dark:bg-white/5 p-6">
+        <div className="surface-card dark:bg-white/5 p-3 md:p-6">
           <label className="mb-2 block text-sm font-medium">Flowchart</label>
-          <p className="mb-3 text-xs text-gray-500">
+          <p className="mb-3 text-xs md:flex hidden text-gray-500">
             Drag shape dari palette, hubungkan dengan garis, lalu edit label.
           </p>
           <FlowchartCanvas value={flowchart} onChange={setFlowchart} />
         </div>
 
         {/* ===== Step-by-step Wizard (Upload Image) ===== */}
-        <div className="surface-card dark:bg-white/5 p-6">
-          <div className="mb-3 flex items-center justify-between">
+        <div className="surface-card dark:bg-white/5 p-3 md:p-6">
+          <div className="mb-3 md:flex items-center justify-between">
             <div>
               <label className="block text-sm font-medium">Step-by-step Wizard</label>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs md:flex hidden text-gray-500">
                 Upload gambar untuk setiap langkah + judul & deskripsi.
               </p>
             </div>
@@ -731,7 +717,7 @@ const CreatePost = () => {
               onClick={() =>
                 setSteps((prev) => [...prev, { title: "", description: "", image: "" }])
               }
-              className="btn-secondary text-xs"
+              className="btn-secondary md:w-max w-full md:mt-0 mt-2 text-xs"
             >
               + Tambah Step
             </button>
@@ -890,11 +876,11 @@ const CreatePost = () => {
         </div>
 
         {/* ===== Code / Command Blocks ===== */}
-        <div className="surface-card dark:bg-white/5 p-6">
-          <div className="mb-3 flex items-center justify-between">
+        <div className="surface-card dark:bg-white/5 p-3 md:p-6">
+          <div className="mb-3 md:flex items-center justify-between">
             <div>
               <label className="block text-sm font-medium">Code / Command Blocks</label>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs md:flex hidden text-gray-500">
                 Tambahkan perintah CLI, script, atau potongan kode. Sangat berguna untuk guide networking.
               </p>
             </div>
@@ -906,7 +892,7 @@ const CreatePost = () => {
                   { title: "", language: "bash", code: "" },
                 ])
               }
-              className="btn-secondary text-xs"
+              className="btn-secondary md:w-max w-full md:mt-0 mt-2 text-xs"
             >
               + Tambah Code Block
             </button>

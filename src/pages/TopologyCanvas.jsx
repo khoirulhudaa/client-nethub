@@ -516,42 +516,82 @@ export default function TopologyCanvas({
       {showToolbar && isInteractive && (
         <div className="space-y-2">
           {/* Hardware */}
-          <div className="grid grid-cols-8 items-center gap-2">
-            {/* <span className="text-xs font-medium text-gray-500">Hardware:</span> */}
-            {availableHardware.map((hw) => (
-              <button
-                key={hw.type}
-                type="button"
-                onClick={() => addHardware(hw)}
-                className="inline-flex w-full items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium transition hover:border-accent hover:text-accent dark:border-white/10 dark:bg-white/5"
-              >
-                <hw.icon size={14} />
-                {hw.type}
-              </button>
-            ))}
+          <div>
+            {/* Mobile: dropdown untuk tambah hardware */}
+            <select
+              value=""
+              onChange={(e) => {
+                const hw = availableHardware.find((h) => h.type === e.target.value);
+                if (hw) addHardware(hw);
+                e.target.value = "";
+              }}
+              className="input-field w-full text-xs md:hidden"
+            >
+              <option value="" disabled>
+                + Tambah hardware
+              </option>
+              {availableHardware.map((hw) => (
+                <option key={hw.type} value={hw.type} className="text-black">
+                  {hw.type}
+                </option>
+              ))}
+            </select>
+
+            {/* Desktop: grid tombol */}
+            <div className="hidden md:grid grid-cols-8 items-center gap-2">
+              {availableHardware.map((hw) => (
+                <button
+                  key={hw.type}
+                  type="button"
+                  onClick={() => addHardware(hw)}
+                  className="inline-flex w-full items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium transition hover:border-accent hover:text-accent dark:border-white/10 dark:bg-white/5"
+                >
+                  <hw.icon size={14} />
+                  {hw.type}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Cable Type */}
-          <div className="flex flex-wrap items-center gap-2">
-            {/* <span className="text-xs font-medium text-gray-500">Jenis Kabel:</span> */}
-            {availableCables.map((cable) => (
-              <button
-                key={cable.id}
-                type="button"
-                onClick={() => setSelectedCable(cable)}
-                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition ${
-                  selectedCable.id === cable.id
-                    ? "border-accent bg-accent/10 text-accent"
-                    : "border-gray-200 bg-white hover:border-gray-300 dark:border-white/10 dark:bg-white/5"
-                }`}
-              >
-                <span
-                  className="h-2.5 w-2.5 rounded-full"
-                  style={{ backgroundColor: cable.color }}
-                />
-                {cable.label}
-              </button>
-            ))}
+          <div>
+            {/* Mobile: dropdown pilih kabel */}
+            <select
+              value={selectedCable.id}
+              onChange={(e) => {
+                const cable = availableCables.find((c) => c.id === e.target.value);
+                if (cable) setSelectedCable(cable);
+              }}
+              className="input-field w-full text-xs sm:hidden"
+            >
+              {availableCables.map((cable) => (
+                <option key={cable.id} value={cable.id} className="text-black">
+                  {cable.label}
+                </option>
+              ))}
+            </select>
+
+            {/* Desktop: pill buttons */}
+            <div className="hidden sm:flex flex-wrap items-center gap-2">
+              {availableCables.map((cable) => (
+                <button
+                  key={cable.id}
+                  type="button"
+                  onClick={() => setSelectedCable(cable)}
+                  className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition ${
+                    selectedCable.id === cable.id
+                      ? "border-accent bg-accent/10 text-accent"
+                      : "border-gray-200 bg-white hover:border-gray-300 dark:border-white/10 dark:bg-white/5"
+                  }`}
+                >
+                  <span
+                    className="h-2.5 w-2.5 rounded-full"
+                    style={{ backgroundColor: cable.color }}
+                  />
+                  {cable.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}

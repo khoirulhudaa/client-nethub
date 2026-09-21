@@ -268,7 +268,7 @@ export default function FlowchartCanvas({ value, onChange, readOnly = false, hei
             <button
                 type="button"
                 onClick={clearAll}
-                className="ml-auto flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-white hover:text-slate-200 active:scale-[0.99]"
+                className="ml-auto hidden md:flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-white hover:text-slate-200 active:scale-[0.99]"
             >
             Clear All
             <Eraser size={12} className="relative top-[-1px]" />
