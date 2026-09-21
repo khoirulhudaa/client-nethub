@@ -102,7 +102,7 @@ const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
       {!isGuest && (
         <button
           onClick={onNewPost}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:opacity-90"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90"
         >
           <Plus size={16} /> New post
         </button>

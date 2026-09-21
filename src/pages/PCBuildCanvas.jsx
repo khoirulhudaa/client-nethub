@@ -1,1035 +1,574 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
-  AlertTriangle,
-  CheckCircle2,
-  Cpu,
-  HardDrive,
-  MemoryStick,
-  CircuitBoard,
-  Fan,
-  Power,
-  Box,
-  Monitor,
-  Trash2,
-  RotateCcw,
-  Info,
-  Gamepad2,
-  Briefcase,
-  Video,
-  Server,
-  Wallet,
-  Cable,
-  Zap,
-  Play,
+  Cpu, HardDrive, MemoryStick, CircuitBoard, Fan, Power, Box,
+  AlertTriangle, CheckCircle2, RotateCcw, Cable, Zap, Play,
+  Gamepad2, Briefcase, Video, Server, Wallet, ChevronRight,
+  Plug, Info, X
 } from "lucide-react";
 
 /* ====================== DATA ====================== */
-// const PC_COMPONENTS = {
-//   cpu: [
-//     { id: "cpu-1", name: "Intel Core i3-12100", socket: "LGA1700", tdp: 60, brand: "Intel" },
-//     { id: "cpu-2", name: "Intel Core i5-12400F", socket: "LGA1700", tdp: 65, brand: "Intel" },
-//     { id: "cpu-3", name: "Intel Core i7-14700K", socket: "LGA1700", tdp: 125, brand: "Intel" },
-//     { id: "cpu-4", name: "AMD Ryzen 5 5600", socket: "AM4", tdp: 65, brand: "AMD" },
-//     { id: "cpu-5", name: "AMD Ryzen 7 5800X3D", socket: "AM4", tdp: 105, brand: "AMD" },
-//     { id: "cpu-6", name: "AMD Ryzen 5 7600", socket: "AM5", tdp: 65, brand: "AMD" },
-//   ],
-//   motherboard: [
-//     { id: "mb-1", name: "ASUS Prime H610M-K", socket: "LGA1700", form: "mATX", ramType: "DDR4" },
-//     { id: "mb-2", name: "MSI B760M-A WiFi", socket: "LGA1700", form: "mATX", ramType: "DDR5" },
-//     { id: "mb-3", name: "Gigabyte B550M DS3H", socket: "AM4", form: "mATX", ramType: "DDR4" },
-//     { id: "mb-4", name: "ASUS TUF B650-PLUS", socket: "AM5", form: "ATX", ramType: "DDR5" },
-//   ],
-//   ram: [
-//     { id: "ram-1", name: "16GB DDR4-3200 (2x8)", type: "DDR4", capacity: 16 },
-//     { id: "ram-2", name: "32GB DDR4-3600 (2x16)", type: "DDR4", capacity: 32 },
-//     { id: "ram-3", name: "16GB DDR5-5600 (2x8)", type: "DDR5", capacity: 16 },
-//     { id: "ram-4", name: "32GB DDR5-6000 (2x16)", type: "DDR5", capacity: 32 },
-//   ],
-//   gpu: [
-//     { id: "gpu-1", name: "Integrated Graphics", tdp: 0, length: 0, needsPower: false },
-//     { id: "gpu-2", name: "GTX 1650 4GB", tdp: 75, length: 170, needsPower: false },
-//     { id: "gpu-3", name: "RTX 4060 8GB", tdp: 115, length: 240, needsPower: true },
-//     { id: "gpu-4", name: "RTX 4070 Super", tdp: 220, length: 280, needsPower: true },
-//   ],
-//   storage: [
-//     { id: "ssd-1", name: "500GB NVMe", type: "NVMe", interface: "M.2" },
-//     { id: "ssd-2", name: "1TB NVMe Gen4", type: "NVMe", interface: "M.2" },
-//     { id: "ssd-3", name: "1TB SATA SSD", type: "SATA", interface: "SATA" },
-//     { id: "hdd-1", name: "2TB HDD", type: "HDD", interface: "SATA" },
-//   ],
-//   psu: [
-//     { id: "psu-1", name: "550W 80+ Bronze", watt: 550 },
-//     { id: "psu-2", name: "650W 80+ Gold", watt: 650 },
-//     { id: "psu-3", name: "750W 80+ Gold Modular", watt: 750 },
-//     { id: "psu-4", name: "850W 80+ Gold Modular", watt: 850 },
-//   ],
-//   cooler: [
-//     { id: "cooler-1", name: "Stock Cooler", tdpSupport: 65 },
-//     { id: "cooler-2", name: "Tower Air Cooler", tdpSupport: 150 },
-//     { id: "cooler-3", name: "AIO 240mm", tdpSupport: 250 },
-//   ],
-//   case: [
-//     { id: "case-1", name: "mATX Budget Case", form: ["mATX", "ITX"], maxGpu: 300 },
-//     { id: "case-2", name: "Mid Tower ATX", form: ["ATX", "mATX"], maxGpu: 360 },
-//     { id: "case-3", name: "High Airflow Case", form: ["ATX", "mATX"], maxGpu: 400 },
-//   ],
-// };
+const PURPOSES = [
+  { id: "gaming", label: "Gaming", icon: Gamepad2, desc: "Performa tinggi untuk game" },
+  { id: "editing", label: "Video Editing", icon: Video, desc: "Render cepat & multi-task" },
+  { id: "office", label: "Kantor / Browsing", icon: Briefcase, desc: "Hemat daya & tenang" },
+  { id: "server", label: "Home Server", icon: Server, desc: "Stabil 24/7" },
+  { id: "budget", label: "Budget", icon: Wallet, desc: "Maksimal di harga rendah" },
+];
 
-const PC_COMPONENTS = {
-  cpu: [
-    {
-      id: "cpu-1",
-      name: "Intel Core i3-12100",
-      socket: "LGA1700",
-      tdp: 60,
-      image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=300&h=300&fit=crop",
-    },
-    {
-      id: "cpu-2",
-      name: "Intel Core i5-12400F",
-      socket: "LGA1700",
-      tdp: 65,
-      image: "https://images.unsplash.com/photo-1555617981-624c78c473a4?w=300&h=300&fit=crop",
-    },
-    {
-      id: "cpu-3",
-      name: "AMD Ryzen 5 5600",
-      socket: "AM4",
-      tdp: 65,
-      image: "https://images.unsplash.com/photo-1625948515299-5757407c8588?w=300&h=300&fit=crop",
-    },
-    {
-      id: "cpu-4",
-      name: "AMD Ryzen 7 5800X3D",
-      socket: "AM4",
-      tdp: 105,
-      image: "https://images.unsplash.com/photo-1591488320449-011701bb6704?w=300&h=300&fit=crop",
-    },
+const COMPONENTS = {
+  case: [
+    { id: "case1", name: "Mid Tower ATX", form: ["ATX", "mATX"], maxGpu: 360 },
+    { id: "case2", name: "High Airflow", form: ["ATX", "mATX"], maxGpu: 400 },
   ],
   motherboard: [
-    {
-      id: "mb-1",
-      name: "ASUS Prime H610M-K",
-      socket: "LGA1700",
-      form: "mATX",
-      ramType: "DDR4",
-      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=300&h=300&fit=crop",
-    },
-    {
-      id: "mb-2",
-      name: "MSI B760M-A WiFi",
-      socket: "LGA1700",
-      form: "mATX",
-      ramType: "DDR5",
-      image: "https://images.unsplash.com/photo-1555680202-c86f0e48dabb?w=300&h=300&fit=crop",
-    },
-    {
-      id: "mb-3",
-      name: "Gigabyte B550M DS3H",
-      socket: "AM4",
-      form: "mATX",
-      ramType: "DDR4",
-      image: "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=300&h=300&fit=crop",
-    },
+    { id: "mb1", name: "ASUS Prime H610M-K", socket: "LGA1700", form: "mATX", ramType: "DDR4" },
+    { id: "mb2", name: "MSI B760M WiFi", socket: "LGA1700", form: "mATX", ramType: "DDR5" },
+    { id: "mb3", name: "Gigabyte B550M", socket: "AM4", form: "mATX", ramType: "DDR4" },
   ],
-  ram: [
-    {
-      id: "ram-1",
-      name: "16GB DDR4-3200 (2x8)",
-      type: "DDR4",
-      capacity: 16,
-      image: "https://images.unsplash.com/photo-1562976540-08d666df4126?w=300&h=300&fit=crop",
-    },
-    {
-      id: "ram-2",
-      name: "32GB DDR5-6000 (2x16)",
-      type: "DDR5",
-      capacity: 32,
-      image: "https://images.unsplash.com/photo-1600333438772-2c2c8c8c8c8c?w=300&h=300&fit=crop",
-    },
-  ],
-  gpu: [
-    {
-      id: "gpu-1",
-      name: "GTX 1650 4GB",
-      tdp: 75,
-      length: 170,
-      needsPower: false,
-      image: "https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=300&h=300&fit=crop",
-    },
-    {
-      id: "gpu-2",
-      name: "RTX 4060 8GB",
-      tdp: 115,
-      length: 240,
-      needsPower: true,
-      image: "https://images.unsplash.com/photo-1591488320449-011701bb6704?w=300&h=300&fit=crop",
-    },
-    {
-      id: "gpu-3",
-      name: "RTX 4070 Super",
-      tdp: 220,
-      length: 280,
-      needsPower: true,
-      image: "https://images.unsplash.com/photo-1625948515299-5757407c8588?w=300&h=300&fit=crop",
-    },
-  ],
-  storage: [
-    {
-      id: "ssd-1",
-      name: "1TB NVMe Gen4",
-      type: "NVMe",
-      interface: "M.2",
-      image: "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=300&h=300&fit=crop",
-    },
-    {
-      id: "ssd-2",
-      name: "1TB SATA SSD",
-      type: "SATA",
-      interface: "SATA",
-      image: "https://images.unsplash.com/photo-1555680202-c86f0e48dabb?w=300&h=300&fit=crop",
-    },
-  ],
-  psu: [
-    {
-      id: "psu-1",
-      name: "650W 80+ Gold",
-      watt: 650,
-      image: "https://images.unsplash.com/photo-1600333438772-2c2c8c8c8c8c?w=300&h=300&fit=crop",
-    },
-    {
-      id: "psu-2",
-      name: "750W Modular",
-      watt: 750,
-      image: "https://images.unsplash.com/photo-1591488320449-011701bb6704?w=300&h=300&fit=crop",
-    },
+  cpu: [
+    { id: "cpu1", name: "Intel i3-12100", socket: "LGA1700", tdp: 60 },
+    { id: "cpu2", name: "Intel i5-12400F", socket: "LGA1700", tdp: 65 },
+    { id: "cpu3", name: "Ryzen 5 5600", socket: "AM4", tdp: 65 },
+    { id: "cpu4", name: "Ryzen 7 5800X3D", socket: "AM4", tdp: 105 },
   ],
   cooler: [
-    {
-      id: "cooler-1",
-      name: "Tower Air Cooler",
-      tdpSupport: 150,
-      image: "https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=300&h=300&fit=crop",
-    },
-    {
-      id: "cooler-2",
-      name: "AIO 240mm",
-      tdpSupport: 250,
-      image: "https://images.unsplash.com/photo-1625948515299-5757407c8588?w=300&h=300&fit=crop",
-    },
+    { id: "cool1", name: "Tower Air Cooler", tdpSupport: 150 },
+    { id: "cool2", name: "AIO 240mm", tdpSupport: 250 },
   ],
-  case: [
-    {
-      id: "case-1",
-      name: "Mid Tower ATX",
-      form: ["ATX", "mATX"],
-      maxGpu: 360,
-      image: "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=300&h=300&fit=crop",
-    },
-    {
-      id: "case-2",
-      name: "High Airflow Case",
-      form: ["ATX", "mATX"],
-      maxGpu: 400,
-      image: "https://images.unsplash.com/photo-1555680202-c86f0e48dabb?w=300&h=300&fit=crop",
-    },
+  ram: [
+    { id: "ram1", name: "16GB DDR4-3200", type: "DDR4", capacity: 16 },
+    { id: "ram2", name: "32GB DDR5-6000", type: "DDR5", capacity: 32 },
+  ],
+  gpu: [
+    { id: "gpu1", name: "GTX 1650 4GB", tdp: 75, length: 170, needsPower: false },
+    { id: "gpu2", name: "RTX 4060 8GB", tdp: 115, length: 240, needsPower: true },
+    { id: "gpu3", name: "RTX 4070 Super", tdp: 220, length: 280, needsPower: true },
+  ],
+  storage: [
+    { id: "ssd1", name: "1TB NVMe Gen4", type: "NVMe" },
+    { id: "ssd2", name: "1TB SATA SSD", type: "SATA" },
+  ],
+  psu: [
+    { id: "psu1", name: "650W 80+ Gold", watt: 650 },
+    { id: "psu2", name: "750W Modular", watt: 750 },
   ],
 };
 
-const PURPOSES = [
-  { id: "office", label: "Kantor / Browsing", icon: Briefcase },
-  { id: "gaming", label: "Gaming", icon: Gamepad2 },
-  { id: "editing", label: "Video Editing", icon: Video },
-  { id: "server", label: "Home Server", icon: Server },
-  { id: "budget", label: "Budget", icon: Wallet },
-];
-
-const CABLE_STEPS = [
-  { id: "24pin",     label: "24-pin ATX (Motherboard)",     color: "#eab308", thick: true },
-  { id: "cpu8pin",   label: "8-pin EPS (CPU Power)",        color: "#eab308", thick: true },
-  { id: "pcie1",     label: "PCIe 8-pin (GPU)",             color: "#ef4444", thick: true, optional: true },
-  { id: "pcie2",     label: "PCIe 6-pin / 12VHPWR (GPU)",   color: "#ef4444", thick: true, optional: true },
-  { id: "sata_power",label: "SATA Power (ke SSD/HDD)",      color: "#3b82f6" },
-  { id: "sata_data", label: "SATA Data (Motherboard → Storage)", color: "#06b6d4" },
-  { id: "front_panel", label: "Front Panel (Power/Reset/LED)", color: "#a3a3a3" },
-  { id: "cpu_fan",   label: "CPU Fan Header",               color: "#22c55e" },
-  { id: "case_fan",  label: "Case Fan / SYS_FAN",           color: "#22c55e" },
-  { id: "usb_header",label: "USB 2.0 / 3.0 Header",         color: "#8b5cf6" },
+const CABLES = [
+  { id: "atx24", name: "24-pin ATX", target: "atx24", color: "#eab308", required: true },
+  { id: "cpu8", name: "8-pin EPS (CPU)", target: "cpu8", color: "#ca8a04", required: true },
+  { id: "pcie", name: "PCIe Power (GPU)", target: "pcie", color: "#ef4444", required: false },
+  { id: "sata_p", name: "SATA Power", target: "sata_p", color: "#3b82f6", required: true },
+  { id: "sata_d", name: "SATA Data", target: "sata_d", color: "#06b6d4", required: true },
+  { id: "pwr_sw", name: "POWER SW (2-pin)", target: "pwr_sw", color: "#a3a3a3", required: true },
+  { id: "rst_sw", name: "RESET SW (2-pin)", target: "rst_sw", color: "#a3a3a3", required: true },
+  { id: "pwr_led", name: "POWER LED", target: "pwr_led", color: "#a3a3a3", required: true },
+  { id: "hdd_led", name: "HDD LED", target: "hdd_led", color: "#a3a3a3", required: true },
+  { id: "usb9", name: "USB 9-pin Header", target: "usb9", color: "#8b5cf6", required: true },
+  { id: "audio9", name: "HD AUDIO 9-pin", target: "audio9", color: "#ec4899", required: true },
+  { id: "cpu_fan", name: "CPU Fan 4-pin", target: "cpu_fan", color: "#22c55e", required: true },
+  { id: "sys_fan", name: "SYS_FAN 4-pin", target: "sys_fan", color: "#4ade80", required: true },
 ];
 
 /* ====================== VALIDASI ====================== */
-function validateBuild(build) {
+function validate(build) {
   const errors = [];
-  const warnings = [];
-  const cpu = build.cpu?.[0];
-  const mb = build.motherboard?.[0];
-  const rams = build.ram || [];
-  const gpu = build.gpu?.[0];
-  const psu = build.psu?.[0];
-  const cooler = build.cooler?.[0];
-  const pcCase = build.case?.[0];
-  const storages = build.storage || [];
+  const cpu = build.cpu;
+  const mb = build.motherboard;
+  const ram = build.ram;
+  const gpu = build.gpu;
+  const psu = build.psu;
+  const cooler = build.cooler;
+  const pcCase = build.case;
 
-  if (cpu && mb && cpu.socket !== mb.socket) {
-    errors.push(`CPU ${cpu.socket} tidak cocok dengan Motherboard ${mb.socket}`);
-  }
-  rams.forEach((ram) => {
-    if (mb && ram.type !== mb.ramType) {
-      errors.push(`RAM ${ram.type} tidak cocok (Motherboard: ${mb.ramType})`);
-    }
-  });
-  if (rams.length === 0 && mb) errors.push("Wajib pasang minimal 1 RAM");
-  if (cpu && cooler && cooler.tdpSupport < cpu.tdp) {
-    errors.push(`Cooler hanya support ${cooler.tdpSupport}W, CPU butuh ${cpu.tdp}W`);
-  }
-  if (mb && pcCase && !pcCase.form.includes(mb.form)) {
-    errors.push(`Motherboard ${mb.form} tidak muat di case ini`);
-  }
-  if (gpu && pcCase && gpu.length > pcCase.maxGpu) {
-    errors.push(`GPU terlalu panjang (${gpu.length}mm)`);
-  }
+  if (cpu && mb && cpu.socket !== mb.socket) errors.push(`CPU ${cpu.socket} ≠ Motherboard ${mb.socket}`);
+  if (ram && mb && ram.type !== mb.ramType) errors.push(`RAM ${ram.type} tidak cocok (${mb.ramType})`);
+  if (cpu && cooler && cooler.tdpSupport < cpu.tdp) errors.push(`Cooler terlalu lemah untuk CPU`);
+  if (mb && pcCase && !pcCase.form.includes(mb.form)) errors.push(`Motherboard tidak muat di case`);
+  if (gpu && pcCase && gpu.length > pcCase.maxGpu) errors.push(`GPU terlalu panjang`);
   if (cpu && psu) {
-    const need = cpu.tdp + (gpu?.tdp || 0) + 100;
-    if (psu.watt < need) errors.push(`PSU ${psu.watt}W kurang (butuh ≈${need}W)`);
+    const need = cpu.tdp + (gpu?.tdp || 0) + 120;
+    if (psu.watt < need) errors.push(`PSU kurang (butuh ≈${need}W)`);
   }
-  if (storages.length === 0) errors.push("Wajib pasang Storage");
-
-  return { errors, warnings };
+  return errors;
 }
 
-/* ====================== MAIN COMPONENT ====================== */
-export default function PCBuildCanvas() {
+/* ====================== KOMPONEN UTAMA ====================== */
+export default function PCBuilder() {
+  const [step, setStep] = useState("purpose"); // purpose | build | wiring | done
   const [purpose, setPurpose] = useState(null);
-  const [build, setBuild] = useState({
-    case: [], motherboard: [], cpu: [], cooler: [],
-    ram: [], gpu: [], storage: [], psu: [],
-  });
-  const [selectedCategory, setSelectedCategory] = useState("cpu");
+  const [build, setBuild] = useState({});
+  const [selectedCat, setSelectedCat] = useState("case");
   const [dragItem, setDragItem] = useState(null);
+  const [cables, setCables] = useState({}); // { target: cableId }
+  const [dragCable, setDragCable] = useState(null);
 
-  // Cabling states
-  const [cablesInstalled, setCablesInstalled] = useState([]);
-  const [showCables, setShowCables] = useState(false);
-  const [cablingMode, setCablingMode] = useState(false); // Mode Cabling Challenge
-  const [currentCableStep, setCurrentCableStep] = useState(0);
-  const [cableAnim, setCableAnim] = useState({}); // untuk animasi
+  const errors = validate(build);
+  const requiredCats = ["case", "motherboard", "cpu", "cooler", "ram", "storage", "psu"];
+  const progress = requiredCats.filter(c => build[c]).length;
+  const canWire = progress === 7 && errors.length === 0;
 
-  const { errors } = purpose ? validateBuild(build) : { errors: [] };
+  const neededCables = CABLES.filter(c => {
+    if (c.id === "pcie") return build.gpu?.needsPower;
+    return c.required;
+  });
 
-  const progress = ["case", "motherboard", "cpu", "cooler", "ram", "storage", "psu"]
-    .filter((k) => build[k]?.length > 0).length;
+  const wiredCount = Object.keys(cables).length;
+  const allWired = wiredCount >= neededCables.length;
 
-  const canInstallCables =
-    build.case?.length &&
-    build.motherboard?.length &&
-    build.cpu?.length &&
-    build.psu?.length &&
-    build.ram?.length &&
-    build.storage?.length &&
-    errors.length === 0;
+  // ===== HANDLERS =====
+  const startBuild = (p) => {
+    setPurpose(p);
+    setStep("build");
+  };
 
-  // ========== HANDLERS ==========
-  const handleDragStart = (e, component, category) => {
-    setDragItem({ component, category });
+  const onDragStart = (e, item, cat) => {
+    setDragItem({ item, cat });
     e.dataTransfer.effectAllowed = "move";
   };
 
-  const handleDrop = (e, slotId) => {
+  const onDrop = (e, cat) => {
     e.preventDefault();
-    if (!dragItem || dragItem.category !== slotId) return;
-
-    setBuild((prev) => {
-      const isMultiple = slotId === "ram" || slotId === "storage";
-      return {
-        ...prev,
-        [slotId]: isMultiple ? [...prev[slotId], dragItem.component] : [dragItem.component],
-      };
-    });
+    if (!dragItem || dragItem.cat !== cat) return;
+    setBuild(prev => ({ ...prev, [cat]: dragItem.item }));
     setDragItem(null);
   };
 
-  const handleDragOver = (e) => e.preventDefault();
-
-  const removeFromSlot = (slotId, index = 0) => {
-    setBuild((prev) => ({
-      ...prev,
-      [slotId]: prev[slotId].filter((_, i) => i !== index),
-    }));
-    // Reset cables jika komponen dicabut
-    setShowCables(false);
-    setCablesInstalled([]);
-    setCablingMode(false);
-    setCurrentCableStep(0);
-  };
-
-  const resetBuild = () => {
-    setBuild({
-      case: [], motherboard: [], cpu: [], cooler: [],
-      ram: [], gpu: [], storage: [], psu: [],
+  const remove = (cat) => {
+    setBuild(prev => {
+      const next = { ...prev };
+      delete next[cat];
+      return next;
     });
-    setShowCables(false);
-    setCablesInstalled([]);
-    setCablingMode(false);
-    setCurrentCableStep(0);
-    setCableAnim({});
+    setCables({});
   };
 
-  // Tombol Pasang Kabel
-  const handleInstallCables = () => {
-    if (!canInstallCables) return;
-    setShowCables(true);
-
-    // Animasi muncul bertahap
-    const steps = ["24pin", "cpu8pin", "sata", "front"];
-    if (build.gpu?.[0]?.needsPower) steps.splice(2, 0, "pcie");
-
-    steps.forEach((id, idx) => {
-      setTimeout(() => {
-        setCableAnim((prev) => ({ ...prev, [id]: true }));
-        setCablesInstalled((prev) => [...prev, id]);
-      }, idx * 600);
-    });
+  const reset = () => {
+    setBuild({});
+    setCables({});
+    setStep("purpose");
+    setPurpose(null);
   };
 
-  // Mode Cabling Challenge
-  const startCablingChallenge = () => {
-    if (!canInstallCables) return;
-    setCablingMode(true);
-    setCurrentCableStep(0);
-    setCablesInstalled([]);
-    setCableAnim({});
-    setShowCables(true);
+  const onCableDrag = (e, cable) => {
+    setDragCable(cable);
+    e.dataTransfer.effectAllowed = "move";
   };
 
-  const installNextCable = () => {
-    const requiredCables = CABLE_STEPS.filter((c) => {
-      if (c.id === "pcie") return build.gpu?.[0]?.needsPower;
-      return true;
-    });
-
-    if (currentCableStep >= requiredCables.length) return;
-
-    const cable = requiredCables[currentCableStep];
-    setCableAnim((prev) => ({ ...prev, [cable.id]: true }));
-    setCablesInstalled((prev) => [...prev, cable.id]);
-    setCurrentCableStep((prev) => prev + 1);
+  const onHeaderDrop = (e, target) => {
+    e.preventDefault();
+    if (!dragCable || dragCable.target !== target) return;
+    setCables(prev => ({ ...prev, [target]: dragCable.id }));
+    setDragCable(null);
   };
 
-  // ====================== HALAMAN UTAMA ======================
-  return (
-    <div className="surface-card min-h-screen bg-white px-4 py-6 sm:px-6">
-      <div className="mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-medium">
-              Build CPU
-            </h1>
-            <p className="text-sm text-gray-500">Drag komponen → Pasang kabel → Selesai</p>
-          </div>
-          <div className="flex gap-2">
-            <button onClick={() => setPurpose(null)} className="rounded-lg border px-3 py-1.5 text-sm">
-              Ganti Tujuan
-            </button>
-            <button onClick={resetBuild} className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm">
-              <RotateCcw size={15} /> Reset
-            </button>
-          </div>
-        </div>
-
-        {/* Progress */}
-        <div className="mb-5 rounded-xl border bg-white p-3 dark:border-white/10 surface-card">
-          <div className="flex justify-between text-sm mb-1">
-            <span>Progress Komponen</span>
-            <span>{progress}/7</span>
-          </div>
-          <div className="mt-2 h-2 rounded-full bg-gray-100 dark:bg-white/15">
-            <div className="h-full rounded-full bg-green-500 transition-all" style={{ width: `${(progress / 7) * 100}%` }} />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          {/* LEFT - Komponen */}
-          <div className="lg:col-span-3 space-y-3">
-            <div className="rounded-xl border bg-white p-3 dark:border-white/10 surface-card">
-              <p className="text-xs font-semibold text-gray-400 mb-2">KATEGORI</p>
-              <div className="flex flex-wrap gap-1.5">
-                {Object.keys(PC_COMPONENTS).map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`rounded-lg px-2.5 py-1 text-xs font-medium capitalize ${
-                      selectedCategory === cat ? "bg-accent text-white" : "bg-gray-100 dark:bg-white/5"
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-xl border bg-white p-3 dark:border-white/10 surface-card">
-              <p className="text-xs font-semibold text-gray-400 mb-3">Drag ke slot</p>
-              <div className="space-y-2 max-h-[480px] overflow-y-auto">
-                {PC_COMPONENTS[selectedCategory].map((comp) => (
-                    <div
-                        key={comp.id}
-                        draggable
-                        onDragStart={(e) => handleDragStart(e, comp, selectedCategory)}
-                        className="cursor-grab rounded-lg border bg-gray-50 p-2 text-sm active:cursor-grabbing dark:bg-white/5 dark:border-white/10 flex items-center gap-3"
-                    >
-                        <img
-                        src={comp.image}
-                        alt={comp.name}
-                        className="h-12 w-12 rounded object-cover bg-gray-200"
-                        onError={(e) => {
-                            e.target.src = "https://placehold.co/100x100?text=No+Image";
-                        }}
-                        />
-                        <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">{comp.name}</p>
-                        <p className="text-[11px] text-gray-500 truncate">
-                            {selectedCategory === "cpu" && `${comp.socket} • ${comp.tdp}W`}
-                            {selectedCategory === "motherboard" && `${comp.socket} • ${comp.ramType}`}
-                            {selectedCategory === "ram" && `${comp.type} • ${comp.capacity}GB`}
-                            {selectedCategory === "gpu" && `${comp.tdp}W`}
-                            {selectedCategory === "storage" && comp.interface}
-                            {selectedCategory === "psu" && `${comp.watt}W`}
-                            {selectedCategory === "cooler" && `${comp.tdpSupport}W`}
-                            {selectedCategory === "case" && `Max GPU ${comp.maxGpu}mm`}
-                        </p>
-                        </div>
-                    </div>
-                    ))}
-              </div>
-            </div>
-          </div>
-
-          {/* CENTER - Visual + Cables */}
-          <div className="lg:col-span-5">
-            <div className="rounded-xl border bg-white p-4 dark:border-white/10 surface-card">
-              <h2 className="text-sm font-semibold mb-4 flex items-center gap-2">
-                <Box size={16} /> Casing — Tampak Atas
-              </h2>
-
-              {/* Visual Case */}
-              <div className="relative mx-auto w-full max-w-[400px]">
-                <div className="relative rounded-lg border-[6px] border-gray-700 bg-gray-800" style={{ aspectRatio: "1/1.3" }}>
-                  <div className="absolute inset-1.5 rounded bg-gray-900 overflow-hidden">
-
-                    {/* Motherboard */}
-                    {/* ==================== MOTHERBOARD (mirip diagram referensi) ==================== */}
-                    <div className="absolute left-2 right-2 top-2 bottom-[20%] rounded border-2 border-gray-600 bg-[#1a1a2e] overflow-hidden">
-                    
-                    {/* Grid halus biar mirip PCB */}
-                    <div className="absolute inset-0 opacity-20"
-                        style={{
-                            backgroundImage: `linear-gradient(#333 1px, transparent 1px),
-                                            linear-gradient(90deg, #333 1px, transparent 1px)`,
-                            backgroundSize: "12px 12px"
-                        }}
-                    />
-
-                    {/* ========== REAR I/O (kiri atas) ========== */}
-                    <div className="absolute left-0 top-0 bottom-0 w-5 bg-gray-800 border-r border-gray-600">
-                        {/* Port-port belakang */}
-                        <div className="absolute top-2 left-0.5 right-0.5 h-2 bg-gray-600 rounded-sm" />
-                        <div className="absolute top-5 left-0.5 right-0.5 h-2 bg-blue-800 rounded-sm" />
-                        <div className="absolute top-8 left-0.5 right-0.5 h-2 bg-blue-800 rounded-sm" />
-                        <div className="absolute top-11 left-0.5 right-0.5 h-3 bg-gray-700 rounded-sm" />
-                        <div className="absolute top-16 left-0.5 right-0.5 h-2 bg-green-800 rounded-sm" />
-                        <div className="absolute bottom-4 left-0.5 right-0.5 h-2 bg-gray-600 rounded-sm" />
-                    </div>
-
-                    {/* ========== CPU SOCKET (kanan atas) ========== */}
-                    <div
-                        onDrop={(e) => handleDrop(e, "cpu")}
-                        onDragOver={handleDragOver}
-                        className={`absolute left-8 top-8 w-20 h-20 rounded border-2 border-dashed flex flex-col items-center justify-center z-20 ${
-                        build.cpu?.length
-                            ? "border-green-400 bg-green-500/30"
-                            : "border-yellow-400 bg-yellow-500/10 hover:bg-yellow-500/20"
-                        }`}
-                    >
-                        {build.cpu?.[0] ? (
-                        <img src={build.cpu[0].image} alt="CPU" className="w-full h-full object-cover rounded" />
-                        ) : (
-                        <>
-                            <Cpu size={24} className="text-yellow-300" />
-                            <span className="text-[9px] text-yellow-200 mt-1 font-medium">CPU Socket</span>
-                        </>
-                        )}
-                    </div>
-
-                    {/* CPU Power Connector (dekat CPU) */}
-                    <div className="absolute right-2 top-20 w-4 h-8 bg-yellow-700 border border-yellow-500 rounded-sm flex items-center justify-center">
-                        <span className="text-[6px] text-yellow-100 font-bold" style={{ writingMode: "vertical-rl" }}>
-                        8-pin
-                        </span>
-                    </div>
-
-                    {/* CPU Fan header */}
-                    <div className="absolute right-20 top-3 w-7 h-3 bg-gray-700 border border-gray-500 rounded-sm flex items-center justify-center">
-                        <span className="text-[5px] text-gray-300">CPU_FAN</span>
-                    </div>
-
-                    {/* ========== 2 RAM SLOTS (di bawah CPU) ========== */}
-                    <div
-                        onDrop={(e) => handleDrop(e, "ram")}
-                        onDragOver={handleDragOver}
-                        className="absolute right-20 top-16 flex flex-col gap-1 z-10"
-                    >
-                        {[0, 1].map((i) => (
-                        <div
-                            key={i}
-                            className={`w-28 h-5 rounded-sm border-2 border-dashed flex items-center justify-center ${
-                            build.ram?.length > i
-                                ? "border-green-400 bg-green-500/40"
-                                : "border-blue-400/80 bg-blue-500/10"
-                            }`}
-                        >
-                            {build.ram?.[i] ? (
-                            <span className="text-[8px] text-green-300 font-medium truncate px-1">
-                                {build.ram[i].name}
-                            </span>
-                            ) : (
-                            <span className="text-[8px] text-blue-300">RAM Slot {i + 1}</span>
-                            )}
-                        </div>
-                        ))}
-                    </div>
-
-                    {/* ========== AGP / PCIe x16 (tengah) ========== */}
-                    <div
-                        onDrop={(e) => handleDrop(e, "gpu")}
-                        onDragOver={handleDragOver}
-                        className={`absolute left-8 right-20 top-36 h-7 rounded border-2 border-dashed flex items-center justify-center z-10 ${
-                        build.gpu?.length
-                            ? "border-green-400 bg-green-500/30"
-                            : "border-purple-400 bg-purple-500/10"
-                        }`}
-                    >
-                        {build.gpu?.[0] ? (
-                        <img src={build.gpu[0].image} alt="GPU" className="h-full object-contain" />
-                        ) : (
-                        <span className="text-[9px] text-purple-300 font-medium">PCIe x16 / AGP Slot</span>
-                        )}
-                    </div>
-
-                    {/* ========== PCI SLOTS (kiri bawah) ========== */}
-                    <div className="absolute left-8 top-48 space-y-1">
-                        <div className="w-40 h-3.5 rounded-sm border border-gray-500 bg-gray-800/80 flex items-center px-1">
-                        <span className="text-[7px] text-gray-400">PCI Slot 1</span>
-                        </div>
-                        <div className="w-40 h-3.5 rounded-sm border border-gray-500 bg-gray-800/70 flex items-center px-1">
-                        <span className="text-[7px] text-gray-400">PCI Slot 2</span>
-                        </div>
-                        <div className="w-40 h-3.5 rounded-sm border border-gray-500 bg-gray-800/60 flex items-center px-1">
-                        <span className="text-[7px] text-gray-400">PCI Slot 3</span>
-                        </div>
-                    </div>
-
-                    {/* ========== 24-pin ATX Power (kanan tengah) ========== */}
-                    <div className="absolute right-2 top-60 w-4 h-16 bg-yellow-700 border border-yellow-500 rounded-sm flex items-center justify-center">
-                        <span className="text-[7px] text-yellow-100 font-bold" style={{ writingMode: "vertical-rl" }}>
-                        24-pin ATX
-                        </span>
-                    </div>
-
-                    {/* ========== BAGIAN KANAN MOTHERBOARD (sesuai gambar) ========== */}
-
-                    {/* CPUFAN1 */}
-                    <div className="absolute right-28 top-3 w-8 h-3 bg-gray-700 border border-gray-500 rounded-sm flex items-center justify-center">
-                    <span className="text-[5px] text-gray-300">CPUFAN1</span>
-                    </div>
-
-                    {/* DDR1 & DDR2 (2 slot RAM vertikal) */}
-                    <div
-                    onDrop={(e) => handleDrop(e, "ram")}
-                    onDragOver={handleDragOver}
-                    className="absolute right-10 top-24 flex flex-col gap-2 z-10"
-                    >
-                    <div className={`w-6 h-24 rounded-sm border-2 border-dashed flex items-center justify-center ${
-                        build.ram?.length > 0 ? "border-green-400 bg-green-500/40" : "border-blue-400/80 bg-blue-500/10"
-                    }`}>
-                        <span className="text-[7px] text-blue-200 -rotate-90 whitespace-nowrap">
-                        {build.ram?.[0] ? "DDR1 ✓" : "DDR1"}
-                        </span>
-                    </div>
-                    <div className={`w-6 h-24 rounded-sm border-2 border-dashed flex items-center justify-center ${
-                        build.ram?.length > 1 ? "border-green-400 bg-green-500/40" : "border-blue-400/80 bg-blue-500/10"
-                    }`}>
-                        <span className="text-[7px] text-blue-200 -rotate-90 whitespace-nowrap">
-                        {build.ram?.[1] ? "DDR2 ✓" : "DDR2"}
-                        </span>
-                    </div>
-                    </div>
-
-                    {/* IDE + FDD + ATX Power (paling kanan) */}
-                    <div className="absolute right-1 top-6 flex flex-col gap-1 items-end">
-                    {/* FDD1 */}
-                    {/* <div className="w-10 h-4 bg-gray-700 border border-gray-500 rounded-sm flex items-center justify-center">
-                        <span className="text-[6px] text-gray-300">FDD1</span>
-                    </div> */}
-                    
-                    {/* IDE 2 */}
-                    <div className="w-12 h-5 bg-gray-700 border border-gray-500 rounded-sm flex relative right-1 top-[-12px] items-center justify-center">
-                        <span className="text-[6px] text-gray-300">IDE 2</span>
-                    </div>
-                    
-                    {/* IDE 1 */}
-                    <div className="w-12 h-5 bg-gray-700 border border-gray-500 rounded-sm flex relative right-1 top-[-12px] items-center justify-center">
-                        <span className="text-[6px] text-gray-300">IDE 1</span>
-                    </div>
-
-                    {/* ATX Power Supply (24-pin) */}
-                    <div className="w-4 h-20 bg-yellow-700 border-2 border-yellow-500 rounded-sm flex items-center justify-center relative left-[-4px] mt-14">
-                        <span className="text-[7px] text-yellow-100 font-bold" style={{ writingMode: "vertical-rl" }}>
-                        ATX Power
-                        </span>
-                    </div>
-                    </div>
-
-                    {/* SiS 962 Chipset */}
-                    <div className="absolute right-20 top-48 w-10 h-8 bg-gray-700 border border-gray-500 rounded flex items-center justify-center">
-                      <span className="text-[7px] text-gray-300 text-center leading-tight">SiS<br/>962</span>
-                    </div>
-
-                    {/* JBAT (Clear CMOS) */}
-                    <div className="absolute right-16 bottom-14 w-6 h-3 bg-gray-700 border border-gray-500 rounded-sm flex items-center justify-center">
-                    <span className="text-[5px] text-gray-300">JBAT</span>
-                    </div>
-
-                    {/* JPOW1 */}
-                    <div className="absolute right-24 bottom-14 w-6 h-3 bg-gray-700 border border-gray-500 rounded-sm flex items-center justify-center">
-                    <span className="text-[5px] text-gray-300">JPOW1</span>
-                    </div>
-
-                    {/* Header bawah kanan */}
-                    <div className="absolute right-2 bottom-3 flex flex-col gap-0.5 items-end">
-                    <div className="px-1 py-0.5 bg-gray-700 border border-gray-500 rounded text-[5px] text-gray-300">JUSB1</div>
-                    <div className="px-1 py-0.5 bg-gray-700 border border-gray-500 rounded text-[5px] text-gray-300">SYSFAN1</div>
-                    <div className="px-1 py-0.5 bg-gray-700 border border-gray-500 rounded text-[5px] text-gray-300">JP1</div>
-                    <div className="px-1 py-0.5 bg-gray-700 border border-gray-500 rounded text-[5px] text-gray-300">J1394_1</div>
-                    </div>
-
-                    {/* ========== SATA / Storage ========== */}
-                    <div
-                        onDrop={(e) => handleDrop(e, "storage")}
-                        onDragOver={handleDragOver}
-                        className={`absolute left-8 top-64 w-32 h-6 rounded border border-dashed flex items-center justify-center ${
-                        build.storage?.length
-                            ? "border-green-400 bg-green-500/30"
-                            : "border-cyan-400 bg-cyan-500/10"
-                        }`}
-                    >
-                        <span className="text-[8px] text-cyan-300">
-                        {build.storage?.length ? "Storage ✓" : "SATA / M.2"}
-                        </span>
-                    </div>
-
-                    {/* ========== CMOS Battery ========== */}
-                    <div className="absolute right-16 bottom-8 w-5 h-5 rounded-full bg-gray-600 border-2 border-gray-400 flex items-center justify-center">
-                        <span className="text-[6px] text-gray-200">BAT</span>
-                    </div>
-
-                    {/* ========== FRONT PANEL + HEADERS (bawah) ========== */}
-                    <div className="absolute left-8 bottom-2 flex gap-2">
-                        <div className="px-1.5 py-0.5 bg-gray-700 border border-gray-500 rounded text-[6px] text-gray-300">
-                        F_PANEL
-                        </div>
-                        <div className="px-1.5 py-0.5 bg-gray-700 border border-gray-500 rounded text-[6px] text-gray-300">
-                        USB
-                        </div>
-                        <div className="px-1.5 py-0.5 bg-gray-700 border border-gray-500 rounded text-[6px] text-gray-300">
-                        FAN
-                        </div>
-                        <div className="px-1.5 py-0.5 bg-gray-700 border border-gray-500 rounded text-[6px] text-gray-300">
-                        AUDIO
-                        </div>
-                    </div>
-
-                    {/* ========== Label kecil ========== */}
-                    <div className="absolute left-2 top-28 text-[6px] text-gray-500 rotate-90 origin-left">
-                        PCI Slots
-                    </div>
-                    </div>
-
-                    {/* PSU */}
-                    <div
-                      onDrop={(e) => handleDrop(e, "psu")}
-                      onDragOver={handleDragOver}
-                      className={`absolute bottom-1.5 left-2.5 right-2.5 h-[17%] rounded border-2 border-dashed flex flex-col items-center justify-center ${
-                        build.psu?.length ? "border-green-400 bg-green-500/20" : "border-orange-500/50"
-                      }`}
-                    >
-                      <Power size={16} />
-                      <span className="text-[10px]">PSU</span>
-                    </div>
-
-                    {/* ==================== KABEL REALISTIS ==================== */}
-                    {showCables && (
-                    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                        {/* Cable Channel (jalur sebelah kiri) */}
-                        <div className="absolute left-1 top-[10%] bottom-[22%] w-2 rounded bg-gray-800/90 border border-gray-600" />
-
-                        {/* 24-pin ATX - dari PSU naik ke motherboard */}
-                        <div
-                        className="absolute left-5 bottom-[19%] w-2 rounded-full origin-bottom transition-all duration-1000"
-                        style={{
-                            backgroundColor: "#eab308",
-                            height: cableAnim["24pin"] ? "32%" : "0%",
-                            opacity: cableAnim["24pin"] ? 1 : 0,
-                            boxShadow: "0 0 6px #eab30888",
-                        }}
-                        />
-                        {/* cabang 24-pin ke kanan sedikit biar tidak lurus */}
-                        <div
-                        className="absolute left-5 bottom-[48%] h-1.5 rounded-full origin-left transition-all duration-700 delay-200"
-                        style={{
-                            backgroundColor: "#eab308",
-                            width: cableAnim["24pin"] ? "18%" : "0%",
-                            opacity: cableAnim["24pin"] ? 0.9 : 0,
-                        }}
-                        />
-
-                        {/* 8-pin CPU Power - dari PSU naik lalu ke atas motherboard */}
-                        <div
-                        className="absolute left-8 bottom-[19%] w-1.5 rounded-full origin-bottom transition-all duration-1000 delay-100"
-                        style={{
-                            backgroundColor: "#ca8a04",
-                            height: cableAnim["cpu8pin"] ? "55%" : "0%",
-                            opacity: cableAnim["cpu8pin"] ? 1 : 0,
-                        }}
-                        />
-                        <div
-                        className="absolute left-8 top-[12%] h-1.5 rounded-full origin-left transition-all duration-700 delay-300"
-                        style={{
-                            backgroundColor: "#ca8a04",
-                            width: cableAnim["cpu8pin"] ? "22%" : "0%",
-                            opacity: cableAnim["cpu8pin"] ? 0.9 : 0,
-                        }}
-                        />
-
-                        {/* PCIe Power ke GPU */}
-                        {build.gpu?.[0]?.needsPower && (
-                        <>
-                            <div
-                            className="absolute left-[30%] top-[51%] h-1.5 rounded-full origin-left transition-all duration-800"
-                            style={{
-                                backgroundColor: "#ef4444",
-                                width: cableAnim["pcie1"] ? "28%" : "0%",
-                                opacity: cableAnim["pcie1"] ? 1 : 0,
-                                boxShadow: "0 0 6px #ef444688",
-                            }}
-                            />
-                            <div
-                            className="absolute left-[30%] top-[54%] h-1 rounded-full origin-left transition-all duration-800 delay-150"
-                            style={{
-                                backgroundColor: "#f87171",
-                                width: cableAnim["pcie2"] ? "25%" : "0%",
-                                opacity: cableAnim["pcie2"] ? 0.8 : 0,
-                            }}
-                            />
-                        </>
-                        )}
-
-                        {/* SATA Power (dari PSU ke kanan bawah) */}
-                        <div
-                        className="absolute left-[20%] bottom-[19%] h-1.5 rounded-full origin-left transition-all duration-900"
-                        style={{
-                            backgroundColor: "#3b82f6",
-                            width: cableAnim["sata_power"] ? "45%" : "0%",
-                            opacity: cableAnim["sata_power"] ? 1 : 0,
-                        }}
-                        />
-                        <div
-                        className="absolute right-[18%] bottom-[19%] w-1.5 rounded-full origin-bottom transition-all duration-700 delay-200"
-                        style={{
-                            backgroundColor: "#3b82f6",
-                            height: cableAnim["sata_power"] ? "18%" : "0%",
-                            opacity: cableAnim["sata_power"] ? 0.9 : 0,
-                        }}
-                        />
-
-                        {/* SATA Data (dari motherboard ke storage) */}
-                        <div
-                        className="absolute right-8 top-[62%] w-1 rounded-full origin-top transition-all duration-800"
-                        style={{
-                            backgroundColor: "#06b6d4",
-                            height: cableAnim["sata_data"] ? "22%" : "0%",
-                            opacity: cableAnim["sata_data"] ? 1 : 0,
-                        }}
-                        />
-
-                        {/* Front Panel (dari depan case ke motherboard) */}
-                        <div
-                        className="absolute right-0 top-[38%] h-1 rounded-full origin-right transition-all duration-700"
-                        style={{
-                            backgroundColor: "#a3a3a3",
-                            width: cableAnim["front_panel"] ? "35%" : "0%",
-                            opacity: cableAnim["front_panel"] ? 0.85 : 0,
-                        }}
-                        />
-
-                        {/* CPU Fan */}
-                        <div
-                        className="absolute left-[45%] top-[28%] h-1 rounded-full origin-left transition-all duration-600"
-                        style={{
-                            backgroundColor: "#22c55e",
-                            width: cableAnim["cpu_fan"] ? "20%" : "0%",
-                            opacity: cableAnim["cpu_fan"] ? 0.9 : 0,
-                        }}
-                        />
-
-                        {/* Case Fan */}
-                        <div
-                        className="absolute left-3 top-[40%] w-1 rounded-full origin-top transition-all duration-700"
-                        style={{
-                            backgroundColor: "#4ade80",
-                            height: cableAnim["case_fan"] ? "25%" : "0%",
-                            opacity: cableAnim["case_fan"] ? 0.8 : 0,
-                        }}
-                        />
-                    </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Drop Case & Cooler & MB */}
-                <div className="mt-6 space-y-2">
-                  <div
-                    onDrop={(e) => handleDrop(e, "case")}
-                    onDragOver={handleDragOver}
-                    className={`rounded-lg border-2 border-dashed p-2 text-center text-xs ${
-                      build.case?.length ? "border-green-400 bg-green-50 dark:bg-green-500/10" : ""
-                    }`}
-                  >
-                    {build.case?.[0]?.name || "Drop Casing"}
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div
-                      onDrop={(e) => handleDrop(e, "motherboard")}
-                      onDragOver={handleDragOver}
-                      className={`rounded-lg border-2 border-dashed p-2 text-center text-xs ${
-                        build.motherboard?.length ? "border-green-400 bg-green-50 dark:bg-green-500/10" : ""
-                      }`}
-                    >
-                      {build.motherboard?.[0]?.name || "Motherboard"}
-                    </div>
-                    <div
-                      onDrop={(e) => handleDrop(e, "cooler")}
-                      onDragOver={handleDragOver}
-                      className={`rounded-lg border-2 border-dashed p-2 text-center text-xs ${
-                        build.cooler?.length ? "border-green-400 bg-green-50 dark:bg-green-500/10" : ""
-                      }`}
-                    >
-                      {build.cooler?.[0]?.name || "Cooler"}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* RIGHT - Status + Cabling */}
-          <div className="lg:col-span-4 space-y-3">
-            {/* Errors */}
-            {errors.length > 0 && (
-              <div className="rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-500/30 dark:bg-red-500/10">
-                <div className="flex items-center gap-2 text-red-700 dark:text-red-300 mb-2">
-                  <AlertTriangle size={16} />
-                  <span className="font-semibold text-sm">Error Kompatibilitas</span>
-                </div>
-                <ul className="text-sm text-red-600 dark:text-red-300 space-y-1">
-                  {errors.map((e, i) => (
-                    <li key={i}>• {e}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Tombol Pasang Kabel */}
-            <div className="rounded-xl border bg-white p-4 dark:border-white/10 surface-card space-y-3">
-              <p className="text-sm font-semibold flex items-center gap-2">
-                <Cable size={16} /> Manajemen Kabel
-              </p>
-
+  // ===== RENDER: PURPOSE =====
+  if (step === "purpose") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white flex items-center justify-center p-6">
+        <div className="max-w-3xl w-full">
+          <h1 className="text-3xl font-bold text-center mb-2">Rakit PC Simulator</h1>
+          <p className="text-center text-slate-400 mb-10">Pilih tujuanmu dulu, biar rekomendasinya pas</p>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {PURPOSES.map(p => (
               <button
-                onClick={handleInstallCables}
-                disabled={!canInstallCables || showCables}
-                className={`w-full flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium transition ${
-                  canInstallCables && !showCables
-                    ? "bg-accent text-white hover:bg-accent/90"
-                    : "bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-white/5"
-                }`}
+                key={p.id}
+                onClick={() => startBuild(p)}
+                className="group bg-slate-800/80 hover:bg-slate-700 border border-slate-700 hover:border-blue-500 rounded-2xl p-6 text-left transition-all"
               >
-                <Zap size={16} />
-                {showCables ? "Kabel Sudah Terpasang" : "Pasang Semua Kabel"}
+                <p.icon size={32} className="mb-4 text-blue-400 group-hover:scale-110 transition" />
+                <h3 className="font-semibold text-lg">{p.label}</h3>
+                <p className="text-sm text-slate-400 mt-1">{p.desc}</p>
               </button>
-
-              <button
-                onClick={startCablingChallenge}
-                disabled={!canInstallCables}
-                className={`w-full flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium border transition ${
-                  canInstallCables
-                    ? "border-accent text-accent hover:bg-accent/5"
-                    : "border-gray-200 text-gray-400 cursor-not-allowed"
-                }`}
-              >
-                <Play size={16} />
-                Mode Cabling Challenge
-              </button>
-
-              {/* Challenge Progress */}
-              {cablingMode && (
-                <div className="mt-3 p-3 rounded-lg bg-gray-50 dark:bg-white/5">
-                  <p className="text-xs font-medium mb-2">
-                    Langkah {Math.min(currentCableStep + 1, CABLE_STEPS.length)} / {CABLE_STEPS.filter(c => c.id !== "pcie" || build.gpu?.[0]?.needsPower).length}
-                  </p>
-                  <p className="text-sm mb-3">
-                    {CABLE_STEPS.filter(c => c.id !== "pcie" || build.gpu?.[0]?.needsPower)[currentCableStep]?.label || "Selesai!"}
-                  </p>
-                  <button
-                    onClick={installNextCable}
-                    disabled={currentCableStep >= CABLE_STEPS.filter(c => c.id !== "pcie" || build.gpu?.[0]?.needsPower).length}
-                    className="w-full rounded-lg bg-green-600 text-white py-2 text-sm font-medium disabled:opacity-50"
-                  >
-                    {currentCableStep >= CABLE_STEPS.filter(c => c.id !== "pcie" || build.gpu?.[0]?.needsPower).length
-                      ? "Challenge Selesai ✓"
-                      : "Pasang Kabel Ini"}
-                  </button>
-                </div>
-              )}
-
-              {/* List kabel yang sudah terpasang */}
-              {cablesInstalled.length > 0 && (
-                <div className="text-xs text-gray-500 space-y-1">
-                  {cablesInstalled.map((id) => (
-                    <div key={id} className="flex items-center gap-1.5">
-                      <CheckCircle2 size={12} className="text-green-500" />
-                      {CABLE_STEPS.find((c) => c.id === id)?.label}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Success */}
-            {errors.length === 0 && progress >= 7 && cablesInstalled.length >= 3 && (
-              <div className="rounded-xl border border-green-200 bg-green-50 p-4 dark:border-green-500/30 dark:bg-green-500/10">
-                <div className="flex items-center gap-2 text-green-700 dark:text-green-300">
-                  <CheckCircle2 size={18} />
-                  <span className="font-semibold">PC Siap Menyala!</span>
-                </div>
-                <p className="text-sm text-green-600 mt-1">
-                  Semua komponen dan kabel sudah terpasang dengan benar.
-                </p>
-              </div>
-            )}
+            ))}
           </div>
         </div>
       </div>
+    );
+  }
+
+  // ===== RENDER: BUILD + WIRING =====
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100">
+      {/* Top Bar */}
+      <div className="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <h1 className="font-semibold">Rakit PC</h1>
+            <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">
+              {purpose?.label}
+            </span>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex items-center gap-2 text-sm">
+              <span className="text-slate-400">Komponen</span>
+              <div className="w-24 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                <div className="h-full bg-blue-500 transition-all" style={{ width: `${(progress/7)*100}%` }} />
+              </div>
+              <span>{progress}/7</span>
+            </div>
+            
+            {step === "wiring" && (
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-slate-400">Kabel</span>
+                <div className="w-20 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-500 transition-all" style={{ width: `${(wiredCount/neededCables.length)*100}%` }} />
+                </div>
+                <span>{wiredCount}/{neededCables.length}</span>
+              </div>
+            )}
+
+            <button onClick={reset} className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white">
+              <RotateCcw size={14} /> Reset
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        {/* ===== LEFT: Katalog ===== */}
+        <div className="lg:col-span-3 space-y-4">
+          {step === "build" && (
+            <>
+              <div className="bg-slate-900 rounded-xl border border-slate-800 p-3">
+                <p className="text-xs font-medium text-slate-500 mb-2">KATEGORI</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {Object.keys(COMPONENTS).map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCat(cat)}
+                      className={`px-2.5 py-1 rounded-lg text-xs capitalize transition ${
+                        selectedCat === cat 
+                          ? "bg-blue-600 text-white" 
+                          : "bg-slate-800 text-slate-400 hover:bg-slate-700"
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-slate-900 rounded-xl border border-slate-800 p-3">
+                <p className="text-xs font-medium text-slate-500 mb-3">Drag ke slot</p>
+                <div className="space-y-2 max-h-[520px] overflow-y-auto">
+                  {COMPONENTS[selectedCat].map(item => (
+                    <div
+                      key={item.id}
+                      draggable
+                      onDragStart={e => onDragStart(e, item, selectedCat)}
+                      className="bg-slate-800/60 hover:bg-slate-800 border border-slate-700 rounded-lg p-3 cursor-grab active:cursor-grabbing transition"
+                    >
+                      <p className="font-medium text-sm">{item.name}</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        {selectedCat === "cpu" && `${item.socket} • ${item.tdp}W`}
+                        {selectedCat === "motherboard" && `${item.socket} • ${item.ramType}`}
+                        {selectedCat === "ram" && `${item.type} • ${item.capacity}GB`}
+                        {selectedCat === "gpu" && `${item.tdp}W • ${item.length}mm`}
+                        {selectedCat === "psu" && `${item.watt}W`}
+                        {selectedCat === "cooler" && `Support ${item.tdpSupport}W`}
+                        {selectedCat === "case" && `Max GPU ${item.maxGpu}mm`}
+                        {selectedCat === "storage" && item.type}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          {step === "wiring" && (
+            <div className="bg-slate-900 rounded-xl border border-slate-800 p-4">
+              <p className="text-sm font-medium mb-3 flex items-center gap-2">
+                <Cable size={16} /> Daftar Kabel
+              </p>
+              <div className="space-y-2 max-h-[600px] overflow-y-auto">
+                {neededCables.map(cable => {
+                  const installed = Object.values(cables).includes(cable.id);
+                  return (
+                    <div
+                      key={cable.id}
+                      draggable={!installed}
+                      onDragStart={e => !installed && onCableDrag(e, cable)}
+                      className={`flex items-center gap-3 p-2.5 rounded-lg border text-sm transition ${
+                        installed 
+                          ? "bg-emerald-500/10 border-emerald-500/40 opacity-70" 
+                          : "bg-slate-800/60 border-slate-700 cursor-grab active:cursor-grabbing hover:border-slate-500"
+                      }`}
+                    >
+                      <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: cable.color }} />
+                      <span className="flex-1">{cable.name}</span>
+                      {installed && <CheckCircle2 size={14} className="text-emerald-400" />}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ===== CENTER: Visual Case ===== */}
+        <div className="lg:col-span-5">
+          <div className="bg-slate-900 rounded-xl border border-slate-800 p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-medium flex items-center gap-2">
+                <Box size={16} /> 
+                {step === "wiring" ? "Pasang Kabel ke Pin" : "Casing"}
+              </h2>
+              {step === "build" && canWire && (
+                <button
+                  onClick={() => setStep("wiring")}
+                  className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white text-sm px-3 py-1.5 rounded-lg transition"
+                >
+                  <Cable size={14} /> Lanjut ke Kabel
+                </button>
+              )}
+              {step === "wiring" && (
+                <button
+                  onClick={() => setStep("build")}
+                  className="text-sm text-slate-400 hover:text-white"
+                >
+                  ← Kembali
+                </button>
+              )}
+            </div>
+
+            {/* Visual Motherboard */}
+            <div className="relative mx-auto max-w-[400px] aspect-[1/1.3] bg-slate-950 rounded-lg border-4 border-slate-700 overflow-hidden">
+              
+              {/* Motherboard Area */}
+              <div className="absolute inset-2 bottom-[16%] bg-[#111827] rounded border border-slate-700">
+                {/* PCB Grid */}
+                <div className="absolute inset-0 opacity-30" style={{
+                  backgroundImage: "linear-gradient(#1e293b 1px, transparent 1px), linear-gradient(90deg, #1e293b 1px, transparent 1px)",
+                  backgroundSize: "14px 14px"
+                }} />
+
+                {/* CPU Socket */}
+                <div
+                  onDrop={e => onDrop(e, "cpu")}
+                  onDragOver={e => e.preventDefault()}
+                  className={`absolute left-6 top-5 w-20 h-20 rounded-lg border-2 border-dashed flex flex-col items-center justify-center ${
+                    build.cpu ? "border-emerald-500 bg-emerald-500/20" : "border-amber-500/60 bg-amber-500/10"
+                  }`}
+                >
+                  {build.cpu ? (
+                    <span className="text-[10px] text-emerald-300 text-center px-1">{build.cpu.name}</span>
+                  ) : (
+                    <>
+                      <Cpu size={20} className="text-amber-400" />
+                      <span className="text-[9px] text-amber-300 mt-1">CPU</span>
+                    </>
+                  )}
+                </div>
+
+                {/* CPU 8-pin */}
+                <Header 
+                  id="cpu8" 
+                  label="8-pin" 
+                  installed={!!cables.cpu8} 
+                  onDrop={onHeaderDrop}
+                  className="absolute right-3 top-14 w-5 h-9"
+                  vertical
+                />
+
+                {/* RAM */}
+                <div
+                  onDrop={e => onDrop(e, "ram")}
+                  onDragOver={e => e.preventDefault()}
+                  className={`absolute right-14 top-10 w-6 h-28 rounded border-2 border-dashed flex items-center justify-center ${
+                    build.ram ? "border-emerald-500 bg-emerald-500/20" : "border-blue-500/60 bg-blue-500/10"
+                  }`}
+                >
+                  <span className="text-[9px] -rotate-90 whitespace-nowrap text-blue-300">
+                    {build.ram ? "RAM ✓" : "DDR"}
+                  </span>
+                </div>
+
+                {/* PCIe / GPU */}
+                <div
+                  onDrop={e => onDrop(e, "gpu")}
+                  onDragOver={e => e.preventDefault()}
+                  className={`absolute left-6 right-16 top-32 h-7 rounded border-2 border-dashed flex items-center justify-center ${
+                    build.gpu ? "border-emerald-500 bg-emerald-500/20" : "border-purple-500/60 bg-purple-500/10"
+                  }`}
+                >
+                  <span className="text-[10px] text-purple-300 truncate px-2">
+                    {build.gpu ? build.gpu.name : "PCIe x16 / GPU"}
+                  </span>
+                </div>
+
+                {/* PCIe Power target */}
+                {build.gpu?.needsPower && (
+                  <Header 
+                    id="pcie" 
+                    label="PCIe Power" 
+                    installed={!!cables.pcie} 
+                    onDrop={onHeaderDrop}
+                    className="absolute left-1/2 -translate-x-1/2 top-[42%] px-2 py-0.5 text-[9px]"
+                  />
+                )}
+
+                {/* 24-pin ATX */}
+                <Header 
+                  id="atx24" 
+                  label="24-pin" 
+                  installed={!!cables.atx24} 
+                  onDrop={onHeaderDrop}
+                  className="absolute right-2 top-52 w-4 h-16"
+                  vertical
+                />
+
+                {/* SATA */}
+                <div className="absolute left-6 top-56 flex gap-1.5">
+                  <Header id="sata_d" label="SATA Data" installed={!!cables.sata_d} onDrop={onHeaderDrop} className="px-1.5 py-0.5 text-[8px]" />
+                </div>
+
+                {/* FAN Headers */}
+                <div className="absolute left-28 top-3 flex gap-1">
+                  <Header id="cpu_fan" label="CPU_FAN" installed={!!cables.cpu_fan} onDrop={onHeaderDrop} className="px-1.5 py-0.5 text-[8px]" />
+                  <Header id="sys_fan" label="SYS_FAN" installed={!!cables.sys_fan} onDrop={onHeaderDrop} className="px-1.5 py-0.5 text-[8px]" />
+                </div>
+
+                {/* Front Panel */}
+                <div className="absolute left-5 bottom-2 right-5">
+                  <p className="text-[7px] text-slate-500 mb-1">FRONT PANEL</p>
+                  <div className="flex flex-wrap gap-1">
+                    <Header id="pwr_sw" label="PWR_SW" installed={!!cables.pwr_sw} onDrop={onHeaderDrop} className="px-1.5 py-0.5 text-[8px]" />
+                    <Header id="rst_sw" label="RESET" installed={!!cables.rst_sw} onDrop={onHeaderDrop} className="px-1.5 py-0.5 text-[8px]" />
+                    <Header id="pwr_led" label="PLED" installed={!!cables.pwr_led} onDrop={onHeaderDrop} className="px-1.5 py-0.5 text-[8px]" />
+                    <Header id="hdd_led" label="HD_LED" installed={!!cables.hdd_led} onDrop={onHeaderDrop} className="px-1.5 py-0.5 text-[8px]" />
+                  </div>
+                </div>
+
+                {/* USB & Audio */}
+                <div className="absolute right-2 bottom-10 flex flex-col gap-1">
+                  <Header id="usb9" label="USB 9p" installed={!!cables.usb9} onDrop={onHeaderDrop} className="px-1.5 py-0.5 text-[8px]" />
+                  <Header id="audio9" label="AUDIO 9p" installed={!!cables.audio9} onDrop={onHeaderDrop} className="px-1.5 py-0.5 text-[8px]" />
+                </div>
+              </div>
+
+              {/* PSU Area */}
+              <div
+                onDrop={e => onDrop(e, "psu")}
+                onDragOver={e => e.preventDefault()}
+                className={`absolute bottom-2 left-2 right-2 h-[14%] rounded border-2 border-dashed flex flex-col items-center justify-center ${
+                  build.psu ? "border-emerald-500 bg-emerald-500/10" : "border-orange-500/50"
+                }`}
+              >
+                <Power size={14} className="mb-0.5" />
+                <span className="text-[10px]">{build.psu?.name || "PSU"}</span>
+                <Header 
+                  id="sata_p" 
+                  label="SATA Power" 
+                  installed={!!cables.sata_p} 
+                  onDrop={onHeaderDrop}
+                  className="mt-1 px-2 py-0.5 text-[8px]"
+                />
+              </div>
+            </div>
+
+            {/* Quick slots under visual */}
+            {step === "build" && (
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                {["case", "motherboard", "cooler", "storage"].map(cat => (
+                  <div
+                    key={cat}
+                    onDrop={e => onDrop(e, cat)}
+                    onDragOver={e => e.preventDefault()}
+                    className={`rounded-lg border border-dashed p-2 text-center text-xs ${
+                      build[cat] ? "border-emerald-500 bg-emerald-500/10" : "border-slate-600"
+                    }`}
+                  >
+                    {build[cat]?.name || cat.toUpperCase()}
+                    {build[cat] && (
+                      <button onClick={() => remove(cat)} className="ml-1 text-red-400 hover:text-red-300">×</button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ===== RIGHT: Status ===== */}
+        <div className="lg:col-span-4 space-y-4">
+          {/* Errors */}
+          {errors.length > 0 && (
+            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+              <div className="flex items-center gap-2 text-red-400 mb-2">
+                <AlertTriangle size={16} />
+                <span className="font-medium text-sm">Tidak Kompatibel</span>
+              </div>
+              <ul className="text-sm text-red-300/90 space-y-1">
+                {errors.map((e, i) => <li key={i}>• {e}</li>)}
+              </ul>
+            </div>
+          )}
+
+          {/* Build Summary */}
+          <div className="bg-slate-900 rounded-xl border border-slate-800 p-4">
+            <p className="text-sm font-medium mb-3">Ringkasan Build</p>
+            <div className="space-y-2 text-sm">
+              {requiredCats.map(cat => (
+                <div key={cat} className="flex justify-between items-center">
+                  <span className="text-slate-400 capitalize">{cat}</span>
+                  <span className={build[cat] ? "text-emerald-400" : "text-slate-600"}>
+                    {build[cat]?.name || "—"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          {step === "build" && canWire && (
+            <button
+              onClick={() => setStep("wiring")}
+              className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-medium transition"
+            >
+              <Cable size={18} /> Mulai Pasang Kabel
+            </button>
+          )}
+
+          {step === "wiring" && allWired && (
+            <div className="bg-emerald-500/10 border border-emerald-500/40 rounded-xl p-5 text-center">
+              <CheckCircle2 size={32} className="mx-auto text-emerald-400 mb-2" />
+              <h3 className="font-semibold text-lg text-emerald-300">PC Siap Menyala!</h3>
+              <p className="text-sm text-emerald-400/80 mt-1">Semua komponen & kabel sudah terpasang dengan benar.</p>
+            </div>
+          )}
+
+          {step === "wiring" && !allWired && (
+            <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 text-sm text-slate-400">
+              <Info size={16} className="inline mr-2" />
+              Tarik kabel dari panel kiri, lalu drop ke pin yang sesuai di motherboard.
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ===== Helper: Header Pin ===== */
+function Header({ id, label, installed, onDrop, className = "", vertical = false }) {
+  return (
+    <div
+      onDrop={e => onDrop(e, id)}
+      onDragOver={e => e.preventDefault()}
+      className={`rounded border text-center transition cursor-pointer ${
+        installed 
+          ? "border-emerald-500 bg-emerald-500/30 text-emerald-200" 
+          : "border-slate-600 bg-slate-800/80 text-slate-400 hover:border-slate-400"
+      } ${className}`}
+    >
+      <span className={vertical ? "text-[8px] font-medium" : ""} style={vertical ? { writingMode: "vertical-rl" } : {}}>
+        {installed ? "✓" : label}
+      </span>
     </div>
   );
 }
