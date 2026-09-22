@@ -308,7 +308,7 @@ const AnnouncementsAdmin = () => {
   if (user?.role !== "superAdmin") return null;
 
   return (
-    <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6">
+    <div className="relative mx-auto max-w-full md:py-6 md:px-6">
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -372,7 +372,7 @@ const AnnouncementsAdmin = () => {
           </div>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-3 z-[99]">
           {announcements.map((item) => {
             const typeInfo =
               TYPE_OPTIONS.find((t) => t.value === item.type) || TYPE_OPTIONS[0];
@@ -747,7 +747,7 @@ const AnnouncementsAdmin = () => {
 
       {/* ===== DELETE CONFIRMATION MODAL ===== */}
       {deleteTarget && (
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[9999] w-full md:w-[81vw] right-0 ml-auto flex items-center justify-center p-4">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
