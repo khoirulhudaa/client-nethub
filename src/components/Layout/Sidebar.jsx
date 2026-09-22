@@ -106,6 +106,35 @@ const Sidebar = ({ onNavigate }) => {
     admin: true,
   });
 
+  // di dalam komponen Sidebar, setelah state openGroups / collapsed
+
+  useEffect(() => {
+    const handler = (e) => {
+      const { group, expandSidebar } = e.detail || {};
+
+      // Expand sidebar kalau sedang collapsed
+      if (expandSidebar) {
+        setCollapsed(false);
+      }
+
+      // Buka group yang diminta, tutup yang lain biar fokusus
+      if (group) {
+        setOpenGroups((prev) => {
+          const next = {};
+          Object.keys(prev).forEach((k) => {
+            next[k] = k === group;
+          });
+          // pastikan key ada
+          next[group] = true;
+          return next;
+        });
+      }
+    };
+
+    window.addEventListener("nethub-intro-step", handler);
+    return () => window.removeEventListener("nethub-intro-step", handler);
+  }, []);
+
   const toggleGroup = (key) => {
     setOpenGroups((prev) => {
       const isOpen = prev[key];
@@ -226,26 +255,28 @@ const Sidebar = ({ onNavigate }) => {
             onToggle={() => toggleGroup("categories")}
             collapsed={collapsed}
           >
-            {categoryLinks.map(({ label, icon: Icon, to, category }) => {
-              const isCategoryActive =
-                category === null
-                  ? !currentCategory && location.pathname === "/"
-                  : currentCategory === category;
+            <div data-tour="categories">
+              {categoryLinks.map(({ label, icon: Icon, to, category }) => {
+                const isCategoryActive =
+                  category === null
+                    ? !currentCategory && location.pathname === "/"
+                    : currentCategory === category;
 
-              return (
-                <div key={label} className={collapsed ? "" : "mb-1.5 px-2"}>
-                  <NavLink
-                    to={to}
-                    onClick={onNavigate}
-                    title={collapsed ? label : undefined}
-                    className={linkClass(isCategoryActive)}
-                  >
-                    <Icon size={17} />
-                    {!collapsed && label}
-                  </NavLink>
-                </div>
-              );
-            })}
+                return (
+                  <div key={label} className={collapsed ? "" : "mb-1.5 px-2"}>
+                    <NavLink
+                      to={to}
+                      onClick={onNavigate}
+                      title={collapsed ? label : undefined}
+                      className={linkClass(isCategoryActive)}
+                    >
+                      <Icon size={17} />
+                      {!collapsed && label}
+                    </NavLink>
+                  </div>
+                );
+              })}
+            </div>
           </NavGroup>
 
           {/* Discover */}
@@ -255,19 +286,21 @@ const Sidebar = ({ onNavigate }) => {
             onToggle={() => toggleGroup("discover")}
             collapsed={collapsed}
           >
-            {discoverLinks.map(({ label, icon: Icon, to }) => (
-              <div key={label} className={collapsed ? "" : "px-2"}>
-                <NavLink
-                  to={to}
-                  onClick={onNavigate}
-                  title={collapsed ? label : undefined}
-                  className={({ isActive }) => linkClass(isActive)}
-                >
-                  <Icon size={17} />
-                  {!collapsed && label}
-                </NavLink>
-              </div>
-            ))}
+            <div data-tour="discover">
+              {discoverLinks.map(({ label, icon: Icon, to }) => (
+                <div key={label} className={collapsed ? "" : "px-2"}>
+                  <NavLink
+                    to={to}
+                    onClick={onNavigate}
+                    title={collapsed ? label : undefined}
+                    className={({ isActive }) => linkClass(isActive)}
+                  >
+                    <Icon size={17} />
+                    {!collapsed && label}
+                  </NavLink>
+                </div>
+              ))}
+            </div>
           </NavGroup>
 
           {/* Quiz */}
@@ -277,19 +310,21 @@ const Sidebar = ({ onNavigate }) => {
             onToggle={() => toggleGroup("quiz")}
             collapsed={collapsed}
           >
-            {filteredQuizLinks.map(({ label, icon: Icon, to }) => (
-              <div key={label} className={collapsed ? "" : "px-2"}>
-                <NavLink
-                  to={to}
-                  onClick={onNavigate}
-                  title={collapsed ? label : undefined}
-                  className={({ isActive }) => linkClass(isActive)}
-                >
-                  <Icon size={17} />
-                  {!collapsed && label}
-                </NavLink>
-              </div>
-            ))}
+            <div data-tour="practice">
+              {filteredQuizLinks.map(({ label, icon: Icon, to }) => (
+                <div key={label} className={collapsed ? "" : "px-2"}>
+                  <NavLink
+                    to={to}
+                    onClick={onNavigate}
+                    title={collapsed ? label : undefined}
+                    className={({ isActive }) => linkClass(isActive)}
+                  >
+                    <Icon size={17} />
+                    {!collapsed && label}
+                  </NavLink>
+                </div>
+              ))}
+            </div>
           </NavGroup>
 
           {/* Library */}
@@ -299,13 +334,36 @@ const Sidebar = ({ onNavigate }) => {
             onToggle={() => toggleGroup("library")}
             collapsed={collapsed}
           >
-            {/* My Guides - hanya user login */}
-            {!isGuest && (
-              <div className={collapsed ? "" : "px-2"}>
+            <div data-tour="library">
+              {/* My Guides - hanya user login */}
+              {!isGuest && (
+                <div className={collapsed ? "" : "px-2"}>
+                  <NavLink
+                    to="/my-posts"
+                    onClick={onNavigate}
+                    title={collapsed ? "My Guides" : undefined}
+                    className={({ isActive }) =>
+                      collapsed
+                        ? linkClass(isActive)
+                        : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
+                            isActive
+                              ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
+                              : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
+                          }`
+                    }
+                  >
+                    <FileText size={17} />
+                    {!collapsed && "My Guide"}
+                  </NavLink>
+                </div>
+              )}
+
+              {/* Reading List - tampil untuk semua, termasuk guest */}
+              <div className={collapsed ? "" : "px-2 mt-1"}>
                 <NavLink
-                  to="/my-posts"
+                  to="/reading-list"
                   onClick={onNavigate}
-                  title={collapsed ? "My Guides" : undefined}
+                  title={collapsed ? "Reading List" : undefined}
                   className={({ isActive }) =>
                     collapsed
                       ? linkClass(isActive)
@@ -316,52 +374,31 @@ const Sidebar = ({ onNavigate }) => {
                         }`
                   }
                 >
-                  <FileText size={17} />
-                  {!collapsed && "My Guide"}
+                  <BookOpen size={17} />
+                  {!collapsed && "Reading List"}
                 </NavLink>
               </div>
-            )}
 
-            {/* Reading List - tampil untuk semua, termasuk guest */}
-            <div className={collapsed ? "" : "px-2 mt-1"}>
-              <NavLink
-                to="/reading-list"
-                onClick={onNavigate}
-                title={collapsed ? "Reading List" : undefined}
-                className={({ isActive }) =>
-                  collapsed
-                    ? linkClass(isActive)
-                    : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
-                        isActive
-                          ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
-                          : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
-                      }`
-                }
-              >
-                <BookOpen size={17} />
-                {!collapsed && "Reading List"}
-              </NavLink>
-            </div>
-
-            {/* Collection Card */}
-            <div className={collapsed ? "" : "px-2 mt-1"}>
-              <NavLink
-                to="/hardware"
-                onClick={onNavigate}
-                title={collapsed ? "Hardware" : undefined}
-                className={({ isActive }) =>
-                  collapsed
-                    ? linkClass(isActive)
-                    : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
-                        isActive
-                          ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
-                          : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
-                      }`
-                }
-              >
-                <Box size={17} />
-                {!collapsed && "Collection Card"}
-              </NavLink>
+              {/* Collection Card */}
+              <div className={collapsed ? "" : "px-2 mt-1"}>
+                <NavLink
+                  to="/hardware"
+                  onClick={onNavigate}
+                  title={collapsed ? "Hardware" : undefined}
+                  className={({ isActive }) =>
+                    collapsed
+                      ? linkClass(isActive)
+                      : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
+                          isActive
+                            ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
+                            : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
+                        }`
+                  }
+                >
+                  <Box size={17} />
+                  {!collapsed && "Collection Card"}
+                </NavLink>
+              </div>
             </div>
           </NavGroup>
 
