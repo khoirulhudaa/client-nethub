@@ -15,6 +15,7 @@ import {
   Megaphone,
   ImagePlus,
   Hash,
+  Search,
 } from "lucide-react";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -74,21 +75,49 @@ const AnnouncementsAdmin = () => {
   const [form, setForm] = useState(emptyForm);
   const [hashtagInput, setHashtagInput] = useState("");
 
+  const [search, setSearch] = useState("");
+  const [localSearch, setLocalSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearch(localSearch.trim());
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [localSearch]);
+
+  const LIMIT = 9;
+
   useEffect(() => {
     if (user && user.role !== "superAdmin") {
       navigate("/", { replace: true });
     }
   }, [user, navigate]);
 
-  const fetchAnnouncements = async () => {
+  const fetchAnnouncements = async (targetPage = 1, isLoadMore = false) => {
     try {
-      setLoading(true);
-      const { data } = await api.get("/announcements/admin");
-      setAnnouncements(data.announcements || []);
+      if (isLoadMore) {
+        setLoadingMore(true);
+      } else {
+        setLoading(true);
+      }
+
+      const { data } = await api.get("/announcements/admin", {
+        params: { page: targetPage, limit: LIMIT, search: search.trim() },
+      });
+
+      setAnnouncements((prev) =>
+        isLoadMore ? [...prev, ...(data.announcements || [])] : data.announcements || []
+      );
+      setTotalPages(data.pages || 1);
+      setPage(targetPage);
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
 
@@ -192,6 +221,12 @@ const AnnouncementsAdmin = () => {
     }
   };
 
+  const handleLoadMore = () => {
+    fetchAnnouncements(page + 1, true);
+  };
+
+  const hasMore = page < totalPages;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.title.trim() || !form.content.trim()) return;
@@ -258,13 +293,35 @@ const AnnouncementsAdmin = () => {
           <h1 className="text-xl font-semibold tracking-tight">Pengumuman</h1>
         </div>
 
-        <button
-          onClick={openCreate}
-          className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:opacity-90 active:scale-[0.98]"
-        >
-          <Plus size={16} />
-          Buat Pengumuman
-        </button>
+        <div className="flex items-center gap-3">
+          {/* Search bar */}
+          <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm dark:border-white/10 dark:bg-white/5 sm:w-64">
+            <Search size={16} className="text-gray-400" />
+            <input
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              placeholder="Cari judul..."
+              className="w-full bg-transparent text-sm outline-none"
+            />
+            {localSearch && (
+              <button
+                type="button"
+                onClick={() => setLocalSearch("")}
+                className="text-gray-400 hover:text-gray-600 text-xs"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          <button
+            onClick={openCreate}
+            className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:opacity-90 active:scale-[0.98]"
+          >
+            <Plus size={16} />
+            Buat Pengumuman
+          </button>
+        </div>
       </div>
 
       {/* List */}
@@ -300,7 +357,7 @@ const AnnouncementsAdmin = () => {
             return (
               <div
                 key={item._id}
-                className={`group relative flex flex-col overflow-hidden rounded-2xl border border-black/[0.04] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.06),0_8px_24px_rgba(0,0,0,0.04)] dark:border-white/[0.06] dark:bg-white/[0.03] dark:shadow-none dark:hover:bg-white/[0.05] ${
+                className={`group relative flex flex-col overflow-hidden rounded-2xl border border-black/[0.04] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.06),0_8px_24px_rgba(0,0,0,0.04)] dark:border-white/[0.06] dark:bg-[#12121a] dark:shadow-none dark:hover:bg-slate-900 ${
                   isDimmed ? "opacity-55" : ""
                 }`}
               >
@@ -350,7 +407,7 @@ const AnnouncementsAdmin = () => {
                     <div className="flex shrink-0 items-center gap-0.5 opacity-70 transition-opacity group-hover:opacity-100">
                       <button
                         onClick={() => handleToggle(item._id)}
-                        className="rounded-xl p-2 text-gray-400 transition-colors hover:bg-black/[0.04] hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200"
+                        className="rounded-xl p-2 text-white transition-colors hover:bg-black/[0.04] hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200"
                         title={item.isActive ? "Nonaktifkan" : "Aktifkan"}
                       >
                         {item.isActive ? (
@@ -361,14 +418,14 @@ const AnnouncementsAdmin = () => {
                       </button>
                       <button
                         onClick={() => openEdit(item)}
-                        className="rounded-xl p-2 text-gray-400 transition-colors hover:bg-black/[0.04] hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200"
+                        className="rounded-xl p-2 text-white transition-colors hover:bg-black/[0.04] hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200"
                         title="Edit"
                       >
                         <Pencil size={15} />
                       </button>
                       <button
                         onClick={() => handleDelete(item._id)}
-                        className="rounded-xl p-2 text-gray-400 transition-colors hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
+                        className="rounded-xl p-2 text-white transition-colors hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
                         title="Hapus"
                       >
                         <Trash2 size={15} />
