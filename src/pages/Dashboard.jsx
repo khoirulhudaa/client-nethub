@@ -400,7 +400,7 @@ const Dashboard = () => {
   }, [search, category]);
 
   return (
-    <div className="mx-auto max-w-full border-r border-white/10 pr-0 shadow-none">
+    <div className="mx-auto max-w-full md:border-r border-white/10 pr-0 shadow-none">
       {/* Guest / Welcome tetap sama */}
       {user?.isGuest || user?.role === "guest" ? (
         <div className="w-full px-4 pt-6">
