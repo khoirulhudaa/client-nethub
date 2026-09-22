@@ -529,583 +529,603 @@ const isOwner = user?.id === post?.author?._id;
   }
 
   return (
-    <div className="md:p-6 mx-auto max-w-full pb-16">
-      <div className="mb-4 flex items-center md:justify-between">
-        <div className="w-max flex items-center gap-2.5">
-          <div className="md:flex hidden">
-            <CategoryPill category={post.category} />
+    <div className="md:p-6 mx-auto max-w-full space-y-3 pb-16">
+
+      <div className="p-5 bg-white/5 rounded-xl">
+        <div className="flex items-center md:justify-between">
+          <div className="w-max flex items-center gap-2.5">
+            <div className="md:flex hidden">
+              <CategoryPill category={post.category} />
+            </div>
+            {isCompleted && (
+              <div className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
+                <CheckCircle2 size={13} />
+                Sudah dibaca
+              </div>
+            )}
           </div>
-          {isCompleted && (
-            <div className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
-              <CheckCircle2 size={13} />
-              Sudah dibaca
+          {isOwner && (
+            <div className="flex items-center gap-2 z-[999]">
+              <button onClick={handlePin} className="btn-secondary px-3 py-1.5 text-xs">
+                <Pin size={13} className={post.isPinned ? "fill-accent text-accent" : ""} />
+                {post.isPinned ? "Pinned" : "Pin"}
+              </button>
+              <Link to={`/edit/${post._id}`} className="btn-secondary px-3 py-1.5 text-xs">
+                <Pencil size={13} />
+                Edit
+              </Link>
+              <button
+                onClick={() => setShowDeleteModal(true)}
+                className="btn-secondary px-3 py-1.5 text-xs text-red-500"
+              >
+                <Trash2 size={13} />
+                Delete
+              </button>
             </div>
           )}
         </div>
-        {isOwner && (
-          <div className="flex items-center gap-2 z-[999]">
-            <button onClick={handlePin} className="btn-secondary px-3 py-1.5 text-xs">
-              <Pin size={13} className={post.isPinned ? "fill-accent text-accent" : ""} />
-              {post.isPinned ? "Pinned" : "Pin"}
-            </button>
-            <Link to={`/edit/${post._id}`} className="btn-secondary px-3 py-1.5 text-xs">
-              <Pencil size={13} />
-              Edit
+      </div>
+
+      <div className="p-5 bg-white/5 rounded-xl">
+  
+
+          <h1 className="mb-3 max-w-full w-max truncate rounded-xl p-2 px-1 pr-2.5 text-xl sm:text-2xl font-semibold tracking-tight bg-slate-300 dark:!bg-[#0c0c18] border border-slate-200 dark:border-white/20">
+            📝 {post.title} 
+          </h1>
+
+          <div className="mb-6 flex items-center justify-between">
+            <Link to={`/authors/detail/${post.author._id}`} className="flex w-fit active:scale-[0.98] hover:brightness-75 items-center gap-2">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500 dark:bg-accent-soft text-sm font-semibold text-white dark:text-accent">
+                {post.author.name?.[0]?.toUpperCase()}
+              </div>
+              <div className="leading-tight">
+                <p className="text-md font-medium">{post.author.name}</p>
+                <p className="text-xs text-slate-700 dark:text-gray-400">{post.author.title}</p>
+              </div>
             </Link>
-            <button
-              onClick={() => setShowDeleteModal(true)}
-              className="btn-secondary px-3 py-1.5 text-xs text-red-500"
-            >
-              <Trash2 size={13} />
-              Delete
-            </button>
-          </div>
-        )}
-      </div>
 
-      <h1 className="mb-3 max-w-full w-max truncate rounded-xl p-2 px-1 pr-2.5 text-xl sm:text-2xl font-semibold tracking-tight bg-slate-300 dark:!bg-[#0c0c18] border border-slate-200 dark:border-white/20">
-        📝 {post.title} 
-      </h1>
-
-      <div className="mb-6 flex items-center justify-between">
-        <Link to={`/authors/detail/${post.author._id}`} className="flex w-fit active:scale-[0.98] hover:brightness-75 items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500 dark:bg-accent-soft text-sm font-semibold text-white dark:text-accent">
-            {post.author.name?.[0]?.toUpperCase()}
-          </div>
-          <div className="leading-tight">
-            <p className="text-md font-medium">{post.author.name}</p>
-            <p className="text-xs text-slate-700 dark:text-gray-400">{post.author.title}</p>
-          </div>
-        </Link>
-
-        {/* Tombol Follow */}
-        {user && user.id !== post.author._id && (
-          <button
-            onClick={handleFollow}
-            disabled={followLoading}
-            className={`rounded-xl px-4 py-1.5 text-sm font-medium transition ${
-              isFollowing
-                ? "border border-gray-300 text-white bg-red-600 hover:bg-red-700 dark:border-white/40"
-                : "bg-blue-600 border dark:border-white/40 hover:bg-blue-700 text-white hover:opacity-90"
-            }`}
-          >
-            {followLoading ? (
-              <Loader2 size={14} className="animate-spin" />
-            ) : isFollowing ? (
-              "Following"
-            ) : (
-              "Subscribe"
-            )}
-          </button>
-        )}
-      </div>
-      
-      <div className="w-full h-72 bg-slate-300 dark:bg-slate-500 p-0 overflow-hidden rounded-2xl">
-        {post.coverImage && (
-          <img src={post.coverImage} alt="cover-image" className="mb-6 h-full w-full transition-transform duration-700 hover:scale-105 object-cover" />
-        )}
-      </div>
-
-      <h2 className="mt-6 mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-gray-400 uppercase">
-        Description
-      </h2>
-
-      {/* Description dengan support highlight */}
-      <div className="relative" onMouseUp={handleMouseUp}>
-        <article
-          className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none break-words [overflow-wrap:anywhere] dark:prose-invert prose-headings:font-semibold text-slate-700 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
-          dangerouslySetInnerHTML={{
-            __html: renderHighlightedContent(post.content),
-          }}
-        />
-
-        {/* Floating Highlight Menu */}
-        {showHighlightMenu && (
-          <div
-            className="fixed z-50 flex items-center gap-1.5 rounded-2xl border border-gray-200 bg-white p-1.5 shadow-xl dark:border-white/10 dark:bg-gray-900"
-            style={{
-              left: menuPosition.x,
-              top: menuPosition.y,
-              transform: "translateX(-50%)",
-            }}
-          >
-            {highlightLoading ? (
-              <div className="flex items-center gap-2 px-3 py-1.5 text-xs text-gray-500">
-                <Loader2 size={14} className="animate-spin" />
-                Saving...
-              </div>
-            ) : (
-              <>
-                {HIGHLIGHT_COLORS.map((c) => (
-                  <button
-                    key={c.value}
-                    onClick={() => applyHighlight(c.value)}
-                    disabled={highlightLoading}
-                    className="h-7 w-7 rounded-full border-2 border-white shadow-sm transition hover:scale-110 disabled:opacity-50"
-                    style={{ backgroundColor: c.value }}
-                    title={c.name}
-                  />
-                ))}
-                <button
-                  onClick={() => setShowHighlightMenu(false)}
-                  className="ml-1 rounded-lg px-2 py-1 text-xs text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10"
-                >
-                  ✕
-                </button>
-              </>
-            )}
-          </div>
-        )}
-      </div>
-
-      {highlights.length > 0 && (
-        <div className="mt-4 rounded-2xl border border-gray-100 bg-slate-300 p-3 md:p-5 dark:border-white/5 dark:!bg-[#0c0c18]">
-          <div className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
-            <Highlighter size={15} />
-            Stabilo kamu ({highlights.length})
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {highlights.map((h, idx) => (
-              <div
-                key={idx}
-                className="group flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs"
-                style={{ backgroundColor: h.color }}
+            {/* Tombol Follow */}
+            {user && user.id !== post.author._id && (
+              <button
+                onClick={handleFollow}
+                disabled={followLoading}
+                className={`rounded-xl px-4 py-1.5 text-sm font-medium transition ${
+                  isFollowing
+                    ? "border border-gray-300 text-white bg-red-600 hover:bg-red-700 dark:border-white/40"
+                    : "bg-blue-600 border dark:border-white/40 hover:bg-blue-700 text-white hover:opacity-90"
+                }`}
               >
-                <span className="max-w-[200px] truncate text-gray-800">
-                  {h.text}
-                </span>
-                <button
-                  onClick={() => removeHighlight(h.text)}
-                  className="opacity-0 transition group-hover:opacity-100 text-gray-600 hover:text-red-600"
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {post.codeBlocks?.length > 0 && (
-        <div className="mt-4">
-          <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-gray-400 uppercase">
-            Commands & Code
-          </h2>
-
-          <div className="space-y-5">
-            {post.codeBlocks.map((block, idx) => (
-              <CodeBlockItem key={idx} block={block} />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {post.referencesImages?.length > 0 && (
-        <div className="mt-4">
-          <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-gray-400 uppercase">
-            Reference by Upload
-          </h2>
-
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-            {post.referencesImages.map((img, idx) => (
-              <div
-                key={idx}
-                className="group relative overflow-hidden rounded-3xl bg-slate-300 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/5 transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:-translate-y-1"
-              >
-                <div className="overflow-hidden">
-                  <img
-                    src={img.url}
-                    alt={img.name || `Reference ${idx + 1}`}
-                    className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                </div>
-
-                {/* Optional subtle label */}
-                {img.name && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-4 py-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <p className="text-xs font-medium text-white truncate">
-                      {img.name}
-                    </p>
-                  </div>
+                {followLoading ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : isFollowing ? (
+                  "Following"
+                ) : (
+                  "Subscribe"
                 )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ===== Topology & Flowchart Cards ===== */}
-      {(post.topology?.nodes?.length > 0 || post.flowchart?.nodes?.length > 0) && (
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {/* Topology Card */}
-          {post.topology?.nodes?.length > 0 ? (
-            <button
-              type="button"
-              onClick={() => setSidebarType("topology")}
-              className="group flex items-center active:scale-[0.99] duration-100 gap-4 rounded-2xl border border-gray-200 bg-slate-300 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:!bg-[#0c0c18] dark:hover:border-accent"
-            >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-                </svg>
-              </div>
-              <div>
-                <p className="font-semibold text-gray-800 dark:text-gray-100">Network Topology</p>
-                <p className="text-xs text-gray-500">
-                  {post.topology.nodes.length} devices · Klik untuk melihat
-                </p>
-              </div>
-              <span className="ml-auto text-slate-700 dark:text-gray-400 transition group-hover:text-accent">→</span>
-            </button>
-          ): (
-            <button
-              type="button"
-              onClick={() => setSidebarType("flowchart")}
-              disabled
-              className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 p-5 text-left transition dark:border-white/10 dark:!bg-[#0c0c18]"
-            >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-                </svg>
-              </div>
-              <div>
-                <p className="font-semibold text-gray-800 dark:text-slate-600">Network Topology</p>
-                <p className="text-xs text-gray-600">
-                  {post.flowchart.nodes.length} steps · Klik untuk melihat
-                </p>
-              </div>
-              <span className="ml-auto text-gray-600 transition">→</span>
-            </button>
-          )}
-
-          {/* Flowchart Card */}
-          {post.flowchart?.nodes?.length > 0 ? (
-            <button
-              type="button"
-              onClick={() => setSidebarType("flowchart")}
-              className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:!bg-[#0c0c18] dark:hover:border-accent"
-            >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
-                </svg>
-              </div>
-              <div>
-                <p className="font-semibold text-gray-800 dark:text-gray-100">Flowchart</p>
-                <p className="text-xs text-gray-500">
-                  {post.flowchart.nodes.length} steps · Klik untuk melihat
-                </p>
-              </div>
-              <span className="ml-auto text-slate-700 dark:text-gray-400 transition group-hover:text-accent">→</span>
-            </button>
-          ): (
-             <button
-              type="button"
-              onClick={() => setSidebarType("flowchart")}
-              disabled
-              className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 p-5 text-left transition dark:border-white/10 dark:!bg-[#0c0c18]"
-            >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
-                </svg>
-              </div>
-              <div>
-                <p className="font-semibold text-gray-800 dark:text-slate-600">Flowchart</p>
-                <p className="text-xs text-gray-600">
-                  {post.flowchart.nodes.length} steps · Klik untuk melihat
-                </p>
-              </div>
-              <span className="ml-auto text-gray-600 transition">→</span>
-            </button>
-          )}
-        </div>
-      )}
-      
-      {/* ===== Step-by-step Wizard (Zigzag + Clickable) ===== */}
-      {post.steps?.length > 0 && (
-        <div className="mt-4">
-          <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-gray-400 uppercase">
-            Step-by-step Guide
-          </h2>
-
-          {(() => {
-            const perRow = 4;
-            const rows = [];
-            for (let i = 0; i < post.steps.length; i += perRow) {
-              rows.push(post.steps.slice(i, i + perRow));
-            }
-
-            return (
-              <div className="space-y-6">
-                {rows.map((row, rowIdx) => {
-                  const isEvenRow = rowIdx % 2 === 1;
-                  const stepsInRow = isEvenRow ? [...row].reverse() : row;
-                  const isFullRow = row.length === perRow;
-
-                  return (
-                    <div key={rowIdx}>
-                      <div
-                        className={`grid gap-4 ${
-                          isFullRow
-                            ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-                            : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-                        }`}
-                      >
-                        {stepsInRow.map((step, idx) => {
-                          const realIndex = isEvenRow
-                            ? rowIdx * perRow + (row.length - 1 - idx)
-                            : rowIdx * perRow + idx;
-
-                          return (
-                            <button
-                              key={realIndex}
-                              type="button"
-                              onClick={() =>
-                                setSelectedStep({ ...step, index: realIndex })
-                              }
-                              className="group relative flex flex-col overflow-hidden rounded-3xl bg-slate-300 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/5 p-5 text-left transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:-translate-y-1"
-                            >
-                              {/* Header */}
-                              <div className="mb-4 flex items-center justify-between">
-                                <span className="text-[11px] font-medium tracking-widest text-slate-700 dark:text-gray-400">
-                                  STEP {String(realIndex + 1).padStart(2, "0")}
-                                </span>
-
-                                {/* Arrow */}
-                                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-300 dark:!bg-[#0c0c18] text-slate-700 dark:text-gray-400 transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-3.5 w-3.5"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    strokeWidth={2.5}
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                                    />
-                                  </svg>
-                                </div>
-                              </div>
-
-                              {/* Image */}
-                              {step.image && (
-                                <div className="mb-4 overflow-hidden rounded-2xl">
-                                  <img
-                                    src={step.image}
-                                    alt={step.title}
-                                    className="h-40 w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                  />
-                                </div>
-                              )}
-
-                              {/* Title */}
-                              <h3 className="mb-2 text-[15px] font-semibold text-gray-900 dark:text-white line-clamp-2">
-                                {step.title || `Step ${realIndex + 1}`}
-                              </h3>
-
-                              {/* Description */}
-                              {step.description && (
-                                <p className="text-[13px] leading-relaxed text-gray-500 dark:text-gray-400 line-clamp-2">
-                                  {step.description}
-                                </p>
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })()}
-        </div>
-      )}
-
-      {/* ===== Custom Tables ===== */}
-      {post.customTables?.length > 0 && (
-        <div className="mt-6">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-gray-400">
-            GRADIENTS
-          </h2>
-          <div className="space-y-6">
-            {post.customTables.map((table, tIdx) => (
-              <div key={tIdx}>
-                {table.title && (
-                  <h3 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">
-                    {table.title}
-                  </h3>
-                )}
-                <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-white/10">
-                  <table className="w-full border-collapse text-sm">
-                    <tbody>
-                      {table.data?.map((row, rIdx) => (
-                        <tr key={rIdx}>
-                          {row.map((cell, cIdx) => (
-                            <td
-                              key={cIdx}
-                              className="border border-gray-200 px-4 py-2.5 dark:border-white/10"
-                            >
-                              {cell || "—"}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="mt-6 md:flex items-center gap-4 border-y border-border-light py-4 dark:border-border-dark">
-        <div className="w-max flex items-center gap-3">
-          <button
-            onClick={handleLike}
-            className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
-              liked ? "text-red-500" : "text-gray-500 hover:text-red-500"
-            }`}
-          >
-            <Heart size={16} className={liked ? "fill-red-500" : ""} />
-            {likesCount}
-          </button>
-
-          <button onClick={handleBookmark} className="flex items-center gap-1.5 text-sm">
-            <Bookmark size={16} className={bookmarked ? "fill-accent text-accent" : ""} />
-            {bookmarked ? "Saved" : "Save"}
-          </button>
-
-          {/* Mark as Read */}
-          {!isGuest && (
-            <button
-              onClick={() => {
-                if (isGuest) {
-                  toast.error("Login dulu untuk menandai sudah dibaca");
-                  // atau navigate("/login");
-                  return;
-                }
-                handleToggleCompleted();
-              }}
-              disabled={readingListLoading}
-              className={`flex w-max items-center gap-1.5 text-sm font-medium transition ${
-                isCompleted
-                  ? "text-emerald-600"
-                  : "text-gray-500 hover:text-emerald-600"
-              }`}
-            >
-              {readingListLoading ? (
-                <Loader2 size={16} className="animate-spin" />
-              ) : isCompleted ? (
-                <>
-                  <CheckCircle2 size={16} className="fill-emerald-100" />
-                  Sudah dibaca
-                </>
-              ) : (
-                <div className="w-max flex items-center gap-1.5">
-                  <Circle size={16} />
-                  <span className="w-max flex items-center">
-                    Tandai dibaca
-                  </span>
-                </div>
-              )}
-            </button>
-          )}
-
-          {/* ===== SHARE BUTTON ===== */}
-          <div className="relative">
-            <button
-              onClick={() => setShowShare((v) => !v)}
-              className="flex items-center gap-1.5 text-sm text-gray-500 transition hover:text-accent"
-            >
-              <Share2 size={16} />
-              Share
-            </button>
-
-            {showShare && (
-              <>
-                {/* Backdrop untuk menutup dropdown */}
-                <div
-                  className="fixed inset-0 z-10"
-                  onClick={() => setShowShare(false)}
-                />
-
-                <div className="absolute left-0 top-full z-20 mt-2 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/10 dark:bg-gray-900">
-                  <button
-                    onClick={copyLink}
-                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 dark:hover:bg-white/5"
-                  >
-                    <Link2 size={16} />
-                    Salin Link
-                  </button>
-
-                  <a
-                    href={shareLinks.whatsapp}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setShowShare(false)}
-                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 dark:hover:bg-white/5"
-                  >
-                    <span className="flex h-4 w-4 items-center justify-center text-[13px] font-bold text-green-600">
-                      WA
-                    </span>
-                    WhatsApp
-                  </a>
-
-                  <a
-                    href={shareLinks.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setShowShare(false)}
-                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 dark:hover:bg-white/5"
-                  >
-                    <Linkedin size={16} className="text-blue-700" />
-                    LinkedIn
-                  </a>
-                </div>
-              </>
+              </button>
             )}
           </div>
           
-          <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-gray-400"><Eye size={16} />{post.views}</span>
-        </div>
-
-        <div className="w-max flex flex-wrap items-center gap-3 md:mt-0 mt-2.5">
-
-          {post.tags?.map((t) => (
-            <span
-              key={t}
-              className="pill w-max bg-gray-100 text-gray-500 dark:!bg-[#0c0c18] dark:text-gray-400"
-            >
-              #{t}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-6">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-gray-400">Comments</h2>
-        <div className="surface-card shadow-none bg-slate-300 dark:!bg-[#0c0c18] p-3 md:p-5">
-          <div className="mb-4 flex gap-2">
-            <input
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && postTopLevelComment()}
-              placeholder="Add a comment…"
-              className="input-field flex-1"
-            />
-            <button onClick={postTopLevelComment} className="btn-primary px-4">
-              Post
-            </button>
+          <div className="w-full h-72 bg-slate-300 dark:bg-slate-500 p-0 overflow-hidden rounded-2xl">
+            {post.coverImage && (
+              <img src={post.coverImage} alt="cover-image" className="mb-6 h-full w-full transition-transform duration-700 hover:scale-105 object-cover" />
+            )}
           </div>
-          <CommentThread comments={comments} onReply={handleReply} onDelete={handleDeleteComment} />
-        </div>
+
+          <h2 className="mt-6 mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-gray-400 uppercase">
+            Description
+          </h2>
+
+          {/* Description dengan support highlight */}
+          <div className="relative" onMouseUp={handleMouseUp}>
+            <article
+              className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none break-words [overflow-wrap:anywhere] dark:prose-invert prose-headings:font-semibold text-slate-700 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
+              dangerouslySetInnerHTML={{
+                __html: renderHighlightedContent(post.content),
+              }}
+            />
+
+            {/* Floating Highlight Menu */}
+            {showHighlightMenu && (
+              <div
+                className="fixed z-50 flex items-center gap-1.5 rounded-2xl border border-gray-200 bg-white p-1.5 shadow-xl dark:border-white/10 dark:bg-gray-900"
+                style={{
+                  left: menuPosition.x,
+                  top: menuPosition.y,
+                  transform: "translateX(-50%)",
+                }}
+              >
+                {highlightLoading ? (
+                  <div className="flex items-center gap-2 px-3 py-1.5 text-xs text-gray-500">
+                    <Loader2 size={14} className="animate-spin" />
+                    Saving...
+                  </div>
+                ) : (
+                  <>
+                    {HIGHLIGHT_COLORS.map((c) => (
+                      <button
+                        key={c.value}
+                        onClick={() => applyHighlight(c.value)}
+                        disabled={highlightLoading}
+                        className="h-7 w-7 rounded-full border-2 border-white shadow-sm transition hover:scale-110 disabled:opacity-50"
+                        style={{ backgroundColor: c.value }}
+                        title={c.name}
+                      />
+                    ))}
+                    <button
+                      onClick={() => setShowHighlightMenu(false)}
+                      className="ml-1 rounded-lg px-2 py-1 text-xs text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10"
+                    >
+                      ✕
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
+          {highlights.length > 0 && (
+            <div className="mt-4 rounded-2xl border border-gray-100 bg-slate-300 p-3 md:p-5 dark:border-white/5 dark:!bg-[#0c0c18]">
+              <div className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
+                <Highlighter size={15} />
+                Stabilo kamu ({highlights.length})
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {highlights.map((h, idx) => (
+                  <div
+                    key={idx}
+                    className="group flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs"
+                    style={{ backgroundColor: h.color }}
+                  >
+                    <span className="max-w-[200px] truncate text-gray-800">
+                      {h.text}
+                    </span>
+                    <button
+                      onClick={() => removeHighlight(h.text)}
+                      className="opacity-0 transition group-hover:opacity-100 text-gray-600 hover:text-red-600"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {post.codeBlocks?.length > 0 && (
+            <div className="mt-4">
+              <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-gray-400 uppercase">
+                Commands & Code
+              </h2>
+
+              <div className="space-y-5">
+                {post.codeBlocks.map((block, idx) => (
+                  <CodeBlockItem key={idx} block={block} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {post.referencesImages?.length > 0 && (
+            <div className="mt-4">
+              <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-gray-400 uppercase">
+                Reference by Upload
+              </h2>
+
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                {post.referencesImages.map((img, idx) => (
+                  <div
+                    key={idx}
+                    className="group relative overflow-hidden rounded-3xl bg-slate-300 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/5 transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:-translate-y-1"
+                  >
+                    <div className="overflow-hidden">
+                      <img
+                        src={img.url}
+                        alt={img.name || `Reference ${idx + 1}`}
+                        className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </div>
+
+                    {/* Optional subtle label */}
+                    {img.name && (
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-4 py-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                        <p className="text-xs font-medium text-white truncate">
+                          {img.name}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ===== Topology & Flowchart Cards ===== */}
+          {(post.topology?.nodes?.length > 0 || post.flowchart?.nodes?.length > 0) && (
+            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {/* Topology Card */}
+              {post.topology?.nodes?.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => setSidebarType("topology")}
+                  className="group flex items-center active:scale-[0.99] duration-100 gap-4 rounded-2xl border border-gray-200 bg-slate-300 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:!bg-[#0c0c18] dark:hover:border-accent"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800 dark:text-gray-100">Network Topology</p>
+                    <p className="text-xs text-gray-500">
+                      {post.topology.nodes.length} devices · Klik untuk melihat
+                    </p>
+                  </div>
+                  <span className="ml-auto text-slate-700 dark:text-gray-400 transition group-hover:text-accent">→</span>
+                </button>
+              ): (
+                <button
+                  type="button"
+                  onClick={() => setSidebarType("flowchart")}
+                  disabled
+                  className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 p-5 text-left transition dark:border-white/10 dark:!bg-[#0c0c18]"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800 dark:text-slate-600">Network Topology</p>
+                    <p className="text-xs text-gray-600">
+                      {post.flowchart.nodes.length} steps · Klik untuk melihat
+                    </p>
+                  </div>
+                  <span className="ml-auto text-gray-600 transition">→</span>
+                </button>
+              )}
+
+              {/* Flowchart Card */}
+              {post.flowchart?.nodes?.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => setSidebarType("flowchart")}
+                  className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:!bg-[#0c0c18] dark:hover:border-accent"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800 dark:text-gray-100">Flowchart</p>
+                    <p className="text-xs text-gray-500">
+                      {post.flowchart.nodes.length} steps · Klik untuk melihat
+                    </p>
+                  </div>
+                  <span className="ml-auto text-slate-700 dark:text-gray-400 transition group-hover:text-accent">→</span>
+                </button>
+              ): (
+                <button
+                  type="button"
+                  onClick={() => setSidebarType("flowchart")}
+                  disabled
+                  className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 p-5 text-left transition dark:border-white/10 dark:!bg-[#0c0c18]"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800 dark:text-slate-600">Flowchart</p>
+                    <p className="text-xs text-gray-600">
+                      {post.flowchart.nodes.length} steps · Klik untuk melihat
+                    </p>
+                  </div>
+                  <span className="ml-auto text-gray-600 transition">→</span>
+                </button>
+              )}
+            </div>
+          )}
+          
+          {/* ===== Step-by-step Wizard (Zigzag + Clickable) ===== */}
+          {post.steps?.length > 0 && (
+            <div className="mt-4">
+              <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-gray-400 uppercase">
+                Step-by-step Guide
+              </h2>
+
+              {(() => {
+                const perRow = 4;
+                const rows = [];
+                for (let i = 0; i < post.steps.length; i += perRow) {
+                  rows.push(post.steps.slice(i, i + perRow));
+                }
+
+                return (
+                  <div className="space-y-6">
+                    {rows.map((row, rowIdx) => {
+                      const isEvenRow = rowIdx % 2 === 1;
+                      const stepsInRow = isEvenRow ? [...row].reverse() : row;
+                      const isFullRow = row.length === perRow;
+
+                      return (
+                        <div key={rowIdx}>
+                          <div
+                            className={`grid gap-4 ${
+                              isFullRow
+                                ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+                                : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+                            }`}
+                          >
+                            {stepsInRow.map((step, idx) => {
+                              const realIndex = isEvenRow
+                                ? rowIdx * perRow + (row.length - 1 - idx)
+                                : rowIdx * perRow + idx;
+
+                              return (
+                                <button
+                                  key={realIndex}
+                                  type="button"
+                                  onClick={() =>
+                                    setSelectedStep({ ...step, index: realIndex })
+                                  }
+                                  className="group relative flex flex-col overflow-hidden rounded-3xl bg-slate-300 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/5 p-5 text-left transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:-translate-y-1"
+                                >
+                                  {/* Header */}
+                                  <div className="mb-4 flex items-center justify-between">
+                                    <span className="text-[11px] font-medium tracking-widest text-slate-700 dark:text-gray-400">
+                                      STEP {String(realIndex + 1).padStart(2, "0")}
+                                    </span>
+
+                                    {/* Arrow */}
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-300 dark:!bg-[#0c0c18] text-slate-700 dark:text-gray-400 transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-3.5 w-3.5"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        strokeWidth={2.5}
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                                        />
+                                      </svg>
+                                    </div>
+                                  </div>
+
+                                  {/* Image */}
+                                  {step.image && (
+                                    <div className="mb-4 overflow-hidden rounded-2xl">
+                                      <img
+                                        src={step.image}
+                                        alt={step.title}
+                                        className="h-40 w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                      />
+                                    </div>
+                                  )}
+
+                                  {/* Title */}
+                                  <h3 className="mb-2 text-[15px] font-semibold text-gray-900 dark:text-white line-clamp-2">
+                                    {step.title || `Step ${realIndex + 1}`}
+                                  </h3>
+
+                                  {/* Description */}
+                                  {step.description && (
+                                    <p className="text-[13px] leading-relaxed text-gray-500 dark:text-gray-400 line-clamp-2">
+                                      {step.description}
+                                    </p>
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+
+          {/* ===== Custom Tables ===== */}
+          {post.customTables?.length > 0 && (
+            <div className="mt-6">
+              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-gray-400">
+                GRADIENTS
+              </h2>
+              <div className="space-y-6">
+                {post.customTables.map((table, tIdx) => (
+                  <div key={tIdx}>
+                    {table.title && (
+                      <h3 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">
+                        {table.title}
+                      </h3>
+                    )}
+                    <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-white/10">
+                      <table className="w-full border-collapse text-sm">
+                        <tbody>
+                          {table.data?.map((row, rIdx) => (
+                            <tr key={rIdx}>
+                              {row.map((cell, cIdx) => (
+                                <td
+                                  key={cIdx}
+                                  className="border border-gray-200 px-4 py-2.5 dark:border-white/10"
+                                >
+                                  {cell || "—"}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="mt-6 md:flex items-center gap-4 border-y border-border-light py-4 dark:border-border-dark">
+            <div className="w-max flex items-center gap-3">
+              <button
+                onClick={handleLike}
+                className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
+                  liked ? "text-red-500" : "text-gray-500 hover:text-red-500"
+                }`}
+              >
+                <Heart size={16} className={liked ? "fill-red-500" : ""} />
+                {likesCount}
+              </button>
+
+              <button onClick={handleBookmark} className="flex items-center gap-1.5 text-sm">
+                <Bookmark size={16} className={bookmarked ? "fill-accent text-accent" : ""} />
+                {bookmarked ? "Saved" : "Save"}
+              </button>
+
+              {/* Mark as Read */}
+              {!isGuest && (
+                <button
+                  onClick={() => {
+                    if (isGuest) {
+                      toast.error("Login dulu untuk menandai sudah dibaca");
+                      // atau navigate("/login");
+                      return;
+                    }
+                    handleToggleCompleted();
+                  }}
+                  disabled={readingListLoading}
+                  className={`flex w-max items-center gap-1.5 text-sm font-medium transition ${
+                    isCompleted
+                      ? "text-emerald-600"
+                      : "text-gray-500 hover:text-emerald-600"
+                  }`}
+                >
+                  {readingListLoading ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : isCompleted ? (
+                    <>
+                      <CheckCircle2 size={16} className="fill-emerald-100" />
+                      Sudah dibaca
+                    </>
+                  ) : (
+                    <div className="w-max flex items-center gap-1.5">
+                      <Circle size={16} />
+                      <span className="w-max flex items-center">
+                        Tandai dibaca
+                      </span>
+                    </div>
+                  )}
+                </button>
+              )}
+
+              {/* ===== SHARE BUTTON ===== */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowShare((v) => !v)}
+                  className="flex items-center gap-1.5 text-sm text-gray-500 transition hover:text-accent"
+                >
+                  <Share2 size={16} />
+                  Share
+                </button>
+
+                {showShare && (
+                  <>
+                    {/* Backdrop untuk menutup dropdown */}
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setShowShare(false)}
+                    />
+
+                    <div className="absolute left-0 top-full z-20 mt-2 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/10 dark:bg-gray-900">
+                      <button
+                        onClick={copyLink}
+                        className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 dark:hover:bg-white/5"
+                      >
+                        <Link2 size={16} />
+                        Salin Link
+                      </button>
+
+                      <a
+                        href={shareLinks.whatsapp}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setShowShare(false)}
+                        className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 dark:hover:bg-white/5"
+                      >
+                        <span className="flex h-4 w-4 items-center justify-center text-[13px] font-bold text-green-600">
+                          WA
+                        </span>
+                        WhatsApp
+                      </a>
+
+                      <a
+                        href={shareLinks.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setShowShare(false)}
+                        className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 dark:hover:bg-white/5"
+                      >
+                        <Linkedin size={16} className="text-blue-700" />
+                        LinkedIn
+                      </a>
+                    </div>
+                  </>
+                )}
+              </div>
+              
+              <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-gray-400"><Eye size={16} />{post.views}</span>
+            </div>
+
+            <div className="w-max flex flex-wrap items-center gap-3 md:mt-0 mt-2.5">
+
+              {post.tags?.map((t) => (
+                <span
+                  key={t}
+                  className="pill w-max bg-gray-100 text-gray-500 dark:!bg-[#0c0c18] dark:text-gray-400"
+                >
+                  #{t}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-gray-400">Comments</h2>
+            <div className="surface-card shadow-none bg-slate-300 dark:!bg-[#0c0c18] p-3 md:p-5">
+              <div className="mb-4 flex gap-2">
+                <input
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && postTopLevelComment()}
+                  placeholder="Add a comment…"
+                  className="input-field flex-1"
+                />
+                <button onClick={postTopLevelComment} className="btn-primary px-4">
+                  Post
+                </button>
+              </div>
+              <CommentThread comments={comments} onReply={handleReply} onDelete={handleDeleteComment} />
+            </div>
+          </div>
+          
+          {related?.length > 0 && (
+            <div className="mt-4">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-gray-400">
+                Related Guides
+              </h2>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                {related.map((p) => (
+                  <PostCard key={p._id} post={p} />
+                ))}
+              </div>
+            </div>
+          )}
       </div>
 
       {/* ===== RIGHT SIDEBAR (Topology / Flowchart) ===== */}
@@ -1255,19 +1275,6 @@ const isOwner = user?.id === post?.author?._id;
                 )}
               </button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {related?.length > 0 && (
-        <div className="mt-4">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-gray-400">
-            Related Guides
-          </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {related.map((p) => (
-              <PostCard key={p._id} post={p} />
-            ))}
           </div>
         </div>
       )}
