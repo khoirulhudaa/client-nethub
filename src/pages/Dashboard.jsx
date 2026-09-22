@@ -305,21 +305,16 @@ const Dashboard = () => {
   });
   const [statsLoading, setStatsLoading] = useState(true);
 
-  // Stats global (sekali saja)
+  // Fetch stats sekali
   useEffect(() => {
     setStatsLoading(true);
     api
-      .get("/posts", { params: { limit: 100 } })
+      .get("/posts/stats")
       .then(({ data }) => {
-        const posts = data.posts || [];
-        const pinned = data.pinned || [];
-        const all = [...pinned, ...posts];
-        const totalReads = all.reduce((sum, p) => sum + (p.views || 0), 0);
-
         setStats({
-          totalGuides: data.total ?? posts.length,
-          totalReads,
-          totalCategories: data.categories?.length || 0,
+          totalGuides: data.totalGuides || 0,
+          totalReads: data.totalReads || 0,
+          totalCategories: data.totalCategories || 0,
         });
       })
       .catch(() => {})
@@ -420,10 +415,10 @@ const Dashboard = () => {
           />
           <MetricGrid
             signal={signal}
-            totalGuides={totalGuides}
-            totalReads={totalReads}
-            totalCategories={totalCategories}
-            loading={loading}
+            totalGuides={stats.totalGuides}
+            totalReads={stats.totalReads}
+            totalCategories={stats.totalCategories}
+            loading={statsLoading}
           />
         </div>
       )}
