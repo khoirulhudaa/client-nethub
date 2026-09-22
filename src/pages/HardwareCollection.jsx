@@ -621,7 +621,7 @@ const HardwareCollections = () => {
         )}
       </div>
 
-      <div className="mb-6 flex flex-wrap items-center gap-2 border-white/10 border !bg-white/5 p-4 rounded-xl">
+      <div className="mb-6 flex flex-wrap items-center gap-2 border-white/10 border !bg-white/5 p-2.5 md:p-4 rounded-xl">
         <form onSubmit={handleSearch} className="relative">
           <Search
             size={14}
@@ -630,7 +630,7 @@ const HardwareCollections = () => {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari nama / brand…"
+            placeholder="Search name or brand…"
             className="input-field w-48 py-2 pl-8 text-sm sm:w-56"
           />
         </form>
@@ -644,7 +644,7 @@ const HardwareCollections = () => {
               : "border-gray-200 bg-white text-gray-600 hover:border-accent/40 dark:border-white/10 dark:bg-white/5 dark:text-gray-300"
           }`}
         >
-          Semua
+          All
         </button>
         {categories.map((cat) => (
           <button
