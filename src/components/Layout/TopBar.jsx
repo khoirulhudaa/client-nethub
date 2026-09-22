@@ -1,243 +1,385 @@
-import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import {
+  AlertTriangle,
+  Ban,
+  Bell,
+  BookOpen,
+  Calculator,
+  CheckCircle2,
+  Flame,
+  Info,
+  LogOut,
+  Menu,
+  Moon,
+  PencilRuler,
+  Plus,
+  Search,
+  Sun,
+  User,
+  X,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../api/axios.js";
+import { useAuth } from "../../context/AuthContext.jsx";
+import { useTheme } from "../../context/ThemeContext.jsx";
 
-const STEPS = [
-  {
-    id: "categories",
-    title: "Categories",
-    desc: "Filter guide berdasarkan topik: Topology, Installation, Maintenance, dan Hardware.",
-    selector: "[data-tour='categories']",
-    group: "categories",
-  },
-  {
-    id: "discover",
-    title: "Discover",
-    desc: "Lihat guide yang sedang trending dan buka tools seperti Subnet Calculator.",
-    selector: "[data-tour='discover']",
-    group: "discover",
-  },
-  {
-    id: "practice",
-    title: "Practice",
-    desc: "Latihan kuis, buat exam, atau tes pengetahuan networking kamu.",
-    selector: "[data-tour='practice']",
-    group: "quiz",
-  },
-  {
-    id: "library",
-    title: "Library",
-    desc: "Akses My Guides, Reading List, dan Collection Card dari sini.",
-    selector: "[data-tour='library']",
-    group: "library",
-  },
-  {
-    id: "search",
-    title: "Search",
-    desc: "Cari guide, tag, atau kategori langsung dari bar pencarian.",
-    selector: "[data-tour='search']",
-    group: null,
-  },
-  {
-    id: "notif",
-    title: "Pengumuman",
-    desc: "Notifikasi pengumuman terbaru dari admin muncul di sini.",
-    selector: "[data-tour='notif']",
-    group: null,
-  },
-  {
-    id: "profile",
-    title: "Profile",
-    desc: "Buka profil, reading list, atau logout dari menu ini.",
-    selector: "[data-tour='profile']",
-    group: null,
-  },
-];
+const TopBar = ({ onMenuClick }) => {
+  const [openNotif, setOpenNotif] = useState(false);
+  const [openProfile, setOpenProfile] = useState(false);
+  const [announcements, setAnnouncements] = useState([]);
+  const [notifLoading, setNotifLoading] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const notifRef = useRef(null);
+  const profileRef = useRef(null);
+  const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuth(); // pastikan logout ada di AuthContext
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
 
-const STORAGE_KEY = "nethub_intro_seen";
+  const isGuest = user?.isGuest || user?.role === "guest";
 
-const IntroTour = () => {
-  const [step, setStep] = useState(0);
-  const [open, setOpen] = useState(false);
-  const [rect, setRect] = useState(null);
+  const TYPE_META = {
+    info: { icon: Info, color: "text-blue-500", bg: "bg-gradient-to-br from-blue-400 to-blue-900/10" },
+    warning: { icon: AlertTriangle, color: "text-amber-500", bg: "bg-amber-500/10" },
+    success: { icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-500/10" },
+    important: { icon: Ban, color: "text-rose-500", bg: "bg-rose-500/10" },
+  };
+
+  const fetchAnnouncements = async () => {
+    try {
+      setNotifLoading(true);
+      const { data } = await api.get("/announcements");
+      const list = data.announcements || [];
+      setAnnouncements(list);
+      const readIds = JSON.parse(localStorage.getItem("nethub_read_announcements") || "[]");
+      setUnreadCount(list.filter((a) => !readIds.includes(a._id)).length);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setNotifLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const seen = localStorage.getItem(STORAGE_KEY) === "true";
-    if (!seen) {
-      const t = setTimeout(() => setOpen(true), 600);
-      return () => clearTimeout(t);
-    }
+    fetchAnnouncements();
   }, []);
 
-  const current = STEPS[step];
-
-  // Buka group + expand sidebar saat step berubah
+  // Close dropdowns when clicking outside
   useEffect(() => {
-    if (!open || !current) return;
-
-    // Minta sidebar expand + buka group yang relevan
-    window.dispatchEvent(
-      new CustomEvent("nethub-intro-step", {
-        detail: {
-          group: current.group,
-          expandSidebar: true,
-        },
-      })
-    );
-  }, [open, step, current]);
-
-  // Hitung posisi highlight (tunggu sedikit biar group sempat terbuka)
-  useEffect(() => {
-    if (!open || !current) return;
-
-    let cancelled = false;
-
-    const measure = () => {
-      if (cancelled) return;
-      const el = document.querySelector(current.selector);
-      if (!el) {
-        setRect(null);
-        return;
+    const handleClickOutside = (e) => {
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setOpenNotif(false);
       }
-      const r = el.getBoundingClientRect();
-      setRect({
-        top: r.top,
-        left: r.left,
-        width: r.width,
-        height: r.height,
-      });
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setOpenProfile(false);
+      }
     };
+    if (openNotif || openProfile) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [openNotif, openProfile]);
 
-    // delay kecil supaya animasi open group selesai
-    const t1 = setTimeout(measure, 280);
-    const t2 = setTimeout(measure, 450);
-
-    window.addEventListener("resize", measure);
-    window.addEventListener("scroll", measure, true);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(t1);
-      clearTimeout(t2);
-      window.removeEventListener("resize", measure);
-      window.removeEventListener("scroll", measure, true);
-    };
-  }, [open, step, current]);
-
-  const finish = () => {
-    localStorage.setItem(STORAGE_KEY, "true");
-    setOpen(false);
+  const openNotifications = () => {
+    setOpenNotif((prev) => !prev);
+    setOpenProfile(false); // tutup profile kalau buka notif
+    if (!openNotif && announcements.length) {
+      const ids = announcements.map((a) => a._id);
+      localStorage.setItem("nethub_read_announcements", JSON.stringify(ids));
+      setUnreadCount(0);
+    }
   };
 
-  const next = () => {
-    if (step >= STEPS.length - 1) finish();
-    else setStep((s) => s + 1);
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+    navigate(`/?search=${encodeURIComponent(query.trim())}`);
   };
 
-  const prev = () => {
-    if (step > 0) setStep((s) => s - 1);
+  const handleLogout = () => {
+    setOpenProfile(false);
+    logout?.(); // panggil fungsi logout dari AuthContext
+    navigate("/"); // atau ke halaman login sesuai flow kamu
   };
-
-  if (!open) return null;
-
-  const pad = 10;
-  const highlight = rect
-    ? {
-        top: Math.max(8, rect.top - pad),
-        left: Math.max(8, rect.left - pad),
-        width: rect.width + pad * 2,
-        height: rect.height + pad * 2,
-      }
-    : null;
-
-  // posisi tooltip: di bawah target, atau di tengah kalau belum ketemu
-  const tooltipStyle = highlight
-    ? {
-        top: Math.min(
-          highlight.top + highlight.height + 14,
-          window.innerHeight - 200
-        ),
-        left: Math.min(
-          Math.max(highlight.left, 16),
-          window.innerWidth - 340
-        ),
-      }
-    : {
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-      };
 
   return (
-    <div className="fixed inset-0 z-[999999] pointer-events-none">
-      {/* Overlay gelap — di bawah highlight & tooltip */}
-      <div className="absolute inset-0 bg-black/55 pointer-events-auto" />
-
-      {/* Spotlight cutout */}
-      {highlight && (
-        <div
-          className="absolute rounded-2xl bg-transparent pointer-events-none transition-all duration-300 ease-out"
-          style={{
-            top: highlight.top,
-            left: highlight.left,
-            width: highlight.width,
-            height: highlight.height,
-            boxShadow: "0 0 0 9999px rgba(0,0,0,0.55)",
-            outline: "2px solid rgba(255,255,255,0.85)",
-            outlineOffset: "0px",
-          }}
-        />
-      )}
-
-      {/* Tooltip — SELALU di atas overlay */}
+    <header className="w-full surface-card h-[8.6vh] sticky top-0 z-[999] border-r border-white/10 flex h-16 items-center gap-3 py-0 rounded-none border-b px-0 md:px-[11px]">
       <div
-        className="absolute z-10 w-[min(calc(100vw-2rem),320px)] rounded-2xl border border-white/15 bg-white p-4 shadow-2xl pointer-events-auto dark:bg-[#12121a]"
-        style={tooltipStyle}
-      >
-        <div className="mb-2 flex items-start justify-between gap-3">
-          <div>
-            <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">
-              {step + 1} / {STEPS.length}
-            </p>
-            <h3 className="mt-0.5 text-sm font-semibold text-gray-900 dark:text-white">
-              {current.title}
-            </h3>
-          </div>
-          <button
-            type="button"
-            onClick={finish}
-            className="rounded-lg p-1 text-gray-400 hover:bg-black/5 dark:hover:bg-white/10"
-          >
-            <X size={16} />
-          </button>
+        className="pointer-events-none absolute top-[1.5px] inset-0 z-0 hidden dark:block"
+        style={{
+          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px)",
+          backgroundSize: "20px 20px",
+        }}
+      />
+
+      <div className="w-[100%] border-r border-white/10 flex justify-between h-full items-center pl-2 pr-6">
+        <button
+          onClick={onMenuClick}
+          className="dark:border-none border-slate-300 border rounded-control p-2 text-gray-500 hover:bg-black/5 dark:hover:bg-white/10 lg:hidden"
+        >
+          <Menu size={20} />
+        </button>
+
+        {/* Search */}
+        <form data-tour="search" onSubmit={handleSearch} className="relative w-full md:flex hidden max-w-md">
+          <Search
+            size={16}
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search guides, tags, categories…"
+            className="input-field pl-9"
+          />
+        </form>
+
+        {/* Quick links — desktop */}
+        <div className="ml-3 hidden items-center gap-3 md:flex">
+          <TopLink to="/trending" icon={Flame} label="Trending" />
+          <TopLink to="/tools/subnet" icon={Calculator} label="Subnet" />
+          <TopLink to="/practice" icon={PencilRuler} label="Practice" />
         </div>
 
-        <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-          {current.desc}
-        </p>
+        <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
+          {/* New post — hanya user login */}
+          {!isGuest && (
+            <button
+              onClick={() => navigate("/create")}
+              className="hidden items-center active:scale-[0.98] hover:bg-white/5 h-10 gap-1.5 rounded-xl border-[2px] border-slate-300 dark:border-white/15 px-3 py-2 text-sm font-medium text-gray-500 dark:text-white transition hover:opacity-90 sm:inline-flex"
+            >
+              <Plus size={16} />
+            </button>
+          )}
 
-        <div className="mt-4 flex items-center justify-between">
+          {/* Notification */}
+          <div className="relative" ref={notifRef} data-tour="notif">
+            <button
+              type="button"
+              className="relative border-slate-300 dark:border-white/15 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+              title="Notifications"
+              onClick={openNotifications}
+            >
+              <Bell size={18} />
+              {unreadCount > 0 && (
+                <span className="absolute right-1.5 top-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-blue-900 px-1 text-[10px] font-semibold text-white">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+            </button>
+
+            {openNotif && (
+              <div className="absolute right-[122%] top-full z-[99] mt-2 w-[min(100vw-2rem,360px)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-white/10 dark:bg-[#12121a]">
+                {/* ... isi notifikasi tetap sama ... */}
+                <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-white/10">
+                  <div>
+                    <p className="text-sm font-semibold">Pengumuman</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setOpenNotif(false)}
+                    className="rounded-lg p-1.5 text-gray-400 hover:bg-black/5 dark:hover:bg-white/10"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                <div className="max-h-[min(60vh,380px)] overflow-y-auto">
+                  {notifLoading ? (
+                    <div className="flex justify-center py-10">
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+                    </div>
+                  ) : announcements.length === 0 ? (
+                    <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
+                      <Bell size={24} className="text-gray-400" />
+                      <p className="text-sm font-medium">Tidak ada pengumuman</p>
+                    </div>
+                  ) : (
+                    <ul className="divide-y divide-gray-100 dark:divide-white/5">
+                      {announcements.map((item) => {
+                        const meta = TYPE_META[item.type] || TYPE_META.info;
+                        const Icon = meta.icon;
+                        return (
+                          <li key={item._id}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setOpenNotif(false);
+                                navigate(`/announcements/${item._id}`);
+                              }}
+                              className="w-full px-4 py-3 text-left hover:bg-black/[0.02] dark:hover:bg-white/[0.03]"
+                            >
+                              <div className="flex gap-3">
+                                <div
+                                  className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${meta.bg} ${meta.color}`}
+                                >
+                                  <Icon size={15} />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-sm font-medium">{item.title}</p>
+                                  <p className="mt-0.5 line-clamp-2 text-xs text-gray-500">
+                                    {item.content}
+                                  </p>
+                                  <p className="mt-1.5 text-[11px] text-gray-400">
+                                    {new Date(item.createdAt).toLocaleDateString("id-ID", {
+                                      day: "numeric",
+                                      month: "short",
+                                      year: "numeric",
+                                    })}
+                                  </p>
+                                </div>
+                              </div>
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </div>
+
+                {user?.role === "superAdmin" && (
+                  <div className="border-t border-gray-100 px-4 py-2.5 dark:border-white/10">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOpenNotif(false);
+                        navigate("/admin/announcements");
+                      }}
+                      className="w-full rounded-lg py-2 text-center text-xs font-medium text-accent hover:text-slate-900 hover:bg-gradient-to-br from-blue-400 to-blue-100"
+                    >
+                      Kelola pengumuman
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Theme toggle */}
           <button
-            type="button"
-            onClick={prev}
-            disabled={step === 0}
-            className="inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium text-gray-500 disabled:opacity-30"
-          >
-            <ChevronLeft size={14} />
-            Back
+            onClick={toggleTheme}
+            className="border-slate-300 dark:border-white/15 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+            title="Toggle theme"
+            >
+            {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
           </button>
 
-          <button
-            type="button"
-            onClick={next}
-            className="inline-flex items-center gap-1 rounded-xl bg-accent px-3 py-1.5 text-xs font-semibold text-white"
-          >
-            {step === STEPS.length - 1 ? "Selesai" : "Next"}
-            {step !== STEPS.length - 1 && <ChevronRight size={14} />}
-          </button>
+          {/* ===== PROFILE DROPDOWN ===== */}
+          <div className="relative" ref={profileRef} data-tour="profile">
+            <button
+              type="button"
+              onClick={() => {
+                setOpenProfile((prev) => !prev);
+                setOpenNotif(false);
+              }}
+              className="ml-0.5 flex h-10 w-10 items-center justify-center dark:border-[2px] dark:border-white/15 border-slate-300 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+              // className="ml-0.5 flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-transparent text-sm font-semibold text-white ring-1 transition hover:opacity-90"
+              title={user?.name || "Profile"}
+            >
+              {user?.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                user?.name?.[0]?.toUpperCase() || "G"
+              )}
+            </button>
+
+            {openProfile && (
+              <div className="absolute shadow-2xl right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-white/10 dark:bg-[#12121a]">
+                {/* Header */}
+                <div className="border-b border-gray-100 px-4 py-3 dark:border-white/10">
+                  <p className="truncate text-sm font-semibold">
+                    {user?.name || "Guest"}
+                  </p>
+                  {user?.email && (
+                    <p className="truncate text-xs text-gray-500">{user.email}</p>
+                  )}
+                </div>
+
+                <div className="py-1.5">
+                  {!isGuest ? (
+                    <>
+                      {/* Menu untuk user yang sudah login */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setOpenProfile(false);
+                          navigate("/profile");
+                        }}
+                        className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition hover:bg-black/[0.03] dark:text-gray-200 dark:hover:bg-white/[0.05]"
+                      >
+                        <User size={16} className="text-gray-400" />
+                        View profile
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setOpenProfile(false);
+                          navigate("/reading-list");
+                        }}
+                        className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition hover:bg-black/[0.03] dark:text-gray-200 dark:hover:bg-white/[0.05]"
+                      >
+                        <BookOpen size={16} className="text-gray-400" />
+                        Reading List
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setOpenProfile(false);
+                          navigate("/my-posts");
+                        }}
+                        className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition hover:bg-black/[0.03] dark:text-gray-200 dark:hover:bg-white/[0.05]"
+                      >
+                        <BookOpen size={16} className="text-gray-400" />
+                        My Guides
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10"
+                      >
+                        <LogOut size={16} />
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    /* Menu untuk Guest */
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOpenProfile(false);
+                        navigate("/register"); // atau "/auth/register" sesuai route kamu
+                      }}
+                      className="flex w-[94%] rounded-xl mx-auto items-center gap-2 px-2.5 active:scale-[0.99] duration-100 py-2.5 text-left text-sm text-white transition bg-gradient-to-br from-blue-400 to-blue-900"
+                    >
+                      <User size={16} />
+                      Register
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 
-export default IntroTour;
+const TopLink = ({ to, icon: Icon, label }) => (
+  <Link
+    to={to}
+    className="inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-sm text-gray-500 transition hover:bg-black/5 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-white"
+  >
+    <Icon size={15} />
+    <span className="hidden xl:inline">{label}</span>
+  </Link>
+);
+
+export default TopBar;
