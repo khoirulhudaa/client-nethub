@@ -309,6 +309,7 @@ const AnnouncementsAdmin = () => {
 
   return (
     <div className="relative mx-auto max-w-full md:py-6 md:px-6">
+
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -351,172 +352,175 @@ const AnnouncementsAdmin = () => {
         </div>
       </div>
 
-      {/* List */}
-      {loading ? (
-        <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
-          <img src="/cloud.png" alt="icon-cloud" className="w-20" />
-          <p className="mt-2">Load content ...</p>
-        </div>
-      ) : announcements.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-gray-200 bg-gray-50/50 py-20 text-center dark:border-white/10 dark:bg-white/[0.02]">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/5">
-            <Bell size={24} className="text-gray-400" />
+      <div className="rounded-xl bg-white/5 p-3 md:p-5">
+        {/* List */}
+        {loading ? (
+          <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
+            <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+            <p className="mt-2">Load content ...</p>
           </div>
-          <div>
-            <p className="font-medium text-gray-900 dark:text-white">
-              Belum ada pengumuman
-            </p>
-            <p className="mt-1 text-sm text-gray-500">
-              Buat pengumuman pertama untuk pengguna
-            </p>
+        ) : announcements.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-gray-200 bg-gray-50/50 py-20 text-center dark:border-white/10 dark:bg-white/[0.02]">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/5">
+              <Bell size={24} className="text-gray-400" />
+            </div>
+            <div>
+              <p className="font-medium text-gray-900 dark:text-white">
+                Belum ada pengumuman
+              </p>
+              <p className="mt-1 text-sm text-gray-500">
+                Buat pengumuman pertama untuk pengguna
+              </p>
+            </div>
           </div>
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-3 z-[99]">
-          {announcements.map((item) => {
-            const typeInfo =
-              TYPE_OPTIONS.find((t) => t.value === item.type) || TYPE_OPTIONS[0];
-            const TypeIcon = typeInfo.icon;
-            const isExpired =
-              item.expiresAt && new Date(item.expiresAt) < new Date();
-            const isDimmed = !item.isActive || isExpired;
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-3 z-[99]">
+            {announcements.map((item) => {
+              const typeInfo =
+                TYPE_OPTIONS.find((t) => t.value === item.type) || TYPE_OPTIONS[0];
+              const TypeIcon = typeInfo.icon;
+              const isExpired =
+                item.expiresAt && new Date(item.expiresAt) < new Date();
+              const isDimmed = !item.isActive || isExpired;
 
-            return (
-              <div
-                key={item._id}
-                className={`group relative flex flex-col overflow-hidden rounded-2xl border border-black/[0.04] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.06),0_8px_24px_rgba(0,0,0,0.04)] dark:border-white/[0.06] dark:bg-[#12121a] dark:shadow-none dark:hover:bg-slate-900 ${
-                  isDimmed ? "opacity-55" : ""
-                }`}
-              >
+              return (
+                <div
+                  key={item._id}
+                  className={`group relative flex flex-col overflow-hidden rounded-2xl border border-black/[0.04] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.06),0_8px_24px_rgba(0,0,0,0.04)] dark:border-white/[0.06] dark:bg-[#12121a] dark:shadow-none dark:hover:bg-slate-900 ${
+                    isDimmed ? "opacity-55" : ""
+                  }`}
+                >
 
-                {/* Thumbnail */}
-                <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-100 dark:bg-white/5">
-                  {item.thumbnail ? (
-                    <img
-                      src={item.thumbnail}
-                      alt=""
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center">
-                      <ImagePlus
-                        size={28}
-                        className="text-gray-300 dark:text-gray-600"
-                        strokeWidth={1.5}
+                  {/* Thumbnail */}
+                  <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-100 dark:bg-white/5">
+                    {item.thumbnail ? (
+                      <img
+                        src={item.thumbnail}
+                        alt=""
+                        className="h-full w-full object-cover"
                       />
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex flex-1 flex-col p-5">
-                  {/* Top: type + actions */}
-                  <div className="mb-3 flex items-start justify-between gap-3">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span
-                        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium tracking-wide ${typeInfo.soft}`}
-                      >
-                        <TypeIcon size={12} strokeWidth={2.5} />
-                        {typeInfo.label}
-                      </span>
-
-                      {!item.isActive && (
-                        <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-500 dark:bg-white/10 dark:text-gray-400">
-                          Nonaktif
-                        </span>
-                      )}
-                      {isExpired && (
-                        <span className="rounded-full bg-rose-50 px-2.5 py-1 text-[11px] font-medium text-rose-500 dark:bg-rose-500/10 dark:text-rose-400">
-                          Kadaluarsa
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex shrink-0 items-center gap-0.5 opacity-70 transition-opacity group-hover:opacity-100">
-                      <button
-                        onClick={() => handleToggle(item._id)}
-                        className="rounded-xl p-2 text-white transition-colors hover:bg-black/[0.04] hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200"
-                        title={item.isActive ? "Nonaktifkan" : "Aktifkan"}
-                      >
-                        {item.isActive ? (
-                          <ToggleRight size={18} className="text-emerald-500" />
-                        ) : (
-                          <ToggleLeft size={18} />
-                        )}
-                      </button>
-                      <button
-                        onClick={() => openEdit(item)}
-                        className="rounded-xl p-2 text-white transition-colors hover:bg-black/[0.04] hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200"
-                        title="Edit"
-                      >
-                        <Pencil size={15} />
-                      </button>
-                      <button
-                        onClick={() => openDeleteConfirm(item)}
-                        className="rounded-xl p-2 text-white transition-colors hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
-                        title="Hapus"
-                      >
-                        <Trash2 size={15} />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1">
-                    <h3 className="text-[15px] font-semibold leading-snug tracking-tight text-gray-900 dark:text-white">
-                      {item.title}
-                    </h3>
-                    <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-gray-500 dark:text-gray-400">
-                      {item.content}
-                    </p>
-                  </div>
-
-                  {/* Hashtags */}
-                  {item.hashtags?.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {item.hashtags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="inline-flex items-center gap-0.5 rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-600 dark:bg-white/10 dark:text-gray-300"
-                        >
-                          <Hash size={10} />
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Footer meta */}
-                  <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-black/[0.04] pt-3 text-[11px] text-gray-400 dark:border-white/[0.06]">
-                    <span className="font-medium text-gray-500 dark:text-gray-400">
-                      {item.createdBy?.name || "Unknown"}
-                    </span>
-                    <span className="text-gray-300 dark:text-gray-600">·</span>
-                    <span>
-                      {new Date(item.createdAt).toLocaleDateString("id-ID", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </span>
-                    {item.expiresAt && (
-                      <>
-                        {/* <span className="text-gray-300 dark:text-gray-600">·</span> */}
-                        s/d{" "}
-                        <span>
-                          {new Date(item.expiresAt).toLocaleDateString("id-ID", {
-                            day: "numeric",
-                            month: "long",
-                          })}
-                        </span>
-                      </>
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center">
+                        <ImagePlus
+                          size={28}
+                          className="text-gray-300 dark:text-gray-600"
+                          strokeWidth={1.5}
+                        />
+                      </div>
                     )}
                   </div>
+
+                  <div className="flex flex-1 flex-col p-5">
+                    {/* Top: type + actions */}
+                    <div className="mb-3 flex items-start justify-between gap-3">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span
+                          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium tracking-wide ${typeInfo.soft}`}
+                        >
+                          <TypeIcon size={12} strokeWidth={2.5} />
+                          {typeInfo.label}
+                        </span>
+
+                        {!item.isActive && (
+                          <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-500 dark:bg-white/10 dark:text-gray-400">
+                            Nonaktif
+                          </span>
+                        )}
+                        {isExpired && (
+                          <span className="rounded-full bg-rose-50 px-2.5 py-1 text-[11px] font-medium text-rose-500 dark:bg-rose-500/10 dark:text-rose-400">
+                            Kadaluarsa
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex shrink-0 items-center gap-0.5 opacity-70 transition-opacity group-hover:opacity-100">
+                        <button
+                          onClick={() => handleToggle(item._id)}
+                          className="rounded-xl p-2 text-white transition-colors hover:bg-black/[0.04] hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200"
+                          title={item.isActive ? "Nonaktifkan" : "Aktifkan"}
+                        >
+                          {item.isActive ? (
+                            <ToggleRight size={18} className="text-emerald-500" />
+                          ) : (
+                            <ToggleLeft size={18} />
+                          )}
+                        </button>
+                        <button
+                          onClick={() => openEdit(item)}
+                          className="rounded-xl p-2 text-white transition-colors hover:bg-black/[0.04] hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200"
+                          title="Edit"
+                        >
+                          <Pencil size={15} />
+                        </button>
+                        <button
+                          onClick={() => openDeleteConfirm(item)}
+                          className="rounded-xl p-2 text-white transition-colors hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
+                          title="Hapus"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1">
+                      <h3 className="text-[15px] font-semibold leading-snug tracking-tight text-gray-900 dark:text-white">
+                        {item.title}
+                      </h3>
+                      <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-gray-500 dark:text-gray-400">
+                        {item.content}
+                      </p>
+                    </div>
+
+                    {/* Hashtags */}
+                    {item.hashtags?.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {item.hashtags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="inline-flex items-center gap-0.5 rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-600 dark:bg-white/10 dark:text-gray-300"
+                          >
+                            <Hash size={10} />
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Footer meta */}
+                    <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-black/[0.04] pt-3 text-[11px] text-gray-400 dark:border-white/[0.06]">
+                      <span className="font-medium text-gray-500 dark:text-gray-400">
+                        {item.createdBy?.name || "Unknown"}
+                      </span>
+                      <span className="text-gray-300 dark:text-gray-600">·</span>
+                      <span>
+                        {new Date(item.createdAt).toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </span>
+                      {item.expiresAt && (
+                        <>
+                          {/* <span className="text-gray-300 dark:text-gray-600">·</span> */}
+                          s/d{" "}
+                          <span>
+                            {new Date(item.expiresAt).toLocaleDateString("id-ID", {
+                              day: "numeric",
+                              month: "long",
+                            })}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        )}
+      </div>
+
 
       {/* ===== SIDEBAR PANEL ===== */}
       <div
