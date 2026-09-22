@@ -578,8 +578,8 @@ const Dashboard = () => {
                         </p>
                         <p className="text-sm text-gray-500">
                           {search
-                            ? "Try a different keyword or clear the search."
-                            : "Be the first to publish one for this category."}
+                            ? "Try a different keyword or clear the search"
+                            : "Be the first to publish one for this category"}
                         </p>
                       </div>
                     ) : (
