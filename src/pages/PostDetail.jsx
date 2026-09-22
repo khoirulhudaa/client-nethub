@@ -27,11 +27,11 @@ const CodeBlockItem = ({ block }) => {
   };
 
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-gray-100 bg-white dark:border-white/5 dark:!bg-[#0c0c18]">
+    <div className="group relative overflow-hidden rounded-3xl border border-gray-100 bg-slate-300 dark:border-white/5 dark:!bg-[#0c0c18]">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-100 px-3 md:px-5 py-3 dark:border-white/5">
         <div className="flex items-center gap-3">
-          <span className="text-[11px] font-medium tracking-widest text-gray-400">
+          <span className="text-[11px] font-medium tracking-widest text-gray-700 dark:text-gray-400">
             {block.language?.toUpperCase() || "CODE"}
           </span>
           {block.title && (
@@ -47,7 +47,7 @@ const CodeBlockItem = ({ block }) => {
           className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${
             copied
               ? "bg-blue-600 text-white"
-              : "bg-slate-200 text-gray-600 hover:bg-accent hover:text-white dark:!bg-[#0c0c18] dark:text-gray-300"
+              : "bg-slate-300 text-gray-600 hover:bg-accent hover:text-white dark:!bg-[#0c0c18] dark:text-gray-300"
           }`}
         >
           {copied ? (
@@ -519,15 +519,17 @@ const isOwner = user?.id === post?.author?._id;
 
   if (loading || !post) {
     return (
-      <div className="flex justify-center flex-col h-full items-center text-center py-24">
-        <img src="/cloud.png" alt="icon-cloud" className="w-20" />
-        <p className="mt-2">Load content ...</p>
+      <div className="md:p-6">
+        <div className="flex justify-center flex-col h-full items-center rounded-xl bg-slate-300 dark:surface-card text-center py-14 md:py-24">
+          <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+          <p className="mt-2">Load content ...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="md:p-6 mx-auto max-w-7xl pb-16">
+    <div className="md:p-6 mx-auto max-w-full pb-16">
       <div className="mb-4 flex items-center md:justify-between">
         <div className="w-max flex items-center gap-2.5">
           <div className="md:flex hidden">
@@ -561,7 +563,7 @@ const isOwner = user?.id === post?.author?._id;
         )}
       </div>
 
-      <h1 className="mb-3 max-w-full w-max truncate rounded-xl p-2 px-1 pr-2.5 text-xl sm:text-2xl font-semibold tracking-tight bg-slate-100 dark:!bg-[#0c0c18] border border-slate-200 dark:border-white/20">
+      <h1 className="mb-3 max-w-full w-max truncate rounded-xl p-2 px-1 pr-2.5 text-xl sm:text-2xl font-semibold tracking-tight bg-slate-300 dark:!bg-[#0c0c18] border border-slate-200 dark:border-white/20">
         📝 {post.title} 
       </h1>
 
@@ -572,7 +574,7 @@ const isOwner = user?.id === post?.author?._id;
           </div>
           <div className="leading-tight">
             <p className="text-md font-medium">{post.author.name}</p>
-            <p className="text-xs text-gray-400">{post.author.title}</p>
+            <p className="text-xs text-slate-700 dark:text-gray-400">{post.author.title}</p>
           </div>
         </Link>
 
@@ -598,20 +600,20 @@ const isOwner = user?.id === post?.author?._id;
         )}
       </div>
       
-      <div className="w-full h-72 bg-slate-200 dark:bg-slate-500 p-0 overflow-hidden rounded-2xl">
+      <div className="w-full h-72 bg-slate-300 dark:bg-slate-500 p-0 overflow-hidden rounded-2xl">
         {post.coverImage && (
-          <img src={post.coverImage} alt="cover-image" className="mb-6 h-full w-full hover:scale-[1.1] duration-300 ease-in object-cover" />
+          <img src={post.coverImage} alt="cover-image" className="mb-6 h-full w-full transition-transform duration-700 hover:scale-105 object-cover" />
         )}
       </div>
 
-      <h2 className="mt-6 mb-5 text-sm font-medium tracking-widest text-gray-400 uppercase">
+      <h2 className="mt-6 mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-gray-400 uppercase">
         Description
       </h2>
 
       {/* Description dengan support highlight */}
       <div className="relative" onMouseUp={handleMouseUp}>
         <article
-          className="rounded-2xl md:text-justify border border-gray-100 bg-slate-200 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none break-words [overflow-wrap:anywhere] dark:prose-invert prose-headings:font-semibold text-slate-500 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
+          className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none break-words [overflow-wrap:anywhere] dark:prose-invert prose-headings:font-semibold text-slate-700 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
           dangerouslySetInnerHTML={{
             __html: renderHighlightedContent(post.content),
           }}
@@ -657,7 +659,7 @@ const isOwner = user?.id === post?.author?._id;
       </div>
 
       {highlights.length > 0 && (
-        <div className="mt-4 rounded-2xl border border-gray-100 bg-slate-200 p-3 md:p-5 dark:border-white/5 dark:!bg-[#0c0c18]">
+        <div className="mt-4 rounded-2xl border border-gray-100 bg-slate-300 p-3 md:p-5 dark:border-white/5 dark:!bg-[#0c0c18]">
           <div className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
             <Highlighter size={15} />
             Stabilo kamu ({highlights.length})
@@ -685,8 +687,8 @@ const isOwner = user?.id === post?.author?._id;
       )}
 
       {post.codeBlocks?.length > 0 && (
-        <div className="mt-6">
-          <h2 className="mb-5 text-sm font-medium tracking-widest text-gray-400 uppercase">
+        <div className="mt-4">
+          <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-gray-400 uppercase">
             Commands & Code
           </h2>
 
@@ -699,8 +701,8 @@ const isOwner = user?.id === post?.author?._id;
       )}
 
       {post.referencesImages?.length > 0 && (
-        <div className="mt-6">
-          <h2 className="mb-5 text-sm font-medium tracking-widest text-gray-400 uppercase">
+        <div className="mt-4">
+          <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-gray-400 uppercase">
             Reference by Upload
           </h2>
 
@@ -708,7 +710,7 @@ const isOwner = user?.id === post?.author?._id;
             {post.referencesImages.map((img, idx) => (
               <div
                 key={idx}
-                className="group relative overflow-hidden rounded-3xl bg-slate-200 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/5 transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:-translate-y-1"
+                className="group relative overflow-hidden rounded-3xl bg-slate-300 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/5 transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:-translate-y-1"
               >
                 <div className="overflow-hidden">
                   <img
@@ -734,13 +736,13 @@ const isOwner = user?.id === post?.author?._id;
 
       {/* ===== Topology & Flowchart Cards ===== */}
       {(post.topology?.nodes?.length > 0 || post.flowchart?.nodes?.length > 0) && (
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {/* Topology Card */}
           {post.topology?.nodes?.length > 0 ? (
             <button
               type="button"
               onClick={() => setSidebarType("topology")}
-              className="group flex items-center active:scale-[0.99] duration-100 gap-4 rounded-2xl border border-gray-200 bg-slate-200 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:!bg-[#0c0c18] dark:hover:border-accent"
+              className="group flex items-center active:scale-[0.99] duration-100 gap-4 rounded-2xl border border-gray-200 bg-slate-300 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:!bg-[#0c0c18] dark:hover:border-accent"
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -753,14 +755,14 @@ const isOwner = user?.id === post?.author?._id;
                   {post.topology.nodes.length} devices · Klik untuk melihat
                 </p>
               </div>
-              <span className="ml-auto text-gray-400 transition group-hover:text-accent">→</span>
+              <span className="ml-auto text-slate-700 dark:text-gray-400 transition group-hover:text-accent">→</span>
             </button>
           ): (
             <button
               type="button"
               onClick={() => setSidebarType("flowchart")}
               disabled
-              className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-200 p-5 text-left transition dark:border-white/10 dark:!bg-[#0c0c18]"
+              className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 p-5 text-left transition dark:border-white/10 dark:!bg-[#0c0c18]"
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
@@ -782,7 +784,7 @@ const isOwner = user?.id === post?.author?._id;
             <button
               type="button"
               onClick={() => setSidebarType("flowchart")}
-              className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-slate-200 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:!bg-[#0c0c18] dark:hover:border-accent"
+              className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:!bg-[#0c0c18] dark:hover:border-accent"
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -795,14 +797,14 @@ const isOwner = user?.id === post?.author?._id;
                   {post.flowchart.nodes.length} steps · Klik untuk melihat
                 </p>
               </div>
-              <span className="ml-auto text-gray-400 transition group-hover:text-accent">→</span>
+              <span className="ml-auto text-slate-700 dark:text-gray-400 transition group-hover:text-accent">→</span>
             </button>
           ): (
              <button
               type="button"
               onClick={() => setSidebarType("flowchart")}
               disabled
-              className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-200 p-5 text-left transition dark:border-white/10 dark:!bg-[#0c0c18]"
+              className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 p-5 text-left transition dark:border-white/10 dark:!bg-[#0c0c18]"
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
@@ -823,8 +825,8 @@ const isOwner = user?.id === post?.author?._id;
       
       {/* ===== Step-by-step Wizard (Zigzag + Clickable) ===== */}
       {post.steps?.length > 0 && (
-        <div className="mt-14">
-          <h2 className="mb-5 text-sm font-medium tracking-widest text-gray-400 uppercase">
+        <div className="mt-4">
+          <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-gray-400 uppercase">
             Step-by-step Guide
           </h2>
 
@@ -863,16 +865,16 @@ const isOwner = user?.id === post?.author?._id;
                               onClick={() =>
                                 setSelectedStep({ ...step, index: realIndex })
                               }
-                              className="group relative flex flex-col overflow-hidden rounded-3xl bg-white dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/5 p-5 text-left transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:-translate-y-1"
+                              className="group relative flex flex-col overflow-hidden rounded-3xl bg-slate-300 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/5 p-5 text-left transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:-translate-y-1"
                             >
                               {/* Header */}
                               <div className="mb-4 flex items-center justify-between">
-                                <span className="text-[11px] font-medium tracking-widest text-gray-400">
+                                <span className="text-[11px] font-medium tracking-widest text-slate-700 dark:text-gray-400">
                                   STEP {String(realIndex + 1).padStart(2, "0")}
                                 </span>
 
                                 {/* Arrow */}
-                                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-200 dark:!bg-[#0c0c18] text-gray-400 transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
+                                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-300 dark:!bg-[#0c0c18] text-slate-700 dark:text-gray-400 transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-3.5 w-3.5"
@@ -928,7 +930,7 @@ const isOwner = user?.id === post?.author?._id;
       {/* ===== Custom Tables ===== */}
       {post.customTables?.length > 0 && (
         <div className="mt-6">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-400">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-gray-400">
             GRADIENTS
           </h2>
           <div className="space-y-6">
@@ -1037,7 +1039,7 @@ const isOwner = user?.id === post?.author?._id;
                 <div className="absolute left-0 top-full z-20 mt-2 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/10 dark:bg-gray-900">
                   <button
                     onClick={copyLink}
-                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-200 dark:text-gray-200 dark:hover:bg-white/5"
+                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 dark:hover:bg-white/5"
                   >
                     <Link2 size={16} />
                     Salin Link
@@ -1048,7 +1050,7 @@ const isOwner = user?.id === post?.author?._id;
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setShowShare(false)}
-                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-200 dark:text-gray-200 dark:hover:bg-white/5"
+                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 dark:hover:bg-white/5"
                   >
                     <span className="flex h-4 w-4 items-center justify-center text-[13px] font-bold text-green-600">
                       WA
@@ -1061,7 +1063,7 @@ const isOwner = user?.id === post?.author?._id;
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setShowShare(false)}
-                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-200 dark:text-gray-200 dark:hover:bg-white/5"
+                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 dark:hover:bg-white/5"
                   >
                     <Linkedin size={16} className="text-blue-700" />
                     LinkedIn
@@ -1088,8 +1090,8 @@ const isOwner = user?.id === post?.author?._id;
       </div>
 
       <div className="mt-6">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-400">Comments</h2>
-        <div className="surface-card shadow-none bg-slate-200 dark:!bg-[#0c0c18] p-3 md:p-5">
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-gray-400">Comments</h2>
+        <div className="surface-card shadow-none bg-slate-300 dark:!bg-[#0c0c18] p-3 md:p-5">
           <div className="mb-4 flex gap-2">
             <input
               value={commentText}
@@ -1116,7 +1118,7 @@ const isOwner = user?.id === post?.author?._id;
           />
 
           {/* Sidebar - full height */}
-          <div className="fixed right-0 top-0 z-[9999] flex h-full w-full max-w-5xl flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-[#12121b]">
+          <div className="fixed right-0 bottom-0 z-[9999] h-[90vh] flex w-full max-w-5xl flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-[#12121b]">
             {/* Header */}
             <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-white/10">
               <h3 className="text-base font-semibold">
@@ -1228,12 +1230,12 @@ const isOwner = user?.id === post?.author?._id;
               </p>
             </div>
 
-            <div className="flex gap-3 border-t border-gray-100 bg-slate-200 px-6 py-4 dark:border-white/5 dark:!bg-[#0c0c18]">
+            <div className="flex gap-3 border-t border-gray-100 bg-slate-300 px-6 py-4 dark:border-white/5 dark:!bg-[#0c0c18]">
               <button
                 type="button"
                 disabled={deleting}
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 rounded-xl border border-gray-200 bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-slate-200 disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:text-gray-200"
+                className="flex-1 rounded-xl border border-gray-200 bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-slate-300 disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:text-gray-200"
               >
                 Batal
               </button>
@@ -1258,8 +1260,8 @@ const isOwner = user?.id === post?.author?._id;
       )}
 
       {related?.length > 0 && (
-        <div className="mt-10">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-400">
+        <div className="mt-4">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-gray-400">
             Related Guides
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

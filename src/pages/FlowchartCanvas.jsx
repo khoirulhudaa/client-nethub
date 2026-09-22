@@ -10,7 +10,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { Eraser, Trash2, Type } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const shapeStyle = {
   padding: "10px 16px",
@@ -124,6 +124,18 @@ export default function FlowchartCanvas({ value, onChange, readOnly = false, hei
   const [nodes, setNodes, onNodesChange] = useNodesState(value?.nodes || []);
   const [edges, setEdges, onEdgesChange] = useEdgesState(value?.edges || []);
   const [selectedNode, setSelectedNode] = useState(null);
+
+  // ← TAMBAHKAN INI: sync ulang state internal saat prop `value` berubah dari luar
+  const hasInitialized = useRef(false);
+  useEffect(() => {
+    // Skip di render pertama karena useNodesState/useEdgesState sudah handle itu
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      return;
+    }
+    setNodes(value?.nodes || []);
+    setEdges(value?.edges || []);
+  }, [value]); 
 
   // Sync ke parent
   const sync = useCallback(

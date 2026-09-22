@@ -43,8 +43,6 @@ const HardwareNode = ({ data, selected }) => {
 
   // Device yang ingin ditampilkan berbeda (peripheral)
   const isPeripheral = ["Monitor", "Mouse", "Keyboard"].includes(data.type);
-  console.log('ok')
-  console.log('ok')
   // Warna khusus untuk peripheral (hijau)
   const peripheralColor = "#16a34a"; // green-600
 
@@ -130,7 +128,7 @@ export const HARDWARE_TYPES = [
   { type: "Firewall", icon: Shield },
   { type: "Load Balancer", icon: Network },
   { type: "Modem", icon: Router },
-  { type: "Media Converter", icon: Network },
+  { type: "Converter", icon: Network },
   { type: "HTB", icon: Network },
   { type: "Wireless", icon: Wifi },
 

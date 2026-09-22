@@ -42,26 +42,33 @@ const CreatePost = () => {
   // Load data saat edit
   useEffect(() => {
     if (!isEditing) return;
-    api.get(`/posts/mine`).then(({ data }) => {
-      const post = data.posts.find((p) => p._id === id);
-      if (post) {
-        setForm({
-          title: post.title,
-          excerpt: post.excerpt,
-          content: post.content,
-          coverImage: post.coverImage,
-          category: post.category,
-          tags: post.tags.join(", "),
-        });
-        setTopology(post.topology || { nodes: [], edges: [] });
-        setGallery(post.gallery || []);
-        setSteps(post.steps || []);
-        setCustomTables(post.customTables || []);
-        setCodeBlocks(post.codeBlocks || []);
-        setFlowchart(post.flowchart || { nodes: [], edges: [] });
-        setReferencesImages(post.referencesImages || []); // ← tambah
-      }
-    });
+
+    api
+      .get(`/posts/id/${id}`)
+      .then(({ data }) => {
+        const post = data.post;
+        if (post) {
+          setForm({
+            title: post.title,
+            excerpt: post.excerpt,
+            content: post.content,
+            coverImage: post.coverImage,
+            category: post.category,
+            tags: post.tags.join(", "),
+          });
+          setTopology(post.topology || { nodes: [], edges: [] });
+          setGallery(post.gallery || []);
+          setSteps(post.steps || []);
+          setCustomTables(post.customTables || []);
+          setCodeBlocks(post.codeBlocks || []);
+          setFlowchart(post.flowchart || { nodes: [], edges: [] });
+          setReferencesImages(post.referencesImages || []);
+        }
+      })
+      .catch((err) => {
+        console.error("Gagal fetch post untuk edit:", err);
+        setError("Guide tidak ditemukan atau kamu tidak punya akses.");
+      });
   }, [id, isEditing]);
 
  // Cari similar images berdasarkan Title / Category / Tags
@@ -241,7 +248,7 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="mx-auto max-w-7xl pb-16 md:p-6">
+    <div className="mx-auto max-w-7xl h-max pb-16 md:p-6">
       <h1 className="text-xl md:mb-0 mb-4 font-semibold tracking-tight">
         {isEditing ? "Edit Guide" : "Publish a New Guide"}
       </h1>
