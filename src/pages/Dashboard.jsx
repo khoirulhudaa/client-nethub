@@ -470,9 +470,9 @@ const Dashboard = () => {
           </header>
 
           {/* Search + Categories */}
-          <div className="w-full px-4 py-2 md:p-4 md:flex items-center gap-2.5">
+          <div className="w-full px-4 py-2 md:p-4 flex items-center gap-2.5">
             <form
-              className="flex md:mb-0 mb-2 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 shadow-sm sm:w-72"
+              className="flex w-full mb-0 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 shadow-sm sm:w-72"
               onSubmit={(e) => {
                 e.preventDefault();
                 updateParam("search", localSearch.trim());
@@ -503,7 +503,7 @@ const Dashboard = () => {
             {data.categories?.length > 0 && (
               <>
                 {/* Mobile: dropdown selector */}
-                <div className="sm:hidden">
+                <div className="w-full sm:hidden">
                   <select
                     value={category || ""}
                     onChange={(e) => updateParam("category", e.target.value)}
