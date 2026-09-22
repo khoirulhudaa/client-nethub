@@ -130,7 +130,7 @@ const TopBar = ({ onMenuClick }) => {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search guides, tags, categories…"
-            className="input-field pl-9"
+            className="input-field-transparent pl-9"
           />
         </form>
 
