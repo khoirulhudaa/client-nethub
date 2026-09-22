@@ -177,12 +177,12 @@ const Sidebar = ({ onNavigate }) => {
 
   const linkClass = (active) =>
     collapsed
-      ? `flex h-10 w-10 items-center justify-center rounded-xl transition ${
+      ? `flex h-10 active:scale-[0.99] w-10 items-center justify-center rounded-xl transition ${
           active
             ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
             : "text-white dark:text-gray-400 hover:bg-white/[0.06] hover:text-white"
         }`
-      : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
+      : `active:scale-[0.99] flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
           active
             ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
             : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
