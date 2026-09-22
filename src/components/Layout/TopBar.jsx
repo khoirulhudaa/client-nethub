@@ -245,7 +245,7 @@ const TopBar = ({ onMenuClick }) => {
                         setOpenNotif(false);
                         navigate("/admin/announcements");
                       }}
-                      className="w-full rounded-lg py-2 text-center text-xs font-medium text-accent hover:bg-gradient-to-br from-blue-400 to-blue-900/10"
+                      className="w-full rounded-lg py-2 text-center text-xs font-medium text-accent hover:text-slate-900 hover:bg-gradient-to-br from-blue-400 to-blue-100"
                     >
                       Kelola pengumuman
                     </button>

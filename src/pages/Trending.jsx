@@ -231,9 +231,6 @@ const Trending = () => {
             </span>
           </div>
           <h1 className="text-xl font-semibold tracking-tight">Trending</h1>
-          <p className="md:flex hidden mt-1 text-sm text-gray-500">
-            Most popular guides and quizzes
-          </p>
         </div>
 
         <div className="flex gap-2">

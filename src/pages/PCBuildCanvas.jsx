@@ -1,22 +1,16 @@
 import {
   AlertTriangle,
-  Box,
-  Briefcase,
   Cable,
+  Calculator,
   CheckCircle2,
   Cpu,
-  Gamepad2,
   Info,
-  Power,
-  RotateCcw,
-  Server,
-  Video,
-  Wallet,
-  List,
   LayoutGrid,
-  Calculator
+  List,
+  Power,
+  RotateCcw
 } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 
 /* ====================== DATA (super lengkap) ====================== */
 const COMPONENTS = {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Bell,
@@ -9,15 +9,45 @@ import {
   ToggleLeft,
   ToggleRight,
   X,
+  Info,
+  AlertTriangle,
+  CheckCircle2,
+  Megaphone,
+  ImagePlus,
+  Hash,
 } from "lucide-react";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
 const TYPE_OPTIONS = [
-  { value: "info", label: "Info", color: "bg-blue-500" },
-  { value: "warning", label: "Warning", color: "bg-amber-500" },
-  { value: "success", label: "Success", color: "bg-emerald-500" },
-  { value: "important", label: "Important", color: "bg-rose-500" },
+  {
+    value: "info",
+    label: "Info",
+    color: "bg-blue-500",
+    soft: "bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400",
+    icon: Info,
+  },
+  {
+    value: "warning",
+    label: "Warning",
+    color: "bg-amber-500",
+    soft: "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400",
+    icon: AlertTriangle,
+  },
+  {
+    value: "success",
+    label: "Success",
+    color: "bg-emerald-500",
+    soft: "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400",
+    icon: CheckCircle2,
+  },
+  {
+    value: "important",
+    label: "Important",
+    color: "bg-rose-500",
+    soft: "bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400",
+    icon: Megaphone,
+  },
 ];
 
 const emptyForm = {
@@ -26,21 +56,24 @@ const emptyForm = {
   type: "info",
   isActive: true,
   expiresAt: "",
+  thumbnail: "",
+  hashtags: [],
 };
 
 const AnnouncementsAdmin = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
 
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
-  const [editing, setEditing] = useState(null); // null = create
-
+  const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(emptyForm);
+  const [hashtagInput, setHashtagInput] = useState("");
 
-  // Guard: hanya superAdmin
   useEffect(() => {
     if (user && user.role !== "superAdmin") {
       navigate("/", { replace: true });
@@ -66,6 +99,7 @@ const AnnouncementsAdmin = () => {
   const openCreate = () => {
     setEditing(null);
     setForm(emptyForm);
+    setHashtagInput("");
     setShowPanel(true);
   };
 
@@ -79,7 +113,10 @@ const AnnouncementsAdmin = () => {
       expiresAt: item.expiresAt
         ? new Date(item.expiresAt).toISOString().slice(0, 16)
         : "",
+      thumbnail: item.thumbnail || "",
+      hashtags: item.hashtags || [],
     });
+    setHashtagInput("");
     setShowPanel(true);
   };
 
@@ -87,6 +124,72 @@ const AnnouncementsAdmin = () => {
     setShowPanel(false);
     setEditing(null);
     setForm(emptyForm);
+    setHashtagInput("");
+  };
+
+  // ——— Thumbnail (base64, sama seperti coverImage di Post) ———
+  const handleThumbnailUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Hanya file gambar yang diperbolehkan");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Ukuran maksimal 2MB");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      // hasilnya: "data:image/jpeg;base64,/9j/4AAQ..."
+      setForm((prev) => ({ ...prev, thumbnail: reader.result }));
+    };
+    reader.onerror = () => {
+      alert("Gagal membaca file");
+    };
+    reader.readAsDataURL(file);
+
+    // reset input supaya bisa pilih file yang sama lagi
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const removeThumbnail = () => {
+    setForm((prev) => ({ ...prev, thumbnail: "" }));
+  };
+
+  // ——— Hashtag ———
+  const addHashtag = () => {
+    const raw = hashtagInput.trim().replace(/^#/, "").toLowerCase();
+    if (!raw) return;
+    if (form.hashtags.length >= 4) {
+      alert("Maksimal 4 hashtag");
+      return;
+    }
+    if (form.hashtags.includes(raw)) {
+      setHashtagInput("");
+      return;
+    }
+    setForm((prev) => ({
+      ...prev,
+      hashtags: [...prev.hashtags, raw],
+    }));
+    setHashtagInput("");
+  };
+
+  const removeHashtag = (tag) => {
+    setForm((prev) => ({
+      ...prev,
+      hashtags: prev.hashtags.filter((t) => t !== tag),
+    }));
+  };
+
+  const handleHashtagKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addHashtag();
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -101,6 +204,8 @@ const AnnouncementsAdmin = () => {
         type: form.type,
         isActive: form.isActive,
         expiresAt: form.expiresAt || null,
+        thumbnail: form.thumbnail || null,
+        hashtags: form.hashtags,
       };
 
       if (editing) {
@@ -122,10 +227,9 @@ const AnnouncementsAdmin = () => {
     if (!confirm("Yakin ingin menghapus pengumuman ini?")) return;
     try {
       await api.delete(`/announcements/${id}`);
-      // Jika sedang edit item yang dihapus, tutup panel
       if (editing?._id === id) closePanel();
       fetchAnnouncements();
-    } catch (err) {
+    } catch {
       alert("Gagal menghapus");
     }
   };
@@ -134,19 +238,17 @@ const AnnouncementsAdmin = () => {
     try {
       await api.patch(`/announcements/${id}/toggle`);
       fetchAnnouncements();
-    } catch (err) {
+    } catch {
       alert("Gagal mengubah status");
     }
   };
 
-  if (user?.role !== "superAdmin") {
-    return null;
-  }
+  if (user?.role !== "superAdmin") return null;
 
   return (
-    <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px">
+    <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6">
       {/* Header */}
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2 text-accent">
             <span className="text-xs font-medium uppercase tracking-wide">
@@ -158,7 +260,7 @@ const AnnouncementsAdmin = () => {
 
         <button
           onClick={openCreate}
-          className="inline-flex active:scale-[0.98] items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:opacity-90"
+          className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:opacity-90 active:scale-[0.98]"
         >
           <Plus size={16} />
           Buat Pengumuman
@@ -167,62 +269,144 @@ const AnnouncementsAdmin = () => {
 
       {/* List */}
       {loading ? (
-        <div className="flex justify-center py-20">
-          <Loader2 className="animate-spin text-accent" size={28} />
+        <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
+          <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+          <p className="mt-2">Load content ...</p>
         </div>
       ) : announcements.length === 0 ? (
-        <div className="surface-card bg-white dark:bg-white/5 flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed py-16 text-center">
-          <Bell size={32} className="text-gray-400" />
-          <p className="font-medium">Belum ada pengumuman</p>
-          <p className="text-sm text-gray-500">
-            Buat pengumuman pertama untuk pengguna
-          </p>
+        <div className="flex flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-gray-200 bg-gray-50/50 py-20 text-center dark:border-white/10 dark:bg-white/[0.02]">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/5">
+            <Bell size={24} className="text-gray-400" />
+          </div>
+          <div>
+            <p className="font-medium text-gray-900 dark:text-white">
+              Belum ada pengumuman
+            </p>
+            <p className="mt-1 text-sm text-gray-500">
+              Buat pengumuman pertama untuk pengguna
+            </p>
+          </div>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3.5 px-7 py-7 sm:px-4 w-full sm:py-4 relative bg-white/5 rounded-xl">
+        <div className="grid gap-4 sm:grid-cols-3">
           {announcements.map((item) => {
             const typeInfo =
               TYPE_OPTIONS.find((t) => t.value === item.type) || TYPE_OPTIONS[0];
+            const TypeIcon = typeInfo.icon;
             const isExpired =
               item.expiresAt && new Date(item.expiresAt) < new Date();
+            const isDimmed = !item.isActive || isExpired;
 
             return (
               <div
                 key={item._id}
-                className={`surface-card bg-white dark:bg-white/5 flex flex-col gap-3 rounded-xl border border-white/10 p-4 sm:flex-row sm:items-start sm:justify-between ${
-                  !item.isActive || isExpired ? "opacity-60" : ""
+                className={`group relative flex flex-col overflow-hidden rounded-2xl border border-black/[0.04] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.06),0_8px_24px_rgba(0,0,0,0.04)] dark:border-white/[0.06] dark:bg-white/[0.03] dark:shadow-none dark:hover:bg-white/[0.05] ${
+                  isDimmed ? "opacity-55" : ""
                 }`}
               >
-                <div className="min-w-0 flex-1">
-                  <div className="mb-1.5 flex flex-wrap items-center gap-2">
-                    <span
-                      className={`inline-block h-2 w-2 rounded-full ${typeInfo.color}`}
+
+                {/* Thumbnail */}
+                <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-100 dark:bg-white/5">
+                  {item.thumbnail ? (
+                    <img
+                      src={item.thumbnail}
+                      alt=""
+                      className="h-full w-full object-cover"
                     />
-                    <span className="text-xs font-medium uppercase tracking-wide text-gray-500">
-                      {typeInfo.label}
-                    </span>
-                    {!item.isActive && (
-                      <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs text-gray-600 dark:bg-white/10 dark:text-gray-300">
-                        Nonaktif
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center">
+                      <ImagePlus
+                        size={28}
+                        className="text-gray-300 dark:text-gray-600"
+                        strokeWidth={1.5}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-1 flex-col p-5">
+                  {/* Top: type + actions */}
+                  <div className="mb-3 flex items-start justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium tracking-wide ${typeInfo.soft}`}
+                      >
+                        <TypeIcon size={12} strokeWidth={2.5} />
+                        {typeInfo.label}
                       </span>
-                    )}
-                    {isExpired && (
-                      <span className="rounded-full bg-rose-100 px-2 py-0.5 text-xs text-rose-700 dark:bg-rose-500/20 dark:text-rose-300">
-                        Kadaluarsa
-                      </span>
-                    )}
+
+                      {!item.isActive && (
+                        <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-500 dark:bg-white/10 dark:text-gray-400">
+                          Nonaktif
+                        </span>
+                      )}
+                      {isExpired && (
+                        <span className="rounded-full bg-rose-50 px-2.5 py-1 text-[11px] font-medium text-rose-500 dark:bg-rose-500/10 dark:text-rose-400">
+                          Kadaluarsa
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex shrink-0 items-center gap-0.5 opacity-70 transition-opacity group-hover:opacity-100">
+                      <button
+                        onClick={() => handleToggle(item._id)}
+                        className="rounded-xl p-2 text-gray-400 transition-colors hover:bg-black/[0.04] hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200"
+                        title={item.isActive ? "Nonaktifkan" : "Aktifkan"}
+                      >
+                        {item.isActive ? (
+                          <ToggleRight size={18} className="text-emerald-500" />
+                        ) : (
+                          <ToggleLeft size={18} />
+                        )}
+                      </button>
+                      <button
+                        onClick={() => openEdit(item)}
+                        className="rounded-xl p-2 text-gray-400 transition-colors hover:bg-black/[0.04] hover:text-gray-700 dark:hover:bg-white/10 dark:hover:text-gray-200"
+                        title="Edit"
+                      >
+                        <Pencil size={15} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item._id)}
+                        className="rounded-xl p-2 text-gray-400 transition-colors hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
+                        title="Hapus"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
                   </div>
 
-                  <h3 className="font-semibold text-gray-900 dark:text-white">
-                    {item.title}
-                  </h3>
-                  <p className="mt-1 line-clamp-2 text-sm text-gray-600 dark:text-gray-300">
-                    {item.content}
-                  </p>
+                  {/* Content */}
+                  <div className="flex-1">
+                    <h3 className="text-[15px] font-semibold leading-snug tracking-tight text-gray-900 dark:text-white">
+                      {item.title}
+                    </h3>
+                    <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-gray-500 dark:text-gray-400">
+                      {item.content}
+                    </p>
+                  </div>
 
-                  <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-gray-400">
-                    <span>Oleh {item.createdBy?.name || "Unknown"}</span>
-                    <span>·</span>
+                  {/* Hashtags */}
+                  {item.hashtags?.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {item.hashtags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center gap-0.5 rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-600 dark:bg-white/10 dark:text-gray-300"
+                        >
+                          <Hash size={10} />
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Footer meta */}
+                  <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-black/[0.04] pt-3 text-[11px] text-gray-400 dark:border-white/[0.06]">
+                    <span className="font-medium text-gray-500 dark:text-gray-400">
+                      {item.createdBy?.name || "Unknown"}
+                    </span>
+                    <span className="text-gray-300 dark:text-gray-600">·</span>
                     <span>
                       {new Date(item.createdAt).toLocaleDateString("id-ID", {
                         day: "numeric",
@@ -232,45 +416,17 @@ const AnnouncementsAdmin = () => {
                     </span>
                     {item.expiresAt && (
                       <>
-                        <span>·</span>
+                        <span className="text-gray-300 dark:text-gray-600">·</span>
                         <span>
-                          Berlaku sampai{" "}
-                          {new Date(item.expiresAt).toLocaleDateString("id-ID")}
+                          s/d{" "}
+                          {new Date(item.expiresAt).toLocaleDateString("id-ID", {
+                            day: "numeric",
+                            month: "short",
+                          })}
                         </span>
                       </>
                     )}
                   </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex shrink-0 items-center gap-1.5">
-                  <button
-                    onClick={() => handleToggle(item._id)}
-                    className="rounded-lg p-2 text-gray-500 transition hover:bg-black/5 dark:hover:bg-white/10"
-                    title={item.isActive ? "Nonaktifkan" : "Aktifkan"}
-                  >
-                    {item.isActive ? (
-                      <ToggleRight size={20} className="text-emerald-500" />
-                    ) : (
-                      <ToggleLeft size={20} />
-                    )}
-                  </button>
-
-                  <button
-                    onClick={() => openEdit(item)}
-                    className="rounded-lg p-2 text-gray-500 transition hover:bg-black/5 dark:hover:bg-white/10"
-                    title="Edit"
-                  >
-                    <Pencil size={16} />
-                  </button>
-
-                  <button
-                    onClick={() => handleDelete(item._id)}
-                    className="rounded-lg p-2 text-rose-500 transition hover:bg-rose-50 dark:hover:bg-rose-500/10"
-                    title="Hapus"
-                  >
-                    <Trash2 size={16} />
-                  </button>
                 </div>
               </div>
             );
@@ -278,8 +434,7 @@ const AnnouncementsAdmin = () => {
         </div>
       )}
 
-      {/* ===== RIGHT SIDEBAR PANEL ===== */}
-      {/* Backdrop */}
+      {/* ===== SIDEBAR PANEL ===== */}
       <div
         className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 ${
           showPanel ? "opacity-100" : "pointer-events-none opacity-0"
@@ -287,33 +442,69 @@ const AnnouncementsAdmin = () => {
         onClick={closePanel}
       />
 
-      {/* Panel */}
       <aside
         className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-white/10 bg-white shadow-2xl transition-transform duration-300 ease-out dark:bg-[#12121a] ${
           showPanel ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* Panel header */}
         <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
-          <div>
-            <h2 className="text-md font-semibold">
-              {editing ? "Edit Pengumuman" : "Buat Pengumuman"}
-            </h2>
-          </div>
+          <h2 className="text-md font-semibold">
+            {editing ? "Edit Pengumuman" : "Buat Pengumuman"}
+          </h2>
           <button
             onClick={closePanel}
-            className="rounded-lg p-2 active:scale-[0.98] text-gray-500 transition hover:bg-black/5 dark:hover:bg-white/10"
+            className="rounded-lg p-2 text-gray-500 transition hover:bg-black/5 active:scale-[0.98] dark:hover:bg-white/10"
           >
             <X size={18} />
           </button>
         </div>
 
-        {/* Form */}
         <form
           onSubmit={handleSubmit}
           className="flex flex-1 flex-col overflow-y-auto"
         >
           <div className="flex-1 space-y-5 px-5 py-5">
+            {/* Thumbnail */}
+            <div>
+              <label className="mb-1.5 block text-sm font-medium">Thumbnail</label>
+
+              {form.thumbnail ? (
+                <div className="relative overflow-hidden rounded-xl border border-black/[0.06] dark:border-white/10">
+                  <img
+                    src={form.thumbnail}
+                    alt="Preview"
+                    className="aspect-[16/9] w-full object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={removeThumbnail}
+                    className="absolute right-2 top-2 rounded-full bg-black/60 p-1.5 text-white backdrop-blur-sm transition hover:bg-black/80"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 bg-gray-50/80 py-8 text-gray-500 transition hover:border-gray-400 hover:bg-gray-100 dark:border-white/15 dark:bg-white/[0.03] dark:hover:bg-white/[0.06]"
+                >
+                  <ImagePlus size={22} />
+                  <span className="text-sm">Upload gambar</span>
+                  <span className="text-xs text-gray-400">Max 2MB</span>
+                </button>
+              )}
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleThumbnailUpload}
+              />
+            </div>
+
+            {/* Judul */}
             <div>
               <label className="mb-1.5 block text-sm font-medium">Judul</label>
               <input
@@ -327,32 +518,98 @@ const AnnouncementsAdmin = () => {
               />
             </div>
 
+            {/* Isi */}
             <div>
               <label className="mb-1.5 block text-sm font-medium">Isi</label>
               <textarea
                 value={form.content}
                 onChange={(e) => setForm({ ...form, content: e.target.value })}
-                className="input-field w-full min-h-[140px] resize-y"
+                className="input-field w-full min-h-[120px] resize-y"
                 placeholder="Tulis isi pengumuman..."
                 required
               />
             </div>
 
+            {/* Tipe */}
             <div>
               <label className="mb-1.5 block text-sm font-medium">Tipe</label>
-              <select
-                value={form.type}
-                onChange={(e) => setForm({ ...form, type: e.target.value })}
-                className="input-field w-full"
-              >
-                {TYPE_OPTIONS.map((t) => (
-                  <option key={t.value} value={t.value} className="text-black">
-                    {t.label}
-                  </option>
-                ))}
-              </select>
+              <div className="grid grid-cols-2 gap-2">
+                {TYPE_OPTIONS.map((t) => {
+                  const Icon = t.icon;
+                  const selected = form.type === t.value;
+                  return (
+                    <button
+                      key={t.value}
+                      type="button"
+                      onClick={() => setForm({ ...form, type: t.value })}
+                      className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-medium transition ${
+                        selected
+                          ? "border-accent/40 bg-accent/10 text-accent"
+                          : "border-black/[0.06] text-gray-600 hover:bg-black/[0.03] dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5"
+                      }`}
+                    >
+                      <Icon size={16} />
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
+            {/* Hashtags */}
+            <div>
+              <label className="mb-1.5 block text-sm font-medium">
+                Hashtag{" "}
+                <span className="font-normal text-gray-400">
+                  ({form.hashtags.length}/4)
+                </span>
+              </label>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Hash
+                    size={14}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  />
+                  <input
+                    value={hashtagInput}
+                    onChange={(e) => setHashtagInput(e.target.value)}
+                    onKeyDown={handleHashtagKeyDown}
+                    className="input-field w-full pl-8"
+                    placeholder="Ketik lalu Enter"
+                    disabled={form.hashtags.length >= 4}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={addHashtag}
+                  disabled={!hashtagInput.trim() || form.hashtags.length >= 4}
+                  className="rounded-xl bg-gray-100 px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-200 disabled:opacity-40 dark:bg-white/10 dark:text-gray-200 dark:hover:bg-white/15"
+                >
+                  Tambah
+                </button>
+              </div>
+              {form.hashtags.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {form.hashtags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center gap-1 rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 dark:bg-white/10 dark:text-gray-200"
+                    >
+                      #{tag}
+                      <button
+                        type="button"
+                        onClick={() => removeHashtag(tag)}
+                        className="ml-0.5 rounded-full p-0.5 hover:bg-black/10 dark:hover:bg-white/20"
+                      >
+                        <X size={12} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Kadaluarsa */}
             <div>
               <label className="mb-1.5 block text-sm font-medium">
                 Kadaluarsa (opsional)
@@ -367,6 +624,7 @@ const AnnouncementsAdmin = () => {
               />
             </div>
 
+            {/* Aktif */}
             <label className="flex items-center gap-2.5 text-sm">
               <input
                 type="checkbox"
@@ -380,20 +638,20 @@ const AnnouncementsAdmin = () => {
             </label>
           </div>
 
-          {/* Footer actions */}
+          {/* Footer */}
           <div className="border-t border-white/10 px-5 py-4">
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={closePanel}
-                className="flex-1 rounded-xl px-4 active:scale-[0.98] py-2.5 text-sm font-medium text-gray-600 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+                className="flex-1 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-black/5 active:scale-[0.98] dark:text-gray-300 dark:hover:bg-white/10"
               >
                 Batal
               </button>
               <button
                 type="submit"
-                disabled={saving}
-                className="inline-flex flex-1 active:scale-[0.98] items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90 disabled:opacity-60"
+                disabled={saving || uploading}
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
               >
                 {saving && <Loader2 size={16} className="animate-spin" />}
                 {editing ? "Simpan" : "Buat"}
