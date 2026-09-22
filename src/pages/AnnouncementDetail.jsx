@@ -114,7 +114,7 @@ const AnnouncementDetail = () => {
             <img
               src={announcement.thumbnail}
               alt={announcement.title}
-              className="h-full w-full object-cover hover:scale-[1.1] duration-300 ease-out grayscale-[35%] hover:grayscale-[0%]"
+              className="h-full w-full object-cover hover:scale-[1.1] duration-300 ease-out grayscale-[60%] hover:grayscale-[0%]"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
