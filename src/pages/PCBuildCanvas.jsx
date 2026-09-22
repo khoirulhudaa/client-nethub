@@ -317,7 +317,7 @@ export default function PCBuilder() {
           {step === "build" && (
             <div className="bg-white/5 rounded-xl border border-slate-800 p-3">
               {/* Mode toggle dipindah ke sini biar nempel sama kategori/form */}
-              <div className="flex bg-slate-800 border border-white/10 rounded-lg p-1 mb-3">
+              <div className="flex dark:!bg-[#0c0c18] border border-white/10 rounded-lg p-1 mb-3">
                 <button
                   onClick={() => setMode("visual")}
                   className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs transition ${
@@ -345,7 +345,7 @@ export default function PCBuilder() {
                         key={cat}
                         onClick={() => setSelectedCat(cat)}
                         className={`px-2.5 py-1 rounded-lg text-xs uppercase transition ${
-                          selectedCat === cat ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                          selectedCat === cat ? "bg-blue-600 text-white" : "dark:!bg-[#0c0c18] text-slate-300 hover:bg-slate-700"
                         }`}
                       >
                         {cat}
@@ -366,7 +366,7 @@ export default function PCBuilder() {
                     key={item.id}
                     draggable
                     onDragStart={e => onDragStart(e, item, selectedCat)}
-                    className="bg-slate-800/60 hover:bg-slate-800 border border-slate-700 rounded-lg p-3 cursor-grab active:cursor-grabbing transition"
+                    className="dark:!bg-[#0c0c18] hover:dark:!bg-[#0c0c18] border border-slate-700 rounded-lg p-3 cursor-grab active:cursor-grabbing transition"
                   >
                     <p className="font-medium text-sm leading-tight">{item.name}</p>
                     <p className="text-[11px] text-slate-400 mt-1">
@@ -395,7 +395,7 @@ export default function PCBuilder() {
                   <select
                     value={build[cat]?.id || ""}
                     onChange={e => selectForm(cat, e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
+                    className="w-full dark:!bg-[#0c0c18] border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
                   >
                     <option value="">— Pilih {cat} —</option>
                     {COMPONENTS[cat].map((item) => (
@@ -425,7 +425,7 @@ export default function PCBuilder() {
                       className={`flex items-center gap-3 p-2.5 rounded-lg border text-sm transition ${
                         installed
                           ? "bg-emerald-500/10 border-emerald-500/40 opacity-70"
-                          : "bg-slate-800/60 border-slate-700 cursor-grab active:cursor-grabbing hover:border-slate-500"
+                          : " border-slate-700 cursor-grab active:cursor-grabbing hover:border-slate-500"
                       }`}
                     >
                       <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: cable.color }} />
@@ -655,7 +655,7 @@ function Header({ id, label, installed, onDrop, className = "", vertical = false
       className={`rounded border text-center transition cursor-pointer ${
         installed
           ? "border-emerald-500 bg-emerald-500/30 text-emerald-200"
-          : "border-slate-600 bg-slate-800/80 text-white hover:border-slate-400"
+          : "border-slate-600 dark:!bg-[#0c0c18]/80 text-white hover:border-slate-400"
       } ${className}`}
     >
       <span className={vertical ? "text-[8px] font-medium" : ""} style={vertical ? { writingMode: "vertical-rl" } : {}}>
