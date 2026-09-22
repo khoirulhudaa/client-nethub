@@ -320,7 +320,7 @@ export default function QuizBuilder() {
       
 
       {/* Meta */}
-      <div className="grid grid-cols-1 gap-4 border border-gray-200 p-3 md:py-7 md:px-4 w-full sm:py-4 relative dark:border-white/5 bg-slate-200 dark:bg-white/[0.03] rounded-xl">
+      <div className="gap-4 border border-gray-200 p-3 md:py-7 md:px-4 w-full sm:py-4 relative dark:border-white/5 bg-slate-200 dark:bg-white/5 rounded-xl">
         
         {/* Thumbnail */}
         <div>
@@ -328,7 +328,7 @@ export default function QuizBuilder() {
             Thumbnail
           </label>
           {coverImage ? (
-            <div className="relative active:scale-[0.99] h-[280px] duration-100 overflow-hidden rounded-xl border border-black/[0.06] dark:!bg-[#0c0c18] dark:border-white/10">
+            <div className="w-full relative active:scale-[0.99] h-[280px] duration-100 overflow-hidden rounded-xl border border-black/[0.06] dark:!bg-[#0c0c18] dark:border-white/10">
               <img
                 src={coverImage}
                 alt="Cover"
@@ -375,7 +375,7 @@ export default function QuizBuilder() {
             />
           </div>
           {/* Hashtags */}
-          <div className="w-full">
+          <div className="w-full mb-2.5">
             <label className="mb-1.5 block text-sm font-medium text-black dark:text-white">
               Hashtag{" "}
             </label>
@@ -469,7 +469,7 @@ export default function QuizBuilder() {
         {/* Question List + Editor */}
         <div className="space-y-5">
         {/* ===== Daftar Soal (horizontal) ===== */}
-        <div className="rounded-xl border border-gray-200 w-full relative dark:border-white/5 bg-slate-200 dark:bg-white/[0.03] p-1 md:p-3">
+        <div className="rounded-xl border border-gray-200 w-full relative dark:border-white/5 bg-slate-200 dark:bg-white/5 p-1 md:p-3">
             <div className="mb-2 flex items-center justify-between px-2">
             <p className="text-sm md:text-xs font-semibold uppercase tracking-wide dark:text-gray-400">
                 Soal ({questions.length}/15)
@@ -522,7 +522,7 @@ export default function QuizBuilder() {
         </div>
 
         {/* ===== Editor Soal Aktif ===== */}
-        <div className="flex-1 space-y-5 rounded-xl border border-gray-200 dark:border-white/5 bg-slate-200 dark:bg-white/[0.03] p-3 md:p-5">
+        <div className="flex-1 space-y-5 rounded-xl border border-gray-200 dark:border-white/5 bg-slate-200 dark:bg-white/5 p-3 md:p-5">
             <div className="flex items-center justify-between">
             <h3 className="font-medium">Soal #{activeIndex + 1}</h3>
             <button
