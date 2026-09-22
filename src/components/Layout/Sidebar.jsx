@@ -17,7 +17,8 @@ import {
   Network,
   PencilRuler,
   Wrench,
-  BookOpen
+  BookOpen,
+  X
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
@@ -219,16 +220,21 @@ const Sidebar = ({ onNavigate }) => {
             )}
           </div>
 
-          {!collapsed && (
-            <button
-              type="button"
-              onClick={() => setCollapsed(true)}
-              className="relative left-2 rounded-lg p-1.5 text-gray-400 transition hover:bg-white/10 hover:text-white"
-              title="Collapse sidebar"
-            >
-              <ChevronLeft size={16} />
-            </button>
-          )}
+          <div className="w-max flex items-center gap-2">
+            {!collapsed && (
+              <button
+                type="button"
+                onClick={() => setCollapsed(true)}
+                className="relative border border-white/20 mr-2 rounded-md left-2 md:rounded-lg p-1.5 text-gray-400 transition hover:bg-white/10 hover:text-white"
+                title="Collapse sidebar"
+              >
+                <ChevronLeft className="text-slate-200" size={16} />
+              </button>
+            )}
+            <div className="border border-white/20 rounded-md left-2 md:rounded-lg p-1.5">
+              <X className="text-slate-200" size={16} />
+            </div>
+          </div>
         </div>
 
         {/* Tombol expand saat collapsed */}

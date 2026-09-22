@@ -15,7 +15,7 @@ const AppLayout = () => {
 
       {/* Mobile sidebar drawer */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden">
+        <div className="fixed inset-0 z-[99999] lg:hidden">
           <div className="absolute inset-0 bg-black/30" onClick={() => setMobileOpen(false)} />
           <div className="absolute inset-y-0 left-0 animate-fade-in">
             <Sidebar onNavigate={() => setMobileOpen(false)} />
