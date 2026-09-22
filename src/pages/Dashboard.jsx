@@ -98,7 +98,7 @@ const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
       {!isGuest && (
         <button
           onClick={onNewPost}
-          className="relative w-full active:scale-[0.99] duration-100 md:w-max flex md:inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90"
+          className="relative w-full active:scale-[0.99] duration-100 md:w-max flex md:inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 px-3 md:px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90"
         >
           <Plus size={16} /> New post
         </button>
@@ -109,7 +109,7 @@ const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
 
 // --- Metric cards ------------------------------------------------------------
 const MetricCard = ({ icon: Icon, iconClass, label, value, delta, deltaTone = "positive" }) => (
-  <div className=" bg-gradient-to-br from-blue-400 to-blue-100 flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-[#1E1E2A] p-4 shadow-sm">
+  <div className=" bg-gradient-to-br from-blue-400 to-blue-100 flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-[#1E1E2A] p-3 md:p-4 shadow-sm">
     <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${iconClass}`}>
       <Icon size={16} />
     </div>
@@ -187,7 +187,7 @@ const Card1 = () => {
       href="https://mikrotik.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-white hover:brightness-[80%] p-5 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-white hover:brightness-[80%] p-3 md:p-5 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
         <span className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white group-hover:underline">
@@ -221,7 +221,7 @@ const Card2 = () => {
       href="https://ui.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-white hover:brightness-[80%] p-5 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-white hover:brightness-[80%] p-3 md:p-5 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
         <span className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white group-hover:underline">
@@ -255,7 +255,7 @@ const Card3 = () => {
       href="https://www.tp-link.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-white hover:brightness-[80%] p-5 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-white hover:brightness-[80%] p-3 md:p-5 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
         <span className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white group-hover:underline">
@@ -491,9 +491,9 @@ const Dashboard = () => {
       <div className="border-t border-slate-300 dark:border-white/10 mb-6"></div>
 
       <div className="md:px-6 pb-6">
-        <div className="px-0 py-7 md:px-0 w-full md:py-4 relative rounded-xl bg-gradient-to-tr from-blue-300 to-blue-100 dark:bg-white/5 dark:bg-none">
+        <div className="px-0 pt-3 pb-3 md:px-0 w-full md:py-4 relative rounded-xl bg-gradient-to-tr from-blue-300 to-blue-100 dark:bg-white/5 dark:bg-none">
           {/* Header */}
-          <header className="mt-1 px-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <header className="mt-1 px-3 md:px-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-medium uppercase tracking-wide text-slate-900 dark:text-blue-500">
                 New Knowledge
@@ -508,7 +508,7 @@ const Dashboard = () => {
           </header>
 
           {/* Search + Categories */}
-          <div className="w-full px-4 py-2 md:p-4 flex items-center gap-2">
+          <div className="w-full px-3 py-2 md:p-4 flex items-center gap-2">
             <form
               className="flex w-full mb-0 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 shadow-sm sm:w-72"
               onSubmit={(e) => {
@@ -589,7 +589,7 @@ const Dashboard = () => {
 
           {/* Content */}
           {loading || (search.trim() && searchLoading) ? (
-            <div className="p-4">
+            <div className="p-3 md:p-4">
               <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
                 <img src="/cloud.png" alt="icon-cloud" className="w-20" />
                 <p className="mt-2">Load content ...</p>
@@ -601,13 +601,13 @@ const Dashboard = () => {
               {pinnedFirst ? (
                 <>
                   {showOverviewSections && data.pinned?.length > 0 && (
-                    <section className="mb-8 px-4 md:mt-0 mt-4">
+                    <section className="mb-8 px-3 md:px-4 md:mt-0 mt-4">
                       <PinnedHero pinned={data.pinned} />
                     </section>
                   )}
 
                   {/* Posts Grid */}
-                  <section className="mb-8 border-t px-4 border-white/10 pt-7">
+                  <section className="mb-8 border-t px-3 md:px-4 border-white/10 pt-7">
                     {filteredPosts.length === 0 ? (
                       <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
                         <img src="/notFound.png" alt="No guides" className="h-16 w-16 mb-1.5" />
@@ -716,7 +716,7 @@ const Dashboard = () => {
               {/* Brand cards */}
               {showOverviewSections && (
                 <>
-                  <div className="w-full border-t px-4 border-slate-400 dark:border-white/10 pt-7">
+                  <div className="w-full border-t px-3 md:px-4 border-slate-400 dark:border-white/10 pt-7">
                     <p className="text-xs font-medium uppercase tracking-wide text-slate-900 dark:text-blue-500">
                       Network brands
                     </p>
@@ -727,7 +727,7 @@ const Dashboard = () => {
                       </span>
                     </h2>
                   </div>
-                  <div className="mb-2 mt-4 px-4 grid grid-cols-1 gap-3 lg:grid-cols-3">
+                  <div className="md:mb-2 mt-4 px-3 md:px-4 grid grid-cols-1 gap-3 lg:grid-cols-3">
                     <Card2 />
                     <Card1 />
                     <Card3 />

@@ -531,7 +531,7 @@ const isOwner = user?.id === post?.author?._id;
   return (
     <div className="md:p-6 mx-auto max-w-full space-y-3 pb-16">
 
-      <div className="p-5 bg-white/5 rounded-xl">
+      <div className="p-4 md:p-5 bg-white/5 rounded-xl">
         <div className="flex items-center md:justify-between">
           <div className="w-max flex items-center gap-2.5">
             <div className="md:flex hidden">
@@ -566,7 +566,7 @@ const isOwner = user?.id === post?.author?._id;
         </div>
       </div>
 
-      <div className="p-5 bg-white/5 rounded-xl">
+      <div className="p-4 md:p-5 bg-white/5 rounded-xl">
   
 
           <h1 className="mb-3 max-w-full w-max truncate rounded-xl p-2 px-1 pr-2.5 text-xl sm:text-2xl font-semibold tracking-tight bg-slate-300 dark:!bg-[#0c0c18] border border-slate-200 dark:border-white/20">
