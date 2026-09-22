@@ -1,26 +1,24 @@
 import {
   Bell,
+  BookOpen,
   Box,
   Boxes,
   Brain,
   Calculator,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
+  Expand,
   FileText,
   Flame,
   HardDrive,
   HelpCircle,
   LayoutGrid,
-  LogOut,
   Loader2,
+  LogOut,
   Network,
   PencilRuler,
+  Shrink,
   Wrench,
-  BookOpen,
-  X,
-  Expand,
-  Shrink
+  X
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
@@ -212,7 +210,7 @@ const Sidebar = ({ onNavigate }) => {
           }`}
         >
           <div className="flex items-center gap-2 h-[10%]">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-accent">
+            <div className={`flex ${collapsed ? 'h-10 w-10' : 'h-9 w-9'} shrink-0 items-center justify-center rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-slate-900`}>
               <Network size={17} />
             </div>
             {!collapsed && (
@@ -252,10 +250,10 @@ const Sidebar = ({ onNavigate }) => {
             <button
               type="button"
               onClick={() => setCollapsed(false)}
-              className="h-10 active:scale-[0.99] mb-2 w-10 left-[1px] mt-2 relative border flex items-center justify-center border-white/20 rounded-lg md:rounded-xl bg-red-600 p-1.5 text-gray-400 transition hover:bg-white/10 hover:text-white"
+              className="h-10 active:scale-[0.99] mb-2 w-10 left-[1px] mt-2 relative border flex items-center justify-center border-white/20 rounded-lg md:rounded-xl bg-red-600 text-gray-400 transition hover:bg-white/10 hover:text-white"
               title="Collapse sidebar"
             >
-              <Expand className="text-slate-200 relative top-[1px]" size={18} />
+              <Expand className="text-slate-200 relative top-[1px]" size={16} />
             </button>
           </div>
         )}
