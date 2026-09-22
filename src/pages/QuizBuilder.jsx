@@ -328,7 +328,7 @@ export default function QuizBuilder() {
             Thumbnail
           </label>
           {coverImage ? (
-            <div className="relative active:scale-[0.99] h-[280px] duration-100 overflow-hidden rounded-xl border border-black/[0.06] dark:border-white/10">
+            <div className="relative active:scale-[0.99] h-[280px] duration-100 overflow-hidden rounded-xl border border-black/[0.06] dark:!bg-[#0c0c18] dark:border-white/10">
               <img
                 src={coverImage}
                 alt="Cover"
@@ -346,7 +346,7 @@ export default function QuizBuilder() {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="flex active:scale-[0.99] hover:brightness-75 duration-100 w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 bg-white/50 py-8 text-gray-500 transition hover:border-gray-400 dark:border-white/15 dark:bg-white/[0.03]"
+              className="flex active:scale-[0.99] hover:brightness-75 duration-100 w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 bg-white/50 py-8 text-gray-500 transition hover:border-gray-400 dark:border-white/15 dark:!bg-[#0c0c18]"
             >
               <ImagePlus size={22} />
               <span className="text-sm">Upload thumbnail</span>
@@ -371,7 +371,7 @@ export default function QuizBuilder() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Contoh: Topology Dasar Kantor"
-              className="input-field"
+              className="input-field dark:!bg-[#0c0c18]"
             />
           </div>
           {/* Hashtags */}
@@ -389,7 +389,7 @@ export default function QuizBuilder() {
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={handleTagKeyDown}
-                  className="input-field w-full pl-8"
+                  className="input-field w-full pl-8 dark:!bg-[#0c0c18]"
                   placeholder={`Ketik lalu Enter`}
                   disabled={tagList.length >= 4}
                 />
@@ -429,7 +429,7 @@ export default function QuizBuilder() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={2}
-            className="input-field resize-none"
+            className="input-field resize-none dark:!bg-[#0c0c18]"
             placeholder="Apa yang akan dipelajari di quiz ini?"
           />
         </div>
@@ -442,7 +442,7 @@ export default function QuizBuilder() {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="input-field !w-full"
+              className="input-field !w-full dark:!bg-[#0c0c18]"
             >
               {CATEGORIES.map((c) => (
                 <option key={c} value={c} className="dark:text-black">
@@ -460,7 +460,7 @@ export default function QuizBuilder() {
               value={tags}
               onChange={(e) => setTags(e.target.value)}
               placeholder="mikrotik, switch, utp"
-              className="input-field !w-full"
+              className="input-field !w-full dark:!bg-[#0c0c18]"
             />
           </div>
         </div>
@@ -573,7 +573,7 @@ export default function QuizBuilder() {
                 updateQuestion(activeIndex, { questionText: e.target.value })
                 }
                 rows={3}
-                className="input-field resize-none"
+                className="input-field resize-none dark:!bg-[#0c0c18]"
                 placeholder="Tuliskan pertanyaan di sini..."
             />
             </div>
@@ -593,7 +593,7 @@ export default function QuizBuilder() {
                     points: Number(e.target.value) || 10,
                 })
                 }
-                className="input-field"
+                className="input-field dark:!bg-[#0c0c18]"
             />
             </div>
 
@@ -644,7 +644,7 @@ export default function QuizBuilder() {
                         updateQuestion(activeIndex, { options: newOpts });
                     }}
                     placeholder={`Opsi ${oi + 1}`}
-                    className="input-field flex-1 text-sm"
+                    className="input-field flex-1 text-sm dark:!bg-[#0c0c18]"
                     />
                     <button
                     type="button"
@@ -708,7 +708,7 @@ export default function QuizBuilder() {
                 updateQuestion(activeIndex, { explanation: e.target.value })
                 }
                 rows={2}
-                className="input-field resize-none"
+                className="input-field resize-none dark:!bg-[#0c0c18]"
                 placeholder="Opsional – penjelasan jawaban benar"
             />
             </div>

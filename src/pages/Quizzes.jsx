@@ -123,15 +123,15 @@ export default function Quizzes() {
           <p className="text-sm text-gray-500">Jadilah yang pertama membuat materi.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 p-3 md:py-7 md:px-4 w-full sm:py-4 relative bg-white/5 rounded-xl">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 p-3 md:py-5 md:px-5 w-full sm:py-4 relative bg-white/5 rounded-xl">
           {quizzes.map((quiz) => (
             <Link
               key={quiz._id}
               to={`/quizzes/${quiz._id}`}
-              className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:border-accent/40 hover:shadow-md dark:border-white/10 dark:bg-white/5"
+              className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:border-accent/40 hover:shadow-md dark:border-white/10 hover:dark:bg-slate-900 dark:bg-[#0c0c18]"
             >
               {/* Thumbnail */}
-              <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-100 dark:bg-white/5">
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-100 dark:bg-[#0c0c18]">
                 {quiz.coverImage ? (
                   <img
                     src={quiz?.coverImage}
@@ -162,7 +162,7 @@ export default function Quizzes() {
                   </div>
                 </div>
 
-                <h3 className="line-clamp-2 text-base font-semibold leading-snug group-hover:text-accent">
+                <h3 className="line-clamp-2 text-base group-hover:underline font-semibold leading-snug group-hover:text-blue-300">
                   {quiz.title}
                 </h3>
                 <p className="mt-1.5 line-clamp-2 text-sm text-gray-500">

@@ -76,7 +76,7 @@ const PracticeHub = () => {
               key={item.id}
               type="button"
               onClick={() => navigate(item.path)}
-              className="group relative flex min-h-[200px] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm transition hover:border-accent/40 hover:shadow-md active:scale-[0.99] dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-accent/30 sm:p-4"
+              className="group relative flex min-h-[200px] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm transition hover:border-accent/40 hover:shadow-md active:scale-[0.99] dark:border-white/10 dark:bg-[#0c0c18] dark:hover:border-accent/30 sm:p-4"
             >
               <div
                 className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${item.accent} opacity-0 transition group-hover:opacity-100`}
@@ -126,7 +126,7 @@ const PracticeHub = () => {
             return (
               <div
                 key={tip.title}
-                className="rounded-xl border border-gray-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]"
+                className="rounded-xl border border-gray-200 bg-white p-4 dark:border-white/10 dark:bg-[#0c0c18]"
               >
                 <div className="mb-2.5 flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300">
                   <TipIcon size={16} />

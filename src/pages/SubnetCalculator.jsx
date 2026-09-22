@@ -115,7 +115,7 @@ const SubnetCalculator = () => {
               IP Address
             </label>
             <input
-              className="input-field w-full font-mono"
+              className="input-field w-full font-mono !bg-[#0c0c18]"
               value={ip}
               onChange={(e) => setIp(e.target.value)}
               placeholder="192.168.1.0"
@@ -134,7 +134,7 @@ const SubnetCalculator = () => {
                 <select
                   value={cidr}
                   onChange={(e) => setCidr(Number(e.target.value))}
-                  className="input-field w-full appearance-none pr-9 font-mono"
+                  className="input-field w-full appearance-none !bg-[#0c0c18] pr-9 font-mono"
                 >
                   {Array.from({ length: 33 }, (_, i) => (
                     <option key={i} value={i} className="text-black">
@@ -168,7 +168,7 @@ const SubnetCalculator = () => {
         {!result ? (
           <p className="text-sm text-red-500">Invalid IP address</p>
         ) : (
-          <div className="rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-2 dark:border-white/5 dark:bg-white/[0.02]">
+          <div className="rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-2 dark:border-white/5 dark:!bg-[#0c0c18]">
             <ResultRow label="Network Address" value={`${result.network}/${result.cidr}`} />
             <ResultRow label="Broadcast Address" value={result.broadcast} />
             <ResultRow label="Subnet Mask" value={result.netmask} />

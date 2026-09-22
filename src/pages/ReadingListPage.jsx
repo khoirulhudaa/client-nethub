@@ -67,7 +67,7 @@ const SortableItem = ({
       className={`group relative flex items-center gap-3 rounded-2xl border p-4 transition ${
         isCompleted
           ? "border-emerald-200 bg-emerald-50/50 dark:border-emerald-500/20 dark:bg-emerald-500/5"
-          : "border-gray-200 bg-white dark:border-white/10 dark:bg-white/5"
+          : "border-gray-200 bg-white dark:border-white/10 dark:bg-[#0c0c18]"
       } ${isDragging ? "z-50 shadow-lg" : ""}`}
     >
       {/* Drag Handle */}
@@ -339,7 +339,7 @@ const ReadingListPage = () => {
       </div>
 
       {/* Progress Card */}
-      <div className="mb-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
+      <div className="mb-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-[#0c0c18]">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent">
@@ -370,7 +370,7 @@ const ReadingListPage = () => {
       {/* Empty State */}
       {list.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 py-20 text-center dark:border-white/15">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-gray-100 dark:bg-[#0c0c18]">
             <BookOpen size={28} className="text-gray-400" />
             </div>
 

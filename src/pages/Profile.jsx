@@ -172,7 +172,7 @@ const OverviewTab = ({ profile, onSaved }) => {
           <div>
             <FieldLabel>Nama</FieldLabel>
             <input
-              className="input-field w-full"
+              className="input-field w-full dark:!bg-[#0c0c18]"
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               required
@@ -181,7 +181,7 @@ const OverviewTab = ({ profile, onSaved }) => {
           <div>
             <FieldLabel>Jabatan / Role</FieldLabel>
             <input
-              className="input-field w-full"
+              className="input-field w-full dark:!bg-[#0c0c18]"
               value={form.title}
               onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
               placeholder="mis. Network Engineer"
@@ -190,7 +190,7 @@ const OverviewTab = ({ profile, onSaved }) => {
           <div>
             <FieldLabel>Avatar URL</FieldLabel>
             <input
-              className="input-field w-full"
+              className="input-field w-full dark:!bg-[#0c0c18]"
               value={form.avatar}
               onChange={(e) => setForm((f) => ({ ...f, avatar: e.target.value }))}
               placeholder="https://..."
@@ -422,7 +422,7 @@ const AccountTab = ({ profile, onSaved }) => {
         </div>
         <FieldLabel>Username</FieldLabel>
         <input
-          className="input-field w-full"
+          className="input-field w-full dark:!bg-[#0c0c18]"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           minLength={3}
@@ -454,7 +454,7 @@ const AccountTab = ({ profile, onSaved }) => {
             <FieldLabel>Email baru</FieldLabel>
             <input
               type="email"
-              className="input-field w-full"
+              className="input-field w-full dark:!bg-[#0c0c18]"
               value={emailForm.email}
               onChange={(e) => setEmailForm((f) => ({ ...f, email: e.target.value }))}
               required
@@ -464,7 +464,7 @@ const AccountTab = ({ profile, onSaved }) => {
             <FieldLabel>Password saat ini</FieldLabel>
             <input
               type="password"
-              className="input-field w-full"
+              className="input-field w-full dark:!bg-[#0c0c18]"
               value={emailForm.currentPassword}
               onChange={(e) => setEmailForm((f) => ({ ...f, currentPassword: e.target.value }))}
               placeholder="Konfirmasi dengan password kamu"
@@ -496,7 +496,7 @@ const AccountTab = ({ profile, onSaved }) => {
             <FieldLabel>Password saat ini</FieldLabel>
             <input
               type="password"
-              className="input-field w-full"
+              className="input-field w-full dark:!bg-[#0c0c18]"
               value={pwForm.currentPassword}
               onChange={(e) => setPwForm((f) => ({ ...f, currentPassword: e.target.value }))}
               required
@@ -506,7 +506,7 @@ const AccountTab = ({ profile, onSaved }) => {
             <FieldLabel>Password baru</FieldLabel>
             <input
               type="password"
-              className="input-field w-full"
+              className="input-field w-full dark:!bg-[#0c0c18]"
               value={pwForm.newPassword}
               onChange={(e) => setPwForm((f) => ({ ...f, newPassword: e.target.value }))}
               minLength={6}
@@ -517,7 +517,7 @@ const AccountTab = ({ profile, onSaved }) => {
             <FieldLabel>Konfirmasi password baru</FieldLabel>
             <input
               type="password"
-              className="input-field w-full"
+              className="input-field w-full dark:!bg-[#0c0c18]"
               value={pwForm.confirmPassword}
               onChange={(e) => setPwForm((f) => ({ ...f, confirmPassword: e.target.value }))}
               minLength={6}
