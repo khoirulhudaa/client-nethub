@@ -1,22 +1,22 @@
-import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import {
+  AlertTriangle,
   Bell,
+  CheckCircle2,
+  Hash,
+  ImagePlus,
+  Info,
   Loader2,
-  Plus,
+  Megaphone,
   Pencil,
-  Trash2,
+  Plus,
+  Search,
   ToggleLeft,
   ToggleRight,
+  Trash2,
   X,
-  Info,
-  AlertTriangle,
-  CheckCircle2,
-  Megaphone,
-  ImagePlus,
-  Hash,
-  Search,
 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
@@ -80,6 +80,8 @@ const AnnouncementsAdmin = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null); // simpan item yang mau dihapus
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -258,22 +260,47 @@ const AnnouncementsAdmin = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm("Yakin ingin menghapus pengumuman ini?")) return;
+  const openDeleteConfirm = (item) => {
+    setDeleteTarget(item);
+  };
+
+  const closeDeleteConfirm = () => {
+    if (deleting) return;
+    setDeleteTarget(null);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
     try {
-      await api.delete(`/announcements/${id}`);
-      if (editing?._id === id) closePanel();
-      fetchAnnouncements();
+      await api.delete(`/announcements/${deleteTarget._id}`);
+      if (editing?._id === deleteTarget._id) closePanel();
+      setAnnouncements((prev) => prev.filter((item) => item._id !== deleteTarget._id));
+      setDeleteTarget(null);
     } catch {
       alert("Gagal menghapus");
+    } finally {
+      setDeleting(false);
     }
   };
 
   const handleToggle = async (id) => {
+    // Simpan state lama buat rollback kalau gagal
+    const prevAnnouncements = announcements;
+
+    // Optimistic update — langsung ubah tampilan
+    setAnnouncements((prev) =>
+      prev.map((item) =>
+        item._id === id ? { ...item, isActive: !item.isActive } : item
+      )
+    );
+
     try {
       await api.patch(`/announcements/${id}/toggle`);
-      fetchAnnouncements();
+      // Sukses — tidak perlu fetch ulang, state lokal sudah benar
     } catch {
+      // Gagal — rollback ke state sebelumnya
+      setAnnouncements(prevAnnouncements);
       alert("Gagal mengubah status");
     }
   };
@@ -424,7 +451,7 @@ const AnnouncementsAdmin = () => {
                         <Pencil size={15} />
                       </button>
                       <button
-                        onClick={() => handleDelete(item._id)}
+                        onClick={() => openDeleteConfirm(item)}
                         className="rounded-xl p-2 text-white transition-colors hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
                         title="Hapus"
                       >
@@ -473,12 +500,12 @@ const AnnouncementsAdmin = () => {
                     </span>
                     {item.expiresAt && (
                       <>
-                        <span className="text-gray-300 dark:text-gray-600">·</span>
+                        {/* <span className="text-gray-300 dark:text-gray-600">·</span> */}
+                        s/d{" "}
                         <span>
-                          s/d{" "}
                           {new Date(item.expiresAt).toLocaleDateString("id-ID", {
                             day: "numeric",
-                            month: "short",
+                            month: "long",
                           })}
                         </span>
                       </>
@@ -717,6 +744,59 @@ const AnnouncementsAdmin = () => {
           </div>
         </form>
       </aside>
+
+      {/* ===== DELETE CONFIRMATION MODAL ===== */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={closeDeleteConfirm}
+          />
+
+          {/* Modal box */}
+          <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-white bg-white shadow-2xl dark:border-white/10 dark:bg-gray-900">
+            <div className="p-6">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/20">
+                <Trash2 size={22} className="text-red-600 dark:text-red-400" />
+              </div>
+
+              <h3 className="text-center text-lg font-semibold">
+                Hapus pengumuman?
+              </h3>
+              <p className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
+                "{deleteTarget.title}" akan dihapus secara permanen dan tidak dapat dikembalikan.
+              </p>
+            </div>
+
+            <div className="flex gap-3 border-t border-white bg-gray-50 px-6 py-4 dark:border-white/5 dark:bg-white/5">
+              <button
+                type="button"
+                disabled={deleting}
+                onClick={closeDeleteConfirm}
+                className="flex-1 active:scale-[0.99] duration-100 rounded-xl border border-white bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-gray-200"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                disabled={deleting}
+                onClick={confirmDelete}
+                className="flex-1 active:scale-[0.99] duration-100 rounded-xl bg-red-600 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
+              >
+                {deleting ? (
+                  <span className="inline-flex items-center justify-center gap-2">
+                    <Loader2 size={15} className="animate-spin" />
+                    Menghapus...
+                  </span>
+                ) : (
+                  "Ya, Hapus"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
