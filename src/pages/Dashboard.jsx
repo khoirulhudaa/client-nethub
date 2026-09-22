@@ -182,116 +182,104 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
 
 // --- Topology lab ------------------------------------------------------------
 const Card1 = () => {
-  const [selected, setSelected] = useState("Core switch");
-  const nodes = [
-    { name: "Gateway", x: 50, y: 30, tone: "bg-orange-400" },
-    { name: "Core switch", x: 50, y: 58, tone: "bg-blue-500" },
-    { name: "Access point", x: 22, y: 83, tone: "bg-purple-500" },
-    { name: "NAS", x: 78, y: 83, tone: "bg-emerald-500" },
-  ];
-
   return (
-    <section className="surface-card rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+    <a
+      href="https://mikrotik.com/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-white hover:brightness-[80%] p-5 shadow-sm"
+    >
       <div className="mb-1 flex items-start justify-between">
-        <a target="_blank" href="https://mikrotik.com/" rel="noopener noreferrer">
-          <button className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white hover:underline">
-            Open web <ChevronRight size={14} />
-          </button>
-        </a>
+        <span className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white group-hover:underline">
+          Open web <ChevronRight size={14} />
+        </span>
       </div>
       <p className="mb-4 text-sm text-gray-500">
         Map your network, inspect a node
       </p>
 
       <div className="relative h-56 w-full rounded-lg bg-gray-50 flex items-center justify-center overflow-hidden">
-        <img src="/mikrotik.png" alt="logo-mikrotik" className='w-[56%] h-full object-contain' />
+        <img
+          src="/mikrotik.png"
+          alt="logo-mikrotik"
+          className="w-[56%] h-full object-contain group-hover:scale-[1.1] duration-300 ease-out"
+        />
       </div>
 
       <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
         <span className="flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Mikrotik
         </span>
-        <span>
-          Selected: <strong className="text-gray-700">{selected}</strong>
-        </span>
       </div>
-    </section>
+    </a>
   );
 };
 
 const Card2 = () => {
-  const [selected, setSelected] = useState("Core switch");
-  const nodes = [
-    { name: "Gateway", x: 50, y: 30, tone: "bg-orange-400" },
-    { name: "Core switch", x: 50, y: 58, tone: "bg-blue-500" },
-    { name: "Access point", x: 22, y: 83, tone: "bg-purple-500" },
-    { name: "NAS", x: 78, y: 83, tone: "bg-emerald-500" },
-  ];
-
   return (
-    <section className="surface-card rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+    <a
+      href="https://ui.com/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-white hover:brightness-[80%] p-5 shadow-sm"
+    >
       <div className="mb-1 flex items-start justify-between">
-        <a target="_blank" href="https://ui.com/" rel="noopener noreferrer">
-          <button className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white hover:underline">
-            Open web <ChevronRight size={14} />
-          </button>
-        </a>
+        <span className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white group-hover:underline">
+          Open web <ChevronRight size={14} />
+        </span>
       </div>
       <p className="mb-4 text-sm text-gray-500">
         Map your network, inspect a node
       </p>
 
       <div className="relative h-56 w-full rounded-lg bg-gray-50 flex items-center justify-center overflow-hidden">
-        <img src="/ubiquiti.png" alt="logo-ubiquiti" className='w-[40%] h-full object-contain' />
+        <img
+          src="/ubiquiti.png"
+          alt="logo-ubiquiti"
+          className="w-[40%] h-full object-contain group-hover:scale-[1.1] duration-300 ease-out"
+        />
       </div>
 
       <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
         <span className="flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Ubiquiti
         </span>
-        <span>
-          Selected: <strong className="text-gray-700">{selected}</strong>
-        </span>
       </div>
-    </section>
+    </a>
   );
 };
 
 const Card3 = () => {
-  const [selected, setSelected] = useState("Core switch");
-  const nodes = [
-    { name: "Gateway", x: 50, y: 30, tone: "bg-orange-400" },
-    { name: "Core switch", x: 50, y: 58, tone: "bg-blue-500" },
-    { name: "Access point", x: 22, y: 83, tone: "bg-purple-500" },
-    { name: "NAS", x: 78, y: 83, tone: "bg-emerald-500" },
-  ];
-
   return (
-    <section className="surface-card rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+    <a
+      href="https://www.tp-link.com/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-white hover:brightness-[80%] p-5 shadow-sm"
+    >
       <div className="mb-1 flex items-start justify-between">
-        <a target="_blank" href="https://www.tp-link.com/" rel="noopener noreferrer">
-          <button className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white hover:underline">
-            Open web <ChevronRight size={14} />
-          </button>
-        </a>
+        <span className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white group-hover:underline">
+          Open web <ChevronRight size={14} />
+        </span>
       </div>
       <p className="mb-4 text-sm text-gray-500">
         Map your network, inspect a node
       </p>
 
       <div className="relative h-56 w-full rounded-lg bg-gray-50 flex items-center justify-center overflow-hidden">
-        <img src="/tplink.png" alt="logo-tplink" className='w-[40%] h-full object-contain' />
+        <img
+          src="/tplink.png"
+          alt="logo-tplink"
+          className="w-[40%] h-full object-contain group-hover:scale-[1.1] duration-300 ease-out"
+        />
       </div>
 
       <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
         <span className="flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Tp-Link
         </span>
-        <span>
-          Selected: <strong className="text-gray-700">{selected}</strong>
-        </span>
       </div>
-    </section>
+    </a>
   );
 };
 
