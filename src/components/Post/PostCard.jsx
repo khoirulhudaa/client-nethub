@@ -21,7 +21,7 @@ const timeAgo = (date) => {
   return "just now";
 };
 
-const PostCard = ({ post, featured = false }) => {
+const PostCard = ({ post, featured = false, status=true }) => {
   const { user } = useAuth();
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
@@ -61,7 +61,7 @@ const PostCard = ({ post, featured = false }) => {
         featured ? "h-full" : ""
       }`}
     >
-      {post.isPinned && (
+      {post.isPinned && status && (
         <div className="absolute left-3 top-3 z-[9] flex items-center gap-1 rounded-lg bg-accent px-2.5 py-1 text-[11px] font-medium text-white shadow-sm">
           <Pin size={11} />
           Pinned

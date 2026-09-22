@@ -16,7 +16,7 @@ import api from "../api/axios.js";
 import PinnedHero from "../components/Post/PinnedHero.jsx";
 import PostCard from "../components/Post/PostCard.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
-
+import Fuse from "fuse.js";
 
 const GuestJumbotron = ({ onRegister }) => {
   return (
@@ -77,7 +77,7 @@ const GuestJumbotron = ({ onRegister }) => {
 };
 
 // --- Welcome / greeting row -------------------------------------------------
-const WelcomeRow = ({ userName = "there", onNewPost, isGuest = false }) => {
+const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
 
@@ -297,6 +297,8 @@ const Dashboard = () => {
   const [localSearch, setLocalSearch] = useState(search);
   const [signal, setSignal] = useState(null);
   const [pinnedFirst, setPinnedFirst] = useState(true); // true = Pinned di atas
+  const [allPostsForSearch, setAllPostsForSearch] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
 
   const [stats, setStats] = useState({
     totalGuides: 0,
@@ -304,6 +306,10 @@ const Dashboard = () => {
     totalCategories: 0,
   });
   const [statsLoading, setStatsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const LIMIT = 6;
 
   // Fetch stats sekali
   useEffect(() => {
@@ -321,15 +327,29 @@ const Dashboard = () => {
       .finally(() => setStatsLoading(false));
   }, []);
 
-  // Fetch posts — HANYA berdasarkan category (search dihandle lokal)
+  // ✅ useEffect KEDUA — ini yang benar, biarkan
   useEffect(() => {
-    setLoading(true);
+    const isLoadMore = page > 1;
+    if (isLoadMore) {
+      setLoadingMore(true);
+    } else {
+      setLoading(true);
+    }
+
     api
-      .get("/posts", { params: { category } }) // ← search dihapus dari API
-      .then(({ data }) => setData(data))
+      .get("/posts", { params: { category, page, limit: LIMIT } })
+      .then(({ data: res }) => {
+        setData((prev) => ({
+          ...res,
+          posts: isLoadMore ? [...prev.posts, ...res.posts] : res.posts,
+        }));
+      })
       .catch((err) => console.error("Error fetching posts:", err))
-      .finally(() => setLoading(false));
-  }, [category]);
+      .finally(() => {
+        setLoading(false);
+        setLoadingMore(false);
+      });
+  }, [category, page]);
 
   // Sync localSearch dari URL
   useEffect(() => {
@@ -362,27 +382,70 @@ const Dashboard = () => {
     return () => conn.removeEventListener("change", update);
   }, []);
 
+  // Reset page ke 1 setiap kali category berubah
+  useEffect(() => {
+    setPage(1);
+  }, [category]);
+
+  // Saat search aktif, fetch SEMUA post (bukan cuma yang sudah ke-load via pagination)
+  useEffect(() => {
+    if (!search.trim()) {
+      setAllPostsForSearch([]);
+      return;
+    }
+
+    setSearchLoading(true);
+    api
+      .get("/posts", { params: { category, limit: 1000 } }) // limit besar biar dapet semua
+      .then(({ data: res }) => {
+        setAllPostsForSearch(res.posts || []);
+      })
+      .catch((err) => console.error("Error fetching search data:", err))
+      .finally(() => setSearchLoading(false));
+  }, [search, category]);
+
   const isGuest = user?.isGuest || user?.role === "guest";
 
   // === CLIENT-SIDE FILTER BY TITLE (utama) ===
-  const filteredPosts = useMemo(() => {
-    if (!data.posts) return [];
-    if (!search.trim()) return data.posts;
+  // const filteredPosts = useMemo(() => {
+  //   if (!data.posts) return [];
+  //   if (!search.trim()) return data.posts;
 
-    const q = search.toLowerCase().trim();
-    return data.posts.filter((post) => {
-      const title = (post.title || "").toLowerCase();
-      const excerpt = (post.excerpt || post.description || post.content || "").toLowerCase();
-      return title.includes(q) || excerpt.includes(q);
+  //   const q = search.toLowerCase().trim();
+  //   return data.posts.filter((post) => {
+  //     const title = (post.title || "").toLowerCase();
+  //     const excerpt = (post.excerpt || post.description || post.content || "").toLowerCase();
+  //     return title.includes(q) || excerpt.includes(q);
+  //   });
+  // }, [data.posts, search]);
+
+  const fuse = useMemo(() => {
+    const source = search.trim() ? allPostsForSearch : data.posts;
+    if (!source || source.length === 0) return null;
+
+    return new Fuse(source, {
+      keys: [
+        { name: "title", weight: 0.7 },
+        { name: "excerpt", weight: 0.2 },
+        { name: "tags", weight: 0.1 },
+      ],
+      threshold: 0.35,
+      ignoreLocation: true,
+      minMatchCharLength: 2,
     });
-  }, [data.posts, search]);
+  }, [data.posts, allPostsForSearch, search]);
 
-  // Stats dari data yang sudah difilter (atau tetap pakai stats global)
-  const totalGuides = filteredPosts.length;
-  const totalReads = useMemo(() => {
-    return filteredPosts.reduce((sum, post) => sum + (post.views || 0), 0);
-  }, [filteredPosts]);
-  const totalCategories = data.categories?.length || 0;
+  const filteredPosts = useMemo(() => {
+    if (!search.trim()) return data.posts || [];
+    if (!fuse) return [];
+
+    return fuse.search(search.trim()).map((result) => result.item);
+  }, [fuse, search, data.posts]);
+
+  const hasMore = data.page < data.pages;
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
+  };
 
   const updateParam = (key, value) => {
     const next = new URLSearchParams(searchParams);
@@ -399,6 +462,8 @@ const Dashboard = () => {
     return "Continue learning";
   }, [search, category]);
 
+  console.log("pinned:", data.pinned?.length, "posts:", data.posts?.length, "total:", data.total);
+
   return (
     <div className="mx-auto max-w-full md:border-r border-white/10 pr-0 shadow-none">
       {/* Guest / Welcome tetap sama */}
@@ -409,9 +474,9 @@ const Dashboard = () => {
       ) : (
         <div className="w-full h-max">
           <WelcomeRow
-            userName={user?.name || "there"}
+            userName={user?.name || "reader"}
             onNewPost={() => navigate("/create")}
-            isGuest={false}
+            isGuest={isGuest}
           />
           <MetricGrid
             signal={signal}
@@ -440,33 +505,6 @@ const Dashboard = () => {
                 </span>
               </h2>
             </div>
-
-            {/* Tombol tukar posisi */}
-            {showOverviewSections && data.pinned?.length > 0 && (
-              <button
-                onClick={() => setPinnedFirst((prev) => !prev)}
-                className="w-max inline-flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/20"
-                title={pinnedFirst ? "Show posts first" : "Show pinned first"}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="17 1 21 5 17 9" />
-                  <path d="M3 11V9a4 4 0 0 1 4-4h14" />
-                  <polyline points="7 23 3 19 7 15" />
-                  <path d="M21 13v2a4 4 0 0 1-4 4H3" />
-                </svg>
-                {pinnedFirst ? "Posts first" : "Pinned first"}
-              </button>
-            )}
           </header>
 
           {/* Search + Categories */}
@@ -550,7 +588,7 @@ const Dashboard = () => {
           </div>
 
           {/* Content */}
-          {loading ? (
+          {loading || (search.trim() && searchLoading) ? (
             <div className="p-4">
               <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
                 <img src="/cloud.png" alt="icon-cloud" className="w-20" />
@@ -583,11 +621,26 @@ const Dashboard = () => {
                         </p>
                       </div>
                     ) : (
+                      <>
                       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
                         {filteredPosts.map((post) => (
-                          <PostCard key={post._id} post={post} />
+                          <PostCard key={post._id} post={post} status={false} />
                         ))}
                       </div>
+
+                      {/* Tombol Load More */}
+                      {!search && hasMore && (
+                        <div className="mt-6 flex justify-center">
+                          <button
+                            onClick={handleLoadMore}
+                            disabled={loadingMore}
+                            className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:opacity-50"
+                          >
+                            {loadingMore ? "Loading..." : "Load more guides"}
+                          </button>
+                        </div>
+                      )}
+                      </>
                     )}
                   </section>
                 </>
