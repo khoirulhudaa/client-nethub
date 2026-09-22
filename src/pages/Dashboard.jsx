@@ -146,7 +146,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
     <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4 md:px-6 z-[9999] relative">
       <MetricCard
         icon={Wifi}
-        iconClass="bg-blue-50 text-blue-600 dark:bg-white dark:text-black"
+        iconClass="bg-blue-50 text-blue-600 dark:bg-slate-900 dark:text-white"
         label="Signal condition"
         value={signal ? signal.effectiveType.toUpperCase() : "N/A"}
         delta={signal ? `${signal.downlink} Mbps · ${signal.rtt}ms RTT` : "Not supported by this browser"}
@@ -154,7 +154,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
       />
       <MetricCard
         icon={BookOpen}
-        iconClass="bg-purple-50 text-purple-600 dark:bg-white dark:text-black"
+        iconClass="bg-purple-50 text-purple-600 dark:bg-slate-900 dark:text-white"
         label="Total guides"
         value={totalGuides}
         delta="Across all categories"
@@ -162,7 +162,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
       />
       <MetricCard
         icon={Eye}
-        iconClass="bg-orange-50 text-orange-600 dark:bg-white dark:text-black"
+        iconClass="bg-orange-50 text-orange-600 dark:bg-slate-900 dark:text-white"
         label="Total reads"
         value={totalReads}
         delta="All-time views"
@@ -170,7 +170,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
       />
       <MetricCard
         icon={Tag}
-        iconClass="bg-emerald-50 text-emerald-600 dark:bg-white dark:text-black"
+        iconClass="bg-emerald-50 text-emerald-600 dark:bg-slate-900 dark:text-white"
         label="Categories"
         value={totalCategories}
         delta="Active categories"
