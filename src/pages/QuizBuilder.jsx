@@ -1,12 +1,15 @@
 import {
   ArrowLeft,
   CheckSquare,
+  Hash,
+  ImagePlus,
   Network,
   Plus,
   Save,
-  Trash2
+  Trash2,
+  X
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
@@ -33,7 +36,7 @@ const emptyQuestion = () => ({
 });
 
 export default function QuizBuilder() {
-  const { id } = useParams(); // kalau edit
+  const { id } = useParams(); 
   const navigate = useNavigate();
   const { user } = useAuth();
   const isEdit = Boolean(id);
@@ -41,7 +44,11 @@ export default function QuizBuilder() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Topology");
-  const [tags, setTags] = useState("");
+  const [coverImage, setCoverImage] = useState("");
+  const [tagList, setTagList] = useState([]);
+  const [tagInput, setTagInput] = useState("");
+  const fileInputRef = useRef(null);
+  const [tags, setTags] = useState([]);
   const [isPublished, setIsPublished] = useState(false);
   const [questions, setQuestions] = useState([emptyQuestion()]);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -58,7 +65,8 @@ export default function QuizBuilder() {
         setTitle(q.title);
         setDescription(q.description || "");
         setCategory(q.category);
-        setTags((q.tags || []).join(", "));
+        setCoverImage(q.coverImage || "");
+        setTagList(q.tags || []);
         setIsPublished(q.isPublished);
         setQuestions(q.questions.length ? q.questions : [emptyQuestion()]);
       })
@@ -105,6 +113,25 @@ export default function QuizBuilder() {
       options: current.options.filter((_, i) => i !== optIdx),
     });
   };
+
+  const handleCoverUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      alert("Hanya file gambar");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Maksimal 2MB");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setCoverImage(reader.result);
+    reader.readAsDataURL(file);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const removeCover = () => setCoverImage("");
 
   const handleSave = async (publish = false) => {
     if (!title.trim()) {
@@ -196,15 +223,13 @@ export default function QuizBuilder() {
     });
 
     const payload = {
-        title: title.trim(),
-        description: description.trim(),
-        category,
-        tags: tags
-        .split(",")
-        .map((t) => t.trim().toLowerCase())
-        .filter(Boolean),
-        questions: cleanedQuestions,
-        isPublished: publish || isPublished,
+      title: title.trim(),
+      description: description.trim(),
+      category,
+      tags: tagList,
+      coverImage: coverImage || "",
+      questions: cleanedQuestions,
+      isPublished: publish || isPublished,
     };
 
     try {
@@ -220,6 +245,32 @@ export default function QuizBuilder() {
     } finally {
         setSaving(false);
     }
+    };
+
+    const addTag = () => {
+      const raw = tagInput.trim().replace(/^#/, "").toLowerCase();
+      if (!raw) return;
+      if (tagList.length >= 4) {
+        alert("Maksimal 4 hashtag");
+        return;
+      }
+      if (tagList.includes(raw)) {
+        setTagInput("");
+        return;
+      }
+      setTagList((prev) => [...prev, raw]);
+      setTagInput("");
+    };
+
+    const removeTag = (tag) => {
+      setTagList((prev) => prev.filter((t) => t !== tag));
+    };
+
+    const handleTagKeyDown = (e) => {
+      if (e.key === "Enter" || e.key === ",") {
+        e.preventDefault();
+        addTag();
+      }
     };
 
   return (
@@ -270,20 +321,108 @@ export default function QuizBuilder() {
 
       {/* Meta */}
       <div className="grid grid-cols-1 gap-4 border border-gray-200 p-3 md:py-7 md:px-4 w-full sm:py-4 relative dark:border-white/5 bg-slate-200 dark:bg-white/[0.03] rounded-xl">
-        <div className="sm:col-span-2">
-          <label className="mb-1 block text-sm md:text-xs font-medium text-black dark:text-white">
-            Judul Quiz
+        
+        {/* Thumbnail */}
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-black dark:text-white">
+            Thumbnail
           </label>
+          {coverImage ? (
+            <div className="relative overflow-hidden rounded-xl border border-black/[0.06] dark:border-white/10">
+              <img
+                src={coverImage}
+                alt="Cover"
+                className="aspect-[16/9] w-full object-cover"
+              />
+              <button
+                type="button"
+                onClick={removeCover}
+                className="absolute right-2 top-2 rounded-full bg-black/60 p-1.5 text-white backdrop-blur-sm hover:bg-black/80"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 bg-white/50 py-8 text-gray-500 transition hover:border-gray-400 dark:border-white/15 dark:bg-white/[0.03]"
+            >
+              <ImagePlus size={22} />
+              <span className="text-sm">Upload thumbnail</span>
+              <span className="text-xs text-gray-400">Max 2MB · base64</span>
+            </button>
+          )}
           <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Contoh: Topology Dasar Kantor"
-            className="input-field"
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleCoverUpload}
           />
         </div>
 
+        <div className="col-span-2 w-full flex items-center gap-3">
+          <div className="w-full">
+            <label className="mb-1.5 block text-sm font-medium text-black dark:text-white">
+              Judul Quiz
+            </label>
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Contoh: Topology Dasar Kantor"
+              className="input-field"
+            />
+          </div>
+          {/* Hashtags */}
+          <div className="w-full">
+            <label className="mb-1.5 block text-sm font-medium text-black dark:text-white">
+              Hashtag{" "}
+            </label>
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Hash
+                  size={14}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+                <input
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={handleTagKeyDown}
+                  className="input-field w-full pl-8"
+                  placeholder={`Ketik lalu Enter`}
+                  disabled={tagList.length >= 4}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={addTag}
+                disabled={!tagInput.trim() || tagList.length >= 4}
+                className="rounded-xl bg-gray-100 px-3 text-sm font-medium text-gray-700 disabled:opacity-40 dark:bg-white/10 dark:text-gray-200"
+              >
+                Tambah
+              </button>
+            </div>
+            {tagList.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {tagList.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center gap-1 rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 dark:bg-white/10 dark:text-gray-200"
+                  >
+                    #{tag}
+                    <button type="button" onClick={() => removeTag(tag)}>
+                      <X size={12} />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-sm md:text-xs font-medium text-black dark:text-white">
+          <label className="mb-1.5 block text-sm font-medium text-black dark:text-white">
             Deskripsi singkat
           </label>
           <textarea
@@ -297,7 +436,7 @@ export default function QuizBuilder() {
 
         <div className="w-full flex gap-3.5"> 
           <div className="w-full">
-            <label className="mb-1 block text-sm md:text-xs font-medium text-black dark:text-white">
+            <label className="mb-1.5 block text-sm font-medium text-black dark:text-white">
               Kategori
             </label>
             <select
@@ -314,7 +453,7 @@ export default function QuizBuilder() {
           </div>
 
           <div className="w-full">
-            <label className="mb-1 block text-sm md:text-xs font-medium text-black dark:text-white">
+            <label className="mb-1.5 block text-sm font-medium text-black dark:text-white">
               Tags (pisahkan koma)
             </label>
             <input
@@ -425,7 +564,7 @@ export default function QuizBuilder() {
 
             {/* Teks pertanyaan */}
             <div>
-            <label className="mb-1 block text-sm md:text-xs font-medium text-black dark:text-white">
+            <label className="mb-1.5 block text-sm font-medium text-black dark:text-white">
                 Pertanyaan
             </label>
             <textarea
@@ -441,7 +580,7 @@ export default function QuizBuilder() {
 
             {/* Points */}
             <div className="w-32">
-            <label className="mb-1 block text-sm md:text-xs font-medium text-black dark:text-white">
+            <label className="mb-1.5 block text-sm font-medium text-black dark:text-white">
                 Poin
             </label>
             <input
@@ -560,7 +699,7 @@ export default function QuizBuilder() {
 
             {/* Explanation */}
             <div>
-            <label className="mb-1 block text-sm md:text-xs font-medium text-black dark:text-white">
+            <label className="mb-1.5 block text-sm font-medium text-black dark:text-white">
                 Penjelasan (ditampilkan setelah submit)
             </label>
             <textarea

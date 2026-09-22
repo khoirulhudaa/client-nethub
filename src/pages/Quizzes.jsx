@@ -49,7 +49,7 @@ export default function Quizzes() {
             Quiz Network
           </p>
           <h1 className="text-xl font-semibold tracking-tight">
-            Materi Quiz dari Komunitas
+            Exam Quiz from community
           </h1>
         </div>
 
@@ -58,7 +58,7 @@ export default function Quizzes() {
             onClick={() => navigate("/quizzes/create")}
             className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white shadow-sm hover:opacity-90"
           >
-            <Plus size={16} /> Buat Quiz
+            <Plus size={16} /> Create Quiz
           </button>
         )}
       </div>
@@ -119,7 +119,7 @@ export default function Quizzes() {
       ) : quizzes.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-2 py-20 text-center">
           <BookOpen size={40} className="text-gray-300" />
-          <p className="font-medium">Belum ada quiz</p>
+          <p className="font-medium">Quiz not found</p>
           <p className="text-sm text-gray-500">Jadilah yang pertama membuat materi.</p>
         </div>
       ) : (
@@ -128,8 +128,22 @@ export default function Quizzes() {
             <Link
               key={quiz._id}
               to={`/quizzes/${quiz._id}`}
-              className="surface-card bg-white dark:bg-white/5 group flex flex-col rounded-xl border border-gray-200 p-5 transition hover:border-accent/40 hover:shadow-md"
+              className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:border-accent/40 hover:shadow-md dark:border-white/10 dark:bg-white/5"
             >
+              {/* Thumbnail */}
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-100 dark:bg-white/5">
+                {quiz.coverImage ? (
+                  <img
+                    src={quiz?.coverImage}
+                    alt=""
+                    className="h-full w-full object-cover transition group-hover:scale-[1.03]"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center">
+                    <BookOpen size={28} className="text-gray-300 dark:text-gray-600" />
+                  </div>
+                )}
+              </div>
               <div className="mb-3 flex items-start justify-between gap-2">
                 <div className="rounded-full bg-accent/10 px-2.5 py-0.5 flex items-center text-xs font-medium text-accent">
                   <span className="relative top-[1.2px]">
@@ -165,7 +179,6 @@ export default function Quizzes() {
                 </span>
                 <span className="flex items-center gap-1">
                   <MessageCircle size={13} />
-                  {/* bisa diisi count comment nanti */}
                 </span>
               </div>
 
@@ -174,7 +187,7 @@ export default function Quizzes() {
                   {quiz.author?.avatar ? (
                     <img
                       src={quiz.author.avatar}
-                      alt=""
+                      alt="avatar-author"
                       className="h-full w-full object-cover"
                     />
                   ) : (

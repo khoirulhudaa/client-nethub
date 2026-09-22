@@ -128,7 +128,7 @@ const QuizCard = ({ quiz, type }) => {
       to={`/quizzes/${quiz._id || quiz.slug}`}
       className="group relative flex flex-col rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-accent/40 hover:shadow-md dark:border-white/10 dark:bg-white/5"
     >
-      <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-blue-950 text-accent">
+      <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-blue-950">
         <HelpCircle size={20} />
       </div>
 
