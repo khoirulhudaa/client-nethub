@@ -103,7 +103,7 @@ const TopBar = ({ onMenuClick }) => {
   };
 
   return (
-    <header className="w-full surface-card h-[8.6vh] sticky top-0 z-[99999] border-r border-white/10 flex items-center gap-3 py-0 rounded-none border-b px-1.5 md:px-3.5">
+    <header className="w-full surface-card h-[8.6vh] sticky top-0 z-[999] border-r border-white/10 flex items-center gap-3 py-0 rounded-none border-b px-1.5 md:px-3.5">
       <div
         className="pointer-events-none absolute top-[1.5px] inset-0 z-0 hidden dark:block"
         style={{
