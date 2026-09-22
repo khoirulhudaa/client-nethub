@@ -531,7 +531,7 @@ const AnnouncementsAdmin = () => {
       />
 
       <aside
-        className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-white/10 bg-white shadow-2xl transition-transform duration-300 ease-out dark:bg-[#12121a] ${
+        className={`fixed h-[92vh] bottom-0 right-0 z-50 flex w-full max-w-md flex-col border-l border-white/10 bg-white shadow-2xl transition-transform duration-300 ease-out dark:bg-[#12121a] ${
           showPanel ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -732,7 +732,7 @@ const AnnouncementsAdmin = () => {
               <button
                 type="button"
                 onClick={closePanel}
-                className="flex-1 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-black/5 active:scale-[0.98] dark:text-gray-300 dark:hover:bg-white/10"
+                className="flex-1 rounded-xl px-4 bg-white/5 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-black/5 active:scale-[0.98] dark:text-gray-300 dark:hover:bg-white/10"
               >
                 Batal
               </button>
