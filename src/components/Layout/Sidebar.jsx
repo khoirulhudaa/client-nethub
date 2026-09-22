@@ -212,8 +212,8 @@ const Sidebar = ({ onNavigate }) => {
           }`}
         >
           <div className="flex items-center gap-2 h-[10%]">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-accent">
-              <Network size={18} />
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-accent">
+              <Network size={17} />
             </div>
             {!collapsed && (
               <span className="ml-1 text-white text-[16px] font-semibold tracking-tight">
@@ -227,14 +227,14 @@ const Sidebar = ({ onNavigate }) => {
               <button
                 type="button"
                 onClick={() => setCollapsed(true)}
-                className="h-9 w-9 relative border flex items-center justify-center border-white/20 mr-2 rounded-md left-2 md:rounded-lg p-1.5 text-gray-400 transition hover:bg-white/10 hover:text-white"
+                className=" h-9 w-9 shrink-0 relative border flex items-center justify-center border-white/20 mr-2 rounded-md left-2 md:rounded-lg p-1.5 text-gray-400 transition hover:bg-white/10 hover:text-white"
                 title="Collapse sidebar"
               >
                 {
                   !collapsed ? (
-                    <Shrink className="text-slate-200" size={18} />
+                    <Shrink className="text-slate-200" size={16} />
                   ): (
-                    <Expand className="text-slate-200" size={18} />
+                    <Expand className="text-slate-200" size={16} />
                   )
 
                 }
@@ -454,7 +454,7 @@ const Sidebar = ({ onNavigate }) => {
                 : `flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors border-white hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]`
             }
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-sm font-semibold text-accent">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-md font-semibold text-accent">
               {user?.avatar ? (
                 <img
                   src={user.avatar}
