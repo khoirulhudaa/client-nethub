@@ -254,7 +254,7 @@ const AuthorBio = () => {
 };
 
 const StatPill = ({ icon: Icon, label, value }) => (
-  <div className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-white/5 dark:bg-white/[0.03]">
+  <div className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-white/5 dark:!bg-[#0c0c18]">
     <div className="mb-1 flex items-center gap-1.5 text-gray-400">
       <Icon size={13} />
       <span className="text-[11px] font-medium uppercase tracking-wide">
