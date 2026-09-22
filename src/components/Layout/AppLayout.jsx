@@ -27,7 +27,7 @@ const AppLayout = () => {
       <div className="relative z-[999] flex min-w-0 flex-1 flex-col">
         <img src="/sidebar.png" alt="wallpaper-sidebar" className="absolute top-0 left-0 w-screen h-screen rotate-[4deg] scale-[2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-5 left-0" />
         <TopBar onMenuClick={() => setMobileOpen(!mobileOpen)} />
-        <main className="flex-1 overflow-y-auto px-4 py-4 md:py-0 md:pl-4 lg:pl-0 md:pr-[1px] rounded-none dark:bg-[#141420] bg-slate-100">
+        <main className="flex-1 overflow-y-auto px-4 py-4 md:py-0 md:pl-4 lg:pl-0 md:pr-[1px] rounded-none">
           <Outlet />
         </main>
       </div>

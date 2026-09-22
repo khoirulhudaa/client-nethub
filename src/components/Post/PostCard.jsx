@@ -82,7 +82,7 @@ const PostCard = ({ post, featured = false, status=true }) => {
         )}
       </div>
 
-      <div className="flex flex-1 flex-col group-hover:bg-slate-900 gap-3 p-3.5 py-4">
+      <div className="flex flex-1 flex-col hover:bg-slate-300 group-hover:dark:bg-slate-900 gap-3 p-3.5 py-4">
         <div className="flex items-center justify-between gap-2">
           <CategoryPill category={post.category} />
           

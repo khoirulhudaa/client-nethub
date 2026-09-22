@@ -82,7 +82,7 @@ const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
   const greeting = hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
 
   return (
-    <div className="relative h-max border-b border-white/10 px-0 md:px-5 mb-6 md:h-[11vh] pt-4 pb-4 flex flex-col gap-4 md:flex-row md:items-center sm:justify-between">
+    <div className="relative h-max border-b border-slate-300 dark:border-white/10 px-0 md:px-5 mb-6 md:h-[11vh] pt-4 pb-4 flex flex-col gap-4 md:flex-row md:items-center sm:justify-between">
       <div className="relative">
         <h1 className="mt-[-5px] text-xl font-semibold tracking-tight">
           {greeting}, {userName}
@@ -143,7 +143,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
   }
 
   return (
-    <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4 md:px-5">
+    <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4 md:px-5 z-[9999999] relative">
       <MetricCard
         icon={Wifi}
         iconClass="bg-blue-50 text-blue-600 dark:bg-white dark:text-black"
@@ -488,19 +488,19 @@ const Dashboard = () => {
         </div>
       )}
 
-      <div className="border-t border-white/10 mb-6"></div>
+      <div className="border-t border-slate-300 dark:border-white/10 mb-6"></div>
 
       <div className="md:px-5 pb-6">
-        <div className="px-0 py-7 sm:px-0 w-full md:py-4 relative rounded-xl bg-gradient-to-tr from-blue-300 to-blue-500 dark:bg-white/5 dark:bg-none">
+        <div className="px-0 py-7 sm:px-0 w-full md:py-4 relative rounded-xl bg-gradient-to-tr from-blue-300 to-blue-100 dark:bg-white/5 dark:bg-none">
           {/* Header */}
           <header className="mt-1 px-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-white dark:text-blue-500">
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-900 dark:text-blue-500">
                 New Knowledge
               </p>
               <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mt-1">
-                <Brain size={17} className="text-white" />
-                <span className="relative top-[-1.2px] text-white">
+                <Brain size={17} className="text-slate-900 dark:text-white" />
+                <span className="relative top-[-1.2px] text-slate-900 dark:text-white">
                   {headingText}
                 </span>
               </h2>
@@ -716,13 +716,13 @@ const Dashboard = () => {
               {/* Brand cards */}
               {showOverviewSections && (
                 <>
-                  <div className="w-full border-t px-4 border-white/10 pt-7">
-                    <p className="text-xs font-medium uppercase tracking-wide text-white dark:text-blue-500">
+                  <div className="w-full border-t px-4 border-slate-400 dark:border-white/10 pt-7">
+                    <p className="text-xs font-medium uppercase tracking-wide text-slate-900 dark:text-blue-500">
                       Network brands
                     </p>
                     <h2 className="flex items-center text-lg mt-1 font-medium tracking-tight">
-                      <Box size={17} className="mr-2 text-white" />
-                      <span className="relative top-[-1.7px] text-white">
+                      <Box size={17} className="mr-2 text-slate-900 dark:text-white" />
+                      <span className="relative top-[-1.7px] text-slate-900 dark:text-white">
                         Reference brands
                       </span>
                     </h2>
