@@ -18,7 +18,9 @@ import {
   PencilRuler,
   Wrench,
   BookOpen,
-  X
+  X,
+  Expand,
+  Shrink
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
@@ -50,7 +52,7 @@ const NavGroup = ({ title, open, onToggle, collapsed, children }) => {
   }
 
   return (
-    <div className="pt-2 px-1">
+    <div className="pt-2 px-[4px]">
       <button
         type="button"
         onClick={onToggle}
@@ -191,8 +193,8 @@ const Sidebar = ({ onNavigate }) => {
 
   return (
     <aside
-      className={`relative flex h-screen shrink-0 z-[99999] flex-col overflow-y-hidden overflow-x-hidden border-l dark:border-white/5 dark:bg-[#0c0c18] transition-all duration-300 ${
-        collapsed ? "w-[72px] px-2" : "w-screen md:w-[18.5vw] px-3"
+      className={`relative flex h-screen shrink-0 z-[9999] flex-col overflow-x-hidden border-l dark:border-white/5 dark:bg-[#0c0c18] transition-all duration-300 ${
+        collapsed ? "w-[72px] px-2 overflow-y-auto" : "w-screen overflow-y-hidden md:w-[18.5vw] px-3"
       }`}
     >
 
@@ -215,7 +217,7 @@ const Sidebar = ({ onNavigate }) => {
             </div>
             {!collapsed && (
               <span className="ml-1 text-white text-[16px] font-semibold tracking-tight">
-                NetHub
+                TEXNet
               </span>
             )}
           </div>
@@ -225,28 +227,37 @@ const Sidebar = ({ onNavigate }) => {
               <button
                 type="button"
                 onClick={() => setCollapsed(true)}
-                className="relative border border-white/20 mr-2 rounded-md left-2 md:rounded-lg p-1.5 text-gray-400 transition hover:bg-white/10 hover:text-white"
+                className="h-9 w-9 relative border flex items-center justify-center border-white/20 mr-2 rounded-md left-2 md:rounded-lg p-1.5 text-gray-400 transition hover:bg-white/10 hover:text-white"
                 title="Collapse sidebar"
               >
-                <ChevronLeft className="text-slate-200" size={16} />
+                {
+                  !collapsed ? (
+                    <Shrink className="text-slate-200" size={18} />
+                  ): (
+                    <Expand className="text-slate-200" size={18} />
+                  )
+
+                }
               </button>
             )}
-            <div className="border border-white/20 rounded-md left-2 md:rounded-lg p-1.5">
-              <X className="text-slate-200" size={16} />
+            <div onClick={() => onNavigate()} className="h-9 w-9 border bg-red-600 text-white cursor-pointer active:scale-[0.99] duration-100 hover:bg-red-700 ease-out border-white/20 rounded-md left-2 flex md:hidden items-center justify-center md:rounded-lg p-1.5">
+              <X className="text-slate-200" size={20} />
             </div>
           </div>
         </div>
 
         {/* Tombol expand saat collapsed */}
         {collapsed && (
-          <button
-            type="button"
-            onClick={() => setCollapsed(false)}
-            className="mx-auto mt-3 flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-white/10 hover:text-white"
-            title="Expand sidebar"
-          >
-            <ChevronRight size={16} />
-          </button>
+          <div className="border-b border-white/10 my-1 pb-[1.2px]">
+            <button
+              type="button"
+              onClick={() => setCollapsed(false)}
+              className="h-10 active:scale-[0.99] mb-2 w-10 left-[1px] mt-2 relative border flex items-center justify-center border-white/20 rounded-lg md:rounded-xl bg-red-600 p-1.5 text-gray-400 transition hover:bg-white/10 hover:text-white"
+              title="Collapse sidebar"
+            >
+              <Expand className="text-slate-200 relative top-[1px]" size={18} />
+            </button>
+          </div>
         )}
 
         <nav
@@ -269,7 +280,7 @@ const Sidebar = ({ onNavigate }) => {
                     : currentCategory === category;
 
                 return (
-                  <div key={label} className={collapsed ? "" : "mb-1.5 px-2"}>
+                  <div key={label} className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
                     <NavLink
                       to={to}
                       onClick={onNavigate}
