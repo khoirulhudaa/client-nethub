@@ -119,7 +119,7 @@ const PostCard = ({ post, featured = false, status=true }) => {
           </div>
         </div>
 
-        <h3 className={`font-semibold leading-snug tracking-tight ${featured ? "text-xl" : "text-base"}`}>
+        <h3 className={`font-semibold truncate max-w-[90%] overflow-x-hidden leading-snug tracking-tight ${featured ? "text-xl" : "text-base"}`}>
           {post.title}
         </h3>
 

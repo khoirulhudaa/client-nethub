@@ -44,9 +44,9 @@ const TABS = [
 const TabButton = ({ active, icon: Icon, label, onClick, count }) => (
   <button
     onClick={onClick}
-    className={`flex items-center gap-2 rounded-control px-3.5 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
+    className={`flex border active:scale-[0.99] duration-100 items-center gap-2 rounded-control px-3.5 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
       active
-        ? "bg-gradient-to-br from-blue-400 to-blue-100 text-slate-900"
+        ? "bg-gradient-to-br from-blue-400 to-blue-100 border border-white/5 text-slate-900"
         : "text-gray-600 border border-white/10 hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
     }`}
   >
@@ -143,9 +143,9 @@ const OverviewTab = ({ profile, onSaved }) => {
         {!editing && (
           <button
             onClick={() => setEditing(true)}
-            className="flex items-center gap-1.5 rounded-control px-3 py-1.5 text-sm font-medium text-accent hover:bg-accent-soft"
+            className="flex items-center gap-1.5 bg-white/10 shadow-md cursor-pointer active:scale-[0.99] duration-100 hover:brightness-90 h-[36px] w-[36px] rounded-control p-1 justify-center text-sm font-medium text-white hover:bg-accent-soft"
           >
-            <Pencil size={14} /> Edit
+            <Pencil size={14} /> 
           </button>
         )}
       </div>
@@ -199,7 +199,7 @@ const OverviewTab = ({ profile, onSaved }) => {
           <div>
             <FieldLabel>Intro</FieldLabel>
             <textarea
-              className="input-field w-full resize-none"
+              className="input-field w-full resize-none dark:!bg-[#0c0c18]"
               rows={4}
               maxLength={500}
               value={form.bio}
@@ -283,19 +283,23 @@ const GuidesTab = () => {
         <div key={post._id} className="relative">
           <PostCard post={post} />
           <div className="absolute right-3 top-3 flex gap-1.5">
-            <button
-              onClick={() => handlePin(post)}
-              disabled={busyId === post._id}
-              title={post.isPinned ? "Unpin" : "Pin"}
-              className="rounded-xl bg-white/90 p-1.5 text-gray-600 shadow-sm backdrop-blur transition hover:text-accent disabled:opacity-50/90 dark:text-gray-300"
-            >
-              {post.isPinned ? <PinOff size={14} /> : <Pin size={14} />}
-            </button>
+            {
+              post.isPinned && (
+                <button
+                  onClick={() => handlePin(post)}
+                  disabled={busyId === post._id}
+                  title={post.isPinned ? "Unpin" : "Pin"}
+                  className="rounded-xl dark:bg-slate-800 bg-white/90 p-1.5 text-gray-600 shadow-sm backdrop-blur transition hover:text-accent disabled:opacity-50/90 dark:text-gray-300"
+                >
+                  {post.isPinned ? <PinOff size={14} /> : <Pin size={14} />}
+                </button>
+              )
+            }
             <button
               onClick={() => handleDelete(post)}
               disabled={busyId === post._id}
               title="Hapus"
-              className="rounded-xl bg-white/90 p-1.5 text-gray-600 shadow-sm backdrop-blur transition hover:text-red-500 disabled:opacity-50/90 dark:text-gray-300"
+              className="rounded-xl dark:bg-slate-800 bg-white/90 p-1.5 text-gray-600 shadow-sm backdrop-blur transition hover:text-red-500 disabled:opacity-50/90 dark:text-gray-300"
             >
               <Trash2 size={14} />
             </button>
@@ -568,7 +572,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="mx-auto max-w-7xl md:p-6">
+    <div className="mx-auto max-w-7xl md:p-6 relative z-[9999]">
       {/* Header */}
       <div className="surface-card dark:bg-white/5 mb-6 flex flex-col gap-4 rounded-xl border border-border-light bg-white p-3 md:p-4 sm:flex-row sm:items-center sm:justify-between dark:border-border-dark">
         <div className="flex items-center gap-4">
