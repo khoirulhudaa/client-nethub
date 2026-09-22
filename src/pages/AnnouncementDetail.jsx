@@ -139,7 +139,7 @@ const AnnouncementDetail = () => {
           </div>
 
           {/* Title */}
-          <h1 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+          <h1 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white md:text-xl">
             {announcement.title}
           </h1>
 
