@@ -338,98 +338,101 @@ const ReadingListPage = () => {
         <h1 className="text-xl font-medium tracking-tight">Reading List</h1>
       </div>
 
-      {/* Progress Card */}
-      <div className="mb-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-[#0c0c18]">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent">
-              <Target size={20} />
+      <div className="surface-card dark:!bg-white/5 md:p-5 p-2.5">
+        {/* Progress Card */}
+        <div className="mb-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-[#0c0c18]">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-accent">
+                <Target size={20} />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Learning Progress</p>
+                <p className="text-md font-bold">
+                  {stats.completed} / {stats.total}{" "}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500">Learning Progress</p>
-              <p className="text-md font-bold">
-                {stats.completed} / {stats.total}{" "}
-              </p>
-            </div>
-          </div>
 
-          <div className="w-max flex justify-end items-center gap-2 sm:w-64">
-            <div className="flex justify-between text-xs text-gray-500">
-              <span>{stats.progress}%</span>
-            </div>
-            <div className="h-2.5 w-[150px] overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
-              <div
-                className="h-full rounded-full bg-accent transition-all duration-500"
-                style={{ width: `${stats.progress}%` }}
-              />
+            <div className="w-max flex justify-end items-center gap-2 sm:w-64">
+              <div className="flex justify-between text-xs text-gray-500">
+                <span>{stats.progress}%</span>
+              </div>
+              <div className="h-2.5 w-[150px] overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
+                <div
+                  className="h-full rounded-full bg-accent transition-all duration-500"
+                  style={{ width: `${stats.progress}%` }}
+                />
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Empty State */}
+        {list.length === 0 ? (
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 py-20 text-center dark:border-white/15">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-gray-100 dark:bg-[#0c0c18]">
+              <BookOpen size={28} className="text-gray-400" />
+              </div>
+
+              {isGuest ? (
+                  <>
+                      <h3 className="text-lg font-semibold">Login to use Reading List</h3>
+                      <p className="mt-2 max-w-sm text-sm text-gray-500">
+                      Create your personal reading list, arrange the order, and track your progress.
+                      </p>
+                      <button
+                      onClick={() => navigate("/login")}
+                      className="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+                      >
+                      Login now
+                      </button>
+                  </>
+                  ) : (
+                  <>
+                      <h3 className="text-lg font-semibold">No guides in your Reading List yet</h3>
+                      <p className="mt-2 max-w-sm text-sm text-gray-500">
+                      Add guides from the Dashboard using the “Add” button.
+                      </p>
+                      <Link
+                      to="/"
+                      className="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+                      >
+                      Explore Guides
+                      <ArrowRight size={16} />
+                      </Link>
+                  </>
+                  )}
+          </div>
+          ) : (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={list.map((item) => item.post._id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="space-y-3">
+                {list.map((item, index) => (
+                  <SortableItem
+                    key={item.post._id}
+                    item={item}
+                    index={index}
+                    total={list.length}
+                    onToggleComplete={handleToggleComplete}
+                    onRemove={handleRemove}
+                    onMove={handleMove}
+                    actionLoading={actionLoading}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
+        )}
       </div>
 
-      {/* Empty State */}
-      {list.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 py-20 text-center dark:border-white/15">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-gray-100 dark:bg-[#0c0c18]">
-            <BookOpen size={28} className="text-gray-400" />
-            </div>
-
-            {isGuest ? (
-                <>
-                    <h3 className="text-lg font-semibold">Login to use Reading List</h3>
-                    <p className="mt-2 max-w-sm text-sm text-gray-500">
-                    Create your personal reading list, arrange the order, and track your progress.
-                    </p>
-                    <button
-                    onClick={() => navigate("/login")}
-                    className="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
-                    >
-                    Login now
-                    </button>
-                </>
-                ) : (
-                <>
-                    <h3 className="text-lg font-semibold">No guides in your Reading List yet</h3>
-                    <p className="mt-2 max-w-sm text-sm text-gray-500">
-                    Add guides from the Dashboard using the “Add” button.
-                    </p>
-                    <Link
-                    to="/"
-                    className="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
-                    >
-                    Explore Guides
-                    <ArrowRight size={16} />
-                    </Link>
-                </>
-                )}
-        </div>
-        ) : (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={list.map((item) => item.post._id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <div className="space-y-3">
-              {list.map((item, index) => (
-                <SortableItem
-                  key={item.post._id}
-                  item={item}
-                  index={index}
-                  total={list.length}
-                  onToggleComplete={handleToggleComplete}
-                  onRemove={handleRemove}
-                  onMove={handleMove}
-                  actionLoading={actionLoading}
-                />
-              ))}
-            </div>
-          </SortableContext>
-        </DndContext>
-      )}
     </div>
   );
 };
