@@ -27,7 +27,7 @@ const CodeBlockItem = ({ block }) => {
   };
 
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-gray-100 bg-white dark:border-white/5 dark:bg-white/[0.03]">
+    <div className="group relative overflow-hidden rounded-3xl border border-gray-100 bg-white dark:border-white/5 dark:!bg-[#0c0c18]">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-100 px-3 md:px-5 py-3 dark:border-white/5">
         <div className="flex items-center gap-3">
@@ -47,7 +47,7 @@ const CodeBlockItem = ({ block }) => {
           className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${
             copied
               ? "bg-blue-600 text-white"
-              : "bg-slate-200 text-gray-600 hover:bg-accent hover:text-white dark:bg-white/5 dark:text-gray-300"
+              : "bg-slate-200 text-gray-600 hover:bg-accent hover:text-white dark:!bg-[#0c0c18] dark:text-gray-300"
           }`}
         >
           {copied ? (
@@ -541,7 +541,7 @@ const isOwner = user?.id === post?.author?._id;
           )}
         </div>
         {isOwner && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 z-[999]">
             <button onClick={handlePin} className="btn-secondary px-3 py-1.5 text-xs">
               <Pin size={13} className={post.isPinned ? "fill-accent text-accent" : ""} />
               {post.isPinned ? "Pinned" : "Pin"}
@@ -561,7 +561,7 @@ const isOwner = user?.id === post?.author?._id;
         )}
       </div>
 
-      <h1 className="mb-3 max-w-full w-max truncate rounded-xl p-2 px-1 pr-2.5 text-xl sm:text-2xl font-semibold tracking-tight bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/20">
+      <h1 className="mb-3 max-w-full w-max truncate rounded-xl p-2 px-1 pr-2.5 text-xl sm:text-2xl font-semibold tracking-tight bg-slate-100 dark:!bg-[#0c0c18] border border-slate-200 dark:border-white/20">
         📝 {post.title} 
       </h1>
 
@@ -611,7 +611,7 @@ const isOwner = user?.id === post?.author?._id;
       {/* Description dengan support highlight */}
       <div className="relative" onMouseUp={handleMouseUp}>
         <article
-          className="rounded-2xl md:text-justify border border-gray-100 bg-slate-200 dark:bg-white/[0.03] px-3 md:px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none break-words [overflow-wrap:anywhere] dark:prose-invert prose-headings:font-semibold text-slate-500 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
+          className="rounded-2xl md:text-justify border border-gray-100 bg-slate-200 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none break-words [overflow-wrap:anywhere] dark:prose-invert prose-headings:font-semibold text-slate-500 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
           dangerouslySetInnerHTML={{
             __html: renderHighlightedContent(post.content),
           }}
@@ -657,7 +657,7 @@ const isOwner = user?.id === post?.author?._id;
       </div>
 
       {highlights.length > 0 && (
-        <div className="mt-4 rounded-2xl border border-gray-100 bg-slate-200 p-3 md:p-5 dark:border-white/5 dark:bg-white/[0.03]">
+        <div className="mt-4 rounded-2xl border border-gray-100 bg-slate-200 p-3 md:p-5 dark:border-white/5 dark:!bg-[#0c0c18]">
           <div className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
             <Highlighter size={15} />
             Stabilo kamu ({highlights.length})
@@ -708,7 +708,7 @@ const isOwner = user?.id === post?.author?._id;
             {post.referencesImages.map((img, idx) => (
               <div
                 key={idx}
-                className="group relative overflow-hidden rounded-3xl bg-slate-200 dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:-translate-y-1"
+                className="group relative overflow-hidden rounded-3xl bg-slate-200 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/5 transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:-translate-y-1"
               >
                 <div className="overflow-hidden">
                   <img
@@ -740,7 +740,7 @@ const isOwner = user?.id === post?.author?._id;
             <button
               type="button"
               onClick={() => setSidebarType("topology")}
-              className="group flex items-center active:scale-[0.99] duration-100 gap-4 rounded-2xl border border-gray-200 bg-slate-200 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-accent"
+              className="group flex items-center active:scale-[0.99] duration-100 gap-4 rounded-2xl border border-gray-200 bg-slate-200 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:!bg-[#0c0c18] dark:hover:border-accent"
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -760,7 +760,7 @@ const isOwner = user?.id === post?.author?._id;
               type="button"
               onClick={() => setSidebarType("flowchart")}
               disabled
-              className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-200 p-5 text-left transition dark:border-white/10 dark:bg-white/5"
+              className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-200 p-5 text-left transition dark:border-white/10 dark:!bg-[#0c0c18]"
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
@@ -782,7 +782,7 @@ const isOwner = user?.id === post?.author?._id;
             <button
               type="button"
               onClick={() => setSidebarType("flowchart")}
-              className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-slate-200 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-accent"
+              className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-slate-200 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/10 dark:!bg-[#0c0c18] dark:hover:border-accent"
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -802,7 +802,7 @@ const isOwner = user?.id === post?.author?._id;
               type="button"
               onClick={() => setSidebarType("flowchart")}
               disabled
-              className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-200 p-5 text-left transition dark:border-white/10 dark:bg-white/5"
+              className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-200 p-5 text-left transition dark:border-white/10 dark:!bg-[#0c0c18]"
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
@@ -863,7 +863,7 @@ const isOwner = user?.id === post?.author?._id;
                               onClick={() =>
                                 setSelectedStep({ ...step, index: realIndex })
                               }
-                              className="group relative flex flex-col overflow-hidden rounded-3xl bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 p-5 text-left transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:-translate-y-1"
+                              className="group relative flex flex-col overflow-hidden rounded-3xl bg-white dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/5 p-5 text-left transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:-translate-y-1"
                             >
                               {/* Header */}
                               <div className="mb-4 flex items-center justify-between">
@@ -872,7 +872,7 @@ const isOwner = user?.id === post?.author?._id;
                                 </span>
 
                                 {/* Arrow */}
-                                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-200 dark:bg-white/5 text-gray-400 transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
+                                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-200 dark:!bg-[#0c0c18] text-gray-400 transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-3.5 w-3.5"
@@ -1079,7 +1079,7 @@ const isOwner = user?.id === post?.author?._id;
           {post.tags?.map((t) => (
             <span
               key={t}
-              className="pill w-max bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-gray-400"
+              className="pill w-max bg-gray-100 text-gray-500 dark:!bg-[#0c0c18] dark:text-gray-400"
             >
               #{t}
             </span>
@@ -1089,7 +1089,7 @@ const isOwner = user?.id === post?.author?._id;
 
       <div className="mt-6">
         <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-400">Comments</h2>
-        <div className="surface-card shadow-none bg-slate-200 dark:bg-white/[0.03] p-3 md:p-5">
+        <div className="surface-card shadow-none bg-slate-200 dark:!bg-[#0c0c18] p-3 md:p-5">
           <div className="mb-4 flex gap-2">
             <input
               value={commentText}
@@ -1228,7 +1228,7 @@ const isOwner = user?.id === post?.author?._id;
               </p>
             </div>
 
-            <div className="flex gap-3 border-t border-gray-100 bg-slate-200 px-6 py-4 dark:border-white/5 dark:bg-white/5">
+            <div className="flex gap-3 border-t border-gray-100 bg-slate-200 px-6 py-4 dark:border-white/5 dark:!bg-[#0c0c18]">
               <button
                 type="button"
                 disabled={deleting}

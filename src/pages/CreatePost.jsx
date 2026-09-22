@@ -255,9 +255,9 @@ const CreatePost = () => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6 z-[99999] relative">
         {/* ===== Basic Info ===== */}
-        <div className="surface-card rounded-lg md:rounded-xl dark:bg-white/5 space-y-4 p-3 md:p-6">
+        <div className="surface-card rounded-lg md:rounded-xl dark:!bg-white/5 space-y-4 p-3 md:p-6">
           <div>
             <label className="mb-1.5 block text-sm font-medium">Title item</label>
             <input
@@ -327,7 +327,7 @@ const CreatePost = () => {
             <label className="mb-1.5 block text-sm font-medium">Cover image</label>
 
             {form.coverImage ? (
-              <div className="relative group dark:bg-white/5 inline-block">
+              <div className="relative group dark:!bg-[#0c0c18] inline-block">
                 <img
                   src={form.coverImage}
                   alt="Cover"
@@ -343,7 +343,7 @@ const CreatePost = () => {
               </div>
             ) : (
               <label
-                className="flex h-40 w-full max-w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed surface-card border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent dark:bg-white/5"
+                className="flex h-40 w-full max-w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed surface-card border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent dark:!bg-[#0c0c18]"
                 onDragOver={(e) => {
                   e.preventDefault();
                   e.currentTarget.classList.add("border-accent", "text-accent");
@@ -427,7 +427,7 @@ const CreatePost = () => {
               return (
                 <label
                   key={idx}
-                  className="flex h-24 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent"
+                  className="flex z-[999] h-24 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed dark:!bg-[#0c0c18] border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent"
                   onDragOver={(e) => {
                     e.preventDefault();
                     e.currentTarget.classList.add("border-accent", "text-accent");
@@ -495,7 +495,7 @@ const CreatePost = () => {
         </div>
 
         {/* ===== Content ===== */}
-        <div className="surface-card dark:bg-white/5 p-3 md:p-6">
+        <div className="surface-card dark:!bg-white/5 p-3 md:p-6">
           <label className="mb-2 block text-sm font-medium">Content</label>
           <RichTextEditor
             value={form.content}
@@ -781,7 +781,7 @@ const CreatePost = () => {
                     </div>
                   ) : (
                     <label
-                      className="surface-card dark:bg-white/5 flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent"
+                      className="surface-card dark:!bg-[#0c0c18] flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent"
                       onDragOver={(e) => {
                         e.preventDefault();
                         e.currentTarget.classList.add("border-accent", "text-accent");
@@ -876,7 +876,7 @@ const CreatePost = () => {
         </div>
 
         {/* ===== Code / Command Blocks ===== */}
-        <div className="surface-card dark:bg-white/5 p-3 md:p-6">
+        <div className="surface-card dark:!bg-white/5 p-3 md:p-6">
           <div className="mb-3 md:flex items-center justify-between">
             <div>
               <label className="block text-sm font-medium">Code / Command Blocks</label>
@@ -943,7 +943,7 @@ const CreatePost = () => {
                       onClick={() =>
                         setCodeBlocks((prev) => prev.filter((_, i) => i !== idx))
                       }
-                      className="text-xs text-red-500 hover:underline"
+                      className="text-xs text-white hover:underline"
                     >
                       Hapus
                     </button>

@@ -164,8 +164,8 @@ export const HARDWARE_TYPES = [
 
 // ====================== Cable Types (SUPER LENGKAP) ======================
 export const CABLE_TYPES = [
-  { id: "utp", label: "LAN", color: "#22c55e", style: "solid" },
   { id: "fiber", label: "Fiber Optic", color: "#f59e0b", style: "dashed" },
+  { id: "utp", label: "LAN", color: "#22c55e", style: "solid" },
   { id: "coaxial", label: "Coaxial (RG6)", color: "#ef4444", style: "solid" },
   { id: "rg59", label: "RG59", color: "#dc2626", style: "solid" },
   { id: "serial", label: "Console", color: "#8b5cf6", style: "dotted" },
@@ -544,7 +544,7 @@ export default function TopologyCanvas({
                   key={hw.type}
                   type="button"
                   onClick={() => addHardware(hw)}
-                  className="inline-flex w-full items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium transition hover:border-accent hover:text-accent dark:border-white/10 dark:bg-white/5"
+                  className="inline-flex w-full items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium transition hover:border-accent hover:text-accent dark:border-white/10 dark:!bg-[#0c0c18]"
                 >
                   <hw.icon size={14} />
                   {hw.type}
@@ -581,7 +581,7 @@ export default function TopologyCanvas({
                   className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition ${
                     selectedCable.id === cable.id
                       ? "border-accent bg-accent/10 text-accent"
-                      : "border-gray-200 bg-white hover:border-gray-300 dark:border-white/10 dark:bg-white/5"
+                      : "border-gray-200 bg-white hover:border-gray-300 dark:border-white/10 dark:!bg-[#0c0c18]"
                   }`}
                 >
                   <span

@@ -47,7 +47,7 @@
   }
 
   .input-field {
-    @apply w-full rounded-control border border-slate-300 dark:border-border-dark bg-white/70 dark:bg-white/5 px-3.5 py-2.5 text-sm placeholder:text-gray-400 transition-all duration-200 ease-fluid focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent;
+    @apply w-full rounded-control border border-slate-300 dark:border-border-dark bg-white/70 dark:!bg-[#0c0c18] px-3.5 py-2.5 text-sm placeholder:text-gray-400 transition-all duration-200 ease-fluid focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent;
   }
 
   .hover-lift {
