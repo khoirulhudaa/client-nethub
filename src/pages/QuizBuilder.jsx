@@ -328,11 +328,11 @@ export default function QuizBuilder() {
             Thumbnail
           </label>
           {coverImage ? (
-            <div className="relative overflow-hidden rounded-xl border border-black/[0.06] dark:border-white/10">
+            <div className="relative active:scale-[0.99] h-[280px] duration-100 overflow-hidden rounded-xl border border-black/[0.06] dark:border-white/10">
               <img
                 src={coverImage}
                 alt="Cover"
-                className="aspect-[16/9] w-full object-cover"
+                className="aspect-[16/9] w-full hover:scale-[1.1] duration-300 ease-out object-cover"
               />
               <button
                 type="button"
@@ -346,7 +346,7 @@ export default function QuizBuilder() {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 bg-white/50 py-8 text-gray-500 transition hover:border-gray-400 dark:border-white/15 dark:bg-white/[0.03]"
+              className="flex active:scale-[0.99] hover:brightness-75 duration-100 w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 bg-white/50 py-8 text-gray-500 transition hover:border-gray-400 dark:border-white/15 dark:bg-white/[0.03]"
             >
               <ImagePlus size={22} />
               <span className="text-sm">Upload thumbnail</span>
@@ -362,7 +362,7 @@ export default function QuizBuilder() {
           />
         </div>
 
-        <div className="col-span-2 w-full flex items-center gap-3">
+        <div className="col-span-2 w-full flex flex-col items-center gap-3">
           <div className="w-full">
             <label className="mb-1.5 block text-sm font-medium text-black dark:text-white">
               Judul Quiz

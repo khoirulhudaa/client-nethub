@@ -144,60 +144,62 @@ export default function Quizzes() {
                   </div>
                 )}
               </div>
-              <div className="mb-3 flex items-start justify-between gap-2">
-                <div className="rounded-full bg-accent/10 px-2.5 py-0.5 flex items-center text-xs font-medium text-accent">
-                  <span className="relative top-[1.2px]">
-                    {quiz.category}
+              <div className="p-3">
+                <div className="mb-3 flex items-start justify-between gap-2">
+                  <div className="rounded-lg bg-accent/30 px-2.5 py-0.5 flex items-center text-xs font-medium text-blue-100">
+                    <span className="relative">
+                      {quiz.category}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 text-amber-500">
+                    <Star size={14} fill="currentColor" />
+                    <span className="text-xs font-medium">
+                      {quiz.averageRating?.toFixed(1) || "0.0"}
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      ({quiz.ratingCount || 0})
+                    </span>
+                  </div>
+                </div>
+
+                <h3 className="line-clamp-2 text-base font-semibold leading-snug group-hover:text-accent">
+                  {quiz.title}
+                </h3>
+                <p className="mt-1.5 line-clamp-2 text-sm text-gray-500">
+                  {quiz.description || "Tidak ada deskripsi"}
+                </p>
+
+                <div className="mt-4 flex items-center gap-3 text-xs text-gray-400">
+                  <span className="flex items-center gap-1">
+                    <BookOpen size={13} />
+                    {quiz.questions?.length || 0} soal
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Heart size={13} />
+                    {quiz.likes?.length || 0}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <MessageCircle size={13} />
                   </span>
                 </div>
-                <div className="flex items-center gap-1 text-amber-500">
-                  <Star size={14} fill="currentColor" />
-                  <span className="text-xs font-medium">
-                    {quiz.averageRating?.toFixed(1) || "0.0"}
-                  </span>
-                  <span className="text-xs text-gray-400">
-                    ({quiz.ratingCount || 0})
-                  </span>
-                </div>
-              </div>
 
-              <h3 className="line-clamp-2 text-base font-semibold leading-snug group-hover:text-accent">
-                {quiz.title}
-              </h3>
-              <p className="mt-1.5 line-clamp-2 text-sm text-gray-500">
-                {quiz.description || "Tidak ada deskripsi"}
-              </p>
-
-              <div className="mt-4 flex items-center gap-3 text-xs text-gray-400">
-                <span className="flex items-center gap-1">
-                  <BookOpen size={13} />
-                  {quiz.questions?.length || 0} soal
-                </span>
-                <span className="flex items-center gap-1">
-                  <Heart size={13} />
-                  {quiz.likes?.length || 0}
-                </span>
-                <span className="flex items-center gap-1">
-                  <MessageCircle size={13} />
-                </span>
-              </div>
-
-              <div className="mt-4 flex items-center gap-2 border-t border-gray-100 pt-3 dark:border-white/5">
-                <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-accent/10 text-xs font-semibold text-accent">
-                  {quiz.author?.avatar ? (
-                    <img
-                      src={quiz.author.avatar}
-                      alt="avatar-author"
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    quiz.author?.name?.[0]?.toUpperCase()
-                  )}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-xs font-medium">
-                    {quiz.author?.name}
-                  </p>
+                <div className="mt-4 flex items-center gap-2 border-t border-gray-100 pt-3 dark:border-white/5">
+                  <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-accent/10 text-xs font-semibold text-accent">
+                    {quiz.author?.avatar ? (
+                      <img
+                        src={quiz.author.avatar}
+                        alt="avatar-author"
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      quiz.author?.name?.[0]?.toUpperCase()
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-xs font-medium">
+                      {quiz.author?.name}
+                    </p>
+                  </div>
                 </div>
               </div>
             </Link>
