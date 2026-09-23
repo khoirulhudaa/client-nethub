@@ -128,7 +128,7 @@ const QuizCard = ({ quiz, type }) => {
       to={`/quizzes/${quiz._id || quiz.slug}`}
       className="group relative flex flex-col rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-accent/40 hover:shadow-md dark:border-white/10 dark:bg-white/5"
     >
-      <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-white dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-blue-950">
+      <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-slate-950 dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-white dark:text-blue-950">
         <HelpCircle size={20} />
       </div>
 
@@ -221,7 +221,7 @@ const Trending = () => {
   }, [posts]);
 
   return (
-    <div className="mx-auto max-w-7xl px-0 py-0 md:py-6 md:px-6">
+    <div className="mx-auto max-w-full md:border-x border-white dark:border-white/10 px-0 py-0 md:py-6 md:px-6">
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -230,7 +230,7 @@ const Trending = () => {
               Discover
             </span>
           </div>
-          <h1 className="text-xl font-semibold tracking-tight">Trending</h1>
+          <h1 className="text-xl font-semibold text-white tracking-tight">Trending</h1>
         </div>
 
         <div className="flex gap-2">
@@ -270,7 +270,7 @@ const Trending = () => {
             <ViewsChart posts={posts} />
           </div>
 
-          <div className="mb-4 flex items-center gap-2 text-sm text-gray-500">
+          <div className="mb-4 flex items-center gap-2 text-sm text-white dark:text-gray-500">
             <TrendingUp size={16} className="text-accent" />
             <span>Top 3 Guides · Ranked by views & likes</span>
           </div>
@@ -299,7 +299,7 @@ const Trending = () => {
               Quizzes
             </span>
           </div>
-          <h2 className="text-lg font-semibold tracking-tight">
+          <h2 className="text-lg font-semibold text-white tracking-tight">
             Trending Quizzes
           </h2>
         </div>
@@ -317,7 +317,7 @@ const Trending = () => {
             <div>
               <div className="mb-3 flex items-center gap-2">
                 <Heart size={16} className="text-rose-500" />
-                <h3 className="text-sm font-semibold">Most Loved</h3>
+                <h3 className="text-sm text-white font-semibold">Most Loved</h3>
               </div>
               {lovedQuiz ? (
                 <QuizCard quiz={lovedQuiz} type="loved" />
@@ -330,7 +330,7 @@ const Trending = () => {
             <div>
               <div className="mb-3 flex items-center gap-2">
                 <Star size={16} className="text-amber-500" />
-                <h3 className="text-sm font-semibold">Highest Rated</h3>
+                <h3 className="text-sm text-white font-semibold">Highest Rated</h3>
               </div>
               {ratedQuiz ? (
                 <QuizCard quiz={ratedQuiz} type="rated" />

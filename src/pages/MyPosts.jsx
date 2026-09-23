@@ -16,13 +16,13 @@ const MyPosts = () => {
   }, []);
 
   return (
-    <div className="mx-auto max-w-7xl px-0 py-0 md:p-6">
+    <div className="mx-auto max-w-full min-h-screen md:border-x border-white dark:border-white/10 px-0 py-0 md:p-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
          <div className="flex text-left items-center gap-2 text-accent">
             <span className="text-xs font-semibold uppercase tracking-wide">Creation</span>
           </div>
-          <h1 className="text-xl text-left font-semibold tracking-tight">My Guides</h1>
+          <h1 className="text-xl text-left font-semibold text-white tracking-tight">My Guides</h1>
         </div>
         <Link to="/create" className="btn-primary">
           <PlusCircle size={16} />

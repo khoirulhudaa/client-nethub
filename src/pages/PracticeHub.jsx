@@ -56,7 +56,7 @@ const PracticeHub = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="mx-auto max-w-7xl px-0 py-0 md:p-6">
+    <div className="mx-auto max-w-full min-h-screen md:border-x border-white dark:border-white/10 px-0 py-0 md:p-6">
       {/* Header */}
       <div className="mb-4 md:mb-6">
         <div className="flex items-center gap-2 text-accent">
@@ -64,7 +64,7 @@ const PracticeHub = () => {
             Practice Lab
           </span>
         </div>
-        <h1 className="text-xl font-semibold tracking-tight">Pilih latihan</h1>
+        <h1 className="text-xl font-semibold text-white tracking-tight">Pilih latihan</h1>
       </div>
 
       {/* Practice cards */}

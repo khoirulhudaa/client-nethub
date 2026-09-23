@@ -274,18 +274,18 @@ export default function QuizBuilder() {
     };
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 pb-16 px-0 py-0 md:py-6 md:px-6">
+    <div className="mx-auto max-w-full md:border-x border-white dark:border-white/10 space-y-6 pb-16 px-0 py-0 md:py-6 md:px-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/quizzes")}
-            className="rounded-lg py-2 text-black dark:text-white"
+            className="rounded-lg py-2 text-white"
           >
             <ArrowLeft size={18} />
           </button>
           <div>
-            <h1 className="text-md w-max md:text-xl font-semibold">
+            <h1 className="text-md w-max text-white md:text-xl font-semibold">
               {isEdit ? "Edit Quiz" : "Quiz Baru"}
             </h1>
           </div>

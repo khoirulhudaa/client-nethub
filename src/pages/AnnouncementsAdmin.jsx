@@ -308,7 +308,7 @@ const AnnouncementsAdmin = () => {
   if (user?.role !== "superAdmin") return null;
 
   return (
-    <div className="relative mx-auto max-w-full md:py-6 md:px-6">
+    <div className="relative mx-auto max-w-full md:border-x border-white dark:border-white/10 min-h-screen md:py-6 md:px-6">
 
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -318,7 +318,7 @@ const AnnouncementsAdmin = () => {
               SuperAdmin
             </span>
           </div>
-          <h1 className="text-xl font-semibold tracking-tight">Pengumuman</h1>
+          <h1 className="text-xl font-semibold text-white tracking-tight">Pengumuman</h1>
         </div>
 
         <div className="flex items-center gap-3">

@@ -98,12 +98,12 @@ const SubnetCalculator = () => {
   const result = useMemo(() => calcSubnet(ip.trim(), Number(cidr)), [ip, cidr]);
 
   return (
-    <div className="mx-auto max-w-7xl px-0 py-0 md:py-6 md:px-6">
+    <div className="mx-auto max-w-full md:border-x border-white dark:border-white/10 px-0 py-0 md:py-6 md:px-6">
       <div className="mb-6">
         <div className="flex items-center gap-2 text-accent">
           <span className="text-xs font-semibold uppercase tracking-wide">Tools</span>
         </div>
-        <h1 className="text-xl font-semibold tracking-tight">Subnet Calculator</h1>
+        <h1 className="text-xl font-semibold text-white tracking-tight">Subnet Calculator</h1>
       </div>
 
       <div className="surface-card rounded-2xl border border-gray-200 bg-white p-3 md:p-5 dark:border-white/10 dark:bg-white/[0.03]">

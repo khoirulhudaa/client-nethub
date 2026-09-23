@@ -529,7 +529,7 @@ const isOwner = user?.id === post?.author?._id;
   }
 
   return (
-    <div className="md:p-6 mx-auto max-w-full space-y-3 pb-16">
+    <div className="md:p-6 mx-auto max-w-full md:border-x border-white dark:border-white/10 space-y-3 pb-16">
 
       <div className="p-4 md:p-5 bg-slate-100 dark:bg-white/5 rounded-xl">
         <div className="flex items-center md:justify-between">

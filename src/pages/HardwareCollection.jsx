@@ -596,7 +596,7 @@ const HardwareCollections = () => {
   };
 
   return (
-    <div className="relative mx-auto max-w-7xl px-0 py-0 md:p-6">
+    <div className="relative mx-auto max-w-full md:border-x border-white dark:border-white/10 min-h-screen px-0 py-0 md:p-6">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="flex items-center gap-2 text-accent">
@@ -604,7 +604,7 @@ const HardwareCollections = () => {
               Collection
             </span>
           </div>
-          <h1 className="text-xl font-semibold tracking-tight">
+          <h1 className="text-xl font-semibold text-white tracking-tight">
             Hardware Collection
           </h1>
         </div>

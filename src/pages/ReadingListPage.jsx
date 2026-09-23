@@ -319,23 +319,31 @@ const ReadingListPage = () => {
 
   if (loading) {
     return (
-      <div className="md:p-4">
-        <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
-          <img src="/cloud.png" alt="icon-cloud" className="w-20" />
-          <p className="mt-2">Load content ...</p>
+      <>
+      <div className="md:p-6 md:border-x border-white dark:border-white/10 w-full min-h-screen">
+        <div className="mb-6">
+          <div className="flex items-center gap-2 text-accent">
+            <span className="text-xs font-semibold uppercase tracking-wider">Library</span>
+          </div>
+          <h1 className="text-xl font-medium text-white tracking-tight">Reading List</h1>
         </div>
-      </div>
+          <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
+            <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+            <p className="mt-2">Load content ...</p>
+          </div>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="mx-auto max-w-7xl md:p-6">
+    <div className="mx-auto max-w-full min-h-screen md:border-x border-white dark:border-white/10 md:p-6">
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-2 text-accent">
           <span className="text-xs font-semibold uppercase tracking-wider">Library</span>
         </div>
-        <h1 className="text-xl font-medium tracking-tight">Reading List</h1>
+        <h1 className="text-xl font-medium text-white tracking-tight">Reading List</h1>
       </div>
 
       <div className="surface-card dark:!bg-white/5 md:p-5 p-2.5">
