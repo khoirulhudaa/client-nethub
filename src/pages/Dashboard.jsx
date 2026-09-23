@@ -1,3 +1,4 @@
+import Fuse from "fuse.js";
 import {
   BookOpen,
   Box,
@@ -16,7 +17,6 @@ import api from "../api/axios.js";
 import PinnedHero from "../components/Post/PinnedHero.jsx";
 import PostCard from "../components/Post/PostCard.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
-import Fuse from "fuse.js";
 
 const GuestJumbotron = ({ onRegister }) => {
   return (
@@ -34,7 +34,7 @@ const GuestJumbotron = ({ onRegister }) => {
       <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-accent/30 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-16 -right-16 h-56 w-56 rounded-full bg-blue-500/20 blur-3xl" />
 
-      <div className="relative z-2 flex flex-col items-start gap-6 px-7 py-8 sm:px-7 sm:py-8 lg:flex-row lg:items-center lg:justify-between">
+      <div className="relative z-2 flex flex-col items-start gap-6 p-3 md:p-4 lg:flex-row lg:items-center lg:justify-between">
         {/* Text content */}
         <div className="max-w-xl">
 
@@ -468,7 +468,7 @@ const Dashboard = () => {
     <div className="mx-auto max-w-full md:border-x border-white dark:border-white/10 pr-0 shadow-none">
       {/* Guest / Welcome tetap sama */}
       {user?.isGuest || user?.role === "guest" ? (
-        <div className="w-full px-4 pt-6">
+        <div className="w-full md:px-6 pt-6">
           <GuestJumbotron onRegister={() => navigate("/register")} />
         </div>
       ) : (
