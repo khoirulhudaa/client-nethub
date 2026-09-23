@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Network, Loader2 } from "lucide-react";
+import { Network, Loader2, EyeOff, Eye } from "lucide-react";
 import { useAuth } from "../context/AuthContext.jsx";
 
 const Register = () => {
@@ -9,6 +9,7 @@ const Register = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPass, setShowPass] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,15 +67,23 @@ const Register = () => {
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-950">Password</label>
-            <input
-              type="password"
-              required
-              minLength={6}
-              className="input-field-auth text-slate-900 !bg-blue-100 outline outline-blue-200"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              placeholder="At least 6 characters"
-            />
+            <div className="relative">
+              <input
+                type={`${showPass ? 'text' : 'password'}`}
+                required
+                minLength={6}
+                className="input-field-auth text-slate-900 !bg-blue-100 outline outline-blue-200"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                placeholder="At least 6 characters"
+              />
+              {
+                showPass ? (
+                  <EyeOff onClick={() => setShowPass(!showPass)} size={16} className="absolute top-[27%] right-4 z-[3] text-slate-900 cursor-pointer active:scale-[0.99] duration-100 hover:brightness-[90%]" /> 
+                ):
+                  <Eye onClick={() => setShowPass(!showPass)} size={16} className="absolute top-[27%] right-4 z-[3] text-slate-900 cursor-pointer active:scale-[0.99] duration-100 hover:brightness-[90%]" /> 
+              }
+            </div>
           </div>
           <div className="w-full grid grid-cols-1 items-center gap-3.5">
             <button type="submit" disabled={loading} className="btn-primary w-full">

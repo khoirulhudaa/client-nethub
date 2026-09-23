@@ -1,4 +1,4 @@
-import { Loader2, Network } from "lucide-react";
+import { Eye, EyeOff, Loader2, Network } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -10,6 +10,7 @@ const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPass, setShowPass] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,14 +58,22 @@ const Login = () => {
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-950">Password</label>
-            <input
-              type="password"
-              required
-              className="input-field-auth text-slate-900 !bg-blue-100 outline outline-blue-200"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              placeholder="••••••••"
-            />
+            <div className="relative">
+              <input
+                type={`${showPass ? 'text' : 'password'}`}
+                required
+                className="input-field-auth text-slate-900 !bg-blue-100 outline outline-blue-200"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                placeholder="••••••••"
+              />
+              {
+                showPass ? (
+                  <EyeOff onClick={() => setShowPass(!showPass)} size={16} className="absolute top-[27%] right-4 z-[3] text-slate-900 cursor-pointer active:scale-[0.99] duration-100 hover:brightness-[90%]" /> 
+                ):
+                  <Eye onClick={() => setShowPass(!showPass)} size={16} className="absolute top-[27%] right-4 z-[3] text-slate-900 cursor-pointer active:scale-[0.99] duration-100 hover:brightness-[90%]" /> 
+              }
+            </div>
           </div>
           <div className="w-full flex items-center gap-3.5">
             <button type="submit" disabled={loading} className="btn-primary w-full">
