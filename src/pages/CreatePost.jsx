@@ -248,11 +248,11 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="mx-auto max-w-7xl h-max pb-16 md:p-6">
-      <h1 className="text-xl md:mb-0 mb-4 font-semibold tracking-tight">
+    <div className="mx-auto max-w-full md:border-x border-white dark:border-white/10 min-h-screen h-max pb-16 md:p-6">
+      <h1 className="text-xl md:mb-0 mb-4 text-white font-semibold tracking-tight">
         {isEditing ? "Edit Guide" : "Publish a New Guide"}
       </h1>
-      <p className="mb-4 text-sm md:flex hidden text-gray-500">
+      <p className="mb-4 text-sm md:flex hidden text-gray-400 dark:text-gray-500">
         Share a maintenance walkthrough, a fix, an install checklist, or a topology
       </p>
 
