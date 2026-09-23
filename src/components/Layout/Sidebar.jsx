@@ -208,7 +208,7 @@ const Sidebar = ({ onNavigate }) => {
           }`}
         >
           <div className="flex items-center pl-3 dark:pl-1 gap-2 h-full w-full surface-card shadow-none dark:shadow-none border-none dark:border-none dark:bg-transparent rounded-none">
-            <div className={`flex ${collapsed ? 'h-10 w-10 rounded-xl' : 'h-9 w-9 rounded-lg'} shrink-0 items-center justify-center bg-slate-900 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900`}>
+            <div className={`flex ${collapsed ? 'h-10 w-10 rounded-xl' : 'h-10 w-10 rounded-lg'} shrink-0 items-center justify-center bg-slate-900 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900`}>
               <Network size={17} />
             </div>
             {!collapsed && (
@@ -439,7 +439,7 @@ const Sidebar = ({ onNavigate }) => {
         </nav>
 
         {/* Profile */}
-        <div className={`h-[9%] mt-auto border-t surface-card dark:bg-transparent rounded-none shadow-none dark:border-white/10 ${collapsed ? "py-3" : ""}`}>
+        <div className={`h-[9%] mt-auto border-t pt-[1px] surface-card dark:bg-transparent rounded-none shadow-none dark:border-white/10 ${collapsed ? "py-3" : ""}`}>
           <NavLink
             to={isGuest ? "#" : "/profile"}
             onClick={onNavigate}
@@ -450,7 +450,7 @@ const Sidebar = ({ onNavigate }) => {
                 : `flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors border-white hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]`
             }
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-950 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-md font-semibold text-white dark:text-accent">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-950 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-md font-semibold text-white dark:text-accent">
               {user?.avatar ? (
                 <img
                   src={user.avatar}
