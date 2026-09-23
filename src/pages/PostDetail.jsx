@@ -685,7 +685,7 @@ const isOwner = user?.id === post?.author?._id;
                 isSpeaking
                   ? "border-red-300 bg-red-50 text-red-600 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-400"
                   : "border-gray-200 bg-white text-gray-600 hover:border-accent hover:text-accent dark:border-white/10 dark:bg-blue-900/20 dark:text-gray-300"
-              } active:scale-[0.99] duration-100 cursor-pointer hover:brightness-95 inline-flex border border-white/20 items-center gap-1.5 rounded-lg !bg-red-500 px-2 py-1 text-xs font-medium text-white dark:bg-slate-300/10 dark:text-slate-300`}>
+              } active:scale-[0.99] duration-100 cursor-pointer hover:brightness-95 inline-flex border border-white/20 items-center gap-1.5 rounded-lg !bg-red-500 px-2 py-1 text-xs font-medium text-white dark:!bg-red-500/25 dark:text-slate-300`}>
                 {isSpeaking ? (
                   <>
                     <VolumeX size={14} />
