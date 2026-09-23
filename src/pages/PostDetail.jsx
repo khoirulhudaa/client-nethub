@@ -1,4 +1,4 @@
-import { Bookmark, Calendar, CheckCircle2, Circle, Clipboard, Eye, Heart, Highlighter, Link2, Linkedin, Loader2, Pencil, Pin, Plus, Share2, Timer, Trash2 } from "lucide-react";
+import { Bookmark, Calendar, CheckCircle2, Circle, Clipboard, Eye, Heart, Highlighter, Link2, Linkedin, Loader2, Pencil, Pin, Plus, Share2, Timer, Trash2, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -109,6 +109,7 @@ const PostDetail = () => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
   const [highlightLoading, setHighlightLoading] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   const [showShare, setShowShare] = useState(false);
   // ===== STATE BARU =====
@@ -195,6 +196,55 @@ const handleFollow = async () => {
     setFollowLoading(false);
   }
 };
+
+// ===== Text-to-Speech: baca deskripsi =====
+const getPlainText = (html) => {
+  if (!html) return "";
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return (tmp.textContent || tmp.innerText || "").trim();
+};
+
+const handleSpeakDescription = () => {
+  if (!window.speechSynthesis) {
+    toast.error("Browser tidak mendukung fitur suara");
+    return;
+  }
+
+  // Stop kalau sedang berbicara
+  if (isSpeaking) {
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+    return;
+  }
+
+  const text = getPlainText(post?.content);
+    if (!text) {
+      toast.error("Tidak ada teks untuk dibaca");
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "id-ID"; // bahasa Indonesia
+    utterance.rate = 0.95;
+    utterance.pitch = 1;
+
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => {
+      setIsSpeaking(false);
+      toast.error("Gagal memutar suara");
+    };
+
+    setIsSpeaking(true);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  // Cleanup saat unmount / ganti slug
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis?.cancel();
+    };
+  }, [slug]);
 
 // Cek apakah guide ini ada di Reading List user
 const checkReadingListStatus = async () => {
@@ -580,7 +630,7 @@ const isOwner = user?.id === post?.author?._id;
             </div>
           </div>
           
-          <div className="w-full h-72 bg-slate-300 dark:bg-slate-500 !border !border-white p-0 overflow-hidden rounded-2xl">
+          <div className="w-full h-72 bg-slate-300 dark:bg-slate-500 p-0 overflow-hidden rounded-2xl">
             {post?.coverImage && (
               <img src={post?.coverImage} alt="cover-image" className="mb-6 h-full w-full transition-transform duration-700 hover:scale-105 object-cover" />
             )}
@@ -624,6 +674,29 @@ const isOwner = user?.id === post?.author?._id;
               <div className="inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-orange-500 px-2 py-1 text-xs font-medium text-white dark:bg-slate-300/10 dark:text-slate-300">
                 <Timer size={13} />
                 {timeAgo(post?.createdAt)}
+              </div>
+              <span className="relative top-[1px]">
+                /
+              </span>
+              <div 
+              onClick={handleSpeakDescription}
+              title={isSpeaking ? "Stop reading" : "Read description aloud"}
+              className={`${
+                isSpeaking
+                  ? "border-red-300 bg-red-50 text-red-600 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-400"
+                  : "border-gray-200 bg-white text-gray-600 hover:border-accent hover:text-accent dark:border-white/10 dark:bg-blue-900/20 dark:text-gray-300"
+              } active:scale-[0.99] duration-100 cursor-pointer hover:brightness-95 inline-flex border border-white/20 items-center gap-1.5 rounded-lg !bg-red-500 px-2 py-1 text-xs font-medium text-white dark:bg-slate-300/10 dark:text-slate-300`}>
+                {isSpeaking ? (
+                  <>
+                    <VolumeX size={14} />
+                    Stop
+                  </>
+                ) : (
+                  <>
+                    <Volume2 size={14} />
+                    Listen
+                  </>
+                )}
               </div>
             </div>
           </div>
