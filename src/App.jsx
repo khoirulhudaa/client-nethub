@@ -23,6 +23,7 @@ import PracticeHub from "./pages/PracticeHub.jsx";
 import HardwareCollection from "./pages/HardwareCollection.jsx";
 import AnnouncementDetail from "./pages/AnnouncementDetail.jsx";
 import ReadingListPage from "./pages/ReadingListPage.jsx";
+import TagPosts from "./pages/TagPosts.jsx";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
         <Route path="authors/:id" element={<AuthorProfile />} />
         <Route path="my-posts" element={<MyPosts />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="tags/:tag" element={<TagPosts />} />
         <Route path="/quizzes/:id" element={<TakeQuiz />} />
         <Route path="/practice" element={<PracticeHub />} />
         <Route path="/hardware" element={<HardwareCollection />} /> 

@@ -187,10 +187,10 @@ const Card1 = () => {
       href="https://mikrotik.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-950 dark:bg-white hover:brightness-[80%] p-3 md:p-5 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-950 dark:bg-slate-950 hover:brightness-[80%] p-3 md:p-5 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
-        <span className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white group-hover:underline">
+        <span className="flex items-center gap-1 text-sm font-medium text-white group-hover:underline">
           Open web <ChevronRight size={14} />
         </span>
       </div>
@@ -221,7 +221,7 @@ const Card2 = () => {
       href="https://ui.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-950 dark:bg-white hover:brightness-[80%] p-3 md:p-5 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-950 dark:bg-slate-950 hover:brightness-[80%] p-3 md:p-5 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
         <span className="flex items-center gap-1 text-sm font-medium text-white dark:text-white group-hover:underline">
@@ -255,10 +255,10 @@ const Card3 = () => {
       href="https://www.tp-link.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-950 dark:bg-white hover:brightness-[80%] p-3 md:p-5 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-950 dark:bg-slate-950 hover:brightness-[80%] p-3 md:p-5 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
-        <span className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white group-hover:underline">
+        <span className="flex items-center gap-1 text-sm font-medium text-white group-hover:underline">
           Open web <ChevronRight size={14} />
         </span>
       </div>
@@ -635,7 +635,7 @@ const Dashboard = () => {
                           <button
                             onClick={handleLoadMore}
                             disabled={loadingMore}
-                            className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:brightness-[80%] active:scale-[0.99] duration-100 disabled:opacity-50"
+                            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 dark:bg-white bg-slate-950 px-3 py-2 text-sm font-medium text-white dark:text-slate-900 shadow-sm transition hover:brightness-[80%] active:scale-[0.99] duration-100 disabled:opacity-50"
                           >
                             {loadingMore ? "Loading..." : "Load more guides"}
                           </button>

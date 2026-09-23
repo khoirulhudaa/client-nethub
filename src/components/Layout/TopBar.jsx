@@ -173,7 +173,7 @@ const TopBar = ({ onMenuClick }) => {
                 {/* ... isi notifikasi tetap sama ... */}
                 <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-white/10">
                   <div>
-                    <p className="text-sm font-semibold">Pengumuman</p>
+                    <p className="text-sm font-semibold">Announcements</p>
                   </div>
                   <button
                     type="button"
@@ -211,7 +211,7 @@ const TopBar = ({ onMenuClick }) => {
                             >
                               <div className="flex gap-3">
                                 <div
-                                  className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${meta.bg} ${meta.color}`}
+                                  className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${meta.bg} text-white`}
                                 >
                                   <Icon size={15} />
                                 </div>

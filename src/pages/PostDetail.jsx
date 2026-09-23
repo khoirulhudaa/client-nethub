@@ -1094,14 +1094,14 @@ const isOwner = user?.id === post?.author?._id;
             </div>
 
             <div className="w-max flex flex-wrap items-center gap-3 md:mt-0 mt-2.5">
-
               {post?.tags?.map((t) => (
-                <span
+                <Link
                   key={t}
-                  className="pill w-max bg-gray-100 text-gray-500 dark:!bg-[#0c0c18] dark:text-white"
+                  to={`/tags/${encodeURIComponent(t)}`}
+                  className="pill w-max hover:brightness-75 bg-gray-100 text-gray-500 dark:!bg-[#0c0c18] dark:text-white hover:bg-accent hover:text-white transition-colors"
                 >
                   #{t}
-                </span>
+                </Link>
               ))}
             </div>
           </div>
