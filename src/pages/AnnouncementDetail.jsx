@@ -139,7 +139,7 @@ const AnnouncementDetail = () => {
           {/* Type badge */}
           <div className="mb-4 flex flex-wrap items-center gap-2">
             <span
-              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium tracking-wide ${meta.bg} ${meta.color}`}
+              className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-medium tracking-wide ${meta.bg} ${meta.color}`}
             >
               <Icon size={12} strokeWidth={2.5} />
               {meta.label}
