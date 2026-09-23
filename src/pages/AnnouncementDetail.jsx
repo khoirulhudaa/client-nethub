@@ -67,27 +67,32 @@ const AnnouncementDetail = () => {
     if (id) fetchDetail();
   }, [id]);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center py-20">
-        <Loader2 className="animate-spin text-accent" size={28} />
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="md:p-6 md:border-x border-white dark:border-white/10 min-h-screen">
+  //       <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
+  //         <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+  //         <p className="mt-2">Load content ...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (error || !announcement) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-16 text-center">
-        <p className="mb-4 text-lg font-medium text-gray-600 dark:text-gray-300">
-          {error || "Pengumuman tidak ditemukan"}
-        </p>
-        <button
-          onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium !text-white"
-        >
-          <ArrowLeft size={16} />
-          Kembali
-        </button>
+      <div className="md:p-6 md:border-x border-white dark:border-white/10 min-h-screen">
+       <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
+          <p className="mb-3 text-lg font-medium text-slate-900 dark:text-gray-300">
+            {error || "Pengumuman tidak ditemukan"}
+          </p>
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-md font-medium !text-white"
+          >
+            <ArrowLeft size={16} />
+            Back now
+          </button>
+        </div>
       </div>
     );
   }
@@ -96,15 +101,18 @@ const AnnouncementDetail = () => {
   const Icon = meta.icon;
 
   return (
-    <div className="mx-auto max-w-7xl px-0 md:p-6">
-      {/* Back */}
-      <button
-        onClick={() => navigate(-1)}
-        className="mb-6 inline-flex items-center gap-2 text-sm text-gray-500 transition hover:text-gray-800 dark:text-gray-400 dark:hover:text-slate-200"
-      >
-        <ArrowLeft size={16} />
-        Kembali
-      </button>
+    <div className="mx-auto max-w-full min-h-screen md:border-x border-white dark:border-white/10 px-0 py-0 md:p-6">
+      {/* Header */}
+      <div className="mb-4 md:mb-6">
+        <div className="flex items-center gap-2 text-accent">
+          <span className="text-xs font-medium uppercase tracking-wide">
+            Detail Guide
+          </span>
+        </div>
+        <h1 className="text-xl font-semibold text-white tracking-tight">
+          Start Reading
+        </h1>
+      </div>
 
       {/* Card */}
       <article className="overflow-hidden rounded-2xl border border-black/[0.04] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)] dark:border-white/[0.06] dark:bg-white/[0.03] dark:shadow-none">
@@ -139,15 +147,15 @@ const AnnouncementDetail = () => {
           </div>
 
           {/* Title */}
-          <h1 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white md:text-xl">
+          <h1 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-white md:text-xl">
             {announcement.title}
           </h1>
 
           {/* Meta */}
-          <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-400">
+          <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-900 dark:text-gray-400">
             {announcement.createdBy?.name && (
               <>
-                <span className="font-medium text-gray-500 dark:text-gray-400">
+                <span className="font-medium text-slate-900 dark:text-gray-400">
                   {announcement.createdBy.name}
                 </span>
                 <span className="text-gray-300 dark:text-gray-600">·</span>
@@ -162,7 +170,7 @@ const AnnouncementDetail = () => {
             </span>
             {announcement.expiresAt && (
               <>
-                <span className="text-gray-300 dark:text-gray-600">·</span>
+                <span className="text-slate-900 dark:text-gray-600">·</span>
                 <span>
                   Berlaku sampai{" "}
                   {new Date(announcement.expiresAt).toLocaleDateString(
@@ -194,7 +202,7 @@ const AnnouncementDetail = () => {
           )}
 
           {/* Divider */}
-          <div className="my-6 border-t border-black/[0.04] dark:border-white/[0.06]" />
+          <div className="my-6 border-t border-slate-200 dark:border-white/[0.06]" />
 
           {/* Content */}
           <div className="whitespace-pre-wrap text-[15px] leading-relaxed text-gray-700 dark:text-gray-300">
