@@ -1,45 +1,45 @@
 import {
-    ArrowLeft,
-    CheckCircle2,
-    Lightbulb,
-    Network,
-    RotateCcw
+  ArrowLeft,
+  CheckCircle2,
+  Lightbulb,
+  Network,
+  RotateCcw
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TopologyCanvas from "./TopologyCanvas";
 
-// ===== Challenge latihan (bisa ditambah) =====
+// ===== Practice challenges (add more as needed) =====
 const CHALLENGES = [
   {
     id: "office-basic",
-    title: "Kantor Kecil (Dasar)",
-    difficulty: "Mudah",
+    title: "Small Office (Basic)",
+    difficulty: "Easy",
     description:
-      "Buat topology star sederhana: 1 Router, 1 Switch, 2 PC, dan 1 Access Point.",
-    hint: "Semua perangkat terhubung ke Switch. Router terhubung ke Switch dengan UTP.",
+      "Create a simple star topology: 1 Router, 1 Switch, 2 PCs, and 1 Access Point.",
+    hint: "All devices connect to the Switch. The Router connects to the Switch with UTP.",
     allowedHardware: ["Router", "Switch", "PC", "Access Point"],
     allowedCables: ["utp", "wireless"],
     minNodes: 5,
   },
   {
     id: "office-medium",
-    title: "Kantor Menengah",
-    difficulty: "Sedang",
+    title: "Medium Office",
+    difficulty: "Medium",
     description:
-      "1 MikroTik (Router), 1 Firewall, 2 Switch, 3 PC, 1 Server, 1 Access Point.",
-    hint: "Firewall di antara Router dan Switch utama. Server dan AP terhubung ke Switch.",
+      "1 MikroTik (Router), 1 Firewall, 2 Switches, 3 PCs, 1 Server, 1 Access Point.",
+    hint: "Place the Firewall between the Router and the main Switch. Server and AP connect to the Switch.",
     allowedHardware: ["MikroTik", "Firewall", "Switch", "PC", "Server", "Access Point"],
     allowedCables: ["utp", "fiber", "wireless"],
     minNodes: 8,
   },
   {
     id: "cctv-network",
-    title: "Jaringan CCTV",
-    difficulty: "Mudah",
+    title: "CCTV Network",
+    difficulty: "Easy",
     description:
-      "1 Switch, 1 NVR/DVR, 3 CCTV, dan 1 Monitor/PC untuk monitoring.",
-    hint: "Semua CCTV dan NVR terhubung ke Switch dengan UTP.",
+      "1 Switch, 1 NVR/DVR, 3 CCTV cameras, and 1 Monitor/PC for monitoring.",
+    hint: "All CCTV cameras and the NVR connect to the Switch with UTP.",
     allowedHardware: ["Switch", "DVR/DVR", "CCTV", "PC"],
     allowedCables: ["utp"],
     minNodes: 6,
@@ -47,8 +47,8 @@ const CHALLENGES = [
   {
     id: "free",
     title: "Free Practice",
-    difficulty: "Bebas",
-    description: "Latihan bebas. Gunakan semua hardware dan jenis kabel.",
+    difficulty: "Free",
+    description: "Open practice. Use any hardware and cable types.",
     hint: null,
     allowedHardware: null,
     allowedCables: null,
@@ -69,7 +69,10 @@ export default function TopologyPractice() {
   };
 
   const loadChallenge = (challenge) => {
-    if (topology.nodes.length > 0 && !confirm("Ganti challenge? Canvas akan di-reset.")) {
+    if (
+      topology.nodes.length > 0 &&
+      !confirm("Switch challenge? The canvas will be reset.")
+    ) {
       return;
     }
     setSelectedChallenge(challenge);
@@ -93,7 +96,7 @@ export default function TopologyPractice() {
           </button>
           <div>
             <h1 className="text-xl font-semibold tracking-tight">
-              Latihan Topology
+              Topology Practice
             </h1>
           </div>
         </div>
@@ -127,9 +130,9 @@ export default function TopologyPractice() {
               <div className="mb-2 flex items-center justify-between">
                 <span
                   className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                    ch.difficulty === "Mudah"
+                    ch.difficulty === "Easy"
                       ? "bg-emerald-100 text-emerald-700"
-                      : ch.difficulty === "Sedang"
+                      : ch.difficulty === "Medium"
                       ? "bg-amber-100 text-amber-700"
                       : "bg-gray-100 text-gray-600"
                   }`}
@@ -164,7 +167,7 @@ export default function TopologyPractice() {
               className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300"
             >
               <Lightbulb size={14} />
-              {showHint ? "Sembunyikan Hint" : "Tampilkan Hint"}
+              {showHint ? "Hide Hint" : "Show Hint"}
             </button>
           )}
         </div>
@@ -179,12 +182,12 @@ export default function TopologyPractice() {
         <div className="mt-3 flex flex-wrap gap-4 text-xs text-gray-500">
           <span className="flex items-center gap-1">
             <Network size={13} />
-            {nodeCount} perangkat
+            {nodeCount} devices
           </span>
-          <span>{edgeCount} kabel</span>
+          <span>{edgeCount} cables</span>
           {selectedChallenge.minNodes > 0 && (
             <span>
-              Target minimal: {selectedChallenge.minNodes} perangkat
+              Minimum target: {selectedChallenge.minNodes} devices
               {nodeCount >= selectedChallenge.minNodes && (
                 <span className="ml-1 text-emerald-600">✓</span>
               )}
@@ -206,15 +209,15 @@ export default function TopologyPractice() {
         />
       </div>
 
-      {/* Tips cepat */}
+      {/* Quick tips */}
       <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 p-4 text-sm text-gray-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300">
-        <p className="font-medium text-gray-800 dark:text-gray-100">Tips cepat:</p>
+        <p className="font-medium text-gray-800 dark:text-gray-100">Quick tips:</p>
         <ul className="mt-2 list-inside list-disc space-y-1 text-xs">
-          <li>Klik hardware di toolbar untuk menambah perangkat</li>
-          <li>Pilih jenis kabel dulu, lalu drag dari handle satu node ke node lain</li>
-          <li>Klik node untuk ganti nama / tambah note</li>
-          <li>Klik kabel untuk ganti jenis kabel atau hapus</li>
-          <li>Gunakan tombol Export PNG di bawah canvas untuk menyimpan hasil</li>
+          <li>Click hardware in the toolbar to add a device</li>
+          <li>Select a cable type first, then drag from one node handle to another</li>
+          <li>Click a node to rename it or add a note</li>
+          <li>Click a cable to change its type or delete it</li>
+          <li>Use the Export PNG button below the canvas to save your work</li>
         </ul>
       </div>
     </div>
