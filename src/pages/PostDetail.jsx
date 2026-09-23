@@ -569,7 +569,7 @@ const isOwner = user?.id === post?.author?._id;
       <div className="p-4 md:p-5 bg-slate-100 dark:bg-white/5 rounded-xl">
   
 
-          <h1 className="mb-3 max-w-full w-max truncate rounded-xl p-2 px-1 pr-2.5 text-xl sm:text-2xl font-semibold tracking-tight bg-slate-300 dark:!bg-[#0c0c18] border border-slate-200 dark:border-white/20">
+          <h1 className="mb-3 max-w-full w-max truncate rounded-xl p-2 px-1 pr-2.5 text-xl sm:text-2xl font-semibold tracking-tight bg-slate-300 dark:!bg-[#111122] border border-slate-200 dark:border-white/20">
             📝 {post.title} 
           </h1>
 
@@ -619,7 +619,7 @@ const isOwner = user?.id === post?.author?._id;
           {/* Description dengan support highlight */}
           <div className="relative" onMouseUp={handleMouseUp}>
             <article
-              className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none break-words [overflow-wrap:anywhere] dark:prose-invert prose-headings:font-semibold text-slate-700 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
+              className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none break-words dark:prose-invert prose-headings:font-semibold text-slate-700 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
               dangerouslySetInnerHTML={{
                 __html: renderHighlightedContent(post.content),
               }}

@@ -468,7 +468,7 @@ const Dashboard = () => {
     <div className="mx-auto max-w-full md:border-x border-white dark:border-white/10 pr-0 shadow-none">
       {/* Guest / Welcome tetap sama */}
       {user?.isGuest || user?.role === "guest" ? (
-        <div className="w-full md:px-6 pt-6">
+        <div className="w-full md:px-6 md:pt-6">
           <GuestJumbotron onRegister={() => navigate("/register")} />
         </div>
       ) : (
