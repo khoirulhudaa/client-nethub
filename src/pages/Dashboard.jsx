@@ -38,13 +38,13 @@ const GuestJumbotron = ({ onRegister }) => {
         {/* Text content */}
         <div className="max-w-xl">
 
-          <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          <h1 className="text-2xl font-bold tracking-tight text-white md:text-4xl">
             Explore networking guides
             <br />
             <span className="text-accent">Share your knowledge</span>
           </h1>
 
-          <p className="mt-4 text-base leading-relaxed text-gray-300">
+          <p className="mt-4 text-sm md:text-base leading-relaxed text-gray-300">
             You are reading as a guest. Sign up for free to create guides, share topologies, write step-by-step instructions, and help the networking community.
           </p>
 
