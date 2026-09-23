@@ -84,10 +84,10 @@ const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
   return (
     <div className="relative h-max border-b border-slate-300 dark:border-white/10 px-0 md:px-6 mb-6 md:h-[11vh] pt-4 pb-4 flex flex-col gap-4 md:flex-row md:items-center sm:justify-between">
       <div className="relative">
-        <h1 className="mt-[1px] text-xl font-semibold tracking-tight">
+        <h1 className="mt-[1px] text-xl text-white font-semibold tracking-tight">
           {greeting}, {userName}
         </h1>
-        <p className="mt-1 text-sm dark:text-gray-400 text-gray-500">
+        <p className="mt-1 text-sm dark:text-gray-400 text-gray-200">
           {isGuest
             ? "You are currently in Guest mode. Sign up to create guides"
             : "Your network is quiet. Here's what the community is learning"}
@@ -109,7 +109,7 @@ const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
 
 // --- Metric cards ------------------------------------------------------------
 const MetricCard = ({ icon: Icon, iconClass, label, value, delta, deltaTone = "positive" }) => (
-  <div className=" bg-gradient-to-br from-blue-400 to-blue-100 flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-none p-3 md:p-4 shadow-sm dark:shadow-none">
+  <div className="bg-white dark:bg-gradient-to-br dark:from-blue-400 dark:to-blue-100 flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-none p-3 md:p-4 shadow-sm dark:shadow-none">
     <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${iconClass}`}>
       <Icon size={16} />
     </div>
@@ -146,7 +146,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
     <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4 md:px-6 z-[9999] relative">
       <MetricCard
         icon={Wifi}
-        iconClass="bg-blue-50 text-blue-600 dark:bg-slate-900 dark:text-white"
+        iconClass="bg-slate-900 text-white"
         label="Signal condition"
         value={signal ? signal.effectiveType.toUpperCase() : "N/A"}
         delta={signal ? `${signal.downlink} Mbps · ${signal.rtt}ms RTT` : "Not supported by this browser"}
@@ -154,7 +154,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
       />
       <MetricCard
         icon={BookOpen}
-        iconClass="bg-purple-50 text-purple-600 dark:bg-slate-900 dark:text-white"
+        iconClass="bg-slate-900 text-white"
         label="Total guides"
         value={totalGuides}
         delta="Across all categories"
@@ -162,7 +162,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
       />
       <MetricCard
         icon={Eye}
-        iconClass="bg-orange-50 text-orange-600 dark:bg-slate-900 dark:text-white"
+        iconClass="bg-slate-900 text-white"
         label="Total reads"
         value={totalReads}
         delta="All-time views"
@@ -170,7 +170,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
       />
       <MetricCard
         icon={Tag}
-        iconClass="bg-emerald-50 text-emerald-600 dark:bg-slate-900 dark:text-white"
+        iconClass="bg-slate-900 text-white"
         label="Categories"
         value={totalCategories}
         delta="Active categories"
@@ -187,14 +187,14 @@ const Card1 = () => {
       href="https://mikrotik.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-white hover:brightness-[80%] p-3 md:p-5 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-950 dark:bg-white hover:brightness-[80%] p-3 md:p-5 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
         <span className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white group-hover:underline">
           Open web <ChevronRight size={14} />
         </span>
       </div>
-      <p className="mb-4 text-sm text-gray-500">
+      <p className="mb-4 text-sm text-slate-400 dark:text-gray-500">
         Map your network, inspect a node
       </p>
 
@@ -206,7 +206,7 @@ const Card1 = () => {
         />
       </div>
 
-      <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
+      <div className="mt-4 flex items-center justify-between text-xs text-slate-400 dark:text-gray-500">
         <span className="flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Mikrotik
         </span>
@@ -221,14 +221,14 @@ const Card2 = () => {
       href="https://ui.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-white hover:brightness-[80%] p-3 md:p-5 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-950 dark:bg-white hover:brightness-[80%] p-3 md:p-5 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
-        <span className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white group-hover:underline">
+        <span className="flex items-center gap-1 text-sm font-medium text-white dark:text-white group-hover:underline">
           Open web <ChevronRight size={14} />
         </span>
       </div>
-      <p className="mb-4 text-sm text-gray-500">
+      <p className="mb-4 text-sm text-slate-400 dark:text-gray-500">
         Map your network, inspect a node
       </p>
 
@@ -240,7 +240,7 @@ const Card2 = () => {
         />
       </div>
 
-      <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
+      <div className="mt-4 flex items-center justify-between text-xs text-slate-400 dark:text-gray-500">
         <span className="flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Ubiquiti
         </span>
@@ -255,14 +255,14 @@ const Card3 = () => {
       href="https://www.tp-link.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-white hover:brightness-[80%] p-3 md:p-5 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-950 dark:bg-white hover:brightness-[80%] p-3 md:p-5 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
         <span className="flex items-center gap-1 text-sm font-medium text-accent dark:text-white group-hover:underline">
           Open web <ChevronRight size={14} />
         </span>
       </div>
-      <p className="mb-4 text-sm text-gray-500">
+      <p className="mb-4 text-sm text-slate-400 dark:text-gray-500">
         Map your network, inspect a node
       </p>
 
@@ -274,7 +274,7 @@ const Card3 = () => {
         />
       </div>
 
-      <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
+      <div className="mt-4 flex items-center justify-between text-xs text-slate-400 dark:text-gray-500">
         <span className="flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Tp-Link
         </span>
@@ -491,7 +491,7 @@ const Dashboard = () => {
       <div className="border-t border-slate-300 dark:border-white/10 mb-6"></div>
 
       <div className="md:px-6 pb-6">
-        <div className="px-0 pt-3 pb-3 md:px-0 w-full md:py-4 relative rounded-xl bg-gradient-to-tr from-blue-300 to-blue-100 dark:bg-white/5 dark:bg-none">
+        <div className="px-0 pt-3 pb-3 md:px-0 w-full md:py-4 relative rounded-xl bg-white dark:bg-white/5 dark:bg-none">
           {/* Header */}
           <header className="mt-1 px-3 md:px-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -510,7 +510,7 @@ const Dashboard = () => {
           {/* Search + Categories */}
           <div className="w-full px-3 py-2 md:p-4 flex items-center gap-2">
             <form
-              className="flex w-full mb-0 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 shadow-sm sm:w-72"
+              className="flex w-full mb-0 items-center gap-2 rounded-xl border border-gray-200 bg-slate-950 dark:bg-white px-3 py-1.5 shadow-sm sm:w-72"
               onSubmit={(e) => {
                 e.preventDefault();
                 updateParam("search", localSearch.trim());
@@ -560,10 +560,10 @@ const Dashboard = () => {
                 <div className="hidden sm:flex flex-wrap items-center gap-x-2.5">
                   <button
                     onClick={() => updateParam("category", "")}
-                    className={`flex items-center gap-1.5 rounded-xl font-medium active:scale-[0.99] px-3 md:px-3 py-2 text-sm transition ${
+                    className={`flex items-center border border-slate-400 gap-1.5 rounded-xl font-medium active:scale-[0.99] px-3 md:px-3 py-2 text-sm transition ${
                       !category
-                        ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 dark:text-slate-900 text-white"
-                        : "bg-white text-gray-600 hover:border-accent/50"
+                        ? "bg-slate-950 dark:bg-gradient-to-br from-blue-400 to-blue-100 dark:text-slate-900 text-white"
+                        : "bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
                     }`}
                   >
                     <Box size={14} />
@@ -573,9 +573,9 @@ const Dashboard = () => {
                     <button
                       key={item}
                       onClick={() => updateParam("category", item)}
-                      className={`flex active:scale-[0.99] font-medium duration-100 items-center gap-1.5 rounded-xl px-3 md:px-3 py-2 text-sm transition ${
+                      className={`flex active:scale-[0.99] border border-slate-400 font-medium duration-100 items-center gap-1.5 rounded-xl px-3 md:px-3 py-2 text-sm transition ${
                         category === item
-                          ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-slate-900"
+                          ? "bg-slate-950 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900"
                           : "bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
                       }`}
                     >

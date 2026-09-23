@@ -7,7 +7,7 @@
     -webkit-font-smoothing: antialiased;
   }
   body {
-    @apply font-sans text-[#1D1D1F] dark:text-[#F5F5F7] bg-[#12121B] transition-colors duration-200;
+    @apply font-sans text-[#1D1D1F] dark:text-[#F5F5F7] bg-white dark:bg-[#12121B] transition-colors duration-200;
   }
   ::selection {
     @apply bg-accent/20;

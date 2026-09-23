@@ -57,7 +57,7 @@ const PostCard = ({ post, featured = false, status=true }) => {
   return (
     <Link
       to={`/posts/${post.slug}`}
-      className={`bg-slate-200 rounded-xl dark:!bg-[#0c0c18] border !border-white/20 group active:scale-[0.99] duration-100 relative flex flex-col overflow-hidden ${
+      className={`bg-slate-950 rounded-xl dark:!bg-[#0c0c18] border !border-white/20 group active:scale-[0.99] duration-100 relative flex flex-col overflow-hidden ${
         featured ? "h-full" : ""
       }`}
     >
@@ -82,7 +82,7 @@ const PostCard = ({ post, featured = false, status=true }) => {
         )}
       </div>
 
-      <div className="flex flex-1 flex-col hover:bg-slate-300 group-hover:dark:bg-slate-900/40 gap-3 p-3.5 py-4">
+      <div className="flex flex-1 flex-col hover:bg-slate-900 hover:dark:bg-slate-300 group-hover:dark:bg-slate-900/40 gap-3 p-3.5 py-4">
         <div className="flex items-center justify-between gap-2">
           <CategoryPill category={post.category} />
           
@@ -119,7 +119,7 @@ const PostCard = ({ post, featured = false, status=true }) => {
           </div>
         </div>
 
-        <h3 className={`font-semibold truncate max-w-[90%] overflow-x-hidden leading-snug tracking-tight ${featured ? "text-xl" : "text-base"}`}>
+        <h3 className={`font-semibold text-white truncate max-w-[90%] overflow-x-hidden leading-snug tracking-tight ${featured ? "text-xl" : "text-base"}`}>
           {post.title}
         </h3>
 

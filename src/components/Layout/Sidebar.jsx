@@ -196,36 +196,34 @@ const Sidebar = ({ onNavigate }) => {
       }`}
     >
 
-      {/* <img src="/hero.jpg" alt="wallpaper-sidebar" className="rotate-[4deg] scale-[2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-5 left-0" /> */}
-      <img src="/hero.jpg" alt="wallpaper-sidebar" className="rotate-[4deg] scale-[1.2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-15 left-0" />
-      <img src="/hero.jpg" alt="wallpaper-sidebar" className="rotate-[4deg] scale-[2] w-full h-screen dark:hidden flex object-cover absolute brightness-[70%] z-0 top-0 left-0" />
+      <img src="/hero.jpg" alt="wallpaper-sidebar" className={`rotate-[4deg] ${collapsed ? 'dark:rotate-0 duration-0' : ''} scale-[1.2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-15 left-0`} />
       
       <div className="z-10 relative h-screen">
         {/* Logo + toggle */}
         <div
-          className={`mb-0 z-[22] px-3 flex h-[8.6vh] items-center border-b border-white dark:border-white/10 ${
+          className={`mb-0 z-[22] flex h-[8.6vh] items-center border-b border-white dark:border-white/10 ${
             collapsed
-              ? "justify-center border-x-0"
-              : "justify-between gap-2 border-x border-white/75 dark:border-white/10 px-2"
+              ? "justify-center border-x-0 dark:px-0"
+              : "justify-between dark:gap-2 border-x border-white/75 dark:border-white/10 dark:px-2"
           }`}
         >
-          <div className="flex items-center gap-2 h-[10%]">
-            <div className={`flex ${collapsed ? 'h-10 w-10' : 'h-9 w-9'} shrink-0 items-center justify-center rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-slate-900`}>
+          <div className="flex items-center pl-3 dark:pl-1 gap-2 h-full w-full surface-card dark:shadow-none border-none dark:bg-transparent rounded-none">
+            <div className={`flex ${collapsed ? 'h-10 w-10 rounded-xl' : 'h-9 w-9 rounded-lg'} shrink-0 items-center justify-center bg-slate-900 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900`}>
               <Network size={17} />
             </div>
             {!collapsed && (
-              <span className="ml-1 text-white text-[16px] font-semibold tracking-tight">
+              <span className="ml-1 dark:text-white text-[16px] font-semibold tracking-tight">
                 TEXNet
               </span>
             )}
           </div>
 
-          <div className="w-max flex items-center gap-2">
-            {!collapsed && (
+          <div className="w-max flex h-full pr-3 dark:pr-2 surface-card dark:bg-transparent dark:shadow-none dark:border-none rounded-none items-center gap-2">
+          {!collapsed && (
               <button
                 type="button"
                 onClick={() => setCollapsed(true)}
-                className=" h-9 w-9 shrink-0 relative border flex active:scale-[0.99] duration-100 items-center justify-center border-white/20 mr-2 rounded-md left-2 md:rounded-lg p-1.5 text-gray-400 transition hover:bg-white/10 hover:text-white"
+                className="dark:flex hidden h-9 w-9 shrink-0 relative border active:scale-[0.99] duration-100 items-center justify-center border-white/20 mr-2 rounded-md left-2 md:rounded-lg p-1.5 text-gray-400 transition bg-slate-900 dark:bg-transparent hover:bg-white/10 hover:text-white"
                 title="Collapse sidebar"
               >
                 {
