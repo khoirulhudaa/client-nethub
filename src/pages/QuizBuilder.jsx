@@ -541,7 +541,7 @@ export default function QuizBuilder() {
             <button
                 type="button"
                 onClick={() => updateQuestion(activeIndex, { type: "multiple_choice" })}
-                className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition ${
+                className={`active:scale-[0.99] duration-100 flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition ${
                 current.type === "multiple_choice"
                     ? "border-accent bg-accent/10 text-accent"
                     : "border-gray-200 hover:border-gray-300"
@@ -552,7 +552,7 @@ export default function QuizBuilder() {
             <button
                 type="button"
                 onClick={() => updateQuestion(activeIndex, { type: "topology" })}
-                className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition ${
+                className={`active:scale-[0.99] duration-100 flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition ${
                 current.type === "topology"
                     ? "border-accent bg-accent/10 text-accent"
                     : "border-gray-200 hover:border-gray-300"
