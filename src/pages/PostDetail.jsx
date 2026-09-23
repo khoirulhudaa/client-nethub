@@ -531,7 +531,7 @@ const isOwner = user?.id === post?.author?._id;
   return (
     <div className="md:p-6 mx-auto max-w-full space-y-3 pb-16">
 
-      <div className="p-4 md:p-5 bg-white/5 rounded-xl">
+      <div className="p-4 md:p-5 bg-slate-100 dark:bg-white/5 rounded-xl">
         <div className="flex items-center md:justify-between">
           <div className="w-max flex items-center gap-2.5">
             <div className="md:flex hidden">
@@ -566,7 +566,7 @@ const isOwner = user?.id === post?.author?._id;
         </div>
       </div>
 
-      <div className="p-4 md:p-5 bg-white/5 rounded-xl">
+      <div className="p-4 md:p-5 bg-slate-100 dark:bg-white/5 rounded-xl">
   
 
           <h1 className="mb-3 max-w-full w-max truncate rounded-xl p-2 px-1 pr-2.5 text-xl sm:text-2xl font-semibold tracking-tight bg-slate-300 dark:!bg-[#0c0c18] border border-slate-200 dark:border-white/20">
@@ -579,7 +579,7 @@ const isOwner = user?.id === post?.author?._id;
                 {post.author.name?.[0]?.toUpperCase()}
               </div>
               <div className="leading-tight">
-                <p className="text-md font-medium">{post.author.name}</p>
+                <p className="text-md text-slate-900 dark:text-white font-medium">{post.author.name}</p>
                 <p className="text-xs text-slate-700 dark:text-gray-400">{post.author.title}</p>
               </div>
             </Link>
@@ -1045,7 +1045,7 @@ const isOwner = user?.id === post?.author?._id;
                     <div className="absolute left-0 top-full z-20 mt-2 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/10 dark:bg-gray-900">
                       <button
                         onClick={copyLink}
-                        className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 dark:hover:bg-white/5"
+                        className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 dark:hover bg-slate-100:dark:bg-white/5"
                       >
                         <Link2 size={16} />
                         Salin Link
@@ -1056,7 +1056,7 @@ const isOwner = user?.id === post?.author?._id;
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => setShowShare(false)}
-                        className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 dark:hover:bg-white/5"
+                        className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 dark:hover bg-slate-100:dark:bg-white/5"
                       >
                         <span className="flex h-4 w-4 items-center justify-center text-[13px] font-bold text-green-600">
                           WA
@@ -1069,7 +1069,7 @@ const isOwner = user?.id === post?.author?._id;
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => setShowShare(false)}
-                        className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 dark:hover:bg-white/5"
+                        className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 dark:hover bg-slate-100:dark:bg-white/5"
                       >
                         <Linkedin size={16} className="text-blue-700" />
                         LinkedIn

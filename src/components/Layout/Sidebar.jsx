@@ -207,7 +207,7 @@ const Sidebar = ({ onNavigate }) => {
               : "justify-between dark:gap-2 border-x border-white/75 dark:border-white/10 dark:px-2"
           }`}
         >
-          <div className="flex items-center pl-3 dark:pl-1 gap-2 h-full w-full surface-card shadow-none border-none dark:bg-transparent rounded-none">
+          <div className="flex items-center pl-3 dark:pl-1 gap-2 h-full w-full surface-card shadow-none dark:shadow-none border-none dark:border-none dark:bg-transparent rounded-none">
             <div className={`flex ${collapsed ? 'h-10 w-10 rounded-xl' : 'h-9 w-9 rounded-lg'} shrink-0 items-center justify-center bg-slate-900 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900`}>
               <Network size={17} />
             </div>
@@ -218,7 +218,7 @@ const Sidebar = ({ onNavigate }) => {
             )}
           </div>
 
-          <div className="w-max flex h-full pr-3 dark:pr-2 surface-card dark:bg-transparent shadow-none border-none rounded-none items-center gap-2">
+          <div className="w-max flex h-full pr-3 dark:pr-2 surface-card dark:shadow-none dark:bg-transparent shadow-none border-none rounded-none items-center gap-2">
           {!collapsed && (
               <button
                 type="button"
