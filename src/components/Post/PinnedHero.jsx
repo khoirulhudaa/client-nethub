@@ -14,7 +14,7 @@ const PinnedHero = ({ pinned }) => {
 
   return (
     <section className="mb-8">
-      <h2 className="mb-3 flex items-center text-lg font-semibold tracking-tight text-white">
+      <h2 className="mb-3 flex items-center text-lg font-semibold tracking-tight text-slate-900 dark:text-white">
         <Pin size={17} />
         <span className="relative top-[-2px] ml-1">
           Your pinned

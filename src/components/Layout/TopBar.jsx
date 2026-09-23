@@ -115,7 +115,7 @@ const TopBar = ({ onMenuClick }) => {
       <div className="w-[100%] flex justify-between h-full items-center pl-2 pr-4 md:pr-5">
         <button
           onClick={onMenuClick}
-          className="border dark:!border-white/25 border-slate-300 rounded-xl h-[39.5px] w-[39.5px] flex items-center justify-center text-gray-500 hover:bg-black/5 dark:hover:bg-white/10 lg:hidden"
+          className="border dark:!border-white/25 border-slate-400 rounded-xl h-[39.5px] w-[39.5px] flex items-center justify-center text-gray-500 hover:bg-black/5 dark:hover:bg-white/10 lg:hidden"
         >
           <Menu size={20} />
         </button>
@@ -130,7 +130,7 @@ const TopBar = ({ onMenuClick }) => {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search guides, tags, categories…"
-            className="input-field-transparent pl-9"
+            className="input-field-transparent border border-slate-400 pl-9"
           />
         </form>
 
@@ -146,7 +146,7 @@ const TopBar = ({ onMenuClick }) => {
           {!isGuest && (
             <button
               onClick={() => navigate("/create")}
-              className="hidden items-center active:scale-[0.98] hover:bg-white/5 h-10 gap-1.5 rounded-xl border-[2px] border-slate-300 dark:border-white/15 px-3 py-2 text-sm font-medium text-gray-500 dark:text-white transition hover:opacity-90 sm:inline-flex"
+              className="hidden items-center active:scale-[0.98] dark:hover:bg-white/10 hover:bg-black/10 h-10 gap-1.5 rounded-xl border-[2px] border-slate-400 dark:border-white/15 px-3 py-2 text-sm font-medium text-gray-500 dark:text-white transition hover:opacity-90 sm:inline-flex"
             >
               <Plus size={16} />
             </button>
@@ -156,7 +156,7 @@ const TopBar = ({ onMenuClick }) => {
           <div className="relative" ref={notifRef} data-tour="notif">
             <button
               type="button"
-              className="relative border-slate-300 dark:border-white/15 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+              className="relative border-slate-400 dark:border-white/15 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/10 dark:text-gray-300 dark:hover:bg-white/10"
               title="Notifications"
               onClick={openNotifications}
             >
@@ -258,7 +258,7 @@ const TopBar = ({ onMenuClick }) => {
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="border-slate-300 dark:border-white/15 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+            className="border-slate-400 dark:border-white/15 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
             title="Toggle theme"
             >
             {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
@@ -272,7 +272,7 @@ const TopBar = ({ onMenuClick }) => {
                 setOpenProfile((prev) => !prev);
                 setOpenNotif(false);
               }}
-              className="ml-0.5 flex h-10 w-10 items-center justify-center dark:border-[2px] dark:border-white/15 border-slate-300 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+              className="ml-0.5 flex h-10 w-10 items-center justify-center dark:border-[2px] dark:border-white/15 border-slate-400 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
               // className="ml-0.5 flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-transparent text-sm font-semibold text-white ring-1 transition hover:opacity-90"
               title={user?.name || "Profile"}
             >
@@ -375,7 +375,7 @@ const TopBar = ({ onMenuClick }) => {
 const TopLink = ({ to, icon: Icon, label }) => (
   <Link
     to={to}
-    className="inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-sm text-gray-500 transition hover:bg-black/5 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-white"
+    className="inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-sm text-slate-950 transition hover:bg-black/5 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-white"
   >
     <Icon size={15} />
     <span className="hidden xl:inline">{label}</span>
