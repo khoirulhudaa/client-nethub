@@ -1,4 +1,4 @@
-import { Bookmark, Calendar, CheckCircle2, Circle, Clipboard, Eye, Heart, Highlighter, Link2, Linkedin, Loader2, Pencil, Pin, Plus, Share2, Trash2 } from "lucide-react";
+import { Bookmark, Calendar, CheckCircle2, Circle, Clipboard, Eye, Heart, Highlighter, Link2, Linkedin, Loader2, Pencil, Pin, Plus, Share2, Timer, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -9,6 +9,8 @@ import CategoryPill from "../components/UI/CategoryPill.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import FlowchartCanvas from "./FlowchartCanvas.jsx";
 import TopologyCanvas from "./TopologyCanvas.jsx";
+import { formatDate } from "../utils/generateData.js";
+import { timeAgo } from "../utils/timeAgo.js";
 
 const CodeBlockItem = ({ block }) => {
   const [copied, setCopied] = useState(false);
@@ -136,14 +138,14 @@ const PostDetail = () => {
     const { data } = await api.get(`/posts/${slug}`);
     setPost(data.post);
     setRelated(data.related);
-    setLikesCount(data.post.likes?.length || 0);
-    setLiked(data.post.likes?.some((l) => l === user?.id || l?._id === user?.id));
+    setLikesCount(data.post?.likes?.length || 0);
+    setLiked(data.post?.likes?.some((l) => l === user?.id || l?._id === user?.id));
 
-    // Status saved sekarang langsung dibaca dari Post.savedBy (sisi post dari
+    // Status saved sekarang langsung dibaca dari Post?.savedBy (sisi post dari
     // relasi bookmark), jadi tidak perlu request terpisah ke /users/me/bookmarks.
-    setBookmarked(data.post.savedBy?.some((b) => b === user?.id || b?._id === user?.id));
+    setBookmarked(data.post?.savedBy?.some((b) => b === user?.id || b?._id === user?.id));
 
-    const commentsRes = await api.get(`/posts/${data.post._id}/comments`);
+    const commentsRes = await api.get(`/posts/${data.post?._id}/comments`);
     setComments(commentsRes.data.comments);
     setLoading(false);
   }, [slug, user?.id]);
@@ -161,7 +163,7 @@ const PostDetail = () => {
         try {
           const { data } = await api.get("/auth/me/following");
           const followingIds = data.following.map((u) => u._id);
-          setIsFollowing(followingIds.includes(post.author._id));
+          setIsFollowing(followingIds.includes(post?.author._id));
         } catch {
           // ignore
         }
@@ -175,11 +177,11 @@ const handleFollow = async () => {
     toast.error("Login dulu untuk follow author");
     return;
   }
-  if (user.id === post.author._id) return;
+  if (user.id === post?.author._id) return;
 
   setFollowLoading(true);
   try {
-    const { data } = await api.post(`/auth/follow/${post.author._id}`);
+    const { data } = await api.post(`/auth/follow/${post?.author._id}`);
     setIsFollowing(data.following);
     toast.success(data.following ? "Berhasil follow" : "Unfollow berhasil");
   } catch (err) {
@@ -195,7 +197,7 @@ const checkReadingListStatus = async () => {
   try {
     const { data } = await api.get("/auth/me/reading-list");
     const item = data.readingList?.find(
-      (i) => String(i.post?._id || i.post) === String(post._id)
+      (i) => String(i.post?._id || i.post) === String(post?._id)
     );
     if (item) {
       setInReadingList(true);
@@ -223,13 +225,13 @@ const handleToggleCompleted = async () => {
   try {
     if (!inReadingList) {
       // Kalau belum ada di list, tambahkan dulu lalu tandai completed
-      await api.post("/auth/me/reading-list", { postId: post._id });
-      await api.patch(`/auth/me/reading-list/${post._id}/complete`);
+      await api.post("/auth/me/reading-list", { postId: post?._id });
+      await api.patch(`/auth/me/reading-list/${post?._id}/complete`);
       setInReadingList(true);
       setIsCompleted(true);
       toast.success("Ditambahkan & ditandai sudah dibaca");
     } else {
-      await api.patch(`/auth/me/reading-list/${post._id}/complete`);
+      await api.patch(`/auth/me/reading-list/${post?._id}/complete`);
       setIsCompleted((prev) => !prev);
       toast.success(isCompleted ? "Ditandai belum dibaca" : "Ditandai sudah dibaca");
     }
@@ -271,7 +273,7 @@ useEffect(() => {
   const loadHighlights = async () => {
     if (!user || isGuest || !post?._id) return;
     try {
-      const { data } = await api.get(`/auth/me/highlights/${post._id}`);
+      const { data } = await api.get(`/auth/me/highlights/${post?._id}`);
       setHighlights(data.highlights || []);
     } catch (err) {
       // ignore
@@ -297,7 +299,7 @@ const applyHighlight = async (color) => {
   setHighlightLoading(true);
 
   try {
-    const { data } = await api.post(`/auth/me/highlights/${post._id}`, {
+    const { data } = await api.post(`/auth/me/highlights/${post?._id}`, {
       text: selectedText,
       color,
     });
@@ -334,7 +336,7 @@ const renderHighlightedContent = (html) => {
 const removeHighlight = async (text) => {
   if (!post?._id) return;
   try {
-    const { data } = await api.delete(`/auth/me/highlights/${post._id}`, {
+    const { data } = await api.delete(`/auth/me/highlights/${post?._id}`, {
       data: { text },
     });
     setHighlights(data.highlights || []);
@@ -350,7 +352,7 @@ const isOwner = user?.id === post?.author?._id;
     if (!post) return;
 
     // Simpan state lama untuk rollback
-    const previousPinned = post.isPinned;
+    const previousPinned = post?.isPinned;
 
     // Langsung ubah tampilan dulu (optimistic)
     setPost((prev) => ({
@@ -359,17 +361,17 @@ const isOwner = user?.id === post?.author?._id;
     }));
 
     try {
-      const { data } = await api.patch(`/posts/${post._id}/pin`);
+      const { data } = await api.patch(`/posts/${post?._id}/pin`);
 
       // Sinkronkan dengan server, tetap jaga author supaya menu tidak hilang
       setPost((prev) => ({
         ...prev,
         ...data.post,
         author: prev.author,
-        isPinned: data.post.isPinned,
+        isPinned: data.post?.isPinned,
       }));
 
-      toast.success(data.post.isPinned ? "Guide dipin" : "Guide di-unpin");
+      toast.success(data.post?.isPinned ? "Guide dipin" : "Guide di-unpin");
     } catch (err) {
       // Jika gagal → kembalikan ke state sebelumnya
       setPost((prev) => ({
@@ -387,13 +389,13 @@ const isOwner = user?.id === post?.author?._id;
     const category = post?.category || "";
     const author = post?.author?.name || "";
     const tags = post?.tags?.length
-      ? post.tags.map((t) => `#${t}`).join(" ")
+      ? post?.tags.map((t) => `#${t}`).join(" ")
       : "";
 
     // Ambil excerpt singkat (buang HTML)
     let excerpt = "";
     if (post?.content) {
-      const plain = post.content
+      const plain = post?.content
         .replace(/<[^>]+>/g, " ")
         .replace(/\s+/g, " ")
         .trim();
@@ -436,7 +438,7 @@ const isOwner = user?.id === post?.author?._id;
     const prev = bookmarked;
     setBookmarked(!prev); // optimistic
     try {
-      const { data } = await api.post(`/posts/${post._id}/bookmark`);
+      const { data } = await api.post(`/posts/${post?._id}/bookmark`);
       setBookmarked(data.bookmarked);
       toast.success(data.bookmarked ? "Guide disimpan" : "Guide dihapus dari saved");
     } catch (err) {
@@ -456,7 +458,7 @@ const isOwner = user?.id === post?.author?._id;
     setLikesCount((prev) => (nextLiked ? prev + 1 : prev - 1));
 
     try {
-      const { data } = await api.patch(`/posts/${post._id}/like`);
+      const { data } = await api.patch(`/posts/${post?._id}/like`);
       // Sinkronkan dengan response server (lebih akurat)
       setLiked(data.liked);
       setLikesCount(data.likesCount);
@@ -471,7 +473,7 @@ const isOwner = user?.id === post?.author?._id;
   const handleDelete = async () => {
     if (!confirm("Delete this guide? This cannot be undone.")) return;
     try {
-      await api.delete(`/posts/${post._id}`);
+      await api.delete(`/posts/${post?._id}`);
       toast.success("Guide berhasil dihapus");
       navigate("/");
     } catch (err) {
@@ -482,7 +484,7 @@ const isOwner = user?.id === post?.author?._id;
   const postTopLevelComment = async () => {
     if (!commentText.trim()) return;
     try {
-      const { data } = await api.post(`/posts/${post._id}/comments`, { content: commentText.trim() });
+      const { data } = await api.post(`/posts/${post?._id}/comments`, { content: commentText.trim() });
       setComments((c) => [...c, { ...data.comment, replies: [] }]);
       setCommentText("");
     } catch (err) {
@@ -492,7 +494,7 @@ const isOwner = user?.id === post?.author?._id;
 
   const handleReply = async (parentId, content) => {
     try {
-      const { data } = await api.post(`/posts/${post._id}/comments`, { content, parent: parentId });
+      const { data } = await api.post(`/posts/${post?._id}/comments`, { content, parent: parentId });
       const addReply = (list) =>
         list.map((c) =>
           c._id === parentId
@@ -534,42 +536,23 @@ const isOwner = user?.id === post?.author?._id;
       <div className="p-4 md:p-5 bg-slate-100 dark:bg-white/5 rounded-xl">
 
           <h1 className="mb-3 max-w-full w-max truncate rounded-xl p-2 px-1 pr-2.5 text-xl sm:text-2xl font-semibold tracking-tight bg-slate-300 dark:!bg-[#111122] border border-slate-200 dark:border-white/20">
-            📝 {post.title} 
+            📝 {post?.title} 
           </h1>
 
           <div className="mb-4 flex items-center justify-between">
-            <Link to={`/authors/detail/${post.author._id}`} className="flex w-fit active:scale-[0.98] hover:brightness-75 items-center gap-2">
+            <Link to={`/authors/detail/${post?.author._id}`} className="flex w-fit active:scale-[0.98] hover:brightness-75 items-center gap-2">
               <div className="flex h-[44px] w-[44px] items-center justify-center rounded-lg bg-blue-500 dark:!bg-[#111122] border border-white/20 text-sm font-semibold text-white dark:text-accent">
-                {post.author.name?.[0]?.toUpperCase()}
+                {post?.author.name?.[0]?.toUpperCase()}
               </div>
               <div className="leading-tight">
-                <p className="text-md text-slate-900 dark:text-white font-medium">{post.author.name}</p>
-                <p className="text-xs text-slate-900 dark:text-white">{post.author.title}</p>
+                <p className="text-md text-slate-900 dark:text-white font-medium">{post?.author.name}</p>
+                <p className="text-xs text-slate-900 dark:text-white">{post?.author.title}</p>
               </div>
             </Link>
 
             <div className='w-max flex items-center gap-2'>
-              {!isOwner && (
-                <div className="flex items-center gap-2 z-[999]">
-                  <button onClick={handlePin} className="btn-secondary px-4 py-1.5 h-[36px] text-xs">
-                    <Pin size={13} className={post.isPinned ? "fill-accent text-accent" : ""} />
-                    {post.isPinned ? "Pinned" : "Pin"}
-                  </button>
-                  <Link to={`/edit/${post._id}`} className="btn-secondary px-4 py-1.5 h-[36px] text-xs">
-                    <Pencil size={13} />
-                    Edit
-                  </Link>
-                  <button
-                    onClick={() => setShowDeleteModal(true)}
-                    className="btn-secondary px-4 py-1.5 h-[36px] text-xs text-red-500"
-                  >
-                    <Trash2 size={13} />
-                    Delete
-                  </button>
-                </div>
-              )}
               {/* Tombol Follow */}
-              {user && user.id !== post.author._id && (
+              {user && user.id !== post?.author._id && (
                 <button
                   onClick={handleFollow}
                   disabled={followLoading}
@@ -591,31 +574,52 @@ const isOwner = user?.id === post?.author?._id;
               )}
             </div>
           </div>
-
-          {/* <div className="p-4 md:p-5 bg-slate-100 dark:bg-white/5 rounded-xl">
-            <div className="flex items-center md:justify-between">
-            </div>
-          </div> */}
           
-          <div className="w-full h-72 bg-slate-300 dark:bg-slate-500 p-0 overflow-hidden rounded-2xl">
-            {post.coverImage && (
-              <img src={post.coverImage} alt="cover-image" className="mb-6 h-full w-full transition-transform duration-700 hover:scale-105 object-cover" />
+          <div className="w-full h-72 bg-slate-300 dark:bg-slate-500 !border !border-white p-0 overflow-hidden rounded-2xl">
+            {post?.coverImage && (
+              <img src={post?.coverImage} alt="cover-image" className="mb-6 h-full w-full transition-transform duration-700 hover:scale-105 object-cover" />
             )}
           </div>
 
-          <div className="my-5 w-max flex items-center gap-2.5">
-            <div className="md:flex hidden">
-              <CategoryPill border={true} category={post.category} />
-            </div>
-            {!isCompleted && (
-              <div className="inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
-                <CheckCircle2 size={13} />
-                Sudah dibaca
+          <div className="my-5 w-max flex justify-between items-center gap-2.5">
+            {isOwner && (
+              <div className="flex items-center gap-2.5 z-[999]">
+                <button onClick={handlePin} className="rounded-lg btn-secondary border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
+                  <Pin size={13} className={post?.isPinned ? "fill-accent text-accent" : ""} />
+                  {post?.isPinned ? "Pinned" : "Pin"}
+                </button>
+                <Link to={`/edit/${post?._id}`} className="rounded-lg btn-secondary border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
+                  <Pencil size={13} />
+                  Edit
+                </Link>
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  className="rounded-lg btn-secondary border !border-white/20 px-4 py-1.5 h-[28px] text-xs text-red-500"
+                >
+                  <Trash2 size={13} />
+                  Delete
+                </button>
               </div>
             )}
-            <div className="inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-100 px-3 py-1 text-xs font-medium text-blue-700 dark:bg-blue-500/20 dark:text-blue-400">
-              <Calendar size={13} />
-              {post.createdAt}
+
+            <div className="w-max flex gap-2.5">
+              <div className="md:flex hidden">
+                <CategoryPill border={true} category={post?.category} />
+              </div>
+              {isCompleted && (
+                <div className="inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
+                  <CheckCircle2 size={13} />
+                  Sudah dibaca
+                </div>
+              )}
+              <div className="inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-100 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-500/20 dark:text-blue-400">
+                <Calendar size={13} />
+                {formatDate(post?.createdAt)}
+              </div>
+              <div className="inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-100 px-2 py-1 text-xs font-medium text-slate-700 dark:bg-slate-300/10 dark:text-slate-300">
+                <Timer size={13} />
+                {timeAgo(post?.createdAt)}
+              </div>
             </div>
           </div>
 
@@ -628,7 +632,7 @@ const isOwner = user?.id === post?.author?._id;
             <article
               className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light py-4 dark:border-border-dark prose prose-sm max-w-none break-words dark:prose-invert prose-headings:font-semibold text-slate-900 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
               dangerouslySetInnerHTML={{
-                __html: renderHighlightedContent(post.content),
+                __html: renderHighlightedContent(post?.content),
               }}
             />
 
@@ -699,28 +703,28 @@ const isOwner = user?.id === post?.author?._id;
             </div>
           )}
 
-          {post.codeBlocks?.length > 0 && (
+          {post?.codeBlocks?.length > 0 && (
             <div className="mt-4">
               <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-900 dark:text-white uppercase">
                 Commands & Code
               </h2>
 
               <div className="space-y-5">
-                {post.codeBlocks.map((block, idx) => (
+                {post?.codeBlocks.map((block, idx) => (
                   <CodeBlockItem key={idx} block={block} />
                 ))}
               </div>
             </div>
           )}
 
-          {post.referencesImages?.length > 0 && (
+          {post?.referencesImages?.length > 0 && (
             <div className="mt-4">
               <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-900 dark:text-white uppercase">
                 Reference by Upload
               </h2>
 
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                {post.referencesImages.map((img, idx) => (
+                {post?.referencesImages.map((img, idx) => (
                   <div
                     key={idx}
                     className="group relative overflow-hidden rounded-3xl bg-slate-300 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/5 transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:-translate-y-1"
@@ -748,10 +752,10 @@ const isOwner = user?.id === post?.author?._id;
           )}
 
           {/* ===== Topology & Flowchart Cards ===== */}
-          {(post.topology?.nodes?.length > 0 || post.flowchart?.nodes?.length > 0) && (
+          {(post?.topology?.nodes?.length > 0 || post?.flowchart?.nodes?.length > 0) && (
             <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {/* Topology Card */}
-              {post.topology?.nodes?.length > 0 ? (
+              {post?.topology?.nodes?.length > 0 ? (
                 <button
                   type="button"
                   onClick={() => setSidebarType("topology")}
@@ -765,7 +769,7 @@ const isOwner = user?.id === post?.author?._id;
                   <div>
                     <p className="font-semibold text-gray-800 dark:text-gray-100">Network Topology</p>
                     <p className="text-xs text-gray-500">
-                      {post.topology.nodes.length} devices · Klik untuk melihat
+                      {post?.topology.nodes.length} devices · Klik untuk melihat
                     </p>
                   </div>
                   <span className="ml-auto text-slate-900 dark:text-white transition group-hover:text-accent">→</span>
@@ -785,7 +789,7 @@ const isOwner = user?.id === post?.author?._id;
                   <div>
                     <p className="font-semibold text-gray-800 dark:text-slate-600">Network Topology</p>
                     <p className="text-xs text-gray-600">
-                      {post.flowchart.nodes.length} steps · Klik untuk melihat
+                      {post?.flowchart.nodes.length} steps · Klik untuk melihat
                     </p>
                   </div>
                   <span className="ml-auto text-gray-600 transition">→</span>
@@ -793,7 +797,7 @@ const isOwner = user?.id === post?.author?._id;
               )}
 
               {/* Flowchart Card */}
-              {post.flowchart?.nodes?.length > 0 ? (
+              {post?.flowchart?.nodes?.length > 0 ? (
                 <button
                   type="button"
                   onClick={() => setSidebarType("flowchart")}
@@ -807,7 +811,7 @@ const isOwner = user?.id === post?.author?._id;
                   <div>
                     <p className="font-semibold text-gray-800 dark:text-gray-100">Flowchart</p>
                     <p className="text-xs text-gray-500">
-                      {post.flowchart.nodes.length} steps · Klik untuk melihat
+                      {post?.flowchart.nodes.length} steps · Klik untuk melihat
                     </p>
                   </div>
                   <span className="ml-auto text-slate-900 dark:text-white transition group-hover:text-accent">→</span>
@@ -827,7 +831,7 @@ const isOwner = user?.id === post?.author?._id;
                   <div>
                     <p className="font-semibold text-gray-800 dark:text-slate-600">Flowchart</p>
                     <p className="text-xs text-gray-600">
-                      {post.flowchart.nodes.length} steps · Klik untuk melihat
+                      {post?.flowchart.nodes.length} steps · Klik untuk melihat
                     </p>
                   </div>
                   <span className="ml-auto text-gray-600 transition">→</span>
@@ -837,7 +841,7 @@ const isOwner = user?.id === post?.author?._id;
           )}
           
           {/* ===== Step-by-step Wizard (Zigzag + Clickable) ===== */}
-          {post.steps?.length > 0 && (
+          {post?.steps?.length > 0 && (
             <div className="mt-4">
               <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-900 dark:text-white uppercase">
                 Step-by-step Guide
@@ -846,8 +850,8 @@ const isOwner = user?.id === post?.author?._id;
               {(() => {
                 const perRow = 4;
                 const rows = [];
-                for (let i = 0; i < post.steps.length; i += perRow) {
-                  rows.push(post.steps.slice(i, i + perRow));
+                for (let i = 0; i < post?.steps.length; i += perRow) {
+                  rows.push(post?.steps.slice(i, i + perRow));
                 }
 
                 return (
@@ -941,13 +945,13 @@ const isOwner = user?.id === post?.author?._id;
           )}
 
           {/* ===== Custom Tables ===== */}
-          {post.customTables?.length > 0 && (
+          {post?.customTables?.length > 0 && (
             <div className="mt-6">
               <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-900 dark:text-white">
                 GRADIENTS
               </h2>
               <div className="space-y-6">
-                {post.customTables.map((table, tIdx) => (
+                {post?.customTables.map((table, tIdx) => (
                   <div key={tIdx}>
                     {table.title && (
                       <h3 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">
@@ -1086,12 +1090,12 @@ const isOwner = user?.id === post?.author?._id;
                 )}
               </div>
               
-              <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-white"><Eye size={16} />{post.views}</span>
+              <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-white"><Eye size={16} />{post?.views}</span>
             </div>
 
             <div className="w-max flex flex-wrap items-center gap-3 md:mt-0 mt-2.5">
 
-              {post.tags?.map((t) => (
+              {post?.tags?.map((t) => (
                 <span
                   key={t}
                   className="pill w-max bg-gray-100 text-gray-500 dark:!bg-[#0c0c18] dark:text-white"
@@ -1164,7 +1168,7 @@ const isOwner = user?.id === post?.author?._id;
             <div className="flex-1 overflow-hidden p-4">
               {sidebarType === "topology" && (
                 <TopologyCanvas
-                  value={post.topology}
+                  value={post?.topology}
                   readOnly
                   height={window.innerHeight - 100}   // ≈ full screen - header
                   showToolbar={false}
@@ -1172,7 +1176,7 @@ const isOwner = user?.id === post?.author?._id;
               )}
               {sidebarType === "flowchart" && (
                 <FlowchartCanvas
-                  value={post.flowchart}
+                  value={post?.flowchart}
                   readOnly
                   height={window.innerHeight - 100}
                 />
@@ -1252,7 +1256,7 @@ const isOwner = user?.id === post?.author?._id;
                 Hapus Guide?
               </h3>
               <p className="mt-2 text-center text-sm text-gray-500 dark:text-white">
-                Guide <span className="font-medium text-gray-700 dark:text-gray-200">"{post.title}"</span> akan
+                Guide <span className="font-medium text-gray-700 dark:text-gray-200">"{post?.title}"</span> akan
                 dihapus permanen. Tindakan ini tidak bisa dibatalkan.
               </p>
             </div>
