@@ -115,7 +115,7 @@ const TopBar = ({ onMenuClick }) => {
       <div className="w-[100%] flex justify-between h-full items-center pl-2 pr-4 md:pr-5">
         <button
           onClick={onMenuClick}
-          className="border dark:!border-white/25 border-slate-400 rounded-xl h-[39.5px] w-[39.5px] flex items-center justify-center text-gray-500 hover:bg-black/5 dark:hover:bg-white/10 lg:hidden"
+          className="border dark:!border-white/30 border-slate-400 rounded-xl h-[39.5px] w-[39.5px] flex items-center justify-center text-gray-500 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10 lg:hidden"
         >
           <Menu size={20} />
         </button>
@@ -146,7 +146,7 @@ const TopBar = ({ onMenuClick }) => {
           {!isGuest && (
             <button
               onClick={() => navigate("/create")}
-              className="hidden items-center active:scale-[0.98] dark:hover:bg-white/10 hover:bg-black/10 h-10 gap-1.5 rounded-xl border-[2px] border-slate-400 dark:border-white/20 px-3 py-2 text-sm font-medium text-gray-500 dark:text-white transition hover:opacity-90 sm:inline-flex"
+              className="hidden items-center active:scale-[0.98] dark:hover:bg-white/10 hover:bg-black/10 h-10 gap-1.5 rounded-xl border-[2px] border-slate-400 dark:border-white/30 px-3 py-2 text-sm font-medium text-gray-500 dark:text-white transition hover:opacity-90 sm:inline-flex"
             >
               <Plus size={16} />
             </button>
@@ -156,7 +156,7 @@ const TopBar = ({ onMenuClick }) => {
           <div className="relative" ref={notifRef} data-tour="notif">
             <button
               type="button"
-              className="relative border-slate-400 dark:border-white/20 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/10 dark:text-gray-300 dark:hover:bg-white/10"
+              className="relative border-slate-400 dark:border-white/30 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/10 dark:text-gray-300 dark:hover:bg-white/10"
               title="Notifications"
               onClick={openNotifications}
             >
@@ -170,7 +170,6 @@ const TopBar = ({ onMenuClick }) => {
 
             {openNotif && (
               <div className="absolute right-[122%] top-full z-[99] mt-2 w-[min(100vw-2rem,360px)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-white/10 dark:bg-[#12121a]">
-                {/* ... isi notifikasi tetap sama ... */}
                 <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-white/10">
                   <div>
                     <p className="text-sm font-semibold">Announcements</p>
@@ -258,7 +257,7 @@ const TopBar = ({ onMenuClick }) => {
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="border-slate-400 dark:border-white/20 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+            className="border-slate-400 dark:border-white/30 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
             title="Toggle theme"
             >
             {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
@@ -272,7 +271,7 @@ const TopBar = ({ onMenuClick }) => {
                 setOpenProfile((prev) => !prev);
                 setOpenNotif(false);
               }}
-              className="ml-0.5 flex h-10 w-10 items-center justify-center dark:border-[2px] dark:border-white/20 border-slate-400 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+              className="ml-0.5 flex h-10 w-10 items-center justify-center dark:border-[2px] dark:border-white/30 border-slate-400 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
               // className="ml-0.5 flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-transparent text-sm font-semibold text-white ring-1 transition hover:opacity-90"
               title={user?.name || "Profile"}
             >
