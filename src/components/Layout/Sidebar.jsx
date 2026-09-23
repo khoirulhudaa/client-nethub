@@ -208,7 +208,7 @@ const Sidebar = ({ onNavigate }) => {
           }`}
         >
           <div className="flex items-center pl-3 dark:pl-1 gap-2 h-full w-full surface-card shadow-none dark:shadow-none border-none dark:border-none dark:bg-transparent rounded-none">
-            <div className={`flex ${collapsed ? 'h-10 w-10 rounded-xl' : 'h-10 w-10 rounded-lg'} shrink-0 items-center justify-center bg-slate-900 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900`}>
+            <div className={`flex ${collapsed ? 'h-10 w-10 rounded-xl' : 'w-9 h-9 md:h-10 md:w-10 rounded-lg'} shrink-0 items-center justify-center bg-slate-900 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900`}>
               <Network size={17} />
             </div>
             {!collapsed && (
@@ -446,7 +446,7 @@ const Sidebar = ({ onNavigate }) => {
             title={collapsed ? user?.name : undefined}
             className={({ isActive }) =>
               collapsed
-                ? `mx-auto flex h-10 w-10 items-center justify-center overflow-hidden rounded-full`
+                ? `mx-auto flex w-9 md:h-10 h-9 md:w-10 items-center justify-center overflow-hidden rounded-full`
                 : `flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors border-white hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]`
             }
           >

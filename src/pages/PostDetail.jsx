@@ -972,19 +972,19 @@ const isOwner = user?.id === post?.author?._id;
           )}
 
           <div className="mt-6 md:flex items-center gap-4 border-y border-border-light py-4 dark:border-border-dark">
-            <div className="w-max flex items-center gap-3">
+            <div className="w-max pl-1 flex items-center gap-3">
               <button
                 onClick={handleLike}
                 className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
-                  liked ? "text-red-500" : "text-gray-500 hover:text-red-500"
+                  liked ? "text-red-500" : "text-white hover:text-red-500"
                 }`}
               >
-                <Heart size={16} className={liked ? "fill-red-500" : ""} />
+                <Heart size={16} className={liked ? "fill-red-500" : "text-white"} />
                 {likesCount}
               </button>
 
-              <button onClick={handleBookmark} className="flex items-center gap-1.5 text-sm">
-                <Bookmark size={16} className={bookmarked ? "fill-accent text-accent" : ""} />
+              <button onClick={handleBookmark} className="flex items-center gap-1.5 text-white text-sm">
+                <Bookmark size={16} className={bookmarked ? "fill-accent text-accent" : "text-white"} />
                 {bookmarked ? "Saved" : "Save"}
               </button>
 
@@ -1015,8 +1015,8 @@ const isOwner = user?.id === post?.author?._id;
                     </>
                   ) : (
                     <div className="w-max flex items-center gap-1.5">
-                      <Circle size={16} />
-                      <span className="w-max flex items-center">
+                      <Circle size={16} className="text-white" />
+                      <span className="w-max text-white flex items-center">
                         Tandai dibaca
                       </span>
                     </div>
@@ -1028,9 +1028,9 @@ const isOwner = user?.id === post?.author?._id;
               <div className="relative">
                 <button
                   onClick={() => setShowShare((v) => !v)}
-                  className="flex items-center gap-1.5 text-sm text-gray-500 transition hover:text-accent"
+                  className="flex items-center gap-1.5 text-sm text-white transition hover:text-accent"
                 >
-                  <Share2 size={16} />
+                  <Share2 size={16} className="text-white" />
                   Share
                 </button>
 
