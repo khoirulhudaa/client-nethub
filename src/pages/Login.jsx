@@ -49,7 +49,7 @@ const Login = () => {
             <input
               type="email"
               required
-              className="input-field text-slate-900 !bg-blue-100 outline outline-blue-200"
+              className="input-field-auth text-slate-900 !bg-blue-100 outline outline-blue-200"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               placeholder="you@company.com"
@@ -60,7 +60,7 @@ const Login = () => {
             <input
               type="password"
               required
-              className="input-field text-slate-900 !bg-blue-100 outline outline-blue-200"
+              className="input-field-auth text-slate-900 !bg-blue-100 outline outline-blue-200"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               placeholder="••••••••"

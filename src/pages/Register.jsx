@@ -47,7 +47,7 @@ const Register = () => {
             <label className="mb-1.5 block text-sm font-medium text-slate-950">Full name</label>
             <input
               required
-              className="input-field text-slate-900 !bg-blue-100 outline outline-blue-200"
+              className="input-field-auth text-slate-900 !bg-blue-100 outline outline-blue-200"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               placeholder="Ada Lovelace"
@@ -58,7 +58,7 @@ const Register = () => {
             <input
               type="email"
               required
-              className="input-field text-slate-900 !bg-blue-100 outline outline-blue-200"
+              className="input-field-auth text-slate-900 !bg-blue-100 outline outline-blue-200"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               placeholder="you@company.com"
@@ -70,7 +70,7 @@ const Register = () => {
               type="password"
               required
               minLength={6}
-              className="input-field text-slate-900 !bg-blue-100 outline outline-blue-200"
+              className="input-field-auth text-slate-900 !bg-blue-100 outline outline-blue-200"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               placeholder="At least 6 characters"
