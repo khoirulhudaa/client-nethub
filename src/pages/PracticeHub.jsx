@@ -14,7 +14,7 @@ const practices = [
     id: "topology",
     title: "Topology Practice",
     description:
-      "Latih kemampuan merancang dan memahami topologi jaringan. Drag & drop perangkat, buat koneksi, dan uji pemahamanmu.",
+      "Practice designing and understanding network topologies. Drag & drop devices, create connections, and test your knowledge.",
     icon: Network,
     path: "/topology-practice",
     accent: "from-blue-500/20 to-cyan-500/10",
@@ -25,7 +25,7 @@ const practices = [
     id: "pc-build",
     title: "PC Build Practice",
     description:
-      "Simulasi merakit PC dari komponen. Pilih motherboard, CPU, RAM, storage, dan pastikan kompatibilitasnya.",
+      "Simulate building a PC from components. Choose motherboard, CPU, RAM, storage, and ensure compatibility.",
     icon: Monitor,
     path: "/pc-build-practice",
     accent: "from-violet-500/20 to-purple-500/10",
@@ -37,18 +37,18 @@ const practices = [
 const tips = [
   {
     icon: Target,
-    title: "Fokus satu lab dulu",
-    text: "Selesaikan satu practice sampai paham alurnya sebelum pindah ke lab lain.",
+    title: "Focus on one lab first",
+    text: "Finish one practice until you understand the flow",
   },
   {
     icon: Clock,
-    title: "Latihan singkat tapi rutin",
-    text: "15–20 menit setiap hari lebih efektif daripada sesi panjang sekali seminggu.",
+    title: "Short but consistent practice",
+    text: "15–20 minutes every day is more effective",
   },
   {
     icon: BookOpen,
-    title: "Baca guide terkait",
-    text: "Setelah practice, buka guide di Dashboard untuk memperdalam konsep yang baru dilatih.",
+    title: "Read related guides",
+    text: "After practicing, open the guides in the Dashboard",
   },
 ];
 
@@ -64,7 +64,9 @@ const PracticeHub = () => {
             Practice Lab
           </span>
         </div>
-        <h1 className="text-xl font-semibold text-white tracking-tight">Pilih latihan</h1>
+        <h1 className="text-xl font-semibold text-white tracking-tight">
+          Choose a practice
+        </h1>
       </div>
 
       {/* Practice cards */}
@@ -102,7 +104,7 @@ const PracticeHub = () => {
                 </p>
 
                 <div className="mt-4 flex items-center gap-1.5 text-xs font-medium text-accent transition group-hover:gap-2.5 group-hover:text-blue-400">
-                  Mulai latihan
+                  Start practice
                   <ChevronRight size={16} />
                 </div>
               </div>
@@ -111,12 +113,12 @@ const PracticeHub = () => {
         })}
       </div>
 
-      {/* Tips section — isi ruang bawah */}
+      {/* Tips section */}
       <section className="mb-6 surface-card bg-white dark:bg-white/5 p-2.5 md:p-4">
         <div className="mb-4 hidden md:flex items-center gap-2">
           <Lightbulb size={16} className="text-amber-500" />
           <h2 className="text-sm font-semibold tracking-tight text-gray-800 dark:text-gray-200">
-            Tips latihan efektif
+            Tips for effective practice
           </h2>
         </div>
 
