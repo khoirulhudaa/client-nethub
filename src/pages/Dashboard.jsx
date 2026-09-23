@@ -84,10 +84,10 @@ const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
   return (
     <div className="relative h-max border-b border-slate-300 dark:border-white/10 px-0 md:px-6 mb-6 md:h-[11vh] pt-4 pb-4 flex flex-col gap-4 md:flex-row md:items-center sm:justify-between">
       <div className="relative">
-        <h1 className="mt-[-5px] text-xl font-semibold tracking-tight">
+        <h1 className="mt-[1px] text-xl font-semibold tracking-tight">
           {greeting}, {userName}
         </h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm dark:text-gray-400 text-gray-500">
           {isGuest
             ? "You are currently in Guest mode. Sign up to create guides"
             : "Your network is quiet. Here's what the community is learning"}
@@ -98,7 +98,7 @@ const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
       {!isGuest && (
         <button
           onClick={onNewPost}
-          className="relative w-full active:scale-[0.99] duration-100 md:w-max flex md:inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 px-3 md:px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90"
+          className="relative w-full active:scale-[0.99] duration-100 md:w-max flex md:inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-transparent px-3 md:px-4 py-2 text-sm font-medium text-slate-900 dark:text-white border border-white/15 shadow-sm transition hover:opacity-90"
         >
           <Plus size={16} /> New post
         </button>
@@ -109,7 +109,7 @@ const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
 
 // --- Metric cards ------------------------------------------------------------
 const MetricCard = ({ icon: Icon, iconClass, label, value, delta, deltaTone = "positive" }) => (
-  <div className=" bg-gradient-to-br from-blue-400 to-blue-100 flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-[#1E1E2A] p-3 md:p-4 shadow-sm">
+  <div className=" bg-gradient-to-br from-blue-400 to-blue-100 flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-none p-3 md:p-4 shadow-sm dark:shadow-none">
     <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${iconClass}`}>
       <Icon size={16} />
     </div>
@@ -521,7 +521,7 @@ const Dashboard = () => {
                 value={localSearch}
                 onChange={(e) => setLocalSearch(e.target.value)}
                 placeholder="Search by title..."
-                className="w-full bg-transparent text-black text-sm outline-none"
+                className="w-full bg-transparent px-3 md:px-3 py-2 h-[22px] font-medium text-black text-sm outline-none"
               />
               {localSearch && (
                 <button
@@ -560,22 +560,23 @@ const Dashboard = () => {
                 <div className="hidden sm:flex flex-wrap items-center gap-x-2.5">
                   <button
                     onClick={() => updateParam("category", "")}
-                    className={`rounded-xl border px-3 py-1.5 text-sm transition ${
+                    className={`flex items-center gap-1.5 rounded-xl font-medium active:scale-[0.99] px-3 md:px-3 py-2 text-sm transition ${
                       !category
-                        ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 dark:text-slate-900 text-white"
-                        : "border-gray-200 bg-white text-gray-600 hover:border-accent/50"
+                        ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 dark:text-slate-900 text-white"
+                        : "bg-white text-gray-600 hover:border-accent/50"
                     }`}
                   >
+                    <Box size={14} />
                     All guides
                   </button>
                   {data.categories.map((item) => (
                     <button
                       key={item}
                       onClick={() => updateParam("category", item)}
-                      className={`flex active:scale-[0.99] duration-100 items-center gap-1.5 rounded-xl border px-3 py-1.5 text-sm transition ${
+                      className={`flex active:scale-[0.99] font-medium duration-100 items-center gap-1.5 rounded-xl px-3 md:px-3 py-2 text-sm transition ${
                         category === item
-                          ? "border-white bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-slate-900"
-                          : "border-gray-200 bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
+                          ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-slate-900"
+                          : "bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
                       }`}
                     >
                       <Box size={14} />
@@ -634,7 +635,7 @@ const Dashboard = () => {
                           <button
                             onClick={handleLoadMore}
                             disabled={loadingMore}
-                            className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:opacity-50"
+                            className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:brightness-[80%] active:scale-[0.99] duration-100 disabled:opacity-50"
                           >
                             {loadingMore ? "Loading..." : "Load more guides"}
                           </button>
