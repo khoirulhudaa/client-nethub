@@ -57,7 +57,7 @@ const AnnouncementDetail = () => {
       } catch (err) {
         console.error(err);
         setError(
-          err.response?.data?.message || "Pengumuman tidak ditemukan"
+          err.response?.data?.message || "Announcement not found"
         );
       } finally {
         setLoading(false);
@@ -83,7 +83,7 @@ const AnnouncementDetail = () => {
       <div className="md:p-6 md:border-x border-white dark:border-white/10 min-h-screen">
        <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
           <p className="mb-3 text-lg font-medium text-slate-900 dark:text-gray-300">
-            {error || "Pengumuman tidak ditemukan"}
+            {error || "Announcement not found"}
           </p>
           <button
             onClick={() => navigate(-1)}
