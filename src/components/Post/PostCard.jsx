@@ -131,10 +131,10 @@ const PostCard = ({ post, featured = false, status=true }) => {
 
         <div className="mt-auto flex items-center justify-between pt-2">
           <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-soft text-[11px] font-semibold text-accent">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white dark:bg-accent-soft text-[11px] font-semibold text-slate-900 dark:text-accent">
               {post.author?.name?.[0]?.toUpperCase()}
             </div>
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+            <span className="text-xs font-medium text-gray-400 dark:text-gray-400">
               {post.author?.name}
             </span>
           </div>
