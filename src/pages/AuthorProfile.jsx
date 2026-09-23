@@ -33,7 +33,7 @@ const AuthorProfile = () => {
   const pinnedPosts = posts.filter((p) => p.isPinned);
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-full md:border-x border-white dark:border-white/10 min-h-screen">
       <div className="surface-card mb-8 flex flex-col items-center gap-3 p-8 text-center sm:flex-row sm:text-left">
         <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-accent-soft text-2xl font-semibold text-accent">
           {author.avatar ? (
@@ -43,8 +43,8 @@ const AuthorProfile = () => {
           )}
         </div>
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">{author.name}</h1>
-          <p className="text-sm text-accent">{author.title}</p>
+          <h1 className="text-xl font-semibold text-white tracking-tight">{author.name}</h1>
+          <p className="text-sm text-white dark:text-accent">{author.title}</p>
           {author.bio && <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{author.bio}</p>}
         </div>
       </div>

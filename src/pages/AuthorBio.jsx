@@ -113,8 +113,13 @@ const AuthorBio = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-24">
-        <Loader2 className="animate-spin text-accent" size={28} />
+      <div className="max-w-full md:border-x border-white dark:border-white/10 min-h-screen">
+        <div className="md:p-6">
+          <div className="flex justify-center flex-col h-full items-center rounded-xl bg-slate-300 dark:surface-card text-center py-14 md:py-24">
+            <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+            <p className="mt-2">Load content ...</p>
+          </div>
+        </div>
       </div>
     );
   }
@@ -138,7 +143,7 @@ const AuthorBio = () => {
     : null;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+    <div className="mx-auto max-w-full md:border-x border-white dark:border-white/10 min-h-screen px-4 py-6 sm:px-6">
       {/* ===== Header ===== */}
       <div className="surface-card mb-6 overflow-hidden rounded-2xl border border-gray-200 dark:border-white/10 dark:bg-white/[0.03]">
         {/* Cover strip */}
@@ -204,14 +209,14 @@ const AuthorBio = () => {
               {author.bio}
             </p>
           ) : (
-            <p className="mb-5 text-sm italic text-gray-400">
+            <p className="mb-5 text-sm italic text-gray-600 dark:text-gray-400">
               Belum ada bio
             </p>
           )}
 
           {/* Meta */}
           {joinedDate && (
-            <p className="mb-5 flex items-center gap-1.5 text-xs text-gray-400">
+            <p className="mb-5 flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
               <Calendar size={13} />
               Bergabung {joinedDate}
             </p>
@@ -230,7 +235,7 @@ const AuthorBio = () => {
 
       {/* ===== Guides ===== */}
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-400">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-white dark:text-gray-400">
           Guides By {author.name}
         </h2>
         <span className="text-xs text-gray-400">{posts.length} guide</span>
@@ -255,7 +260,7 @@ const AuthorBio = () => {
 
 const StatPill = ({ icon: Icon, label, value }) => (
   <div className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-2.5 dark:border-white/5 dark:!bg-[#0c0c18]">
-    <div className="mb-1 flex items-center gap-1.5 text-gray-400">
+    <div className="mb-1 flex items-center gap-1.5 text-gray-600  dark:text-gray-400">
       <Icon size={13} />
       <span className="text-[11px] font-medium uppercase tracking-wide">
         {label}

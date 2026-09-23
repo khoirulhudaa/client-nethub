@@ -44,7 +44,7 @@ const TABS = [
 const TabButton = ({ active, icon: Icon, label, onClick, count }) => (
   <button
     onClick={onClick}
-    className={`flex border active:scale-[0.99] duration-100 items-center gap-2 rounded-control px-3.5 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
+    className={`flex border active:scale-[0.99] duration-100 items-center gap-2 rounded-control px-3.5 py-2 text-sm font-medium transition-all ease-fluid ${
       active
         ? "bg-gradient-to-br from-blue-400 to-blue-100 border border-white/5 text-slate-900"
         : "text-white border border-white/50 hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
