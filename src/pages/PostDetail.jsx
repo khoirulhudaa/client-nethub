@@ -172,6 +172,11 @@ const PostDetail = () => {
     }
 }, [user, post?.author?._id]);
 
+// Auto scroll ke paling atas setiap kali halaman ini diakses / slug berubah
+useEffect(() => {
+  window.scrollTo({ top: 0, left: 0, behavior: "instant" }); // atau "smooth" kalau mau animasi
+}, [slug]);
+
 const handleFollow = async () => {
   if (!user) {
     toast.error("Login dulu untuk follow author");
@@ -612,11 +617,11 @@ const isOwner = user?.id === post?.author?._id;
                   Sudah dibaca
                 </div>
               )}
-              <div className="inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-100 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-500/20 dark:text-blue-400">
+              <div className="inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-500 px-2 py-1 text-xs font-medium text-white dark:bg-emerald-500/20 dark:text-slate-300">
                 <Calendar size={13} />
                 {formatDate(post?.createdAt)}
               </div>
-              <div className="inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-100 px-2 py-1 text-xs font-medium text-slate-700 dark:bg-slate-300/10 dark:text-slate-300">
+              <div className="inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-orange-500 px-2 py-1 text-xs font-medium text-white dark:bg-slate-300/10 dark:text-slate-300">
                 <Timer size={13} />
                 {timeAgo(post?.createdAt)}
               </div>

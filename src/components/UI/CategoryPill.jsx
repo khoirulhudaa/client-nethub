@@ -1,11 +1,11 @@
 import { Network, Wrench, ShieldAlert, HardDrive, Boxes } from "lucide-react";
 
 const CATEGORY_STYLES = {
-  Topology: { icon: Network, className: "bg-blue-300 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" },
-  Maintenance: { icon: Wrench, className: "bg-amber-300 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400" },
-  Fixing: { icon: ShieldAlert, className: "bg-red-300 text-red-600 dark:bg-red-500/10 dark:text-red-400" },
-  Installation: { icon: Boxes, className: "bg-purple-300 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400" },
-  Hardware: { icon: HardDrive, className: "bg-emerald-300 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400" },
+  Topology: { icon: Network, className: "bg-blue-500 text-white dark:bg-blue-500/10 dark:text-slate-300" },
+  Maintenance: { icon: Wrench, className: "bg-amber-500 text-white dark:bg-amber-500/10 dark:text-slate-300" },
+  Fixing: { icon: ShieldAlert, className: "bg-red-500 text-white dark:bg-red-500/10 dark:text-slate-300" },
+  Installation: { icon: Boxes, className: "bg-purple-500 text-white dark:bg-purple-500/10 dark:text-slate-300" },
+  Hardware: { icon: HardDrive, className: "bg-emerald-500 text-white dark:bg-emerald-500/10 dark:text-slate-300" },
 };
 
 const CategoryPill = ({ category, border=false }) => {
