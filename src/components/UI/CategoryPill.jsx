@@ -8,11 +8,11 @@ const CATEGORY_STYLES = {
   Hardware: { icon: HardDrive, className: "bg-emerald-300 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400" },
 };
 
-const CategoryPill = ({ category }) => {
+const CategoryPill = ({ category, border=false }) => {
   const style = CATEGORY_STYLES[category] || CATEGORY_STYLES.Topology;
   const Icon = style.icon;
   return (
-    <span className={`pill rounded-lg gap-1 ${style.className}`}>
+    <span className={`pill rounded-lg gap-1 ${border ? 'border border-white/20' : ''} ${style.className}`}>
       <Icon size={12} />
       {category}
     </span>

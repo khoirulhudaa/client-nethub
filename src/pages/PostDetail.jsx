@@ -31,7 +31,7 @@ const CodeBlockItem = ({ block }) => {
       {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-100 px-3 md:px-5 py-3 dark:border-white/5">
         <div className="flex items-center gap-3">
-          <span className="text-[11px] font-medium tracking-widest text-gray-700 dark:text-gray-400">
+          <span className="text-[11px] font-medium tracking-widest text-gray-700 dark:text-white">
             {block.language?.toUpperCase() || "CODE"}
           </span>
           {block.title && (
@@ -535,7 +535,7 @@ const isOwner = user?.id === post?.author?._id;
         <div className="flex items-center md:justify-between">
           <div className="w-max flex items-center gap-2.5">
             <div className="md:flex hidden">
-              <CategoryPill category={post.category} />
+              <CategoryPill border={true} category={post.category} />
             </div>
             {isCompleted && (
               <div className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
@@ -580,7 +580,7 @@ const isOwner = user?.id === post?.author?._id;
               </div>
               <div className="leading-tight">
                 <p className="text-md text-slate-900 dark:text-white font-medium">{post.author.name}</p>
-                <p className="text-xs text-slate-700 dark:text-gray-400">{post.author.title}</p>
+                <p className="text-xs text-slate-700 dark:text-white">{post.author.title}</p>
               </div>
             </Link>
 
@@ -612,7 +612,7 @@ const isOwner = user?.id === post?.author?._id;
             )}
           </div>
 
-          <h2 className="mt-6 mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-gray-400 uppercase">
+          <h2 className="mt-6 mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-white uppercase">
             Description
           </h2>
 
@@ -694,7 +694,7 @@ const isOwner = user?.id === post?.author?._id;
 
           {post.codeBlocks?.length > 0 && (
             <div className="mt-4">
-              <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-gray-400 uppercase">
+              <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-white uppercase">
                 Commands & Code
               </h2>
 
@@ -708,7 +708,7 @@ const isOwner = user?.id === post?.author?._id;
 
           {post.referencesImages?.length > 0 && (
             <div className="mt-4">
-              <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-gray-400 uppercase">
+              <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-white uppercase">
                 Reference by Upload
               </h2>
 
@@ -761,7 +761,7 @@ const isOwner = user?.id === post?.author?._id;
                       {post.topology.nodes.length} devices · Klik untuk melihat
                     </p>
                   </div>
-                  <span className="ml-auto text-slate-700 dark:text-gray-400 transition group-hover:text-accent">→</span>
+                  <span className="ml-auto text-slate-700 dark:text-white transition group-hover:text-accent">→</span>
                 </button>
               ): (
                 <button
@@ -803,7 +803,7 @@ const isOwner = user?.id === post?.author?._id;
                       {post.flowchart.nodes.length} steps · Klik untuk melihat
                     </p>
                   </div>
-                  <span className="ml-auto text-slate-700 dark:text-gray-400 transition group-hover:text-accent">→</span>
+                  <span className="ml-auto text-slate-700 dark:text-white transition group-hover:text-accent">→</span>
                 </button>
               ): (
                 <button
@@ -832,7 +832,7 @@ const isOwner = user?.id === post?.author?._id;
           {/* ===== Step-by-step Wizard (Zigzag + Clickable) ===== */}
           {post.steps?.length > 0 && (
             <div className="mt-4">
-              <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-gray-400 uppercase">
+              <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-700 dark:text-white uppercase">
                 Step-by-step Guide
               </h2>
 
@@ -875,12 +875,12 @@ const isOwner = user?.id === post?.author?._id;
                                 >
                                   {/* Header */}
                                   <div className="mb-4 flex items-center justify-between">
-                                    <span className="text-[11px] font-medium tracking-widest text-slate-700 dark:text-gray-400">
+                                    <span className="text-[11px] font-medium tracking-widest text-slate-700 dark:text-white">
                                       STEP {String(realIndex + 1).padStart(2, "0")}
                                     </span>
 
                                     {/* Arrow */}
-                                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-300 dark:!bg-[#0c0c18] text-slate-700 dark:text-gray-400 transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-300 dark:!bg-[#0c0c18] text-slate-700 dark:text-white transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         className="h-3.5 w-3.5"
@@ -916,7 +916,7 @@ const isOwner = user?.id === post?.author?._id;
 
                                   {/* Description */}
                                   {step.description && (
-                                    <p className="text-[13px] leading-relaxed text-gray-500 dark:text-gray-400 line-clamp-2">
+                                    <p className="text-[13px] leading-relaxed text-gray-500 dark:text-white line-clamp-2">
                                       {step.description}
                                     </p>
                                   )}
@@ -936,7 +936,7 @@ const isOwner = user?.id === post?.author?._id;
           {/* ===== Custom Tables ===== */}
           {post.customTables?.length > 0 && (
             <div className="mt-6">
-              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-gray-400">
+              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-white">
                 GRADIENTS
               </h2>
               <div className="space-y-6">
@@ -1079,7 +1079,7 @@ const isOwner = user?.id === post?.author?._id;
                 )}
               </div>
               
-              <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-gray-400"><Eye size={16} />{post.views}</span>
+              <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-white"><Eye size={16} />{post.views}</span>
             </div>
 
             <div className="w-max flex flex-wrap items-center gap-3 md:mt-0 mt-2.5">
@@ -1087,7 +1087,7 @@ const isOwner = user?.id === post?.author?._id;
               {post.tags?.map((t) => (
                 <span
                   key={t}
-                  className="pill w-max bg-gray-100 text-gray-500 dark:!bg-[#0c0c18] dark:text-gray-400"
+                  className="pill w-max bg-gray-100 text-gray-500 dark:!bg-[#0c0c18] dark:text-white"
                 >
                   #{t}
                 </span>
@@ -1096,7 +1096,7 @@ const isOwner = user?.id === post?.author?._id;
           </div>
 
           <div className="mt-6">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-gray-400">Comments</h2>
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-white">Comments</h2>
             <div className="surface-card shadow-none bg-slate-300 dark:!bg-[#0c0c18] p-3 md:p-5">
               <div className="mb-4 flex gap-2">
                 <input
@@ -1116,7 +1116,7 @@ const isOwner = user?.id === post?.author?._id;
           
           {related?.length > 0 && (
             <div className="mt-4">
-              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-gray-400">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-white">
                 Related Guides
               </h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -1244,7 +1244,7 @@ const isOwner = user?.id === post?.author?._id;
               <h3 className="text-center text-lg font-semibold">
                 Hapus Guide?
               </h3>
-              <p className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-2 text-center text-sm text-gray-500 dark:text-white">
                 Guide <span className="font-medium text-gray-700 dark:text-gray-200">"{post.title}"</span> akan
                 dihapus permanen. Tindakan ini tidak bisa dibatalkan.
               </p>
