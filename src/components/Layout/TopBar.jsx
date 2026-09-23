@@ -115,7 +115,7 @@ const TopBar = ({ onMenuClick }) => {
       <div className="w-[100%] flex justify-between h-full items-center pl-2 pr-4 md:pr-5">
         <button
           onClick={onMenuClick}
-          className="dark:border-none border-slate-300 border rounded-control p-2 text-gray-500 hover:bg-black/5 dark:hover:bg-white/10 lg:hidden"
+          className="border dark:!border-white/25 border-slate-300 rounded-xl h-[39.5px] w-[39.5px] flex items-center justify-center text-gray-500 hover:bg-black/5 dark:hover:bg-white/10 lg:hidden"
         >
           <Menu size={20} />
         </button>
