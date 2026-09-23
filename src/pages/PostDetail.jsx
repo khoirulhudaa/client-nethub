@@ -575,7 +575,7 @@ const isOwner = user?.id === post?.author?._id;
 
           <div className="mb-6 flex items-center justify-between">
             <Link to={`/authors/detail/${post.author._id}`} className="flex w-fit active:scale-[0.98] hover:brightness-75 items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500 dark:bg-accent-soft text-sm font-semibold text-white dark:text-accent">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500 dark:!bg-[#111122] border border-white/20 text-sm font-semibold text-white dark:text-accent">
                 {post.author.name?.[0]?.toUpperCase()}
               </div>
               <div className="leading-tight">
