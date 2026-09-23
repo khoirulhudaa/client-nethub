@@ -207,7 +207,7 @@ const Sidebar = ({ onNavigate }) => {
               : "justify-between dark:gap-2 border-x border-white/75 dark:border-white/10 dark:px-2"
           }`}
         >
-          <div className="flex items-center pl-3 dark:pl-1 gap-2 h-full w-full surface-card dark:shadow-none border-none dark:bg-transparent rounded-none">
+          <div className="flex items-center pl-3 dark:pl-1 gap-2 h-full w-full surface-card shadow-none border-none dark:bg-transparent rounded-none">
             <div className={`flex ${collapsed ? 'h-10 w-10 rounded-xl' : 'h-9 w-9 rounded-lg'} shrink-0 items-center justify-center bg-slate-900 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900`}>
               <Network size={17} />
             </div>
@@ -218,7 +218,7 @@ const Sidebar = ({ onNavigate }) => {
             )}
           </div>
 
-          <div className="w-max flex h-full pr-3 dark:pr-2 surface-card dark:bg-transparent dark:shadow-none dark:border-none rounded-none items-center gap-2">
+          <div className="w-max flex h-full pr-3 dark:pr-2 surface-card dark:bg-transparent shadow-none border-none rounded-none items-center gap-2">
           {!collapsed && (
               <button
                 type="button"
@@ -439,7 +439,7 @@ const Sidebar = ({ onNavigate }) => {
         </nav>
 
         {/* Profile */}
-        <div className={`h-[9%] mt-auto border-t dark:border-white/10 ${collapsed ? "py-3" : ""}`}>
+        <div className={`h-[9%] mt-auto border-t surface-card rounded-none shadow-none dark:border-white/10 ${collapsed ? "py-3" : ""}`}>
           <NavLink
             to={isGuest ? "#" : "/profile"}
             onClick={onNavigate}
@@ -450,7 +450,7 @@ const Sidebar = ({ onNavigate }) => {
                 : `flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors border-white hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]`
             }
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-md font-semibold text-accent">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-950 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-md font-semibold text-white dark:text-accent">
               {user?.avatar ? (
                 <img
                   src={user.avatar}
@@ -464,10 +464,10 @@ const Sidebar = ({ onNavigate }) => {
               {!collapsed && (
                 <>
                   <div className="min-w-0 flex-1 overflow-hidden">
-                    <p className="truncate text-sm font-medium text-white dark:text-white/80">
+                    <p className="truncate text-sm font-medium text-slate-900 dark:text-white/80">
                       {user?.name}
                     </p>
-                    <p className="truncate text-xs text-white dark:text-white/80">
+                    <p className="truncate text-xs text-slate-900 dark:text-white/80">
                       {isGuest ? "Guest Reader" : user?.title}
                     </p>
                   </div>
@@ -477,7 +477,7 @@ const Sidebar = ({ onNavigate }) => {
                       e.stopPropagation();
                       handleLogoutClick();
                     }}
-                    className="shrink-0 rounded-md p-1.5 text-white transition-colors hover:bg-black/5 hover:text-red-500 dark:text-white/90 dark:hover:bg-white/10"
+                    className="shrink-0 rounded-md p-1.5 text-slate-900 transition-colors hover:bg-black/5 hover:text-red-500 dark:text-white/90 dark:hover:bg-white/10"
                     title="Log out"
                   >
                     <LogOut size={16} />
