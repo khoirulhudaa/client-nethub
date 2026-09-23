@@ -635,7 +635,7 @@ const Dashboard = () => {
                           <button
                             onClick={handleLoadMore}
                             disabled={loadingMore}
-                            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 dark:bg-white bg-slate-950 px-3 py-2 text-sm font-medium text-white dark:text-slate-900 shadow-sm transition hover:brightness-[80%] active:scale-[0.99] duration-100 disabled:opacity-50"
+                            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 dark:bg-white bg-slate-950 px-3 dark:h-[40px] h-[43px] text-sm font-medium text-white dark:text-slate-900 shadow-sm transition hover:brightness-[80%] active:scale-[0.99] duration-100 disabled:opacity-50"
                           >
                             {loadingMore ? "Loading..." : "Load more guides"}
                           </button>
