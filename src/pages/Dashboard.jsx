@@ -87,7 +87,7 @@ const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
         <h1 className="mt-[1px] text-xl text-white font-semibold tracking-tight">
           {greeting}, {userName}
         </h1>
-        <p className="mt-1 text-sm dark:text-gray-400 text-gray-200">
+        <p className="mt-1 text-sm dark:text-gray-400 text-gray-300">
           {isGuest
             ? "You are currently in Guest mode. Sign up to create guides"
             : "Your network is quiet. Here's what the community is learning"}
