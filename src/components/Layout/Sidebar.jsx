@@ -192,7 +192,7 @@ const Sidebar = ({ onNavigate }) => {
   return (
     <aside
       className={`relative flex h-screen shrink-0 z-[999] flex-col overflow-x-hidden border-l dark:border-white/5 dark:bg-[#0c0c18] bg-blue-950 md:bg-transparent transition-all duration-300 ${
-        collapsed ? "w-[72px] px-2 overflow-y-auto" : "w-screen overflow-y-hidden md:w-[18.5vw] px-3"
+        collapsed ? "w-[72px] px-2 overflow-y-auto" : "w-screen overflow-y-auto md:overflow-y-hidden md:w-[18.5vw] px-3"
       }`}
     >
 
