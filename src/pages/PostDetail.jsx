@@ -589,8 +589,8 @@ const isOwner = user?.id === post?.author?._id;
                 {post?.author.name?.[0]?.toUpperCase()}
               </div>
               <div className="leading-tight">
-                <p className="text-md text-slate-900 dark:text-white font-medium">{post?.author.name}</p>
-                <p className="text-xs text-slate-900 dark:text-white">{post?.author.title}</p>
+                <p className="text-md text-white md:text-slate-900 dark:text-white font-medium">{post?.author.name}</p>
+                <p className="text-xs text-white md:text-slate-900 dark:text-white">{post?.author.title}</p>
               </div>
             </Link>
 
@@ -628,18 +628,18 @@ const isOwner = user?.id === post?.author?._id;
           <div className="my-5 w-full md:w-max md:flex justify-between items-center gap-2.5">
             {isOwner && (
               <div className="flex-wrap flex items-center w-full gap-2 md:gap-2.5 z-[999]">
-                <button onClick={handlePin} className="rounded-lg btn-secondary hover:!bg-blue-700 hover:!text-white dark:!bg-blue-500/15 !bg-blue-500/30 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
+                <button onClick={handlePin} className="rounded-lg btn-secondary hover:!bg-blue-700 hover:dark:!bg-blue-700 hover:!text-white !text-white dark:!bg-blue-500/15 !bg-blue-500/30 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
                   <Pin size={13} className={post?.isPinned ? "fill-accent text-accent" : ""} />
                   {post?.isPinned ? "Pinned" : "Pin"}
                 </button>
                 <div className="h-[18px] w-[1.3px] md:flex hidden bg-white/20 mx-1" />
-                <Link to={`/edit/${post?._id}`} className="rounded-lg btn-secondary hover:!bg-yellow-700 hover:dark:bg-yellow- hover:!text-white dark:!bg-yellow-500/10 !bg-yellow-500/30 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
+                <Link to={`/edit/${post?._id}`} className="rounded-lg btn-secondary hover:!bg-yellow-700 hover:dark:!bg-yellow-700 hover:!text-white !text-white dark:!bg-yellow-500/10 !bg-yellow-500/30 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
                   <Pencil size={13} />
                   Edit
                 </Link>
                 <button
                   onClick={() => setShowDeleteModal(true)}
-                  className="rounded-lg btn-secondary hover:!bg-red-700 !bg-red-500/15 border !border-white/20 hover:!text-white px-4 py-1.5 h-[28px] text-xs text-red-500"
+                  className="rounded-lg btn-secondary hover:!bg-red-700 !bg-red-500/15 border !border-white/20 !text-white hover:!text-white px-4 py-1.5 h-[28px] text-xs text-red-500"
                 >
                   <Trash2 size={13} />
                   Delete
@@ -690,14 +690,14 @@ const isOwner = user?.id === post?.author?._id;
             </div>
           </div>
 
-          <h2 className="mt-4 md:mt-6 mb-2 text-sm font-medium tracking-widest text-slate-900 dark:text-white uppercase">
+          <h2 className="mt-4 md:mt-6 mb-2 text-sm font-medium tracking-widest text-white md:text-slate-900 dark:text-white uppercase">
             Description
           </h2>
 
           {/* Description dengan support highlight */}
           <div className="relative" onMouseUp={handleMouseUp}>
             <article
-              className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light py-4 dark:border-white/15 prose prose-sm !text-sm md:!text-sm max-w-none break-words dark:prose-invert prose-headings:font-semibold text-slate-900 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
+              className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light py-4 dark:border-white/15 prose prose-sm !text-sm md:!text-sm max-w-none break-words dark:prose-invert prose-headings:font-semibold md:text-slate-900 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
               dangerouslySetInnerHTML={{
                 __html: renderHighlightedContent(post?.content),
               }}
@@ -772,7 +772,7 @@ const isOwner = user?.id === post?.author?._id;
 
           {post?.codeBlocks?.length > 0 && (
             <div className="mt-4">
-              <h2 className="mb-2 text-sm font-medium tracking-widest text-slate-900 dark:text-white uppercase">
+              <h2 className="mb-2 text-sm font-medium tracking-widest text-white md:text-slate-900 dark:text-white uppercase">
                 Commands & Code
               </h2>
 
@@ -786,7 +786,7 @@ const isOwner = user?.id === post?.author?._id;
 
           {post?.referencesImages?.length > 0 && (
             <div className="mt-4">
-              <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-900 dark:text-white uppercase">
+              <h2 className="mb-5 text-sm font-medium tracking-widest md:text-slate-900 dark:text-white uppercase">
                 Reference by Upload
               </h2>
 
@@ -820,7 +820,7 @@ const isOwner = user?.id === post?.author?._id;
 
           {/* ===== Topology & Flowchart Cards ===== */}
           <div className="mt-4">
-            <h2 className="mb-2 text-sm font-medium tracking-widest text-slate-900 dark:text-white uppercase">
+            <h2 className="mb-2 text-sm font-medium tracking-widest text-white md:text-slate-900 dark:text-white uppercase">
               Flow System
             </h2>
             {(post?.topology?.nodes?.length > 0 || post?.flowchart?.nodes?.length > 0) && (
@@ -843,7 +843,7 @@ const isOwner = user?.id === post?.author?._id;
                         {post?.topology.nodes.length} devices · Klik untuk melihat
                       </p>
                     </div>
-                    <span className="ml-auto text-slate-900 dark:text-white transition group-hover:text-accent">→</span>
+                    <span className="ml-auto md:text-slate-900 dark:text-white transition group-hover:text-accent">→</span>
                   </button>
                 ): (
                   <button
@@ -885,7 +885,7 @@ const isOwner = user?.id === post?.author?._id;
                         {post?.flowchart.nodes.length} steps · Klik untuk melihat
                       </p>
                     </div>
-                    <span className="ml-auto text-slate-900 dark:text-white transition group-hover:text-accent">→</span>
+                    <span className="ml-auto md:text-slate-900 dark:text-white transition group-hover:text-accent">→</span>
                   </button>
                 ): (
                   <button
@@ -915,7 +915,7 @@ const isOwner = user?.id === post?.author?._id;
           {/* ===== Step-by-step Wizard (Zigzag + Clickable) ===== */}
           {post?.steps?.length > 0 && (
             <div className="mt-4">
-              <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-900 dark:text-white uppercase">
+              <h2 className="mb-5 text-sm font-medium tracking-widest md:text-slate-900 dark:text-white uppercase">
                 Step-by-step Guide
               </h2>
 
@@ -958,12 +958,12 @@ const isOwner = user?.id === post?.author?._id;
                                 >
                                   {/* Header */}
                                   <div className="mb-4 flex items-center justify-between">
-                                    <span className="text-[11px] font-medium tracking-widest text-slate-900 dark:text-white">
+                                    <span className="text-[11px] font-medium tracking-widest md:text-slate-900 dark:text-white">
                                       STEP {String(realIndex + 1).padStart(2, "0")}
                                     </span>
 
                                     {/* Arrow */}
-                                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-300 dark:!bg-[#0c0c18] text-slate-900 dark:text-white transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-300 dark:!bg-[#0c0c18] md:text-slate-900 dark:text-white transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         className="h-3.5 w-3.5"
@@ -1019,14 +1019,14 @@ const isOwner = user?.id === post?.author?._id;
           {/* ===== Custom Tables ===== */}
           {post?.customTables?.length > 0 && (
             <div className="mt-5">
-              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-900 dark:text-white">
+              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-white md:text-slate-900 dark:text-white">
                 GRADIENTS
               </h2>
               <div className="space-y-6">
                 {post?.customTables.map((table, tIdx) => (
                   <div key={tIdx}>
                     {table.title && (
-                      <h3 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">
+                      <h3 className="mb-2 text-sm font-medium text-white md:text-gray-700 dark:text-gray-200">
                         {table.title}
                       </h3>
                     )}
@@ -1038,7 +1038,7 @@ const isOwner = user?.id === post?.author?._id;
                               {row.map((cell, cIdx) => (
                                 <td
                                   key={cIdx}
-                                  className="border border-gray-200 px-4 py-2.5 dark:border-white/15"
+                                  className="border text-white border-gray-200 px-4 py-2.5 dark:border-white/15"
                                 >
                                   {cell || "—"}
                                 </td>
@@ -1059,15 +1059,15 @@ const isOwner = user?.id === post?.author?._id;
               <button
                 onClick={handleLike}
                 className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
-                  liked ? "text-red-500" : "text-slate-900 dark:text-white hover:text-red-500"
+                  liked ? "text-red-500" : "md:text-slate-900 text-white dark:text-white hover:text-red-500"
                 }`}
               >
-                <Heart size={16} className={liked ? "fill-red-500" : "text-slate-900 dark:text-white"} />
+                <Heart size={16} className={liked ? "fill-red-500" : "text-white md:text-slate-900 dark:text-white"} />
                 {likesCount}
               </button>
 
-              <button onClick={handleBookmark} className="flex items-center gap-1.5 text-slate-900 dark:text-white text-sm">
-                <Bookmark size={16} className={bookmarked ? "fill-accent text-accent" : "text-slate-900 dark:text-white"} />
+              <button onClick={handleBookmark} className="flex items-center gap-1.5 text-white md:text-slate-900 dark:text-white text-sm">
+                <Bookmark size={16} className={bookmarked ? "fill-accent text-accent" : "text-white md:text-slate-900 dark:text-white"} />
                 {bookmarked ? "Saved" : "Save"}
               </button>
 
@@ -1086,7 +1086,7 @@ const isOwner = user?.id === post?.author?._id;
                   className={`flex w-max items-center gap-1.5 text-sm transition ${
                     isCompleted
                       ? "text-emerald-600"
-                      : "text-slate-900 dark:text-gray-500 hover:text-emerald-600"
+                      : "text-white md:text-slate-900 dark:text-gray-500 hover:text-emerald-600"
                   }`}
                 >
                   {readingListLoading ? (
@@ -1098,8 +1098,8 @@ const isOwner = user?.id === post?.author?._id;
                     </>
                   ) : (
                     <div className="w-max flex items-center gap-1.5">
-                      <Circle size={16} className="text-slate-900 dark:text-white" />
-                      <span className="w-max text-slate-900 dark:text-white flex items-center">
+                      <Circle size={16} className="md:text-slate-900 dark:text-white" />
+                      <span className="w-max md:text-slate-900 dark:text-white flex items-center">
                         Tandai dibaca
                       </span>
                     </div>
@@ -1111,9 +1111,9 @@ const isOwner = user?.id === post?.author?._id;
               <div className="relative">
                 <button
                   onClick={() => setShowShare((v) => !v)}
-                  className="flex items-center gap-1.5 text-sm text-slate-900 dark:text-white transition hover:text-accent"
+                  className="flex items-center gap-1.5 text-sm text-white md:text-slate-900 dark:text-white transition hover:text-accent"
                 >
-                  <Share2 size={16} className="text-slate-900 dark:text-white" />
+                  <Share2 size={16} className="md:text-slate-900 dark:text-white" />
                   Share
                 </button>
 
@@ -1162,7 +1162,7 @@ const isOwner = user?.id === post?.author?._id;
                 )}
               </div>
               
-              <span className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-white"><Eye size={16} />{post?.views}</span>
+              <span className="flex items-center gap-1.5 text-sm text-white md:text-slate-500 dark:text-white"><Eye size={16} />{post?.views}</span>
             </div>
 
             <div className="w-max flex flex-wrap items-center gap-3 md:mt-0 mt-2.5">
@@ -1179,7 +1179,7 @@ const isOwner = user?.id === post?.author?._id;
           </div>
 
           <div className="mt-6">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-900 dark:text-white">Comments</h2>
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-white md:text-slate-900 dark:text-white">Comments</h2>
             <div className="surface-card shadow-none bg-slate-300 dark:!bg-[#0c0c18] p-3 md:p-5">
               <div className="mb-4 flex gap-2">
                 <input
@@ -1199,7 +1199,7 @@ const isOwner = user?.id === post?.author?._id;
           
           {related?.length > 0 && (
             <div className="mt-4">
-              <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-slate-900 dark:text-white">
+              <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-white md:text-slate-900 dark:text-white">
                 Related Guides
               </h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
