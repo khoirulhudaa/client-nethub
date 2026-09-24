@@ -640,7 +640,7 @@ const isOwner = user?.id === post?.author?._id;
                   </Link>
                   <button
                     onClick={() => setShowDeleteModal(true)}
-                    className="rounded-lg btn-secondary hover:!bg-red-700 !bg-red-500/15 md:!bg-red-500 border !border-white/20 !text-white hover:!text-white px-4 py-1.5 h-[28px] text-xs text-red-500"
+                    className="rounded-lg btn-secondary hover:!bg-red-700 hover:dark:!bg-red-700 !bg-red-500/15 md:!bg-red-500 md:dark:!bg-red-500/20 border !border-white/20 !text-white hover:!text-white px-4 py-1.5 h-[28px] text-xs text-red-500"
                     >
                     <Trash2 size={13} />
                     Delete
@@ -652,9 +652,9 @@ const isOwner = user?.id === post?.author?._id;
                     title={isSpeaking ? "Stop reading" : "Read description aloud"}
                     className={`${
                       isSpeaking
-                        ? "border-red-300 bg-red-50 text-red-600 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-400"
-                        : "border-gray-200 bg-white text-gray-600 hover:border-red-500 hover:!bg-red-600 hover:dark:!bg-red-600 dark:border-white/15 dark:bg-blue-900/20 dark:text-gray-300"
-                    } active:scale-[0.99] duration-100 cursor-pointer hover:brightness-95 inline-flex border border-white/20 items-center gap-1.5 rounded-lg !bg-pink-500 px-2 py-1.5 h-[28px] text-xs font-medium text-white dark:!bg-red-500/25 dark:text-white`}>
+                        ? "border-red-300 bg-red-50 text-pink-600 dark:border-pink-500/40 dark:bg-pink-500/10 dark:text-pink-400"
+                        : "border-gray-200 bg-white text-gray-600 hover:border-pink-500 hover:!bg-pink-600 hover:dark:!bg-pink-600 dark:border-white/15 dark:bg-blue-900/20 dark:text-gray-300"
+                    } active:scale-[0.99] duration-100 cursor-pointer hover:brightness-95 inline-flex border border-white/20 items-center gap-1.5 rounded-lg !bg-pink-500/20 md:!bg-pink-500 px-2 py-1.5 h-[28px] text-xs font-medium text-white dark:!bg-red-500/25 dark:text-white`}>
                       {isSpeaking ? (
                         <>
                           <VolumeX size={14} />
