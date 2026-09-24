@@ -625,14 +625,14 @@ const isOwner = user?.id === post?.author?._id;
             )}
           </div>
 
-          <div className="my-5 w-max flex justify-between items-center gap-2.5">
+          <div className="my-5 w-full md:w-max md:flex justify-between items-center gap-2.5">
             {isOwner && (
-              <div className="flex items-center gap-2.5 z-[999]">
+              <div className="flex-wrap flex items-center w-full gap-2 md:gap-2.5 z-[999]">
                 <button onClick={handlePin} className="rounded-lg btn-secondary dark:!bg-blue-500/15 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
                   <Pin size={13} className={post?.isPinned ? "fill-accent text-accent" : ""} />
                   {post?.isPinned ? "Pinned" : "Pin"}
                 </button>
-                <div className="h-[18px] w-[1.3px] bg-white/20 mx-1" />
+                <div className="h-[18px] w-[1.3px] md:flex hidden bg-white/20 mx-1" />
                 <Link to={`/edit/${post?._id}`} className="rounded-lg btn-secondary dark:!bg-yellow-500/10 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
                   <Pencil size={13} />
                   Edit
@@ -667,9 +667,9 @@ const isOwner = user?.id === post?.author?._id;
               </div>
             )}
 
-            <div className="h-[18px] w-[1.3px] bg-white/20 mx-1" />
+            <div className="h-[18px] w-[1.3px] md:flex hidden bg-white/20 mx-1" />
 
-            <div className="w-max flex gap-2.5">
+            <div className="w-max flex md:mt-0 mt-2 gap-2 md:gap-2.5">
               <div className="md:flex hidden">
                 <CategoryPill border={true} category={post?.category} />
               </div>
@@ -697,7 +697,7 @@ const isOwner = user?.id === post?.author?._id;
           {/* Description dengan support highlight */}
           <div className="relative" onMouseUp={handleMouseUp}>
             <article
-              className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light py-4 dark:border-white/15 prose prose-sm max-w-none break-words dark:prose-invert prose-headings:font-semibold text-slate-900 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
+              className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light py-4 dark:border-white/15 prose prose-sm !text-sm md:!text-sm max-w-none break-words dark:prose-invert prose-headings:font-semibold text-slate-900 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
               dangerouslySetInnerHTML={{
                 __html: renderHighlightedContent(post?.content),
               }}
