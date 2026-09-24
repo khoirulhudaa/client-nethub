@@ -169,7 +169,7 @@ const TopBar = ({ onMenuClick }) => {
             </button>
 
             {openNotif && (
-              <div className="absolute right-[122%] top-full z-[99] mt-2 w-[min(100vw-2rem,360px)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-white/10 dark:bg-[#12121a]">
+              <div className="absolute right-[-236%] md:right-[122%] top-full z-[99] mt-2 w-[min(100vw-2rem,360px)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-white/10 dark:bg-[#12121a]">
                 <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-white/10">
                   <div>
                     <p className="text-sm font-semibold">Announcements</p>
