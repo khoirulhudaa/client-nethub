@@ -690,7 +690,7 @@ const isOwner = user?.id === post?.author?._id;
             </div>
           </div>
 
-          <h2 className="mt-4 md:mt-6 mb-5 text-sm font-medium tracking-widest text-slate-900 dark:text-white uppercase">
+          <h2 className="mt-4 md:mt-6 mb-2 text-sm font-medium tracking-widest text-slate-900 dark:text-white uppercase">
             Description
           </h2>
 
@@ -772,7 +772,7 @@ const isOwner = user?.id === post?.author?._id;
 
           {post?.codeBlocks?.length > 0 && (
             <div className="mt-4">
-              <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-900 dark:text-white uppercase">
+              <h2 className="mb-2 text-sm font-medium tracking-widest text-slate-900 dark:text-white uppercase">
                 Commands & Code
               </h2>
 
@@ -820,11 +820,11 @@ const isOwner = user?.id === post?.author?._id;
 
           {/* ===== Topology & Flowchart Cards ===== */}
           <div className="mt-4">
-            <h2 className="mb-5 text-sm font-medium tracking-widest text-slate-900 dark:text-white uppercase">
+            <h2 className="mb-2 text-sm font-medium tracking-widest text-slate-900 dark:text-white uppercase">
               Flow System
             </h2>
             {(post?.topology?.nodes?.length > 0 || post?.flowchart?.nodes?.length > 0) && (
-              <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="mt-0 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {/* Topology Card */}
                 {post?.topology?.nodes?.length > 0 ? (
                   <button
@@ -1018,7 +1018,7 @@ const isOwner = user?.id === post?.author?._id;
 
           {/* ===== Custom Tables ===== */}
           {post?.customTables?.length > 0 && (
-            <div className="mt-6">
+            <div className="mt-5">
               <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-900 dark:text-white">
                 GRADIENTS
               </h2>
