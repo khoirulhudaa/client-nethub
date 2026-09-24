@@ -579,7 +579,7 @@ const isOwner = user?.id === post?.author?._id;
 
       <div className="p-0 md:p-5 md:bg-slate-100 dark:md:bg-white/5 rounded-xl">
 
-          <h1 className="mb-3 max-w-full w-max truncate dark:rounded-xl dark:p-2 dark:px-2 dark:pr-2.5 text-xl sm:text-2xl font-semibold tracking-tight bg-transparent text-slate-900 dark:text-white dark:!bg-[#111122] dark:border border-slate-200 dark:border-white/20">
+          <h1 className="mb-3 max-w-full w-max truncate dark:rounded-xl dark:p-2 dark:px-2 dark:pr-2.5 text-xl sm:text-2xl font-semibold tracking-tight bg-transparent md:!text-slate-900 !text-white dark:!text-white dark:!bg-[#111122] dark:border border-slate-200 dark:border-white/20">
             {post?.title} 
           </h1>
 
