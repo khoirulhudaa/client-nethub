@@ -628,18 +628,18 @@ const isOwner = user?.id === post?.author?._id;
           <div className="my-5 w-full md:w-max md:flex justify-between items-center gap-2.5">
             {isOwner && (
               <div className="flex-wrap flex items-center w-full gap-2 md:gap-2.5 z-[999]">
-                <button onClick={handlePin} className="rounded-lg btn-secondary dark:!bg-blue-500/15 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
+                <button onClick={handlePin} className="rounded-lg btn-secondary hover:!bg-blue-700 hover:!text-white dark:!bg-blue-500/15 !bg-blue-500/30 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
                   <Pin size={13} className={post?.isPinned ? "fill-accent text-accent" : ""} />
                   {post?.isPinned ? "Pinned" : "Pin"}
                 </button>
                 <div className="h-[18px] w-[1.3px] md:flex hidden bg-white/20 mx-1" />
-                <Link to={`/edit/${post?._id}`} className="rounded-lg btn-secondary dark:!bg-yellow-500/10 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
+                <Link to={`/edit/${post?._id}`} className="rounded-lg btn-secondary hover:!bg-yellow-700 hover:dark:bg-yellow- hover:!text-white dark:!bg-yellow-500/10 !bg-yellow-500/30 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
                   <Pencil size={13} />
                   Edit
                 </Link>
                 <button
                   onClick={() => setShowDeleteModal(true)}
-                  className="rounded-lg btn-secondary !bg-red-500/15 border !border-white/20 px-4 py-1.5 h-[28px] text-xs text-red-500"
+                  className="rounded-lg btn-secondary hover:!bg-red-700 !bg-red-500/15 border !border-white/20 hover:!text-white px-4 py-1.5 h-[28px] text-xs text-red-500"
                 >
                   <Trash2 size={13} />
                   Delete
@@ -679,18 +679,18 @@ const isOwner = user?.id === post?.author?._id;
                   Sudah dibaca
                 </div>
               )}
-              <div className="inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-500 px-2 py-1 text-xs font-medium text-white dark:bg-emerald-500/20 dark:text-slate-300">
+              <div className="w-max inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-500 px-2 py-1 text-xs font-medium text-white dark:bg-emerald-500/20 dark:text-slate-300">
                 <Calendar size={13} />
                 {formatDate(post?.createdAt)}
               </div>
-              <div className="inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-orange-500 px-2 py-1 text-xs font-medium text-white dark:bg-slate-300/10 dark:text-slate-300">
+              <div className="w-max inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-orange-500 px-2 py-1 text-xs font-medium text-white dark:bg-slate-300/10 dark:text-slate-300">
                 <Timer size={13} />
                 {timeAgo(post?.createdAt)}
               </div>
             </div>
           </div>
 
-          <h2 className="mt-6 mb-5 text-sm font-medium tracking-widest text-slate-900 dark:text-white uppercase">
+          <h2 className="mt-4 md:mt-6 mb-5 text-sm font-medium tracking-widest text-slate-900 dark:text-white uppercase">
             Description
           </h2>
 
