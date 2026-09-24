@@ -628,11 +628,12 @@ const isOwner = user?.id === post?.author?._id;
           <div className="my-5 w-max flex justify-between items-center gap-2.5">
             {isOwner && (
               <div className="flex items-center gap-2.5 z-[999]">
-                <button onClick={handlePin} className="rounded-lg btn-secondary border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
+                <button onClick={handlePin} className="rounded-lg btn-secondary dark:!bg-blue-500/15 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
                   <Pin size={13} className={post?.isPinned ? "fill-accent text-accent" : ""} />
                   {post?.isPinned ? "Pinned" : "Pin"}
                 </button>
-                <Link to={`/edit/${post?._id}`} className="rounded-lg btn-secondary border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
+                <div className="h-[18px] w-[1.3px] bg-white/20 mx-1" />
+                <Link to={`/edit/${post?._id}`} className="rounded-lg btn-secondary dark:!bg-yellow-500/10 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
                   <Pencil size={13} />
                   Edit
                 </Link>
@@ -643,8 +644,30 @@ const isOwner = user?.id === post?.author?._id;
                   <Trash2 size={13} />
                   Delete
                 </button>
+                <button 
+                  onClick={handleSpeakDescription}
+                  title={isSpeaking ? "Stop reading" : "Read description aloud"}
+                  className={`${
+                    isSpeaking
+                      ? "border-red-300 bg-red-50 text-red-600 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-400"
+                      : "border-gray-200 bg-white text-gray-600 hover:border-red-500 hover:!bg-red-600 hover:dark:!bg-red-600 dark:border-white/15 dark:bg-blue-900/20 dark:text-gray-300"
+                  } active:scale-[0.99] duration-100 cursor-pointer hover:brightness-95 inline-flex border border-white/20 items-center gap-1.5 rounded-lg !bg-red-500 px-2 py-1 text-xs font-medium text-white dark:!bg-red-500/25 dark:text-slate-300`}>
+                    {isSpeaking ? (
+                      <>
+                        <VolumeX size={14} />
+                        Stop
+                      </>
+                    ) : (
+                      <>
+                        <Volume2 size={14} />
+                        Listen
+                      </>
+                    )}
+                  </button>
               </div>
             )}
+
+            <div className="h-[18px] w-[1.3px] bg-white/20 mx-1" />
 
             <div className="w-max flex gap-2.5">
               <div className="md:flex hidden">
@@ -663,29 +686,6 @@ const isOwner = user?.id === post?.author?._id;
               <div className="inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-orange-500 px-2 py-1 text-xs font-medium text-white dark:bg-slate-300/10 dark:text-slate-300">
                 <Timer size={13} />
                 {timeAgo(post?.createdAt)}
-              </div>
-              <span className="relative top-[1px]">
-                /
-              </span>
-              <div 
-              onClick={handleSpeakDescription}
-              title={isSpeaking ? "Stop reading" : "Read description aloud"}
-              className={`${
-                isSpeaking
-                  ? "border-red-300 bg-red-50 text-red-600 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-400"
-                  : "border-gray-200 bg-white text-gray-600 hover:border-red-500 hover:!bg-red-600 hover:dark:!bg-red-600 dark:border-white/15 dark:bg-blue-900/20 dark:text-gray-300"
-              } active:scale-[0.99] duration-100 cursor-pointer hover:brightness-95 inline-flex border border-white/20 items-center gap-1.5 rounded-lg !bg-red-500 px-2 py-1 text-xs font-medium text-white dark:!bg-red-500/25 dark:text-slate-300`}>
-                {isSpeaking ? (
-                  <>
-                    <VolumeX size={14} />
-                    Stop
-                  </>
-                ) : (
-                  <>
-                    <Volume2 size={14} />
-                    Listen
-                  </>
-                )}
               </div>
             </div>
           </div>
