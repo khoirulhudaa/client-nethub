@@ -1040,7 +1040,7 @@ const isOwner = user?.id === post?.author?._id;
                               {row.map((cell, cIdx) => (
                                 <td
                                   key={cIdx}
-                                  className="border text-white border-gray-200 px-4 py-2.5 dark:border-white/15"
+                                  className="border dark:text-white border-gray-300 px-4 py-2.5 dark:border-white/15"
                                 >
                                   {cell || "—"}
                                 </td>
