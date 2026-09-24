@@ -87,7 +87,7 @@ const PostCard = ({ post, featured = false, status=true }) => {
           <CategoryPill category={post.category} />
           
           <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-400">{timeAgo(post.createdAt)}</span>
+            <span className="text-xs text-slate-900 dark:text-gray-400">{timeAgo(post.createdAt)}</span>
 
             {/* Tombol Add to Reading List */}
             {!isGuest && (
