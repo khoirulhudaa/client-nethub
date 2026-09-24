@@ -629,18 +629,18 @@ const isOwner = user?.id === post?.author?._id;
               <div className="flex-wrap flex items-center w-full gap-2 md:gap-2.5 z-[999]">
               {isOwner && (
                 <>
-                  <button onClick={handlePin} className="rounded-lg btn-secondary hover:!bg-blue-700 hover:dark:!bg-blue-700 hover:!text-white !text-white dark:!bg-blue-500/15 !bg-blue-500/30 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
+                  <button onClick={handlePin} className="rounded-lg btn-secondary hover:!bg-blue-700 hover:dark:!bg-blue-700 hover:!text-white !text-white dark:!bg-blue-500/15 !bg-blue-500/30 md:!bg-blue-500 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
                     <Pin size={13} className={post?.isPinned ? "fill-accent text-accent" : ""} />
                     {post?.isPinned ? "Pinned" : "Pin"}
                   </button>
-                  <div className="h-[18px] w-[1.3px] md:flex hidden bg-white/20 mx-1" />
-                  <Link to={`/edit/${post?._id}`} className="rounded-lg btn-secondary hover:!bg-yellow-700 hover:dark:!bg-yellow-700 hover:!text-white !text-white dark:!bg-yellow-500/10 !bg-yellow-500/30 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
+                  <div className="h-[18px] w-[1.3px] md:flex hidden bg-slate-400 dark:bg-white/20 mx-1" />
+                  <Link to={`/edit/${post?._id}`} className="rounded-lg btn-secondary hover:!bg-yellow-700 hover:dark:!bg-yellow-700 hover:!text-white !text-white dark:!bg-yellow-500/10 md:!bg-yellow-500 !bg-yellow-500/30 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
                     <Pencil size={13} />
                     Edit
                   </Link>
                   <button
                     onClick={() => setShowDeleteModal(true)}
-                    className="rounded-lg btn-secondary hover:!bg-red-700 !bg-red-500/15 border !border-white/20 !text-white hover:!text-white px-4 py-1.5 h-[28px] text-xs text-red-500"
+                    className="rounded-lg btn-secondary hover:!bg-red-700 !bg-red-500/15 md:!bg-red-500 border !border-white/20 !text-white hover:!text-white px-4 py-1.5 h-[28px] text-xs text-red-500"
                     >
                     <Trash2 size={13} />
                     Delete
@@ -654,7 +654,7 @@ const isOwner = user?.id === post?.author?._id;
                       isSpeaking
                         ? "border-red-300 bg-red-50 text-red-600 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-400"
                         : "border-gray-200 bg-white text-gray-600 hover:border-red-500 hover:!bg-red-600 hover:dark:!bg-red-600 dark:border-white/15 dark:bg-blue-900/20 dark:text-gray-300"
-                    } active:scale-[0.99] duration-100 cursor-pointer hover:brightness-95 inline-flex border border-white/20 items-center gap-1.5 rounded-lg !bg-red-500 px-2 py-1.5 h-[28px] text-xs font-medium text-white dark:!bg-red-500/25 dark:text-slate-300`}>
+                    } active:scale-[0.99] duration-100 cursor-pointer hover:brightness-95 inline-flex border border-white/20 items-center gap-1.5 rounded-lg !bg-pink-500 px-2 py-1.5 h-[28px] text-xs font-medium text-white dark:!bg-red-500/25 dark:text-white`}>
                       {isSpeaking ? (
                         <>
                           <VolumeX size={14} />
@@ -669,7 +669,7 @@ const isOwner = user?.id === post?.author?._id;
                 </button>
               </div>
 
-            <div className="h-[18px] w-[1.3px] md:flex hidden bg-white/20 mr-1 ml-[2px]" />
+            <div className="h-[18px] w-[1.3px] md:flex hidden bg-slate-400 dark:bg-white/20 mr-1 ml-[2px]" />
 
             <div className="w-max flex md:mt-0 mt-2 gap-2 md:gap-2.5">
               <div className="md:flex hidden">
@@ -699,7 +699,7 @@ const isOwner = user?.id === post?.author?._id;
           {/* Description dengan support highlight */}
           <div className="relative" onMouseUp={handleMouseUp}>
             <article
-              className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light py-4 dark:border-white/15 prose prose-sm !text-sm md:!text-sm max-w-none break-words dark:prose-invert prose-headings:font-semibold md:text-slate-900 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
+              className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light md:pb-0 !pt-5 md:pt-4 dark:border-white/15 prose prose-sm !text-sm md:!text-sm max-w-none break-words dark:prose-invert prose-headings:font-semibold md:text-slate-900 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
               dangerouslySetInnerHTML={{
                 __html: renderHighlightedContent(post?.content),
               }}
@@ -1163,7 +1163,6 @@ const isOwner = user?.id === post?.author?._id;
                   </>
                 )}
               </div>
-              
               <span className="flex items-center gap-1.5 text-sm text-white md:text-slate-500 dark:text-white"><Eye size={16} />{post?.views}</span>
             </div>
 
