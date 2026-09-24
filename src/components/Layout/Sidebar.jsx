@@ -515,7 +515,7 @@ const Sidebar = ({ onNavigate }) => {
                     type="button"
                     disabled={loggingOut}
                     onClick={() => setShowLogoutModal(false)}
-                    className="flex-1 active:scale-[0.99] duration-100 rounded-xl border border-white bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-gray-200"
+                    className="flex-1 active:scale-[0.99] duration-100 rounded-xl border border-slate-300 bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-gray-200"
                   >
                     Batal
                   </button>

@@ -596,14 +596,14 @@ const isOwner = user?.id === post?.author?._id;
 
             <div className='w-max flex items-center gap-2'>
               {/* Tombol Follow */}
-              {user && user.id !== post?.author._id && (
+              {!isGuest && user && user.id !== post?.author._id && (
                 <button
                   onClick={handleFollow}
-                  disabled={followLoading}
-                  className={`rounded-xl flex items-center gap-1.5 px-3 py-1.5 h-[36px] text-xs font-medium transition ${
+                  disabled={followLoading || isGuest}
+                  className={`${isGuest ? '!active:scale-[1] cursor-not-allowed hover:!bg-slate-300 bg-slate-300 !text-gray-400' : ''} rounded-xl flex items-center gap-1.5 px-3 py-1.5 h-[36px] text-xs font-medium transition ${
                     isFollowing
-                      ? "border border-gray-300 text-white bg-red-600 hover:bg-red-700 dark:border-white/40"
-                      : "bg-blue-600 border dark:border-white/40 hover:bg-blue-700 text-white hover:opacity-90"
+                      ? "border border-gray-300 text-white bg-red-600 hover:bg-red-700 dark:border-white/40 active:scale-[0.99] duration-100"
+                      : "bg-blue-600 border dark:border-white/40 hover:!bg-blue-800 text-white hover:opacity-90 active:scale-[0.99] duration-100"
                   }`}
                 >
                   <Plus size={13} />
@@ -673,7 +673,7 @@ const isOwner = user?.id === post?.author?._id;
               className={`${
                 isSpeaking
                   ? "border-red-300 bg-red-50 text-red-600 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-400"
-                  : "border-gray-200 bg-white text-gray-600 hover:border-accent hover:text-accent dark:border-white/15 dark:bg-blue-900/20 dark:text-gray-300"
+                  : "border-gray-200 bg-white text-gray-600 hover:border-red-500 hover:!bg-red-600 hover:dark:!bg-red-600 dark:border-white/15 dark:bg-blue-900/20 dark:text-gray-300"
               } active:scale-[0.99] duration-100 cursor-pointer hover:brightness-95 inline-flex border border-white/20 items-center gap-1.5 rounded-lg !bg-red-500 px-2 py-1 text-xs font-medium text-white dark:!bg-red-500/25 dark:text-slate-300`}>
                 {isSpeaking ? (
                   <>
