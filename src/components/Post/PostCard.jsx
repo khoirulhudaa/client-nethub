@@ -57,7 +57,7 @@ const PostCard = ({ post, featured = false, status=true }) => {
   return (
     <Link
       to={`/posts/${post.slug}`}
-      className={`bg-slate-950 rounded-xl dark:!bg-[#0c0c18] dark:border dark:!border-white/20 group active:scale-[0.99] duration-100 relative flex flex-col overflow-hidden ${
+      className={`bg-slate-200 rounded-xl dark:!bg-[#0c0c18] border dark:!border-white/20 group active:scale-[0.99] duration-100 relative flex flex-col overflow-hidden ${
         featured ? "h-full" : ""
       }`}
     >
@@ -82,7 +82,7 @@ const PostCard = ({ post, featured = false, status=true }) => {
         )}
       </div>
 
-      <div className="flex flex-1 flex-col hover:bg-slate-900 hovecr:dark:bg-slate-300 group-hover:dark:bg-slate-900/40 gap-3 p-3.5 py-4">
+      <div className="flex flex-1 flex-col hover:bg-slate-300 hover:dark:bg-slate-200 group-hover:dark:bg-slate-900/40 gap-3 p-3.5 py-4">
         <div className="flex items-center justify-between gap-2">
           <CategoryPill category={post.category} />
           
@@ -119,11 +119,11 @@ const PostCard = ({ post, featured = false, status=true }) => {
           </div>
         </div>
 
-        <h3 className={`font-semibold text-white truncate max-w-[90%] overflow-x-hidden leading-snug tracking-tight ${featured ? "text-xl" : "text-base"}`}>
+        <h3 className={`font-semibold text-slate-900 dark:text-white truncate max-w-[90%] overflow-x-hidden leading-snug tracking-tight ${featured ? "text-xl" : "text-base"}`}>
           {post.title}
         </h3>
 
-        <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400 line-clamp-2">
+        <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400 line-clamp-2">
           {post.content
             ? post.content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()
             : post.excerpt}
@@ -134,11 +134,11 @@ const PostCard = ({ post, featured = false, status=true }) => {
             <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white dark:bg-accent-soft text-[11px] font-semibold text-slate-900 dark:text-accent">
               {post.author?.name?.[0]?.toUpperCase()}
             </div>
-            <span className="text-xs font-medium text-gray-400 dark:text-gray-400">
+            <span className="text-xs font-medium text-gray-800 dark:text-gray-400">
               {post.author?.name}
             </span>
           </div>
-          <div className="flex items-center gap-3 text-gray-400">
+          <div className="flex items-center gap-3 text-slate-900 dark:text-gray-400">
             <span className="flex items-center gap-1 text-xs">
               <Eye size={13} /> {post.views ?? 0}
             </span>

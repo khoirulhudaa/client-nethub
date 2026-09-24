@@ -301,7 +301,7 @@ const Sidebar = ({ onNavigate }) => {
           >
             <div data-tour="discover">
               {discoverLinks.map(({ label, icon: Icon, to }) => (
-                <div key={label} className={collapsed ? "" : "px-2"}>
+                <div key={label} className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
                   <NavLink
                     to={to}
                     onClick={onNavigate}
@@ -325,7 +325,7 @@ const Sidebar = ({ onNavigate }) => {
           >
             <div data-tour="practice">
               {filteredQuizLinks.map(({ label, icon: Icon, to }) => (
-                <div key={label} className={collapsed ? "" : "px-2"}>
+                <div key={label} className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
                   <NavLink
                     to={to}
                     onClick={onNavigate}
@@ -350,7 +350,7 @@ const Sidebar = ({ onNavigate }) => {
             <div data-tour="library">
               {/* My Guides - hanya user login */}
               {!isGuest && (
-                <div className={collapsed ? "" : "px-2"}>
+                <div className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
                   <NavLink
                     to="/my-posts"
                     onClick={onNavigate}
@@ -423,7 +423,7 @@ const Sidebar = ({ onNavigate }) => {
               onToggle={() => toggleGroup("admin")}
               collapsed={collapsed}
             >
-              <div className={collapsed ? "" : "px-2"}>
+              <div className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
                 <NavLink
                   to="/admin/announcements"
                   onClick={onNavigate}

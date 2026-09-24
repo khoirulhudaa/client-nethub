@@ -287,7 +287,7 @@ const CreatePost = () => {
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
               >
                 {CATEGORIES.map((c) => (
-                  <option key={c} value={c} className="dark:text-black">
+                  <option key={c} value={c} className="dark:text-white text-black">
                     {c}
                   </option>
                 ))}
@@ -909,7 +909,7 @@ const CreatePost = () => {
             {codeBlocks.map((block, idx) => (
               <div
                 key={idx}
-                className="rounded-2xl border border-gray-200 p-4 dark:border-white/10"
+                className="rounded-2xl border border-slate-300 p-4 dark:border-white/10"
               >
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                   <input
@@ -937,12 +937,12 @@ const CreatePost = () => {
                         );
                       }}
                     >
-                      <option className="text-black" value="bash">Bash / Shell</option>
-                      <option className="text-black" value="routeros">RouterOS</option>
-                      <option className="text-black" value="javascript">JavaScript</option>
-                      <option className="text-black" value="python">Python</option>
-                      <option className="text-black" value="json">JSON</option>
-                      <option className="text-black" value="text">Plain Text</option>
+                      <option className="text-black dark:text-white" value="bash">Bash / Shell</option>
+                      <option className="text-black dark:text-white" value="routeros">RouterOS</option>
+                      <option className="text-black dark:text-white" value="javascript">JavaScript</option>
+                      <option className="text-black dark:text-white" value="python">Python</option>
+                      <option className="text-black dark:text-white" value="json">JSON</option>
+                      <option className="text-black dark:text-white" value="text">Plain Text</option>
                     </select>
 
                     <button

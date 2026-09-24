@@ -544,7 +544,7 @@ const AccountTab = ({ profile, onSaved }) => {
 
 // --- Main Profile Page ---------------------------------------------------------
 const Profile = () => {
-  const { user, setUser } = useAuth() || {};
+  const { user, updateUser } = useAuth() || {};
   const [profile, setProfile] = useState(user || null);
   const [loading, setLoading] = useState(!user);
   const [tab, setTab] = useState("overview");
@@ -557,10 +557,9 @@ const Profile = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleProfileUpdate = (updatedUser) => {
-    setProfile(updatedUser);
-    // Sinkronkan ke AuthContext jika context menyediakan setter
-    setUser?.(updatedUser);
+  const handleProfileUpdate = (valueUpdateUser) => {
+    setProfile(valueUpdateUser);
+    updateUser?.(valueUpdateUser); // Sidebar ikut ter-update
   };
 
   if (loading) {
