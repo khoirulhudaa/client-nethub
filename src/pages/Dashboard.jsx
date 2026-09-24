@@ -5,6 +5,7 @@ import {
   Brain,
   ChevronRight,
   Eye,
+  Newspaper,
   Plus,
   Search,
   Sparkles,
@@ -419,6 +420,7 @@ const Dashboard = () => {
   //   });
   // }, [data.posts, search]);
 
+  // Fuse + filteredPosts remain the same
   const fuse = useMemo(() => {
     const source = search.trim() ? allPostsForSearch : data.posts;
     if (!source || source.length === 0) return null;
@@ -438,9 +440,25 @@ const Dashboard = () => {
   const filteredPosts = useMemo(() => {
     if (!search.trim()) return data.posts || [];
     if (!fuse) return [];
-
     return fuse.search(search.trim()).map((result) => result.item);
   }, [fuse, search, data.posts]);
+
+  const { newestThree, remainingPosts } = useMemo(() => {
+    // When searching or filtering by category, just show everything in the normal grid
+    if (search.trim() || category) {
+      return { newestThree: [], remainingPosts: filteredPosts };
+    }
+
+    // Assume posts are already ordered newest-first from the API.
+    // If you have a createdAt / publishedAt field, sort explicitly:
+    // const sorted = [...filteredPosts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const sorted = filteredPosts;
+
+    const newestThree = sorted.slice(0, 3);
+    const remainingPosts = sorted.slice(3);
+
+    return { newestThree, remainingPosts };
+  }, [filteredPosts, search, category]);
 
   const hasMore = data.page < data.pages;
   const handleLoadMore = () => {
@@ -604,6 +622,25 @@ const Dashboard = () => {
                   {showOverviewSections && data.pinned?.length > 0 && (
                     <section className="mb-8 px-3 md:px-4 md:mt-0 mt-4">
                       <PinnedHero pinned={data.pinned} />
+                    </section>
+                  )}
+
+                  {/* ========== 2. 3 NEWEST GUIDES ========== */}
+                  {showOverviewSections && newestThree.length > 0 && (
+                    <section className="mb-8 px-3 md:px-4">
+                      <div className="mb-4 flex items-center gap-2">
+                        <h2 className="flex items-center text-lg mt-1 font-medium tracking-tight">
+                          <Newspaper size={17} className="relative top-[-1px] mr-2 text-slate-900 dark:text-white" />
+                          <span className="relative top-[-1.7px] text-slate-900 dark:text-white">
+                            Top 3 newests
+                          </span>
+                        </h2>
+                      </div>
+                      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                        {newestThree.map((post) => (
+                          <PostCard key={post._id} post={post} status={false} />
+                        ))}
+                      </div>
                     </section>
                   )}
 
