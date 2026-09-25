@@ -37,7 +37,7 @@ const Register = () => {
               onDragStart={(e) => e.preventDefault()}
               src="/icons/icon-192x192.png" alt="logo" className="w-[85%] relative top-[1px] left-[-0.3px]" />
           </div>
-          <h1 className="text-xl font-semibold text-slate-950 tracking-tight">Join NetHub</h1>
+          <h1 className="text-xl font-semibold text-slate-950 tracking-tight">Join Pintex Network</h1>
           <p className="text-sm text-gray-500">Share fixes, topologies, and hardware guides.</p>
         </div>
 
