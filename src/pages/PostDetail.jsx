@@ -817,7 +817,7 @@ const isOwner = user?.id === post?.author?._id;
                 <CategoryPill border={true} category={post?.category} />
               </div>
               {isCompleted && (
-                <div className="inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-100 px-3 py-1.5 h-[28px] text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
+                <div className="w-max inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-100 px-3 py-1.5 h-[28px] text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
                   <CheckCircle2 size={13} />
                   Sudah dibaca
                 </div>
