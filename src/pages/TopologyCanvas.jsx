@@ -41,10 +41,8 @@ import { validateConnection } from "../utils/cableRules";
 const HardwareNode = ({ data, selected }) => {
   const Icon = data.icon || Router;
 
-  // Device yang ingin ditampilkan berbeda (peripheral)
   const isPeripheral = ["Monitor", "Mouse", "Keyboard"].includes(data.type);
-  // Warna khusus untuk peripheral (hijau)
-  const peripheralColor = "#16a34a"; // green-600
+  const peripheralColor = "#16a34a"; 
 
   if (isPeripheral) {
     return (
@@ -67,11 +65,6 @@ const HardwareNode = ({ data, selected }) => {
         >
           <Icon size={22} />
         </div>
-
-        {/* Label kecil di bawah (opsional, bisa dihapus kalau mau pure icon saja) */}
-        {/* <p className="mt-1.5 text-[10px] font-medium text-green-700 dark:text-green-400">
-          {data.label || data.type}
-        </p> */}
       </div>
     );
   }
@@ -613,7 +606,7 @@ export default function TopologyCanvas({
         {/* Canvas */}
         <div
           ref={reactFlowWrapper}
-          className="flex-1 overflow-hidden rounded-xl border border-gray-200 dark:border-white/10"
+          className="flex-1 overflow-hidden rounded-xl border border-slate-400/60 dark:border-white/10"
           style={{ height: `${height}px` }}
         >
           <ReactFlow

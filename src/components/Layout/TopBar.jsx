@@ -146,7 +146,7 @@ const TopBar = ({ onMenuClick }) => {
           {!isGuest && (
             <button
               onClick={() => navigate("/create")}
-              className="hidden items-center active:scale-[0.98] dark:hover:bg-white/10 hover:bg-black/10 h-10 gap-1.5 rounded-xl border-[2px] border-slate-400 dark:md:border-white/20 dark:border-white/30 px-3 py-2 text-sm font-medium text-gray-500 dark:text-white transition hover:opacity-90 sm:inline-flex"
+              className="active:scale-[0.98] duration-100 hidden items-center dark:hover:bg-white/10 hover:bg-black/10 h-10 gap-1.5 rounded-xl border-[2px] border-slate-400 dark:md:border-white/20 dark:border-white/30 px-3 py-2 text-sm font-medium text-gray-500 dark:text-white transition hover:opacity-90 sm:inline-flex"
             >
               <Plus size={16} />
             </button>
@@ -156,7 +156,7 @@ const TopBar = ({ onMenuClick }) => {
           <div className="relative" ref={notifRef} data-tour="notif">
             <button
               type="button"
-              className="relative border-slate-400 dark:md:border-white/20 dark:border-white/30 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/10 dark:text-gray-300 dark:hover:bg-white/10"
+              className="active:scale-[0.98] duration-100 relative border-slate-400 dark:md:border-white/20 dark:border-white/30 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/10 dark:text-gray-300 dark:hover:bg-white/10"
               title="Notifications"
               onClick={openNotifications}
             >
@@ -257,7 +257,7 @@ const TopBar = ({ onMenuClick }) => {
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="border-slate-400 dark:md:border-white/20 dark:border-white/30 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+            className="active:scale-[0.98] duration-100 border-slate-400 dark:md:border-white/20 dark:border-white/30 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
             title="Toggle theme"
             >
             {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
@@ -271,8 +271,7 @@ const TopBar = ({ onMenuClick }) => {
                 setOpenProfile((prev) => !prev);
                 setOpenNotif(false);
               }}
-              className="ml-0.5 flex h-10 w-10 items-center justify-center dark:border-[2px] dark:md:border-white/20 dark:border-white/30 border-slate-400 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
-              // className="ml-0.5 flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-transparent text-sm font-semibold text-white ring-1 transition hover:opacity-90"
+              className="ml-0.5 flex h-10 w-10 active:scale-[0.98] items-center justify-center dark:border-[2px] dark:md:border-white/20 dark:border-white/30 border-slate-400 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
               title={user?.name || "Profile"}
             >
               {user?.avatar ? (

@@ -280,7 +280,7 @@ export default function FlowchartCanvas({ value, onChange, readOnly = false, hei
             <button
                 type="button"
                 onClick={clearAll}
-                className="ml-auto hidden md:flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-white hover:text-slate-200 active:scale-[0.99]"
+                className="ml-auto hidden md:flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-slate-900 dark:text-white hover:text-slate-200 active:scale-[0.99]"
             >
             Clear All
             <Eraser size={12} className="relative top-[-1px]" />
@@ -290,7 +290,7 @@ export default function FlowchartCanvas({ value, onChange, readOnly = false, hei
 
       {/* Canvas */}
     <div
-        className="h-full min-h-[500px] rounded-xl border border-gray-200 overflow-hidden dark:border-white/10"
+        className="h-full min-h-[500px] rounded-xl border border-slate-400/60 overflow-hidden dark:border-white/10"
         style={{ height: height ? `${height}px` : "420px" }}
         onDrop={readOnly ? undefined : onDrop}
         onDragOver={readOnly ? undefined : onDragOver}
