@@ -606,7 +606,7 @@ export default function TopologyCanvas({
         {/* Canvas */}
         <div
           ref={reactFlowWrapper}
-          className="flex-1 overflow-hidden rounded-xl border border-slate-400/60 dark:border-white/10"
+          className="flex-1 dark:!bg-slate-100/10 overflow-hidden rounded-xl border border-slate-400/60 dark:border-white/10"
           style={{ height: `${height}px` }}
         >
           <ReactFlow

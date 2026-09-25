@@ -9,7 +9,7 @@ const RichTextEditor = ({
   placeholder = "Write your networking guide…",
 }) => {
   return (
-    <div className="ckeditor-wrapper text-black rounded-xl border border-gray-200 bg-white/70 overflow-hidden dark:border-white/10 dark:bg-white/5">
+    <div className="ckeditor-wrapper text-black rounded-xl border border-gray-200 bg-white/70 overflow-hidden dark:border-white/10 dark:!bg-slate-100">
       <CKEditor
         editor={ClassicEditor}
         data={value || ""}

@@ -349,7 +349,7 @@ export default function FlowchartCanvas({ value, onChange, readOnly = false, hei
 
       {/* Canvas */}
     <div
-        className="h-full min-h-[500px] rounded-xl border border-slate-400/60 overflow-hidden dark:border-white/10"
+        className="h-full min-h-[500px] rounded-xl dark:!bg-slate-100/10 border border-slate-400/60 overflow-hidden dark:border-white/10"
         style={{ height: height ? `${height}px` : "420px" }}
         onDrop={readOnly ? undefined : onDrop}
         onDragOver={readOnly ? undefined : onDragOver}

@@ -268,7 +268,7 @@ const CreatePost = () => {
           <div>
             <label className="mb-1.5 block text-sm font-medium">Title item</label>
             <input
-              className="input-field"
+              className="input-field dark:!bg-slate-100"
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               placeholder="e.g. Diagnosing intermittent packet loss on a VLAN trunk"
@@ -282,7 +282,7 @@ const CreatePost = () => {
             <div>
               <label className="mb-1.5 block text-sm font-medium">Category</label>
               <select
-                className="input-field"
+                className="input-field dark:!bg-slate-100"
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
               >
@@ -298,7 +298,7 @@ const CreatePost = () => {
                 Tags (max: 4)
               </label>
               <input
-                className="input-field"
+                className="input-field dark:!bg-slate-100"
                 value={form.tags}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -321,7 +321,7 @@ const CreatePost = () => {
           <div>
             <label className="mb-1.5 block text-sm font-medium">Excerpt</label>
             <input
-              className="input-field"
+              className="input-field dark:!bg-slate-100"
               value={form.excerpt}
               onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
               placeholder="One-line summary shown on guide cards"
@@ -334,7 +334,7 @@ const CreatePost = () => {
             <label className="mb-1.5 block text-sm font-medium">Cover image</label>
 
             {form.coverImage ? (
-              <div className="relative group dark:!bg-[#0c0c18] inline-block">
+              <div className="relative group dark:!bg-slate-100 inline-block">
                 <img
                   src={form.coverImage}
                   alt="Cover"
@@ -350,7 +350,7 @@ const CreatePost = () => {
               </div>
             ) : (
               <label
-                className="flex h-40 w-full max-w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed surface-card border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent dark:!bg-[#0c0c18]"
+                className="flex h-40 w-full max-w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed surface-card border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent dark:!bg-slate-100"
                 onDragOver={(e) => {
                   e.preventDefault();
                   e.currentTarget.classList.add("border-accent", "text-accent");
@@ -434,7 +434,7 @@ const CreatePost = () => {
               return (
                 <label
                   key={idx}
-                  className="flex z-[999] h-24 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed dark:!bg-[#0c0c18] border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent"
+                  className="flex z-[999] h-24 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed dark:!bg-slate-100 border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent"
                   onDragOver={(e) => {
                     e.preventDefault();
                     e.currentTarget.classList.add("border-accent", "text-accent");
@@ -560,7 +560,7 @@ const CreatePost = () => {
               >
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                   <input
-                    className="input-field max-w-xs"
+                    className="input-field dark:!bg-slate-100 max-w-xs"
                     value={table.title}
                     onChange={(e) => {
                       const val = e.target.value;
@@ -751,7 +751,7 @@ const CreatePost = () => {
                 <div className="mb-3">
                   <label className="mb-1 block text-xs font-medium">Judul</label>
                   <input
-                    className="input-field"
+                    className="input-field dark:!bg-slate-100"
                     value={step.title}
                     onChange={(e) => {
                       const val = e.target.value;
@@ -788,7 +788,7 @@ const CreatePost = () => {
                     </div>
                   ) : (
                     <label
-                      className="surface-card dark:!bg-[#0c0c18] flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent"
+                      className="surface-card dark:!bg-slate-100 flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent"
                       onDragOver={(e) => {
                         e.preventDefault();
                         e.currentTarget.classList.add("border-accent", "text-accent");
@@ -858,7 +858,7 @@ const CreatePost = () => {
                 <div>
                   <label className="mb-1 block text-xs font-medium">Deskripsi</label>
                   <textarea
-                    className="input-field min-h-[80px]"
+                    className="input-field dark:!bg-slate-100 min-h-[80px]"
                     value={step.description}
                     onChange={(e) => {
                       const val = e.target.value;
@@ -913,7 +913,7 @@ const CreatePost = () => {
               >
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                   <input
-                    className="input-field max-w-xs"
+                    className="input-field dark:!bg-slate-100 max-w-xs"
                     value={block.title}
                     onChange={(e) => {
                       const val = e.target.value;
@@ -926,7 +926,7 @@ const CreatePost = () => {
 
                   <div className="flex items-center gap-2">
                     <select
-                      className="input-field w-36 text-xs"
+                      className="input-field dark:!bg-slate-100 w-36 text-xs"
                       value={block.language}
                       onChange={(e) => {
                         const val = e.target.value;
@@ -958,7 +958,7 @@ const CreatePost = () => {
                 </div>
 
                 <textarea
-                  className="input-field min-h-[140px] font-mono text-sm"
+                  className="input-field dark:!bg-slate-100 min-h-[140px] font-mono text-sm"
                   value={block.code}
                   onChange={(e) => {
                     const val = e.target.value;
