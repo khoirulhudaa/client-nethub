@@ -223,7 +223,7 @@ const Sidebar = ({ onNavigate }) => {
               <button
                 type="button"
                 onClick={() => setCollapsed(true)}
-                className={`dark:flex hidden md:h-10 md:w-10 h-9 w-9 shrink-0 relative border active:scale-[0.99] duration-100 items-center justify-center border-white/20 mr-2 rounded-md left-2 md:rounded-lg text-gray-400 transition bg-slate-900 dark:bg-transparent hover:bg-white/10 hover:text-white`}
+                className={`dark:flex hidden md:h-10 md:w-10 h-9 w-9 shrink-0 relative border hover:brightness-90 hover:dark:!bg-white/5 active:scale-[0.99] duration-100 items-center justify-center border-white/20 mr-2 rounded-md left-2 md:rounded-lg text-gray-400 transition bg-slate-900 dark:bg-transparent hover:bg-white/10 hover:text-white`}
                 title="Collapse sidebar"
               >
                 {
