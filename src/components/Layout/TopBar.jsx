@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   Flame,
   Info,
+  Loader2,
   LogOut,
   Menu,
   Moon,
@@ -30,9 +31,11 @@ const TopBar = ({ onMenuClick }) => {
   const [notifLoading, setNotifLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const notifRef = useRef(null);
+  const [showLogoutModal, setShowLogoutModal] = useState(false); 
+  const [loggingOut, setLoggingOut] = useState(false);           
   const profileRef = useRef(null);
   const { theme, toggleTheme } = useTheme();
-  const { user, logout } = useAuth(); // pastikan logout ada di AuthContext
+  const { user, logout } = useAuth(); 
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
@@ -96,10 +99,21 @@ const TopBar = ({ onMenuClick }) => {
     navigate(`/?search=${encodeURIComponent(query.trim())}`);
   };
 
-  const handleLogout = () => {
+  // Ganti handleLogout lama dengan ini:
+  const handleLogoutClick = () => {
     setOpenProfile(false);
-    logout?.(); // panggil fungsi logout dari AuthContext
-    navigate("/"); // atau ke halaman login sesuai flow kamu
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = async () => {
+    setLoggingOut(true);
+    try {
+      logout?.();
+      navigate("/login");
+    } finally {
+      setLoggingOut(false);
+      setShowLogoutModal(false);
+    }
   };
 
   return (
@@ -339,7 +353,7 @@ const TopBar = ({ onMenuClick }) => {
 
                       <button
                         type="button"
-                        onClick={handleLogout}
+                        onClick={handleLogoutClick}
                         className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10"
                       >
                         <LogOut size={16} />
@@ -366,6 +380,57 @@ const TopBar = ({ onMenuClick }) => {
           </div>
         </div>
       </div>
+
+      {/* ===== LOGOUT CONFIRMATION MODAL ===== */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-[999999] w-[82vw] right-0 ml-auto flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => !loggingOut && setShowLogoutModal(false)}
+          />
+
+          <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-white bg-white shadow-2xl dark:border-white/10 dark:bg-gray-900">
+            <div className="p-6">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/20">
+                <LogOut size={22} className="text-red-600 dark:text-red-400" />
+              </div>
+
+              <h3 className="text-center text-lg font-semibold">
+                Keluar akun?
+              </h3>
+              <p className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
+                Kamu akan keluar dari akun
+              </p>
+            </div>
+
+            <div className="flex gap-3 border-t border-white bg-gray-50 px-6 py-4 dark:border-white/5 dark:bg-white/5">
+              <button
+                type="button"
+                disabled={loggingOut}
+                onClick={() => setShowLogoutModal(false)}
+                className="flex-1 active:scale-[0.99] duration-100 rounded-xl border border-slate-300 bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-gray-200"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                disabled={loggingOut}
+                onClick={confirmLogout}
+                className="flex-1 active:scale-[0.99] duration-100 rounded-xl bg-red-600 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
+              >
+                {loggingOut ? (
+                  <span className="inline-flex items-center justify-center gap-2">
+                    <Loader2 size={15} className="animate-spin" />
+                    Keluar...
+                  </span>
+                ) : (
+                  "Ya, Keluar"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
