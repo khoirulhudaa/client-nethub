@@ -106,7 +106,7 @@ const SortableItem = ({
             >
               {post.title}
             </Link>
-            <p className="mt-0.5 line-clamp-1 text-sm text-gray-500">
+            <p className={`mt-0.5 line-clamp-1 text-sm ${isCompleted ? 'text-slate-400' : 'text-gray-500'}`}>
               {post.excerpt || post.category}
             </p>
           </div>
@@ -236,14 +236,6 @@ const ReadingListPage = () => {
       setLoading(false);
     }
   };
-
-//   useEffect(() => {
-//     if (!user || user.isGuest || user.role === "guest") {
-//       navigate("/");
-//       return;
-//     }
-//     fetchReadingList();
-//   }, [user]);
 
   const handleToggleComplete = async (postId) => {
     try {
