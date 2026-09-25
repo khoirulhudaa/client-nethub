@@ -741,7 +741,7 @@ const isOwner = user?.id === post?.author?._id;
                 <button
                   onClick={handleFollow}
                   disabled={followLoading || isGuest}
-                  className={`${isGuest ? '!active:scale-[1] cursor-not-allowed hover:!bg-slate-300 bg-slate-300 !text-gray-400' : ''} rounded-md md:rounded-xl hidden md:flex items-center gap-1.5 px-3 py-1.5 h-[36px] text-xs font-medium transition ${
+                  className={`${isGuest ? '!active:scale-[1] cursor-not-allowed hover:!bg-slate-300 bg-slate-300 !text-gray-400' : ''} w-max rounded-md md:rounded-xl hidden md:flex items-center gap-1.5 pl-2.5 pr-3 py-1.5 h-[36px] text-xs font-medium transition ${
                     isFollowing
                       ? "border border-gray-300 text-white bg-red-600 hover:bg-red-700 dark:border-white/40 active:scale-[0.99] duration-100"
                       : "bg-blue-600 border dark:border-white/40 hover:!bg-blue-800 text-white hover:opacity-90 active:scale-[0.99] duration-100"
