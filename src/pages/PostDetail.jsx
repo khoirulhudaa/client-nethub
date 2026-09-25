@@ -699,7 +699,7 @@ const isOwner = user?.id === post?.author?._id;
           {/* Description dengan support highlight */}
           <div className="relative" onMouseUp={handleMouseUp}>
             <article
-              className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light md:pb-0 !pt-5 md:pt-4 dark:border-white/15 prose prose-sm !text-sm md:!text-sm max-w-none break-words dark:prose-invert prose-headings:font-semibold md:text-slate-900 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
+              className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light !py-3 md:!py-5 dark:border-white/15 prose prose-sm !text-sm md:!text-sm max-w-none break-words dark:prose-invert prose-headings:font-semibold md:text-slate-900 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
               dangerouslySetInnerHTML={{
                 __html: renderHighlightedContent(post?.content),
               }}
