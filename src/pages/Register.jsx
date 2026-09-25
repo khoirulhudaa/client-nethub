@@ -31,7 +31,7 @@ const Register = () => {
       <div className="bg-white w-full rounded-2xl max-w-xl p-8 z-[22]">
         <div className="mb-6 flex flex-col items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent text-white">
-            <Network size={22} />
+            <img src="/icons/icon-192x192.png" alt="logo" className="w-[85%] relative top-[1px] left-[-0.3px]" />
           </div>
           <h1 className="text-xl font-semibold text-slate-950 tracking-tight">Join NetHub</h1>
           <p className="text-sm text-gray-500">Share fixes, topologies, and hardware guides.</p>
