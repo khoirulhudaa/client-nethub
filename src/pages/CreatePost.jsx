@@ -1,6 +1,6 @@
 
 
-import { Check, Loader2, Save } from "lucide-react";
+import { Check, Loader2, Save, Upload } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios.js";
@@ -268,7 +268,7 @@ const CreatePost = () => {
           <div>
             <label className="mb-1.5 block text-sm font-medium">Title item</label>
             <input
-              className="input-field dark:!bg-slate-100"
+              className="input-field dark:!bg-slate-100 dark:!text-slate-900"
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               placeholder="e.g. Diagnosing intermittent packet loss on a VLAN trunk"
@@ -282,12 +282,12 @@ const CreatePost = () => {
             <div>
               <label className="mb-1.5 block text-sm font-medium">Category</label>
               <select
-                className="input-field dark:!bg-slate-100"
+                className="input-field dark:!bg-slate-100 dark:!text-slate-900"
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
               >
                 {CATEGORIES.map((c) => (
-                  <option key={c} value={c} className="dark:text-white text-black">
+                  <option key={c} value={c} className="!text-black">
                     {c}
                   </option>
                 ))}
@@ -298,7 +298,7 @@ const CreatePost = () => {
                 Tags (max: 4)
               </label>
               <input
-                className="input-field dark:!bg-slate-100"
+                className="input-field dark:!bg-slate-100 dark:!text-slate-900"
                 value={form.tags}
                 onChange={(e) => {
                   const value = e.target.value;
@@ -321,7 +321,7 @@ const CreatePost = () => {
           <div>
             <label className="mb-1.5 block text-sm font-medium">Excerpt</label>
             <input
-              className="input-field dark:!bg-slate-100"
+              className="input-field dark:!bg-slate-100 dark:!text-slate-900"
               value={form.excerpt}
               onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
               placeholder="One-line summary shown on guide cards"
@@ -384,8 +384,8 @@ const CreatePost = () => {
                     d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"
                   />
                 </svg>
-                <p className="text-sm font-medium">Click to upload or drag and drop</p>
-                <p className="mt-1 text-xs opacity-70">SVG, PNG, JPG or GIF</p>
+                <p className="text-sm font-medium text-slate-500">Click to upload or drag and drop</p>
+                <p className="mt-1 text-xs opacity-80 text-slate-500">SVG, PNG, JPG or GIF</p>
                 <input
                   type="file"
                   accept="image/*"
@@ -472,21 +472,8 @@ const CreatePost = () => {
                     });
                   }}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="mb-1 h-6 w-6 opacity-70"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"
-                    />
-                  </svg>
-                  <span className="text-[10px]">Drop / Upload</span>
+                  <Upload size={14} className="text-slate-500 mb-1" />
+                  <span className="text-[10px] !text-slate-500">Drop / Upload</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -560,7 +547,7 @@ const CreatePost = () => {
               >
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                   <input
-                    className="input-field dark:!bg-slate-100 max-w-xs"
+                    className="input-field dark:!bg-slate-100 dark:!text-slate-900 max-w-xs"
                     value={table.title}
                     onChange={(e) => {
                       const val = e.target.value;
@@ -751,7 +738,7 @@ const CreatePost = () => {
                 <div className="mb-3">
                   <label className="mb-1 block text-xs font-medium">Judul</label>
                   <input
-                    className="input-field dark:!bg-slate-100"
+                    className="input-field dark:!bg-slate-100 dark:!text-slate-900"
                     value={step.title}
                     onChange={(e) => {
                       const val = e.target.value;
@@ -858,7 +845,7 @@ const CreatePost = () => {
                 <div>
                   <label className="mb-1 block text-xs font-medium">Deskripsi</label>
                   <textarea
-                    className="input-field dark:!bg-slate-100 min-h-[80px]"
+                    className="input-field dark:!bg-slate-100 dark:!text-slate-900 min-h-[80px]"
                     value={step.description}
                     onChange={(e) => {
                       const val = e.target.value;
@@ -913,7 +900,7 @@ const CreatePost = () => {
               >
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                   <input
-                    className="input-field dark:!bg-slate-100 max-w-xs"
+                    className="input-field dark:!bg-slate-100 dark:!text-slate-900 max-w-xs"
                     value={block.title}
                     onChange={(e) => {
                       const val = e.target.value;
@@ -926,7 +913,7 @@ const CreatePost = () => {
 
                   <div className="flex items-center gap-2">
                     <select
-                      className="input-field dark:!bg-slate-100 w-36 text-xs"
+                      className="input-field dark:!bg-slate-100 dark:!text-slate-900 w-36 text-xs"
                       value={block.language}
                       onChange={(e) => {
                         const val = e.target.value;
@@ -958,7 +945,7 @@ const CreatePost = () => {
                 </div>
 
                 <textarea
-                  className="input-field dark:!bg-slate-100 min-h-[140px] font-mono text-sm"
+                  className="input-field dark:!bg-slate-100 dark:!text-slate-900 min-h-[140px] font-mono text-sm"
                   value={block.code}
                   onChange={(e) => {
                     const val = e.target.value;
