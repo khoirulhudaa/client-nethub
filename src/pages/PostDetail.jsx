@@ -1322,7 +1322,7 @@ const isOwner = user?.id === post?.author?._id;
           </div>
 
           <div className="mt-6">
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-white md:text-slate-900 dark:text-white">Comments</h2>
+            <h2 className="mb-3  text-sm font-semibold uppercase tracking-wide text-white md:text-slate-900 dark:text-white">Comments</h2>
             <div className="surface-card shadow-none bg-slate-300 dark:!bg-[#0c0c18] p-3 md:p-5">
               <div className="mb-4 flex gap-2">
                 <input

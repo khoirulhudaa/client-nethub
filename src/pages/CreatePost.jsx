@@ -47,6 +47,7 @@ const CreatePost = () => {
       .get(`/posts/id/${id}`)
       .then(({ data }) => {
         const post = data.post;
+        console.log('post', post)
         if (post) {
           setForm({
             title: post.title,
