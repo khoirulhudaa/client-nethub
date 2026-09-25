@@ -32,7 +32,11 @@ const Login = () => {
       <div className="bg-white w-full rounded-2xl max-w-xl p-8 z-[22]">
         <div className="mb-6 flex flex-col items-center gap-2.5">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent text-white">
-            <img src="/icons/icon-192x192.png" alt="logo" className="w-[85%] relative top-[1px] left-[-0.3px]" />
+            <img 
+              draggable={false}
+              onContextMenu={(e) => e.preventDefault()}
+              onDragStart={(e) => e.preventDefault()}
+              src="/icons/icon-192x192.png" alt="logo" className="w-[85%] relative top-[1px] left-[-0.3px]" />
           </div>
           <h1 className="text-xl font-semibold text-slate-950 tracking-tight">Welcome back</h1>
           <p className="text-sm text-gray-600">Sign in to keep sharing networking know-how.</p>

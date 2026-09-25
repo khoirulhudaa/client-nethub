@@ -196,7 +196,11 @@ const Sidebar = ({ onNavigate }) => {
       }`}
     >
 
-      <img src="/hero.jpg" alt="wallpaper-sidebar" className={`rotate-[4deg] ${collapsed ? 'dark:rotate-0 duration-0' : ''} scale-[1.2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-15 left-0`} />
+      <img 
+        draggable={false}
+        onContextMenu={(e) => e.preventDefault()}
+        onDragStart={(e) => e.preventDefault()}
+        src="/hero.jpg" alt="wallpaper-sidebar" className={`rotate-[4deg] ${collapsed ? 'dark:rotate-0 duration-0' : ''} scale-[1.2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-15 left-0`} />
       
       <div className="z-10 relative h-screen">
         {/* Logo + toggle */}
@@ -210,7 +214,11 @@ const Sidebar = ({ onNavigate }) => {
           <a href="/">
             <div className="hover:brightness-75 active:scale-[0.99] duration-100 flex items-center pl-3 dark:pl-1 gap-2 h-full w-full surface-card shadow-none dark:shadow-none border-none dark:border-none dark:bg-transparent rounded-none">
               <div className={`flex ${collapsed ? 'h-10 w-10 rounded-xl' : 'w-9 h-9 md:h-10 md:w-10 rounded-lg'} shrink-0 items-center justify-center bg-slate-900 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900`}>
-                <img src="/icons/icon-192x192.png" alt="logo" className="w-[85%] relative top-[1px] left-[0.5px]" />
+                <img 
+                  draggable={false}
+        onContextMenu={(e) => e.preventDefault()}
+        onDragStart={(e) => e.preventDefault()}
+                  src="/icons/icon-192x192.png" alt="logo" className="w-[85%] relative top-[1px] left-[0.5px]" />
               </div>
               {!collapsed && (
                 <span className="ml-1 dark:text-white text-[16px] font-semibold tracking-tight">
