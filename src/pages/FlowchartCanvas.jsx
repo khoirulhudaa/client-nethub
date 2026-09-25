@@ -64,24 +64,70 @@ function DecisionNode({ data, selected }) {
   return (
     <div
       style={{
-        ...shapeStyle,
         width: 110,
         height: 110,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        transform: "rotate(45deg)",
-        borderColor: selected ? "#3b82f6" : "#64748b",
-        background: selected ? "#1e3a5f" : "#1e293b",
-        color: "#f8fafc",
-        padding: 0,
+        position: "relative",
       }}
     >
-      {/* handles tetap sama */}
-      <div style={{ transform: "rotate(-45deg)", fontSize: 12, maxWidth: 70, color: "#f8fafc" }}>
-        {data.label || "Decision"}
+      {/* Diamond shape */}
+      <div
+        style={{
+          ...shapeStyle,
+          width: 110,
+          height: 110,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          transform: "rotate(45deg)",
+          borderColor: selected ? "#3b82f6" : "#64748b",
+          background: selected ? "#1e3a5f" : "#1e293b",
+          color: "#f8fafc",
+          padding: 0,
+          position: "absolute",
+          top: 0,
+          left: 0,
+        }}
+      >
+        <div
+          style={{
+            transform: "rotate(-45deg)",
+            fontSize: 12,
+            maxWidth: 70,
+            textAlign: "center",
+            color: "#f8fafc",
+            lineHeight: 1.2,
+          }}
+        >
+          {data.label || "Decision"}
+        </div>
       </div>
-      {/* handles lainnya */}
+
+      {/* Incoming */}
+      <Handle
+        type="target"
+        position={Position.Top}
+        id="target"
+        className="!bg-slate-400"
+        style={{ top: -6, left: "50%", transform: "translateX(-50%)" }}
+      />
+
+      {/* Yes (kanan) */}
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="yes"
+        className="!bg-emerald-400"
+        style={{ right: -6, top: "50%", transform: "translateY(-50%)" }}
+      />
+
+      {/* No (kiri) */}
+      <Handle
+        type="source"
+        position={Position.Left}
+        id="no"
+        className="!bg-rose-400"
+        style={{ left: -6, top: "50%", transform: "translateY(-50%)" }}
+      />
     </div>
   );
 }
@@ -147,8 +193,21 @@ export default function FlowchartCanvas({ value, onChange, readOnly = false, hei
 
   const onConnect = useCallback(
     (params) => {
+      let label = "";
+      if (params.sourceHandle === "yes") label = "Yes";
+      if (params.sourceHandle === "no") label = "No";
+
       const newEdges = addEdge(
-        { ...params, animated: true, style: { stroke: "#64748b" } },
+        {
+          ...params,
+          animated: true,
+          label,
+          style: { stroke: "#64748b" },
+          labelStyle: { fill: "#f8fafc", fontWeight: 600, fontSize: 12 },
+          labelBgStyle: { fill: "#1e293b", fillOpacity: 0.85 },
+          labelBgPadding: [6, 3],
+          labelBgBorderRadius: 4,
+        },
         edges
       );
       setEdges(newEdges);

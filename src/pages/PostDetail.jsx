@@ -1222,7 +1222,7 @@ const isOwner = user?.id === post?.author?._id;
           />
 
           {/* Sidebar - full height */}
-          <div className="fixed right-0 bottom-0 z-[9999] h-[90vh] flex w-full max-w-5xl flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-white/15 dark:bg-[#12121b]">
+          <div className="fixed right-0 bottom-0 z-[9999] h-[90vh] flex w-full max-w-6xl flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-white/15 dark:bg-[#12121b]">
             {/* Header */}
             <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-white/15">
               <h3 className="text-base font-semibold">
@@ -1231,7 +1231,7 @@ const isOwner = user?.id === post?.author?._id;
               <button
                 type="button"
                 onClick={() => setSidebarType(null)}
-                className="flex h-8 w-8 bg-red-500/20 items-center justify-center rounded-lg text-white transition hover:bg-red-500/80 hover:text-white"
+                className="flex h-8 w-8 active:scale-[0.99] duration-100 bg-red-500/70 items-center justify-center rounded-lg text-white transition hover:bg-red-500/80 hover:text-white"
               >
                 ✕
               </button>
