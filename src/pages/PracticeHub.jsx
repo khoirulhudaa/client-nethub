@@ -115,12 +115,12 @@ const PracticeHub = () => {
 
       {/* Tips section */}
       <section className="mb-6 surface-card bg-white dark:bg-white/5 p-2.5 md:p-4">
-        <div className="mb-4 hidden md:flex items-center gap-2">
+        {/* <div className="mb-4 hidden md:flex items-center gap-2">
           <Lightbulb size={16} className="text-amber-500" />
           <h2 className="text-sm font-semibold tracking-tight text-gray-800 dark:text-gray-200">
             Tips for effective practice
           </h2>
-        </div>
+        </div> */}
 
         <div className="grid gap-3 sm:grid-cols-3">
           {tips.map((tip) => {
