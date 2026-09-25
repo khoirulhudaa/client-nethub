@@ -80,6 +80,18 @@
   margin: 1.25rem 0;
 }
 
+.tts-highlight {
+  background-color: #93c5fd !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+  transition: background-color 0.15s ease;
+}
+
+mark.tts-highlight {
+  background-color: #93c5fd !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35);
+  transition: background-color 0.15s ease;
+}
+
 .ProseMirror pre code {
   background: transparent;
   color: inherit;

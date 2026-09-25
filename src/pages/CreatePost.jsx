@@ -350,7 +350,7 @@ const CreatePost = () => {
               </div>
             ) : (
               <label
-                className="flex h-40 w-full max-w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed surface-card border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent dark:!bg-slate-100/10"
+                className="flex h-40 w-full max-w-full active:scale-[0.99] duration-100 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed surface-card border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent dark:!bg-slate-100/10"
                 onDragOver={(e) => {
                   e.preventDefault();
                   e.currentTarget.classList.add("border-accent", "text-accent");

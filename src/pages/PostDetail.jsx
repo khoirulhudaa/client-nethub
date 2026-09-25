@@ -1,5 +1,5 @@
 import { Bookmark, Calendar, CheckCircle2, Circle, Clipboard, Eye, Heart, Highlighter, Link2, Linkedin, Loader2, Pencil, Pin, Plus, Share2, Timer, Trash2, Volume2, VolumeX } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios.js";
@@ -122,6 +122,9 @@ const PostDetail = () => {
   const [showHighlightMenu, setShowHighlightMenu] = useState(false);
   const [selectedText, setSelectedText] = useState("");
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const [ttsHighlight, setTtsHighlight] = useState(""); // teks yang sedang dibaca
+
+  const articleRef = useRef(null);
 
   // Warna stabilo
   const HIGHLIGHT_COLORS = [
@@ -205,46 +208,178 @@ const getPlainText = (html) => {
   return (tmp.textContent || tmp.innerText || "").trim();
 };
 
+const splitIntoSentences = (text) => {
+  if (!text) return [];
+  // Pecah berdasarkan . ! ? diikuti spasi / akhir string
+  return text
+    .match(/[^.!?]+[.!?]+|[^.!?]+$/g)
+    ?.map((s) => s.trim())
+    .filter(Boolean) || [text];
+};
+
 const handleSpeakDescription = () => {
   if (!window.speechSynthesis) {
     toast.error("Browser tidak mendukung fitur suara");
     return;
   }
 
-  // Stop kalau sedang berbicara
+  // Stop jika sedang berbicara
   if (isSpeaking) {
     window.speechSynthesis.cancel();
     setIsSpeaking(false);
+    setTtsHighlight("");
     return;
   }
 
-  const text = getPlainText(post?.content);
-    if (!text) {
-      toast.error("Tidak ada teks untuk dibaca");
+  const fullText = getPlainText(post?.content);
+  if (!fullText) {
+    toast.error("Tidak ada teks untuk dibaca");
+    return;
+  }
+
+  const sentences = splitIntoSentences(fullText);
+  let index = 0;
+
+  const speakNext = () => {
+    if (index >= sentences.length) {
+      setIsSpeaking(false);
+      setTtsHighlight("");
       return;
     }
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "id-ID"; // bahasa Indonesia
+    const sentence = sentences[index];
+    setTtsHighlight(sentence); // highlight kalimat yang sedang dibaca
+
+    const utterance = new SpeechSynthesisUtterance(sentence);
+    utterance.lang = "id-ID";
     utterance.rate = 0.95;
     utterance.pitch = 1;
 
-    utterance.onend = () => setIsSpeaking(false);
+    utterance.onend = () => {
+      index += 1;
+      speakNext();
+    };
+
     utterance.onerror = () => {
       setIsSpeaking(false);
+      setTtsHighlight("");
       toast.error("Gagal memutar suara");
     };
 
-    setIsSpeaking(true);
     window.speechSynthesis.speak(utterance);
   };
 
-  // Cleanup saat unmount / ganti slug
-  useEffect(() => {
-    return () => {
-      window.speechSynthesis?.cancel();
-    };
-  }, [slug]);
+  setIsSpeaking(true);
+  speakNext();
+};
+
+// Cleanup saat unmount / ganti slug
+useEffect(() => {
+  return () => {
+    window.speechSynthesis?.cancel();
+    setTtsHighlight("");
+  };
+}, [slug]);
+
+useEffect(() => {
+  const el = articleRef.current;
+  if (!el) return;
+
+  // 1. Bersihkan mark TTS sebelumnya
+  el.querySelectorAll("mark.tts-highlight").forEach((mark) => {
+    const parent = mark.parentNode;
+    if (!parent) return;
+    while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
+    parent.removeChild(mark);
+    parent.normalize();
+  });
+
+  if (!ttsHighlight) return;
+
+  const needle = normalizeForMatch(ttsHighlight);
+  if (needle.length < 3) return;
+
+  // 2. Kumpulkan semua text node
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const parts = [];
+  let full = "";
+
+  let node;
+  while ((node = walker.nextNode())) {
+    const text = node.textContent || "";
+    if (!text) continue;
+    parts.push({ node, start: full.length, end: full.length + text.length });
+    full += text;
+  }
+
+  // 3. Cari posisi kalimat di plain text (spasi dinormalisasi)
+  const fullNorm = full.replace(/\s+/g, " ");
+  const needleNorm = needle;
+  let idx = fullNorm.indexOf(needleNorm);
+
+  // Fallback: coba tanpa case-sensitive / potongan awal kalimat
+  if (idx === -1) {
+    idx = fullNorm.toLowerCase().indexOf(needleNorm.toLowerCase());
+  }
+  if (idx === -1) return;
+
+  // Map index di fullNorm → index di full (dengan spasi asli)
+  // Cara sederhana: pakai full langsung kalau spasi mirip
+  let rawIdx = full.indexOf(ttsHighlight.trim());
+  if (rawIdx === -1) {
+    // cari kata pertama + terakhir
+    const words = needle.split(" ").filter(Boolean);
+    if (words.length === 0) return;
+    const first = words[0];
+    const last = words[words.length - 1];
+    const startGuess = full.indexOf(first);
+    const endGuess = full.indexOf(last, startGuess);
+    if (startGuess === -1 || endGuess === -1) return;
+    rawIdx = startGuess;
+    var rawEnd = endGuess + last.length;
+  } else {
+    var rawEnd = rawIdx + ttsHighlight.trim().length;
+  }
+
+  // 4. Wrap text nodes yang kena range [rawIdx, rawEnd)
+  parts.forEach(({ node, start, end }) => {
+    if (end <= rawIdx || start >= rawEnd) return;
+
+    const text = node.textContent;
+    const sliceStart = Math.max(0, rawIdx - start);
+    const sliceEnd = Math.min(text.length, rawEnd - start);
+
+    if (sliceStart >= sliceEnd) return;
+
+    const before = text.slice(0, sliceStart);
+    const middle = text.slice(sliceStart, sliceEnd);
+    const after = text.slice(sliceEnd);
+
+    const mark = document.createElement("mark");
+    mark.className = "tts-highlight";
+    mark.style.backgroundColor = "#93c5fd";
+    mark.style.padding = "1px 2px";
+    mark.style.borderRadius = "3px";
+    mark.textContent = middle;
+
+    const parent = node.parentNode;
+    if (!parent) return;
+
+    const frag = document.createDocumentFragment();
+    if (before) frag.appendChild(document.createTextNode(before));
+    frag.appendChild(mark);
+    if (after) frag.appendChild(document.createTextNode(after));
+    parent.replaceChild(frag, node);
+  });
+
+  // 5. Scroll ke highlight
+  requestAnimationFrame(() => {
+    el.querySelector("mark.tts-highlight")?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+  });
+}, [ttsHighlight]);
 
 // Cek apakah guide ini ada di Reading List user
 const checkReadingListStatus = async () => {
@@ -370,13 +505,18 @@ const applyHighlight = async (color) => {
   }
 };
 
+const normalizeForMatch = (str) =>
+  (str || "")
+    .replace(/\s+/g, " ")
+    .trim();
+
 // Render content dengan highlight
 const renderHighlightedContent = (html) => {
-  if (!highlights.length) return html;
+  if (!html) return "";
 
   let result = html;
+
   highlights.forEach(({ text, color }) => {
-    // Escape special regex characters
     const escaped = text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const regex = new RegExp(`(${escaped})`, "gi");
     result = result.replace(
@@ -384,6 +524,7 @@ const renderHighlightedContent = (html) => {
       `<mark style="background-color: ${color}; padding: 1px 2px; border-radius: 3px;">$1</mark>`
     );
   });
+
   return result;
 };
 
@@ -699,6 +840,7 @@ const isOwner = user?.id === post?.author?._id;
           {/* Description dengan support highlight */}
           <div className="relative" onMouseUp={handleMouseUp}>
             <article
+              ref={articleRef}
               className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light !py-3 md:!py-5 dark:border-white/15 prose prose-sm !text-sm md:!text-sm max-w-none break-words dark:prose-invert prose-headings:font-semibold md:text-slate-900 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
               dangerouslySetInnerHTML={{
                 __html: renderHighlightedContent(post?.content),
