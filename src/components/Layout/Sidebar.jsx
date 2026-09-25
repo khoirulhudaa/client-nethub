@@ -33,8 +33,8 @@ const categoryLinks = [
 ];
 
 const discoverLinks = [
-  { label: "Trending", icon: Flame, to: "/trending" },
-  { label: "Subnet Calc", icon: Calculator, to: "/tools/subnet" },
+  { label: "Subneting", icon: Calculator, to: "/tools/subnet" },
+  { label: "Trending Guide", icon: Flame, to: "/trending" },
 ];
 
 const quizLinks = [
