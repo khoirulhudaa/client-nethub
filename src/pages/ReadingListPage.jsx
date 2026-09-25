@@ -23,6 +23,7 @@ import {
   ChevronUp,
   Circle,
   GripVertical,
+  Loader2,
   Target,
   Trash2
 } from "lucide-react";
@@ -144,11 +145,8 @@ const SortableItem = ({
               title={isCompleted ? "Tandai belum selesai" : "Tandai selesai"}
             >
               {isLoading ? (
-                <div className="py-4">
-                  <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
-                    <img src="/cloud.png" alt="icon-cloud" className="w-20" />
-                    <p className="mt-2">Load content ...</p>
-                  </div>
+                <div>
+                  <Loader2 size={16} className="animate-spin animate duration-500" />
                 </div>
               ) : isCompleted ? (
                 <CheckCircle2 size={16} />
