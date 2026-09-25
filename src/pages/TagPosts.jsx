@@ -55,11 +55,11 @@ const TagPosts = () => {
             <h1 className="text-xl font-semibold text-white tracking-tight">
               #{tag}
             </h1>
-            {!loading && (
+            {/* {!loading && (
               <p className="mt-0.5 text-sm text-gray-400">
                 {total} guide{total !== 1 ? "s" : ""} ditemukan
               </p>
-            )}
+            )} */}
           </div>
         </div>
       </div>
