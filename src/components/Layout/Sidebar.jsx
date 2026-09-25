@@ -207,16 +207,18 @@ const Sidebar = ({ onNavigate }) => {
               : "justify-between dark:gap-2 border-x border-white/75 dark:border-white/10 dark:px-2"
           }`}
         >
-          <div className="flex items-center pl-3 dark:pl-1 gap-2 h-full w-full surface-card shadow-none dark:shadow-none border-none dark:border-none dark:bg-transparent rounded-none">
-            <div className={`flex ${collapsed ? 'h-10 w-10 rounded-xl' : 'w-9 h-9 md:h-10 md:w-10 rounded-lg'} shrink-0 items-center justify-center bg-slate-900 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900`}>
-              <Network size={17} />
+          <a href="/">
+            <div className="hover:brightness-75 active:scale-[0.99] duration-100 flex items-center pl-3 dark:pl-1 gap-2 h-full w-full surface-card shadow-none dark:shadow-none border-none dark:border-none dark:bg-transparent rounded-none">
+              <div className={`flex ${collapsed ? 'h-10 w-10 rounded-xl' : 'w-9 h-9 md:h-10 md:w-10 rounded-lg'} shrink-0 items-center justify-center bg-slate-900 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900`}>
+                <img src="/icons/icon-192x192.png" alt="logo" className="w-[85%] relative top-[1px] left-[0.5px]" />
+              </div>
+              {!collapsed && (
+                <span className="ml-1 dark:text-white text-[16px] font-semibold tracking-tight">
+                  TEXNet
+                </span>
+              )}
             </div>
-            {!collapsed && (
-              <span className="ml-1 dark:text-white text-[16px] font-semibold tracking-tight">
-                TEXNet
-              </span>
-            )}
-          </div>
+          </a>
 
           <div className="w-max flex h-full pr-3 dark:pr-2 surface-card dark:shadow-none dark:bg-transparent shadow-none border-none rounded-none items-center gap-2">
           {!collapsed && (
