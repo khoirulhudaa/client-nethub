@@ -82,7 +82,7 @@ const CodeBlockItem = ({ block }) => {
       </div>
 
       {/* Code */}
-      <pre className="overflow-x-auto p-5 text-[13px] leading-relaxed text-gray-800 dark:text-gray-200">
+      <pre className="overflow-x-auto !p-3 md:!p-5 text-[13px] leading-relaxed text-gray-800 dark:text-gray-200">
         <code className="font-mono whitespace-pre">{block.code}</code>
       </pre>
     </div>
@@ -832,7 +832,7 @@ const isOwner = user?.id === post?.author?._id;
                   <button
                     type="button"
                     onClick={() => setSidebarType("topology")}
-                    className="group flex items-center active:scale-[0.99] duration-100 gap-4 rounded-2xl border border-gray-200 bg-slate-300 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/15 dark:!bg-[#0c0c18] dark:hover:border-accent"
+                    className="group flex items-center active:scale-[0.99] duration-100 gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/15 dark:!bg-[#0c0c18] dark:hover:border-accent"
                   >
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -874,7 +874,7 @@ const isOwner = user?.id === post?.author?._id;
                   <button
                     type="button"
                     onClick={() => setSidebarType("flowchart")}
-                    className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/15 dark:!bg-[#0c0c18] dark:hover:border-accent"
+                    className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/15 dark:!bg-[#0c0c18] dark:hover:border-accent"
                   >
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
