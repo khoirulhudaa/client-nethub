@@ -350,7 +350,7 @@ const CreatePost = () => {
                 <img
                   src={form.coverImage}
                   alt="Cover"
-                  className="h-40 w-64 rounded-xl object-cover border border-gray-200 dark:border-white/10"
+                  className="h-40 max-w-full rounded-xl object-cover border border-gray-200 dark:border-white/10"
                 />
                 <button
                   type="button"

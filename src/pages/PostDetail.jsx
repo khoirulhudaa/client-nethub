@@ -760,9 +760,9 @@ const isOwner = user?.id === post?.author?._id;
             </div>
           </div>
           
-          <div className="w-full h-72 bg-slate-300 dark:bg-slate-500 p-0 overflow-hidden rounded-2xl">
+          <div className="w-full h-72 bg-white p-0 overflow-hidden rounded-2xl">
             {post?.coverImage && (
-              <img src={post?.coverImage} alt="cover-image" className="mb-6 h-full w-full transition-transform duration-700 hover:scale-105 object-contain" />
+              <img src={post?.coverImage} alt="cover-image" className="mb-6 h-full w-full transition-transform duration-700 hover:scale-105 object-cover" />
             )}
           </div>
 

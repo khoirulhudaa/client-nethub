@@ -648,17 +648,18 @@ const Dashboard = () => {
                     </section>
                   )}
 
-                  {/* Posts Grid */}
+                  {/* Posts Grid — Other guides */}
                   <section className="mb-8 px-3 md:px-4 border-white/10">
                     <div className="mb-4 flex items-center gap-2">
-                        <h2 className="flex items-center text-lg mt-1 font-medium tracking-tight">
-                          <Newspaper size={17} className="relative top-[-1px] mr-2 text-slate-900 dark:text-white" />
-                          <span className="relative top-[-1.7px] text-slate-900 dark:text-white">
-                            Other guides
-                          </span>
-                        </h2>
-                      </div>
-                    {filteredPosts.length === 0 ? (
+                      <h2 className="flex items-center text-lg mt-1 font-medium tracking-tight">
+                        <Newspaper size={17} className="relative top-[-1px] mr-2 text-slate-900 dark:text-white" />
+                        <span className="relative top-[-1.7px] text-slate-900 dark:text-white">
+                          Other guides
+                        </span>
+                      </h2>
+                    </div>
+
+                    {remainingPosts.length === 0 ? (
                       <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
                         <img src="/notFound.png" alt="No guides" className="h-16 w-16 mb-1.5" />
                         <p className="font-medium">
@@ -672,24 +673,23 @@ const Dashboard = () => {
                       </div>
                     ) : (
                       <>
-                      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                        {filteredPosts.map((post) => (
-                          <PostCard key={post._id} post={post} status={false} />
-                        ))}
-                      </div>
-
-                      {/* Tombol Load More */}
-                      {!search && hasMore && (
-                        <div className="mt-6 flex justify-center">
-                          <button
-                            onClick={handleLoadMore}
-                            disabled={loadingMore}
-                            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 dark:bg-white bg-slate-950 px-3 dark:h-[40px] h-[43px] text-sm font-medium text-white dark:text-slate-900 shadow-sm transition hover:brightness-[80%] active:scale-[0.99] duration-100 disabled:opacity-50"
-                          >
-                            {loadingMore ? "Loading..." : "Load more guides"}
-                          </button>
+                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                          {remainingPosts.map((post) => (
+                            <PostCard key={post._id} post={post} status={false} />
+                          ))}
                         </div>
-                      )}
+
+                        {!search && hasMore && (
+                          <div className="mt-6 flex justify-center">
+                            <button
+                              onClick={handleLoadMore}
+                              disabled={loadingMore}
+                              className="inline-flex items-center gap-2 rounded-xl border border-slate-300 dark:bg-white bg-slate-950 px-3 dark:h-[40px] h-[43px] text-sm font-medium text-white dark:text-slate-900 shadow-sm transition hover:brightness-[80%] active:scale-[0.99] duration-100 disabled:opacity-50"
+                            >
+                              {loadingMore ? "Loading..." : "Load more guides"}
+                            </button>
+                          </div>
+                        )}
                       </>
                     )}
                   </section>
