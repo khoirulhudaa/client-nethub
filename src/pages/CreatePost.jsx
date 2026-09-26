@@ -8,7 +8,18 @@ import RichTextEditor from "../components/Editor/RichTextEditor.jsx";
 import FlowchartCanvas from "./FlowchartCanvas.jsx";
 import TopologyCanvas from "./TopologyCanvas.jsx";
 
-const CATEGORIES = ["Topology", "Maintenance", "Installation", "Hardware"];
+const CATEGORIES = [
+  "Topology",
+  "Maintenance",
+  "Installation",
+  "Hardware",
+  "Eproc",
+  "E-kantin",
+  "EHRD",
+  "General",
+  "Security",
+  "Pemrograman",
+];
 
 // Ganti dengan Access Key Unsplash kamu
 const UNSPLASH_ACCESS_KEY = "sxI6Npxjt6SwcASInWmW7S8qsTsp4iHRSyGDw589FJA";

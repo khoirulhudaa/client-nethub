@@ -585,7 +585,9 @@ const Dashboard = () => {
                     }`}
                   >
                     <Box size={14} />
-                    All guides
+                    <span className="relative top-[-1px]">
+                      All guides
+                    </span>
                   </button>
                   {data.categories.map((item) => (
                     <button
@@ -598,7 +600,9 @@ const Dashboard = () => {
                       }`}
                     >
                       <Box size={14} />
-                      {item}
+                      <span className="relative top-[-1.2px]">
+                        {item}
+                      </span>
                     </button>
                   ))}
                 </div>
