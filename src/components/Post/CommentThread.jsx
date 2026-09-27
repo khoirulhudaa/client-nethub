@@ -46,7 +46,7 @@ const CommentItem = ({ comment, onReply, onDelete, depth = 0 }) => {
           <div className="mt-1.5 flex items-center gap-3">
             <button
               onClick={() => setReplying((r) => !r)}
-              className="flex items-center gap-1 text-xs font-medium text-slate-950 md:dark:text-gray-400 hover:text-accent"
+              className="flex items-center gap-1 text-xs font-medium text-slate-950 dark:!text-white md:!dark:text-gray-400 hover:text-accent"
             >
               <CornerDownRight size={12} />
               Reply
@@ -54,7 +54,7 @@ const CommentItem = ({ comment, onReply, onDelete, depth = 0 }) => {
             {user?.id === comment.author?._id && (
               <button
                 onClick={() => onDelete(comment._id)}
-                className="flex items-center gap-1 text-xs font-medium text-red-600 md:dark:text-gray-400 hover:text-red-500"
+                className="flex items-center gap-1 text-xs font-medium !text-red-500 md:dark:!text-gray-400 hover:!text-red-600"
               >
                 <Trash2 size={12} />
                 Delete

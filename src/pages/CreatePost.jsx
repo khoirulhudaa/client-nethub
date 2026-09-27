@@ -16,9 +16,8 @@ const CATEGORIES = [
   "Eproc",
   "E-kantin",
   "EHRD",
-  "General",
   "Security",
-  "Pemrograman",
+  "Code",
 ];
 
 // Ganti dengan Access Key Unsplash kamu

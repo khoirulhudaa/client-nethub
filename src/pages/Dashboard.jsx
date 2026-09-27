@@ -407,19 +407,6 @@ const Dashboard = () => {
 
   const isGuest = user?.isGuest || user?.role === "guest";
 
-  // === CLIENT-SIDE FILTER BY TITLE (utama) ===
-  // const filteredPosts = useMemo(() => {
-  //   if (!data.posts) return [];
-  //   if (!search.trim()) return data.posts;
-
-  //   const q = search.toLowerCase().trim();
-  //   return data.posts.filter((post) => {
-  //     const title = (post.title || "").toLowerCase();
-  //     const excerpt = (post.excerpt || post.description || post.content || "").toLowerCase();
-  //     return title.includes(q) || excerpt.includes(q);
-  //   });
-  // }, [data.posts, search]);
-
   // Fuse + filteredPosts remain the same
   const fuse = useMemo(() => {
     const source = search.trim() ? allPostsForSearch : data.posts;
@@ -526,9 +513,9 @@ const Dashboard = () => {
           </header>
 
           {/* Search + Categories */}
-          <div className="w-full px-3 py-2 md:p-4 flex items-center gap-2">
+          <div className="w-full px-3 py-2 md:p-4 items-center gap-2">
             <form
-              className="flex w-full mb-0 items-center gap-2 rounded-xl border border-gray-200 bg-slate-950 dark:bg-white px-3 py-1.5 shadow-sm sm:w-72"
+              className="flex w-full mb-0 items-center gap-2 rounded-xl border border-gray-200 bg-slate-950 dark:bg-white px-3 py-1.5 shadow-sm md:w-72"
               onSubmit={(e) => {
                 e.preventDefault();
                 updateParam("search", localSearch.trim());
@@ -539,7 +526,7 @@ const Dashboard = () => {
                 value={localSearch}
                 onChange={(e) => setLocalSearch(e.target.value)}
                 placeholder="Search by title..."
-                className="w-full bg-transparent px-3 md:px-3 py-2 h-[22px] font-medium text-black text-sm outline-none"
+                className="w-full bg-transparent px-3 md:px-0 py-2 h-[22px] font-medium text-black text-sm outline-none"
               />
               {localSearch && (
                 <button
@@ -575,7 +562,7 @@ const Dashboard = () => {
                 </div>
 
                 {/* Desktop: pill buttons */}
-                <div className="hidden sm:flex flex-wrap items-center gap-x-2.5">
+                <div className="hidden sm:flex flex-wrap items-center mt-3 gap-x-2.5">
                   <button
                     onClick={() => updateParam("category", "")}
                     className={`flex items-center border border-slate-400 gap-1.5 rounded-xl font-medium active:scale-[0.99] px-3 md:px-3 py-2 text-sm transition ${

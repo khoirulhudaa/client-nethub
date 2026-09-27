@@ -383,7 +383,7 @@ const TopBar = ({ onMenuClick }) => {
 
       {/* ===== LOGOUT CONFIRMATION MODAL ===== */}
       {showLogoutModal && (
-        <div className="fixed inset-0 z-[999999] w-[82vw] right-0 ml-auto flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[999999] w-full md:w-[82vw] right-0 ml-auto flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
             onClick={() => !loggingOut && setShowLogoutModal(false)}
