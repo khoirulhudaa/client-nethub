@@ -180,12 +180,12 @@ const Sidebar = ({ onNavigate }) => {
     collapsed
       ? `flex h-10 active:scale-[0.99] w-10 items-center justify-center rounded-xl transition ${
           active
-            ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
+            ? "bg-slate-200 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
             : "text-white dark:text-gray-400 hover:bg-white/[0.06] hover:text-white"
         }`
       : `active:scale-[0.99] flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
           active
-            ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
+            ? "bg-slate-200 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
             : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
         }`;
 
@@ -213,7 +213,7 @@ const Sidebar = ({ onNavigate }) => {
         >
           <a href="/">
             <div className="hover:brightness-75 active:scale-[0.99] duration-100 flex items-center pl-3 dark:pl-1 gap-2 h-full w-full shadow-none dark:shadow-none border-none dark:border-none dark:bg-transparent rounded-none">
-              <div className={`flex ${collapsed ? 'h-10 w-10 rounded-xl' : 'w-9 h-9 md:h-10 md:w-10 rounded-lg'} shrink-0 items-center justify-center bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900`}>
+              <div className={`flex ${collapsed ? 'h-10 w-10 rounded-xl' : 'w-9 h-9 md:h-10 md:w-10 rounded-lg'} shrink-0 items-center justify-center bg-slate-200 dark:!bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900`}>
                 <img 
                   draggable={false}
                   onContextMenu={(e) => e.preventDefault()}
@@ -460,7 +460,7 @@ const Sidebar = ({ onNavigate }) => {
                 : `flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors border-white hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]`
             }
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-blue-400 to-blue-100 text-md font-semibold text-white dark:text-accent">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-200 dark:!bg-gradient-to-br from-blue-400 to-blue-100 text-md font-semibold text-slate-900 dark:text-accent">
               {user?.avatar ? (
                 <img
                   src={user.avatar}

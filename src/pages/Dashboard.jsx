@@ -99,7 +99,7 @@ const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
       {!isGuest && (
         <button
           onClick={onNewPost}
-          className="relative w-full active:scale-[0.99] duration-100 md:w-max flex md:inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-transparent px-3 md:px-4 py-2 text-sm font-medium text-slate-900 dark:text-white border border-white/15 shadow-sm transition hover:opacity-90"
+          className="relative w-full active:scale-[0.99] duration-100 md:w-max flex md:inline-flex items-center gap-1.5 rounded-lg bg-slate-200 dark:bg-transparent px-3 md:px-4 py-2 text-sm font-medium text-slate-900 dark:text-white border border-white/15 shadow-sm transition hover:opacity-90"
         >
           <Plus size={16} /> New post
         </button>
@@ -110,7 +110,7 @@ const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
 
 // --- Metric cards ------------------------------------------------------------
 const MetricCard = ({ icon: Icon, iconClass, label, value, delta, deltaTone = "positive" }) => (
-  <div className="bg-white dark:bg-gradient-to-br dark:from-blue-400 dark:to-blue-100 flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-none p-3 md:p-4 shadow-sm dark:shadow-none">
+  <div className="bg-slate-200 dark:bg-gradient-to-br dark:from-blue-400 dark:to-blue-100 flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-none p-3 md:p-4 shadow-sm dark:shadow-none">
     <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${iconClass}`}>
       <Icon size={16} />
     </div>
@@ -188,14 +188,14 @@ const Card1 = () => {
       href="https://mikrotik.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-950 dark:bg-slate-950 hover:brightness-[80%] p-3 md:p-5 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-slate-950 hover:brightness-[80%] p-3 md:p-5 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
-        <span className="flex items-center gap-1 text-sm font-medium text-white group-hover:underline">
+        <span className="flex items-center gap-1 text-sm font-medium text-slate-900 dark:text-white group-hover:underline">
           Open web <ChevronRight size={14} />
         </span>
       </div>
-      <p className="mb-4 text-sm text-slate-400 dark:text-gray-500">
+      <p className="mb-4 text-sm text-slate-500 dark:text-gray-500">
         Map your network, inspect a node
       </p>
 
@@ -207,7 +207,7 @@ const Card1 = () => {
         />
       </div>
 
-      <div className="mt-4 flex items-center justify-between text-xs text-slate-400 dark:text-gray-500">
+      <div className="mt-4 flex items-center justify-between text-xs text-slate-500 dark:text-gray-500">
         <span className="flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Mikrotik
         </span>
@@ -222,14 +222,14 @@ const Card2 = () => {
       href="https://ui.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-950 dark:bg-slate-950 hover:brightness-[80%] p-3 md:p-5 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-slate-950 hover:brightness-[80%] p-3 md:p-5 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
-        <span className="flex items-center gap-1 text-sm font-medium text-white dark:text-white group-hover:underline">
+        <span className="flex items-center gap-1 text-sm font-medium text-slate-900 dark:text-white group-hover:underline">
           Open web <ChevronRight size={14} />
         </span>
       </div>
-      <p className="mb-4 text-sm text-slate-400 dark:text-gray-500">
+      <p className="mb-4 text-sm text-slate-500 dark:text-gray-500">
         Map your network, inspect a node
       </p>
 
@@ -241,7 +241,7 @@ const Card2 = () => {
         />
       </div>
 
-      <div className="mt-4 flex items-center justify-between text-xs text-slate-400 dark:text-gray-500">
+      <div className="mt-4 flex items-center justify-between text-xs text-slate-500 dark:text-gray-500">
         <span className="flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Ubiquiti
         </span>
@@ -256,14 +256,14 @@ const Card3 = () => {
       href="https://www.tp-link.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-950 dark:bg-slate-950 hover:brightness-[80%] p-3 md:p-5 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-slate-950 hover:brightness-[80%] p-3 md:p-5 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
-        <span className="flex items-center gap-1 text-sm font-medium text-white group-hover:underline">
+        <span className="flex items-center gap-1 text-sm font-medium text-slate-900 dark:text-white group-hover:underline">
           Open web <ChevronRight size={14} />
         </span>
       </div>
-      <p className="mb-4 text-sm text-slate-400 dark:text-gray-500">
+      <p className="mb-4 text-sm text-slate-500 dark:text-gray-500">
         Map your network, inspect a node
       </p>
 
@@ -275,7 +275,7 @@ const Card3 = () => {
         />
       </div>
 
-      <div className="mt-4 flex items-center justify-between text-xs text-slate-400 dark:text-gray-500">
+      <div className="mt-4 flex items-center justify-between text-xs text-slate-500 dark:text-gray-500">
         <span className="flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Tp-Link
         </span>
@@ -496,7 +496,7 @@ const Dashboard = () => {
       <div className="border-t border-slate-300 dark:border-white/10 mb-6"></div>
 
       <div className="md:px-6 pb-6">
-        <div className="px-0 pt-3 pb-3 md:px-0 w-full md:py-4 relative rounded-xl bg-white dark:bg-white/5 dark:bg-none">
+        <div className="px-0 pt-3 pb-3 md:px-0 w-full md:py-4 relative rounded-xl bg-slate-200 dark:bg-white/5 dark:bg-none">
           {/* Header */}
           <header className="mt-1 px-3 md:px-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -515,7 +515,7 @@ const Dashboard = () => {
           {/* Search + Categories */}
           <div className="w-full px-3 py-2 md:p-4 items-center gap-2">
             <form
-              className="flex w-full mb-0 items-center gap-2 rounded-xl border border-gray-200 bg-slate-950 dark:bg-white px-3 py-1.5 shadow-sm md:w-72"
+              className="flex w-full mb-0 items-center gap-2 rounded-xl border border-gray-200 bg-slate-950 dark:bg-slate-200 px-3 py-1.5 shadow-sm md:w-72"
               onSubmit={(e) => {
                 e.preventDefault();
                 updateParam("search", localSearch.trim());
@@ -550,7 +550,7 @@ const Dashboard = () => {
                   <select
                     value={category || ""}
                     onChange={(e) => updateParam("category", e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-600 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700"
+                    className="w-full rounded-xl border border-gray-200 bg-slate-200 px-3 py-2 text-sm text-gray-600 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700"
                   >
                     <option value="">All guides</option>
                     {data.categories.map((item) => (
@@ -568,7 +568,7 @@ const Dashboard = () => {
                     className={`flex items-center border border-slate-400 gap-1.5 rounded-xl font-medium active:scale-[0.99] px-3 md:px-3 py-2 text-sm transition ${
                       !category
                         ? "bg-slate-950 dark:bg-gradient-to-br from-blue-400 to-blue-100 dark:text-slate-900 text-white"
-                        : "bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
+                        : "bg-slate-200 text-gray-600 hover:border-accent/50 hover:bg-slate-200"
                     }`}
                   >
                     <Box size={14} />
@@ -583,7 +583,7 @@ const Dashboard = () => {
                       className={`flex active:scale-[0.99] border border-slate-400 font-medium duration-100 items-center gap-1.5 rounded-xl px-3 md:px-3 py-2 text-sm transition ${
                         category === item
                           ? "bg-slate-950 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900"
-                          : "bg-white text-gray-600 hover:border-accent/50 hover:bg-slate-200"
+                          : "bg-slate-200 text-gray-600 hover:border-accent/50 hover:bg-slate-200"
                       }`}
                     >
                       <Box size={14} />
@@ -671,7 +671,7 @@ const Dashboard = () => {
                             <button
                               onClick={handleLoadMore}
                               disabled={loadingMore}
-                              className="inline-flex items-center gap-2 rounded-xl border border-slate-300 dark:bg-white bg-slate-950 px-3 dark:h-[40px] h-[43px] text-sm font-medium text-white dark:text-slate-900 shadow-sm transition hover:brightness-[80%] active:scale-[0.99] duration-100 disabled:opacity-50"
+                              className="inline-flex items-center gap-2 rounded-xl border border-slate-300 dark:bg-slate-200 bg-slate-950 px-3 dark:h-[40px] h-[43px] text-sm font-medium text-white dark:text-slate-900 shadow-sm transition hover:brightness-[80%] active:scale-[0.99] duration-100 disabled:opacity-50"
                             >
                               {loadingMore ? "Loading..." : "Load more guides"}
                             </button>
