@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 const ThemeContext = createContext(null);
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(() => localStorage.getItem("nethub_theme") || "light");
+  const [theme, setTheme] = useState(() => localStorage.getItem("nethub_theme") || "dark");
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
