@@ -546,7 +546,7 @@ const Dashboard = () => {
             {data.categories?.length > 0 && (
               <>
                 {/* Mobile: dropdown selector */}
-                <div className="w-full sm:hidden">
+                <div className="md:mt-0 mt-2 w-full sm:hidden">
                   <select
                     value={category || ""}
                     onChange={(e) => updateParam("category", e.target.value)}
