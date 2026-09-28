@@ -212,35 +212,35 @@ const Sidebar = ({ onNavigate }) => {
           }`}
         >
           <a href="/">
-            <div className="hover:brightness-75 active:scale-[0.99] duration-100 flex items-center pl-3 dark:pl-1 gap-2 h-full w-full surface-card shadow-none dark:shadow-none border-none dark:border-none dark:bg-transparent rounded-none">
-              <div className={`flex ${collapsed ? 'h-10 w-10 rounded-xl' : 'w-9 h-9 md:h-10 md:w-10 rounded-lg'} shrink-0 items-center justify-center bg-slate-900 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900`}>
+            <div className="hover:brightness-75 active:scale-[0.99] duration-100 flex items-center pl-3 dark:pl-1 gap-2 h-full w-full shadow-none dark:shadow-none border-none dark:border-none dark:bg-transparent rounded-none">
+              <div className={`flex ${collapsed ? 'h-10 w-10 rounded-xl' : 'w-9 h-9 md:h-10 md:w-10 rounded-lg'} shrink-0 items-center justify-center bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900`}>
                 <img 
                   draggable={false}
-        onContextMenu={(e) => e.preventDefault()}
-        onDragStart={(e) => e.preventDefault()}
+                  onContextMenu={(e) => e.preventDefault()}
+                  onDragStart={(e) => e.preventDefault()}
                   src="/icons/icon-192x192.png" alt="logo" className="w-[85%] relative top-[1px] left-[0.5px]" />
               </div>
               {!collapsed && (
-                <span className="ml-1 dark:text-white text-[16px] font-semibold tracking-tight">
+                <span className="ml-1 !text-white text-[16px] font-semibold tracking-tight">
                   TEXNet
                 </span>
               )}
             </div>
           </a>
 
-          <div className="w-max flex h-full pr-3 dark:pr-2 surface-card dark:shadow-none dark:bg-transparent shadow-none border-none rounded-none items-center gap-2">
+          <div className="w-max flex h-full pr-3 dark:pr-2 surface-card bg-transparent dark:shadow-none dark:bg-transparent shadow-none border-none rounded-none items-center gap-2">
           {!collapsed && (
               <button
                 type="button"
                 onClick={() => setCollapsed(true)}
-                className={`dark:flex hidden md:h-10 md:w-10 h-9 w-9 shrink-0 relative border hover:brightness-90 hover:dark:!bg-white/5 active:scale-[0.99] duration-100 items-center justify-center border-white/20 mr-2 rounded-md left-2 md:rounded-lg text-gray-400 transition bg-slate-900 dark:bg-transparent hover:bg-white/10 hover:text-white`}
+                className={`md:!flex hidden md:h-10 md:w-10 h-9 w-9 shrink-0 relative border hover:brightness-90 hover:dark:!bg-white/5 active:scale-[0.99] duration-100 items-center justify-center border-white/20 mr-2 rounded-md left-2 md:rounded-lg text-gray-400 transition bg-transparent hover:md:dark!:bg-slate-100 hover:md:!bg-slate-800 hover:text-white`}
                 title="Collapse sidebar"
               >
                 {
                   !collapsed ? (
-                    <Shrink className="text-slate-200 relative left-[1px]" size={16} />
+                    <Shrink className="text-slate-200 relative left-[-0px]" size={16} />
                   ): (
-                    <Expand className="text-slate-200 relative left-[1px]" size={16} />
+                    <Expand className="text-slate-200 relative left-[0px]" size={16} />
                   )
 
                 }
@@ -449,7 +449,7 @@ const Sidebar = ({ onNavigate }) => {
         </nav>
 
         {/* Profile */}
-        <div className={`h-[9%] mt-auto border-t pt-[1px] surface-card dark:bg-transparent rounded-none shadow-none dark:border-white/10 ${collapsed ? "py-3" : ""}`}>
+        <div className={`h-[9%] mt-auto border-t pt-[1px] dark:bg-transparent rounded-none shadow-none dark:border-white/10 ${collapsed ? "py-3" : ""}`}>
           <NavLink
             to={isGuest ? "#" : "/profile"}
             onClick={onNavigate}
@@ -460,7 +460,7 @@ const Sidebar = ({ onNavigate }) => {
                 : `flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors border-white hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]`
             }
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-950 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-md font-semibold text-white dark:text-accent">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-blue-400 to-blue-100 text-md font-semibold text-white dark:text-accent">
               {user?.avatar ? (
                 <img
                   src={user.avatar}
@@ -474,10 +474,10 @@ const Sidebar = ({ onNavigate }) => {
               {!collapsed && (
                 <>
                   <div className="min-w-0 flex-1 overflow-hidden">
-                    <p className="truncate text-sm font-medium text-slate-900 dark:text-white/80">
+                    <p className="truncate text-sm font-medium text-white/80">
                       {user?.name}
                     </p>
-                    <p className="truncate text-xs text-slate-900 dark:text-white/80">
+                    <p className="truncate text-xs text-white/80">
                       {isGuest ? "Guest Reader" : user?.title}
                     </p>
                   </div>
@@ -487,7 +487,7 @@ const Sidebar = ({ onNavigate }) => {
                       e.stopPropagation();
                       handleLogoutClick();
                     }}
-                    className="shrink-0 rounded-md p-1.5 text-slate-900 transition-colors hover:bg-black/5 hover:text-red-500 dark:text-white/90 dark:hover:bg-white/10"
+                    className="shrink-0 rounded-md p-1.5 transition-colors hover:bg-black/5 hover:text-red-500 text-white dark:text-white/90 dark:hover:bg-white/10"
                     title="Log out"
                   >
                     <LogOut size={16} />
