@@ -73,16 +73,16 @@ const Login = () => {
               />
               {
                 showPass ? (
-                  <EyeOff onClick={() => setShowPass(!showPass)} size={16} className="absolute top-[27%] right-4 z-[3] text-slate-900 cursor-pointer active:scale-[0.99] duration-100 hover:brightness-[90%]" /> 
+                  <EyeOff onClick={() => setShowPass(!showPass)} size={16} className="absolute top-[30%] right-4 z-[3] text-slate-900 cursor-pointer active:scale-[0.99] duration-100 hover:brightness-[90%]" /> 
                 ):
-                  <Eye onClick={() => setShowPass(!showPass)} size={16} className="absolute top-[27%] right-4 z-[3] text-slate-900 cursor-pointer active:scale-[0.99] duration-100 hover:brightness-[90%]" /> 
+                  <Eye onClick={() => setShowPass(!showPass)} size={16} className="absolute top-[30%] right-4 z-[3] text-slate-900 cursor-pointer active:scale-[0.99] duration-100 hover:brightness-[90%]" /> 
               }
             </div>
           </div>
           <div className="w-full flex items-center gap-3.5">
             <button type="submit" disabled={loading} className="btn-primary w-full">
               {loading && <Loader2 size={16} className="animate-spin" />}
-              Sign In
+              Sign in
             </button>
             <button
               type="button"
@@ -100,7 +100,7 @@ const Login = () => {
                   setLoading(false);
                 }
               }}
-              className="w-full rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-slate-950 transition hover:bg-slate-250 active:scale-[0.99] dark:border-slate-500 dark:text-slate-950"
+              className="w-full rounded-xl hover:!bg-slate-200 border border-gray-200 py-2.5 text-sm font-medium text-slate-950 transition hover:bg-slate-250 active:scale-[0.99] dark:border-slate-500 dark:text-slate-950"
             >
               Guest - read only
             </button>
