@@ -424,28 +424,58 @@ const Dashboard = () => {
     });
   }, [data.posts, allPostsForSearch, search]);
 
-  const filteredPosts = useMemo(() => {
+ const filteredPosts = useMemo(() => {
     if (!search.trim()) return data.posts || [];
     if (!fuse) return [];
     return fuse.search(search.trim()).map((result) => result.item);
   }, [fuse, search, data.posts]);
 
+  // ===== PERUBAHAN UTAMA: sumber post untuk overview =====
+  const overviewPosts = useMemo(() => {
+    // Guest di overview → gabungkan pinned + posts biar muncul di grid normal
+    if (isGuest && !search.trim() && !category) {
+      const map = new Map();
+      [...(data.pinned || []), ...(data.posts || [])].forEach((p) => {
+        if (p?._id) map.set(String(p._id), p);
+      });
+      return Array.from(map.values()).sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+    }
+    // Non-guest atau sedang search/category → pakai filteredPosts biasa
+    return filteredPosts;
+  }, [isGuest, search, category, data.pinned, data.posts, filteredPosts]);
+
   const { newestThree, remainingPosts } = useMemo(() => {
-    // When searching or filtering by category, just show everything in the normal grid
+    // Saat search / category → tampilkan semua di grid biasa
     if (search.trim() || category) {
-      return { newestThree: [], remainingPosts: filteredPosts };
+      return { newestThree: [], remainingPosts: overviewPosts };
     }
 
-    // Assume posts are already ordered newest-first from the API.
-    // If you have a createdAt / publishedAt field, sort explicitly:
-    // const sorted = [...filteredPosts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    const sorted = filteredPosts;
+    // Overview
+    const sorted = overviewPosts;
+    return {
+      newestThree: sorted.slice(0, 3),
+      remainingPosts: sorted.slice(3),
+    };
+  }, [overviewPosts, search, category]);
 
-    const newestThree = sorted.slice(0, 3);
-    const remainingPosts = sorted.slice(3);
+  // const { newestThree, remainingPosts } = useMemo(() => {
+  //   // When searching or filtering by category, just show everything in the normal grid
+  //   if (search.trim() || category) {
+  //     return { newestThree: [], remainingPosts: filteredPosts };
+  //   }
 
-    return { newestThree, remainingPosts };
-  }, [filteredPosts, search, category]);
+  //   // Assume posts are already ordered newest-first from the API.
+  //   // If you have a createdAt / publishedAt field, sort explicitly:
+  //   // const sorted = [...filteredPosts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  //   const sorted = filteredPosts;
+
+  //   const newestThree = sorted.slice(0, 3);
+  //   const remainingPosts = sorted.slice(3);
+
+  //   return { newestThree, remainingPosts };
+  // }, [filteredPosts, search, category]);
 
   const hasMore = data.page < data.pages;
   const handleLoadMore = () => {
@@ -610,7 +640,7 @@ const Dashboard = () => {
               {/* ========== PINNED FIRST ========== */}
               {pinnedFirst ? (
                 <>
-                  {showOverviewSections && data.pinned?.length > 0 && (
+                  {!isGuest && showOverviewSections && data.pinned?.length > 0 && (
                     <section className="mb-8 px-3 md:px-4 md:mt-0 mt-4">
                       <PinnedHero pinned={data.pinned} />
                     </section>
@@ -727,7 +757,7 @@ const Dashboard = () => {
                     )}
                   </section>
                   {/* Pinned di bawah */}
-                  {showOverviewSections && data.pinned?.length > 0 && (
+                  {!isGuest && showOverviewSections && data.pinned?.length > 0 && (
                     <section className="mb-8 px-4">
                       <div className="mb-3 flex items-center gap-2 text-sm font-medium text-white/70">
                         <Sparkles size={15} />
@@ -740,7 +770,7 @@ const Dashboard = () => {
               )}
 
               {/* Saat sedang search, tetap tampilkan pinned di bawah (opsional) */}
-              {localSearch && data.pinned?.length > 0 && (
+              {!isGuest && localSearch && data.pinned?.length > 0 && (
                 <section className="mb-8 px-4">
                   <div className="mb-3 flex items-center gap-2 text-sm font-medium text-white/50">
                     <Sparkles size={15} />
