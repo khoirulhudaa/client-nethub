@@ -95,8 +95,8 @@ const SortableItem = ({
       </div>
 
       {/* Content */}
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+      <div className="min-w-0 flex md:block flex-1">
+        <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
           <div>
             <Link
               to={`/posts/${post.slug}`}
@@ -110,84 +110,67 @@ const SortableItem = ({
               {post.excerpt || post.category}
             </p>
           </div>
+              
+          <div className="w-max flex items-center md:items-start gap-3">
+            {/* Actions */}
+            <div className="mt-2 flex items-center md:items-start gap-1 sm:mt-0">
+              {/* Remove */}
+              <button
+                onClick={() => onRemove(post._id)}
+                disabled={isLoading}
+                className="relative top-[-1px] rounded-lg py-1.5 text-red-500 transition hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10"
+                title="Hapus dari list"
+              >
+                <Trash2 size={16} />
+              </button>
 
-          {/* Actions */}
-          <div className="mt-2 flex items-center gap-1 sm:mt-0">
-            {/* Move Up */}
-            <button
-              onClick={() => onMove(post._id, "up")}
-              disabled={index === 0 || isLoading}
-              className="rounded-lg p-1.5 text-gray-400 transition hover:bg-black/5 hover:text-gray-700 disabled:opacity-30 dark:hover:bg-white/10"
-              title="Naikkan urutan"
-            >
-              <ChevronUp size={16} />
-            </button>
-
-            {/* Move Down */}
-            <button
-              onClick={() => onMove(post._id, "down")}
-              disabled={index === total - 1 || isLoading}
-              className="rounded-lg p-1.5 text-gray-400 transition hover:bg-black/5 hover:text-gray-700 disabled:opacity-30 dark:hover:bg-white/10"
-              title="Turunkan urutan"
-            >
-              <ChevronDown size={16} />
-            </button>
-
-            {/* Toggle Complete */}
-            <button
-              onClick={() => onToggleComplete(post._id)}
-              disabled={isLoading}
-              className={`rounded-lg p-1.5 transition ${
-                isCompleted
-                  ? "text-emerald-600 hover:bg-emerald-100 dark:hover:bg-emerald-500/20"
-                  : "text-gray-400 hover:bg-black/5 hover:text-accent dark:hover:bg-white/10"
-              }`}
-              title={isCompleted ? "Tandai belum selesai" : "Tandai selesai"}
-            >
-              {isLoading ? (
-                <div>
-                  <Loader2 size={16} className="animate-spin animate duration-500" />
-                </div>
-              ) : isCompleted ? (
-                <CheckCircle2 size={16} />
-              ) : (
-                <Circle size={16} />
+              {/* Toggle Complete */}
+              <button
+                onClick={() => onToggleComplete(post._id)}
+                disabled={isLoading}
+                className={`rounded-lg p-1.5 transition ${
+                  isCompleted
+                    ? "text-emerald-600 hover:bg-emerald-100 dark:hover:bg-emerald-500/20"
+                    : "text-gray-400 hover:bg-black/5 hover:text-accent dark:hover:bg-white/10"
+                }`}
+                title={isCompleted ? "Tandai belum selesai" : "Tandai selesai"}
+              >
+                {isLoading ? (
+                  <div>
+                    <Loader2 size={16} className="animate-spin animate duration-500" />
+                  </div>
+                ) : isCompleted ? (
+                  <CheckCircle2 size={16} />
+                ) : (
+                  <Circle size={16} />
+                )}
+              </button>
+            </div>
+            {/* Meta */}
+            <div className="md:mt-1 mt-2 flex items-center gap-3 text-xs text-gray-400">
+              <span className="rounded-md bg-gray-100 px-2 py-0.5 dark:bg-white/10">
+                {post.category}
+              </span>
+              {item.plannedDate && (
+                <span className="flex items-center gap-1">
+                  <Calendar size={12} />
+                  {new Date(item.plannedDate).toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </span>
               )}
-            </button>
-
-            {/* Remove */}
-            <button
-              onClick={() => onRemove(post._id)}
-              disabled={isLoading}
-              className="rounded-lg p-1.5 text-gray-400 transition hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10"
-              title="Hapus dari list"
-            >
-              <Trash2 size={16} />
-            </button>
+              {isCompleted && item.completedAt && (
+                <span className="text-emerald-600 dark:text-emerald-400">
+                  Selesai {new Date(item.completedAt).toLocaleDateString("id-ID")}
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Meta */}
-        <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-gray-400">
-          <span className="rounded-md bg-gray-100 px-2 py-0.5 dark:bg-white/10">
-            {post.category}
-          </span>
-          {item.plannedDate && (
-            <span className="flex items-center gap-1">
-              <Calendar size={12} />
-              {new Date(item.plannedDate).toLocaleDateString("id-ID", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              })}
-            </span>
-          )}
-          {isCompleted && item.completedAt && (
-            <span className="text-emerald-600 dark:text-emerald-400">
-              Selesai {new Date(item.completedAt).toLocaleDateString("id-ID")}
-            </span>
-          )}
-        </div>
+
       </div>
     </div>
   );
