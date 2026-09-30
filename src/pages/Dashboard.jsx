@@ -647,7 +647,7 @@ const { newestThree, remainingPosts } = useMemo(() => {
                   )}
 
                   {/* ========== 2. 3 NEWEST GUIDES ========== */}
-                  {showOverviewSections && newestThree.length > 0 && (
+                  {/* {showOverviewSections && newestThree.length > 0 && (
                     <section className="mb-8 px-3 md:px-4">
                       <div className="mb-4 flex items-center gap-2">
                         <h2 className="flex items-center text-lg mt-1 font-medium tracking-tight">
@@ -663,7 +663,7 @@ const { newestThree, remainingPosts } = useMemo(() => {
                         ))}
                       </div>
                     </section>
-                  )}
+                  )} */}
 
                   {/* Posts Grid — Other guides */}
                  <section className="mb-8 px-3 md:px-4 border-white/10">

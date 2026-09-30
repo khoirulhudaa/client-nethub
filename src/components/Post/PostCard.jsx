@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
-import { Eye, MessageSquare, Heart, Pin, BookPlus, Check, Loader2, ArrowRight } from "lucide-react";
+import { ArrowRight, BookPlus, Check, Eye, Heart, Loader2, Pin } from "lucide-react";
 import { useState } from "react";
-import CategoryPill from "../UI/CategoryPill.jsx";
+import { Link } from "react-router-dom";
 import api from "../../api/axios.js";
 import { useAuth } from "../../context/AuthContext.jsx";
+import CategoryPill from "../UI/CategoryPill.jsx";
 
 const timeAgo = (date) => {
   const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
@@ -72,7 +72,7 @@ const PostCard = ({ post, featured = false, status=true }) => {
           <img
             src={post.coverImage}
             alt={post.title}
-            className="h-full w-full brightness-[60%] object-cover transition-transform duration-300 ease-fluid scale-[1.03] group-hover:scale-[1.07]"
+            className="h-full w-full brightness-[80%] object-cover transition-transform duration-300 ease-fluid scale-[1.03] group-hover:scale-[1.07]"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-gray-300 dark:text-white/10">
