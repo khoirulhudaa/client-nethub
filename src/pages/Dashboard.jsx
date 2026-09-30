@@ -310,7 +310,7 @@ const Dashboard = () => {
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  const LIMIT = 6;
+  const LIMIT = 12;
 
   // Fetch stats sekali
   useEffect(() => {
@@ -430,35 +430,34 @@ const Dashboard = () => {
     return fuse.search(search.trim()).map((result) => result.item);
   }, [fuse, search, data.posts]);
 
-  // ===== PERUBAHAN UTAMA: sumber post untuk overview =====
-  const overviewPosts = useMemo(() => {
-    // Guest di overview → gabungkan pinned + posts biar muncul di grid normal
-    if (isGuest && !search.trim() && !category) {
-      const map = new Map();
-      [...(data.pinned || []), ...(data.posts || [])].forEach((p) => {
-        if (p?._id) map.set(String(p._id), p);
-      });
-      return Array.from(map.values()).sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
-    }
-    // Non-guest atau sedang search/category → pakai filteredPosts biasa
-    return filteredPosts;
-  }, [isGuest, search, category, data.pinned, data.posts, filteredPosts]);
+  // Sumber post untuk overview (guest)
+const overviewPosts = useMemo(() => {
+  // Guest + tidak ada search/category → gabungkan pinned + posts
+  if (isGuest && !search.trim() && !category) {
+    const map = new Map();
+    [...(data.pinned || []), ...(data.posts || [])].forEach((p) => {
+      if (p?._id) map.set(String(p._id), p);
+    });
+    return Array.from(map.values()).sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+  }
+  // Selain itu pakai filteredPosts biasa
+  return filteredPosts;
+}, [isGuest, search, category, data.pinned, data.posts, filteredPosts]);
 
-  const { newestThree, remainingPosts } = useMemo(() => {
-    // Saat search / category → tampilkan semua di grid biasa
-    if (search.trim() || category) {
-      return { newestThree: [], remainingPosts: overviewPosts };
-    }
+const { newestThree, remainingPosts } = useMemo(() => {
+  if (search.trim() || category) {
+    return { newestThree: [], remainingPosts: overviewPosts };
+  }
 
-    // Overview
-    const sorted = overviewPosts;
-    return {
-      newestThree: sorted.slice(0, 3),
-      remainingPosts: sorted.slice(3),
-    };
-  }, [overviewPosts, search, category]);
+  // Overview → split ke Top 3 + Other guides
+  const sorted = overviewPosts;
+  return {
+    newestThree: sorted.slice(0, 3),
+    remainingPosts: filteredPosts,
+  };
+}, [overviewPosts, search, category]);
 
   // const { newestThree, remainingPosts } = useMemo(() => {
   //   // When searching or filtering by category, just show everything in the normal grid
@@ -477,7 +476,8 @@ const Dashboard = () => {
   //   return { newestThree, remainingPosts };
   // }, [filteredPosts, search, category]);
 
-  const hasMore = data.page < data.pages;
+   const hasMore = data.page < data.pages;
+
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
   };
@@ -666,50 +666,51 @@ const Dashboard = () => {
                   )}
 
                   {/* Posts Grid — Other guides */}
-                  <section className="mb-8 px-3 md:px-4 border-white/10">
-                    <div className="mb-4 flex items-center gap-2">
-                      <h2 className="flex items-center text-lg mt-1 font-medium tracking-tight">
-                        <Newspaper size={17} className="relative top-[-1px] mr-2 text-slate-900 dark:text-white" />
-                        <span className="relative top-[-1.7px] text-slate-900 dark:text-white">
-                          Other guides
-                        </span>
-                      </h2>
+                 <section className="mb-8 px-3 md:px-4 border-white/10">
+                  <div className="mb-4 flex items-center gap-2">
+                    <h2 className="flex items-center text-lg mt-1 font-medium tracking-tight">
+                      <Newspaper size={17} className="relative top-[-1px] mr-2 text-slate-900 dark:text-white" />
+                      <span className="relative top-[-1.7px] text-slate-900 dark:text-white">
+                        Other guides
+                      </span>
+                    </h2>
+                  </div>
+
+                  {remainingPosts.length === 0 ? (
+                    <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
+                      <img src="/notFound.png" alt="No guides" className="h-16 w-16 mb-1.5" />
+                      <p className="font-medium">
+                        {search ? `No guides found for "${search}"` : "No guides here yet"}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {search
+                          ? "Try a different keyword or clear the search"
+                          : "Be the first to publish one for this category"}
+                      </p>
                     </div>
-
-                    {remainingPosts.length === 0 ? (
-                      <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
-                        <img src="/notFound.png" alt="No guides" className="h-16 w-16 mb-1.5" />
-                        <p className="font-medium">
-                          {search ? `No guides found for "${search}"` : "No guides here yet"}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {search
-                            ? "Try a different keyword or clear the search"
-                            : "Be the first to publish one for this category"}
-                        </p>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                        {remainingPosts.map((post) => (
+                          <PostCard key={post._id} post={post} status={false} />
+                        ))}
                       </div>
-                    ) : (
-                      <>
-                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                          {remainingPosts.map((post) => (
-                            <PostCard key={post._id} post={post} status={false} />
-                          ))}
-                        </div>
 
-                        {!search && hasMore && (
-                          <div className="mt-6 flex justify-center">
-                            <button
-                              onClick={handleLoadMore}
-                              disabled={loadingMore}
-                              className="inline-flex items-center gap-2 rounded-xl border border-slate-300 dark:bg-slate-200 bg-slate-950 px-3 dark:h-[40px] h-[43px] text-sm font-medium text-white dark:text-slate-900 shadow-sm transition hover:brightness-[80%] active:scale-[0.99] duration-100 disabled:opacity-50"
-                            >
-                              {loadingMore ? "Loading..." : "Load more guides"}
-                            </button>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </section>
+                      {/* ===== LOAD MORE - diperbaiki ===== */}
+                      {!search && hasMore && (
+                        <div className="mt-6 flex justify-center">
+                          <button
+                            onClick={handleLoadMore}
+                            disabled={loadingMore}
+                            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 dark:bg-slate-200 bg-slate-950 px-3 dark:h-[40px] h-[43px] text-sm font-medium text-white dark:text-slate-900 shadow-sm transition hover:brightness-[80%] active:scale-[0.99] duration-100 disabled:opacity-50"
+                          >
+                            {loadingMore ? "Loading..." : "Load more guides"}
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </section>
                 </>
               ) : (
                 /* ========== POSTS FIRST ========== */

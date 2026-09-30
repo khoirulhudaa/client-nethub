@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Eye, MessageSquare, Heart, Pin, BookPlus, Check, Loader2 } from "lucide-react";
+import { Eye, MessageSquare, Heart, Pin, BookPlus, Check, Loader2, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import CategoryPill from "../UI/CategoryPill.jsx";
 import api from "../../api/axios.js";
@@ -55,9 +55,8 @@ const PostCard = ({ post, featured = false, status=true }) => {
   };
 
   return (
-    <Link
-      to={`/posts/${post.slug}`}
-      className={`bg-slate-300 rounded-xl dark:!bg-[#0c0c18] border dark:!border-white/20 group active:scale-[0.99] duration-100 relative flex flex-col overflow-hidden ${
+    <div
+      className={`group relative h-[380px] bg-slate-300 rounded-[34px] dark:!bg-[#0c0c18] border dark:!border-white/20 group duration-100 flex flex-col overflow-hidden ${
         featured ? "h-full" : ""
       }`}
     >
@@ -68,12 +67,12 @@ const PostCard = ({ post, featured = false, status=true }) => {
         </div>
       )}
 
-      <div className={`relative overflow-hidden bg-gray-100 dark:bg-slate-200 ${featured ? "h-56" : "h-40"}`}>
+      <div className={`relative overflow-hidden bg-gray-100 dark:bg-slate-200 ${featured ? "h-56" : "h-[64%]"}`}>
         {post.coverImage ? (
           <img
             src={post.coverImage}
             alt={post.title}
-            className="h-full w-full object-cover transition-transform duration-300 ease-fluid scale-[1.03] group-hover:scale-[1.07]"
+            className="h-full w-full brightness-[60%] object-cover transition-transform duration-300 ease-fluid scale-[1.03] group-hover:scale-[1.07]"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-gray-300 dark:text-white/10">
@@ -82,7 +81,14 @@ const PostCard = ({ post, featured = false, status=true }) => {
         )}
       </div>
 
-      <div className="flex flex-1 flex-col hover:bg-slate-300 hover:dark:bg-slate-200 group-hover:dark:bg-slate-900/40 gap-3 p-3.5 py-4">
+      <div className={`absolute bottom-0 left-0 w-full group-hover:h-[100%] ease-out animation-height duration-500 h-[54%] z-[33] flex flex-1 flex-col gap-3 p-3.5 py-4
+          bg-white/30 dark:bg-slate-900/40 
+          backdrop-blur-md 
+          border-t border-white/20 dark:border-white/10
+          shadow-[0_-4px_20px_rgba(0,0,0,0.05)]
+          transition-all
+          group-hover:bg-white/40 dark:group-hover:bg-slate-900/50
+        `}>        
         <div className="flex items-center justify-between gap-2">
           <CategoryPill category={post.category} />
           
@@ -123,11 +129,20 @@ const PostCard = ({ post, featured = false, status=true }) => {
           {post.title}
         </h3>
 
-        <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400 line-clamp-2">
+        <p className="mt-2 group-hover:hidden text-sm leading-relaxed text-gray-600 dark:text-gray-300 line-clamp-2">
           {post.content
             ? post.content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()
             : post.excerpt}
         </p>
+
+        <Link
+        to={`/posts/${post.slug}`}
+        // className="active:scale-[0.98]"
+        >
+          <div className={`absolute -translate-x-1/2 bottom-[25%] left-1/2 w-[70px] h-[70px] rounded-full group-hover:flex hidden items-center justify-center hover:bg-blue-700 cursor-pointer active:scale-[0.97] bg-blue-500 text-white`}>
+            <ArrowRight />
+          </div>
+        </Link>
 
         <div className="mt-auto flex items-center justify-between pt-2">
           <div className="flex items-center gap-2">
@@ -148,7 +163,7 @@ const PostCard = ({ post, featured = false, status=true }) => {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 
