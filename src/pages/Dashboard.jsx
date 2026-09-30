@@ -310,7 +310,7 @@ const Dashboard = () => {
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  const LIMIT = 12;
+  const LIMIT = 6;
 
   // Fetch stats sekali
   useEffect(() => {
@@ -645,27 +645,8 @@ const { newestThree, remainingPosts } = useMemo(() => {
                       <PinnedHero pinned={data.pinned} />
                     </section>
                   )}
-
-                  {/* ========== 2. 3 NEWEST GUIDES ========== */}
-                  {/* {showOverviewSections && newestThree.length > 0 && (
-                    <section className="mb-8 px-3 md:px-4">
-                      <div className="mb-4 flex items-center gap-2">
-                        <h2 className="flex items-center text-lg mt-1 font-medium tracking-tight">
-                          <Newspaper size={17} className="relative top-[-1px] mr-2 text-slate-900 dark:text-white" />
-                          <span className="relative top-[-1.7px] text-slate-900 dark:text-white">
-                            Top 3 newests
-                          </span>
-                        </h2>
-                      </div>
-                      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                        {newestThree.map((post) => (
-                          <PostCard key={post._id} post={post} status={false} />
-                        ))}
-                      </div>
-                    </section>
-                  )} */}
-
-                  {/* Posts Grid — Other guides */}
+                  
+                {/* Posts Grid — Other guides */}
                  <section className="mb-8 px-3 md:px-4 border-white/10">
                   <div className="mb-4 flex items-center gap-2">
                     <h2 className="flex items-center text-lg mt-1 font-medium tracking-tight">
