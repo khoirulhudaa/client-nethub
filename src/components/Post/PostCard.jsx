@@ -81,7 +81,7 @@ const PostCard = ({ post, featured = false, status=true }) => {
         )}
       </div>
 
-      <div className={`absolute bottom-0 left-0 w-full group-hover:h-[100%] ease-out animation-height duration-500 h-[54%] z-[33] flex flex-1 flex-col gap-3 p-3.5 py-4
+      <div className={`absolute bottom-0 left-0 w-full group-hover:h-[100%] ease-out animation-height duration-500 h-[50%] z-[33] flex flex-1 flex-col gap-3 p-3.5 py-4
           bg-white/30 dark:bg-slate-900/40 
           backdrop-blur-md 
           border-t border-white/20 dark:border-white/10
@@ -129,7 +129,7 @@ const PostCard = ({ post, featured = false, status=true }) => {
           {post.title}
         </h3>
 
-        <p className="mt-2 group-hover:hidden text-sm leading-relaxed text-gray-600 dark:text-gray-300 line-clamp-2">
+        <p className="mt-2 group-hover:hidden text-sm leading-relaxed text-gray-600 dark:text-gray-300 line-clamp-1">
           {post.content
             ? post.content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()
             : post.excerpt}
