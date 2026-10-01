@@ -36,7 +36,7 @@ const PostCard = ({ post, roundedNormal = false, featured = false, status = true
   const [pinning, setPinning] = useState(false);
 
 
-  const postUrl = `${window.location.origin}/posts/${post?.slug}`;
+  const postUrl = `${window.location.origin}/posts/${post?.slug}?ref=share`;
 
   const createShareText = () => {
     const title = post?.title || "Guide";
@@ -70,8 +70,6 @@ const PostCard = ({ post, roundedNormal = false, featured = false, status = true
   const shareText = encodeURIComponent(createShareText());
 
   const shareLinks = {
-    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(post?.title || "")}`,
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`,
     whatsapp: `https://wa.me/?text=${shareText}`,
   };
 

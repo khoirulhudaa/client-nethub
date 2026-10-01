@@ -1,7 +1,7 @@
 import { Bookmark, Calendar, CheckCircle2, Circle, Clipboard, Eye, Heart, Highlighter, Link2, Loader2, Pencil, Pin, Plus, Share2, Timer, Trash2, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import api from "../api/axios.js";
 import CommentThread from "../components/Post/CommentThread.jsx";
 import PostCard from "../components/Post/PostCard.jsx";
@@ -138,8 +138,11 @@ const PostDetailSkeleton = () => (
 
 const PostDetail = () => {
   const { slug } = useParams();
-  const { user } = useAuth();
   const navigate = useNavigate();
+
+  const { user, loading: authLoading, loginAsGuest } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const guestTried = useRef(false);
 
   const [post, setPost] = useState(null);
   const [related, setRelated] = useState([]);
@@ -228,11 +231,26 @@ const PostDetail = () => {
     } finally {
       if (reqId === reqIdRef.current) setLoading(false);
     }
-  }, [slug, user?.id]);
+  }, [slug, user?.id, user?.isGuest]);
 
   useEffect(() => {
     load();
   }, [load])
+
+  useEffect(() => {
+    if (authLoading || user) return;                    // tunggu cek sesi, jangan timpa user/guest
+    if (searchParams.get("ref") !== "share") return;
+    if (guestTried.current) return;
+    guestTried.current = true;
+
+    loginAsGuest()
+      .catch(() => {})
+      .finally(() => {
+        const next = new URLSearchParams(searchParams);
+        next.delete("ref");
+        setSearchParams(next, { replace: true });
+      });
+  }, [authLoading, user]);
 
   useEffect(() => {
     if (user && post?.author?._id) {
@@ -710,8 +728,6 @@ const handlePin = async () => {
   const shareText = encodeURIComponent(createShareText());
 
   const shareLinks = {
-    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(post?.title || "")}`,
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`,
     whatsapp: `https://wa.me/?text=${shareText}`,
   };
 
