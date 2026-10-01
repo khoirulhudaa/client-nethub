@@ -631,7 +631,7 @@ const { remainingPosts } = useMemo(() => {
                 </div>
 
                 {/* Desktop: pill buttons */}
-                <div className="hidden sm:flex flex-wrap items-center mt-3 gap-x-2.5">
+                <div className="hidden sm:flex flex-wrap items-center mt-3 gap-2.5">
                   <button
                     onClick={() => updateParam("category", "")}
                     className={`flex items-center border border-slate-400 gap-1.5 rounded-xl font-medium active:scale-[0.99] px-3 md:px-3 py-2 text-sm transition ${

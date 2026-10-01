@@ -310,11 +310,10 @@ const HardwareCard3D = ({ item, onEdit, onDelete, isAdmin }) => {
 
               {/* Artwork */}
               <div
-                className="relative z-10 mx-2 mt-2 flex flex-1 items-center justify-center overflow-hidden rounded-md"
+                className="relative z-10 mx-2 mt-2 max-h-[180px] flex flex-1 items-center justify-center overflow-hidden rounded-md"
                 style={{
                   border: `2px solid ${accent}88`,
                   background: `radial-gradient(ellipse at center, ${accent}22 0%, #0a0a12 70%)`,
-                  minHeight: "140px",
                 }}
               >
                 <span
@@ -802,7 +801,7 @@ const HardwareCollections = () => {
                         "Other",
                       ]
                   ).map((c) => (
-                    <option key={c} value={c} className="text-black">
+                    <option key={c} value={c} className="dark:text-white text-black">
                       {c}
                     </option>
                   ))}
