@@ -268,7 +268,7 @@ const handlePin = async (e) => {
                   }}
                 />
 
-                <div className="absolute bottom-full left-[90%] -translate-x-1/2 mb-3 z-50 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/15 dark:bg-gray-900">
+                <div className="absolute bottom-full left-[105%] md:left-[90%] -translate-x-1/2 mb-3 z-50 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/15 dark:bg-gray-900">
                   <button
                     onClick={copyLink}
                     className={`flex w-full items-center gap-3 px-4 py-2.5 text-sm transition ${
