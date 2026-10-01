@@ -781,7 +781,7 @@ const handlePin = async () => {
             </div>
           </div>
           
-          <div className="w-full h-72 overflow-hidden rounded-2xl border !border-white/20 p-5">
+          <div className="w-full h-72 overflow-hidden rounded-2xl border !border-white/20 dark:p-5">
             <div className="h-full w-full relative overflow-hidden rounded-xl">
                 {post?.coverImage && (
                   <img src={post?.coverImage} alt="cover-image" className="mb-6 h-full brightness-[80%] w-full transition-transform duration-700 hover:scale-[1.1] rounded-xl object-cover" />
