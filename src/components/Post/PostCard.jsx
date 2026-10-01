@@ -1,5 +1,6 @@
-import { ArrowRight, BookPlus, Check, Eye, Heart, Loader2, Pin } from "lucide-react";
+import { ArrowRight, BookPlus, Check, Eye, Heart, Link2, Link2Icon, Loader2, Pin } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import api from "../../api/axios.js";
 import { useAuth } from "../../context/AuthContext.jsx";
@@ -21,20 +22,77 @@ const timeAgo = (date) => {
   return "just now";
 };
 
-const PostCard = ({ post, featured = false, status=true }) => {
+const PostCard = ({ post, featured = false, status = true }) => {
   const { user } = useAuth();
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
+  const [showShare, setShowShare] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const isGuest = user?.isGuest || user?.role === "guest";
 
+  const postUrl = `${window.location.origin}/posts/${post?.slug}`;
+
+  const createShareText = () => {
+    const title = post?.title || "Guide";
+    const category = post?.category || "";
+    const author = post?.author?.name || "";
+    const tags = post?.tags?.length
+      ? post.tags.map((t) => `#${t}`).join(" ")
+      : "";
+
+    let excerpt = "";
+    if (post?.content) {
+      const plain = post.content
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+      excerpt = plain.length > 140 ? plain.slice(0, 140).trim() + "..." : plain;
+    } else if (post?.excerpt) {
+      excerpt = post.excerpt;
+    }
+
+    let text = `*${title}*\n`;
+    if (category) text += `Kategori: ${category}\n`;
+    if (author) text += `Oleh: ${author}\n`;
+    if (excerpt) text += `\n${excerpt}\n`;
+    if (tags) text += `\n${tags}\n`;
+    text += `\n${postUrl}`;
+
+    return text;
+  };
+
+  const shareText = encodeURIComponent(createShareText());
+
+  const shareLinks = {
+    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(post?.title || "")}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`,
+    whatsapp: `https://wa.me/?text=${shareText}`,
+  };
+
+ const copyLink = async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  try {
+    await navigator.clipboard.writeText(postUrl);
+    setCopied(true);
+    toast.success("Link berhasil disalin");
+
+    // Kembali normal setelah 2 detik
+    setTimeout(() => {
+      setCopied(false);
+      setShowShare(false); // optional: otomatis tutup dropdown juga
+    }, 2000);
+  } catch {
+    toast.error("Gagal menyalin link");
+  }
+};
   const handleAddToReadingList = async (e) => {
     e.preventDefault();
-    e.stopPropagation(); // biar tidak trigger Link
+    e.stopPropagation();
 
     if (isGuest) {
       toast.error("Login dulu untuk menambahkan ke Reading List");
-      // atau bisa buka modal login
       return;
     }
 
@@ -43,11 +101,11 @@ const PostCard = ({ post, featured = false, status=true }) => {
       await api.post("/auth/me/reading-list", { postId: post._id });
       setAdded(true);
     } catch (err) {
-      // Kalau sudah ada di list, backend biasanya return 400
       if (err.response?.status === 400) {
         setAdded(true);
       } else {
         console.error("Gagal menambahkan ke Reading List:", err);
+        toast.error("Gagal menambahkan ke Reading List");
       }
     } finally {
       setAdding(false);
@@ -81,21 +139,22 @@ const PostCard = ({ post, featured = false, status=true }) => {
         )}
       </div>
 
-      <div className={`absolute bottom-0 left-0 w-full group-hover:h-[100%] ease-out animation-height duration-500 h-[50%] z-[33] flex flex-1 flex-col gap-3 p-3.5 py-4
+      <div
+        className={`absolute bottom-0 left-0 w-full group-hover:h-[100%] ease-out animation-height duration-500 h-[50%] z-[33] flex flex-1 flex-col gap-3 p-3.5 py-4
           bg-white/30 dark:bg-slate-900/40 
           backdrop-blur-md 
           border-t border-white/20 dark:border-white/10
           shadow-[0_-4px_20px_rgba(0,0,0,0.05)]
           transition-all
           group-hover:bg-white/40 dark:group-hover:bg-slate-900/50
-        `}>        
+        `}
+      >
         <div className="flex items-center justify-between gap-2">
           <CategoryPill category={post.category} />
-          
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-900 dark:text-gray-400">{timeAgo(post.createdAt)}</span>
 
-            {/* Tombol Add to Reading List */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-slate-900 dark:text-gray-300">{timeAgo(post.createdAt)}</span>
+
             {!isGuest && (
               <button
                 onClick={handleAddToReadingList}
@@ -125,35 +184,121 @@ const PostCard = ({ post, featured = false, status=true }) => {
           </div>
         </div>
 
-        <h3 className={`font-semibold text-slate-900 dark:text-white truncate max-w-[90%] overflow-x-hidden leading-snug tracking-tight ${featured ? "text-xl" : "text-base"}`}>
+        <h3
+          className={`font-semibold text-slate-900 dark:text-white truncate max-w-[90%] overflow-x-hidden leading-snug tracking-tight ${
+            featured ? "text-xl" : "text-base"
+          }`}
+        >
           {post.title}
         </h3>
 
-        <p className="mt-2 group-hover:hidden text-sm leading-relaxed text-gray-600 dark:text-gray-300 line-clamp-1">
+        <p className="mt-0 group-hover:hidden text-sm leading-relaxed text-gray-600 dark:text-gray-300 line-clamp-1">
           {post.content
             ? post.content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()
             : post.excerpt}
         </p>
 
-        <Link
-        to={`/posts/${post.slug}`}
-        // className="active:scale-[0.98]"
+        <div
+          className={`absolute bottom-[25%] -translate-x-1/2 left-1/2 w-full flex items-center justify-center gap-3 transition-opacity duration-300 ease-in-out opacity-0 group-hover:opacity-100 ${
+            featured ? "mt-3" : "mt-2"
+          }`}
         >
-          <div className={`absolute -translate-x-1/2 bottom-[25%] left-1/2 w-[70px] h-[70px] rounded-full group-hover:flex hidden items-center justify-center hover:bg-blue-700 cursor-pointer active:scale-[0.97] bg-blue-500 text-white`}>
-            <ArrowRight />
-          </div>
-        </Link>
+          {/* ===== SHARE BUTTON (dengan dropdown seperti PostDetail) ===== */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowShare((v) => !v);
+              }}
+              className={`flex mt-auto hover:brightness-75 h-14 w-max gap-x-3 active:scale-[0.98] duration-100 items-center px-2 pl-4 rounded-full bg-purple-600 text-sm font-medium text-white transition-all ease-in-out hover:bg-accent-dark ${
+                featured ? "mt-3" : "mt-2"
+              }`}
+            >
+              <p>Share</p>
+              <div className="rounded-full hover:bg-slate-900 active:scale-[0.98] hover:text-white duration-100 text-slate-900 flex items-center justify-center bg-white h-[40px] w-[40px]">
+                <Link2Icon size={18} />
+              </div>
+            </button>
 
-        <div className="mt-auto flex items-center justify-between pt-2">
+            {showShare && (
+              <>
+                {/* Backdrop */}
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowShare(false);
+                  }}
+                />
+
+                <div className="absolute bottom-full left-[90%] -translate-x-1/2 mb-3 z-50 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/15 dark:bg-gray-900">
+                  <button
+                    onClick={copyLink}
+                    className={`flex w-full items-center gap-3 px-4 py-2.5 text-sm transition ${
+                      copied
+                        ? "bg-emerald-500 text-white"
+                        : "text-gray-700 hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800"
+                    }`}
+                  >
+                    {copied ? (
+                      <>
+                        <Check size={16} />
+                        Disalin!
+                      </>
+                    ) : (
+                      <>
+                        <Link2 size={16} />
+                        Salin Link
+                      </>
+                    )}
+                  </button>
+
+                  <a
+                    href={shareLinks.whatsapp}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowShare(false);
+                    }}
+                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800"
+                  >
+                    <span className="flex h-4 w-4 items-center justify-center text-[13px] font-bold text-green-600">
+                      WA
+                    </span>
+                    WhatsApp
+                  </a>
+                </div>
+              </>
+            )}
+          </div>
+
+          <Link
+            to={`/posts/${post.slug}`}
+            className={`flex mt-auto hover:brightness-75 h-14 w-max gap-x-3 active:scale-[0.98] duration-100 items-center px-2 pl-4 rounded-full bg-accent text-sm font-medium text-white transition-all ease-in-out hover:bg-accent-dark ${
+              featured ? "mt-3" : "mt-2"
+            }`}
+          >
+            <p>Reading</p>
+            <div className="rounded-full hover:bg-slate-900 active:scale-[0.98] hover:text-white duration-100 text-slate-900 flex items-center justify-center bg-white h-[40px] w-[40px]">
+              <ArrowRight />
+            </div>
+          </Link>
+        </div>
+
+        <div className="mt-auto flex items-center pr-1.5 justify-between">
           <div className="flex items-center gap-2">
             <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white dark:bg-accent-soft text-[11px] font-semibold text-slate-900 dark:text-accent">
               {post.author?.name?.[0]?.toUpperCase()}
             </div>
-            <span className="text-xs font-medium text-gray-800 dark:text-gray-400">
+            <span className="text-xs font-medium text-gray-800 dark:text-gray-300">
               {post.author?.name}
             </span>
           </div>
-          <div className="flex items-center gap-3 text-slate-900 dark:text-gray-400">
+          <div className="flex items-center gap-3 text-slate-900 dark:text-gray-300">
             <span className="flex items-center gap-1 text-xs">
               <Eye size={13} /> {post.views ?? 0}
             </span>

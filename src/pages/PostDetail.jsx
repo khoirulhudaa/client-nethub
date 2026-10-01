@@ -1,4 +1,4 @@
-import { Bookmark, Calendar, CheckCircle2, Circle, Clipboard, Eye, Heart, Highlighter, Link2, Linkedin, Loader2, Pencil, Pin, Plus, Share2, Timer, Trash2, Volume2, VolumeX } from "lucide-react";
+import { Bookmark, Calendar, CheckCircle2, Circle, Clipboard, Eye, Heart, Highlighter, Link2, Loader2, Pencil, Pin, Plus, Share2, Timer, Trash2, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -616,7 +616,6 @@ const isOwner = user?.id === post?.author?._id;
   const shareLinks = {
     twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(post?.title || "")}`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`,
-    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(postUrl)}`,
     whatsapp: `https://wa.me/?text=${shareText}`,
   };
 
@@ -1289,17 +1288,6 @@ const isOwner = user?.id === post?.author?._id;
                           WA
                         </span>
                         WhatsApp
-                      </a>
-
-                      <a
-                        href={shareLinks.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => setShowShare(false)}
-                        className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 hover:dark:bg-slate-800"
-                      >
-                        <Linkedin size={16} className="text-blue-700" />
-                        LinkedIn
                       </a>
                     </div>
                   </>
