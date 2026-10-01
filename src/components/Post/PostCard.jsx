@@ -22,7 +22,7 @@ const timeAgo = (date) => {
   return "just now";
 };
 
-const PostCard = ({ post, featured = false, status = true }) => {
+const PostCard = ({ post, roundedNormal = false, featured = false, status = true }) => {
   const { user } = useAuth();
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
@@ -114,7 +114,7 @@ const PostCard = ({ post, featured = false, status = true }) => {
 
   return (
     <div
-      className={`group relative h-[380px] bg-slate-300 rounded-[24px] dark:!bg-[#0c0c18] border dark:!border-white/20 group duration-100 flex flex-col overflow-hidden ${
+      className={`group relative h-[420px] p-3.5 bg-slate-300 rounded-[24px] dark:!bg-[#0c0c18] border dark:!border-white/20 group duration-100 flex flex-col overflow-hidden ${
         featured ? "h-full" : ""
       }`}
     >
@@ -125,12 +125,13 @@ const PostCard = ({ post, featured = false, status = true }) => {
         </div>
       )}
 
-      <div className={`relative overflow-hidden bg-gray-100 dark:bg-slate-200 ${featured ? "h-56" : "h-[100%]"}`}>
+      <div className={`relative bg-white/30
+           dark:bg-slate-900/40  overflow-hidden ${featured ? "h-56" : `${roundedNormal ? 'rounded-[16px]' : 'rounded-[24px]'} h-[100%]`}`}>
         {post.coverImage ? (
           <img
             src={post.coverImage}
             alt={post.title}
-            className="h-full w-full brightness-[80%] object-cover transition-transform duration-300 ease-fluid scale-[1.03] group-hover:scale-[1.07]"
+            className="h-full w-full brightness-[80%] object-cover border-none transition-transform duration-300 ease-fluid scale-[1.03] group-hover:scale-[1.07]"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-gray-300 dark:text-white/10">
@@ -141,9 +142,10 @@ const PostCard = ({ post, featured = false, status = true }) => {
 
       <div
         className={`absolute bottom-0 left-0 w-full group-hover:h-[100%] ease-out animation-height duration-500 h-[35%] z-[33] flex flex-1 flex-col gap-3 p-3.5 py-4
-          bg-white/30 dark:bg-slate-900/40 
+          bg-white/30
+           dark:bg-black/30
           backdrop-blur-lg
-          border-t border-white/20 dark:border-white/10
+          border-white/20 dark:border-white/10
           shadow-[0_-4px_20px_rgba(0,0,0,0.05)]
           transition-all
           group-hover:bg-white/40 dark:group-hover:bg-slate-900/50
