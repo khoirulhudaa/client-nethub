@@ -251,7 +251,7 @@ const handlePin = async (e) => {
               }`}
             >
               <p>Share</p>
-              <div className="rounded-full hover:bg-purple-900 active:scale-[0.98] hover:text-white duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
+              <div className="rounded-full active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
                 <Link2Icon size={18} />
               </div>
             </button>
@@ -324,7 +324,7 @@ const handlePin = async (e) => {
             `}
             >
               <p className="dark:!text-white group-hover:!text-white !text-slate-900">{pinned ? 'Unpin' : 'Pin'}</p>
-              <div className="rounded-full hover:!bg-slate-700 hover:dark:!bg-slate-900 active:scale-[0.98] hover:dark:!text-white hover:text-white duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
+              <div className="rounded-full active:scale-[0.98]duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
                 {pinning ? (
                   <Loader2 size={18} className="animate-spin" />
                 ) : (
@@ -341,7 +341,7 @@ const handlePin = async (e) => {
             }`}
           >
             <p>Read</p>
-            <div className="rounded-full hover:bg-blue-900 active:scale-[0.98] hover:text-white duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
+            <div className="rounded-full active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
               <ArrowRight />
             </div>
           </Link>
