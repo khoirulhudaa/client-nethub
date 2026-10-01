@@ -151,12 +151,6 @@ const handlePin = async (e) => {
         featured ? "h-full" : ""
       }`}
     >
-      {pinned && status && (
-        <div className="absolute left-3.5 top-3.5 z-[9] flex items-center gap-1 rounded-lg bg-accent px-2.5 py-1 text-[11px] font-medium text-white shadow-sm">
-          <Pin size={11} />
-          Pinned
-        </div>
-      )}
 
       <div className={`relative bg-white/30
            dark:bg-slate-900/40  overflow-hidden ${featured ? "h-56" : `${roundedNormal ? 'rounded-[16px]' : 'rounded-[24px]'} h-[100%]`}`}>
@@ -212,6 +206,12 @@ const handlePin = async (e) => {
                   </>
                 )}
               </button>
+            )}
+            {pinned && status && (
+              <div className="flex items-center gap-1 rounded-lg bg-accent px-2.5 py-1 text-[11px] font-medium text-white shadow-sm">
+                <Pin size={11} />
+                Pinned
+              </div>
             )}
           </div>
         </div>
