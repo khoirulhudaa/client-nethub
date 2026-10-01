@@ -741,7 +741,7 @@ const handlePin = async () => {
 
       <div className="p-0 md:p-5 md:bg-slate-100 dark:md:bg-white/5 rounded-xl">
 
-          <h1 className="mb-3 max-w-full w-max truncate dark:rounded-xl dark:px-4 dark:py-2 text-xl sm:text-2xl font-semibold tracking-tight bg-transparent md:!text-slate-900 !text-white dark:!text-white dark:!bg-[#111122] dark:border border-slate-200 dark:border-white/20">
+          <h1 className="mb-3 max-w-full w-max truncate dark:rounded-xl dark:!px-3 dark:md:!px-4 dark:py-2 text-xl sm:text-2xl font-semibold tracking-tight bg-transparent md:!text-slate-900 !text-white dark:!text-white dark:!bg-[#111122] dark:border border-slate-200 dark:border-white/20">
             {post?.title} 
           </h1>
 
