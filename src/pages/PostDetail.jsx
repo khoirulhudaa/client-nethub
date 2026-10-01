@@ -741,7 +741,7 @@ const handlePin = async () => {
 
       <div className="p-0 md:p-5 md:bg-slate-100 dark:md:bg-white/5 rounded-xl">
 
-          <h1 className="mb-3 max-w-full w-max truncate dark:rounded-xl dark:p-2 dark:px-2 dark:pr-2.5 text-xl sm:text-2xl font-semibold tracking-tight bg-transparent md:!text-slate-900 !text-white dark:!text-white dark:!bg-[#111122] dark:border border-slate-200 dark:border-white/20">
+          <h1 className="mb-3 max-w-full w-max truncate dark:rounded-xl dark:px-4 dark:py-2 text-xl sm:text-2xl font-semibold tracking-tight bg-transparent md:!text-slate-900 !text-white dark:!text-white dark:!bg-[#111122] dark:border border-slate-200 dark:border-white/20">
             {post?.title} 
           </h1>
 
@@ -781,10 +781,12 @@ const handlePin = async () => {
             </div>
           </div>
           
-          <div className="w-full h-72 bg-white p-0 overflow-hidden rounded-2xl">
-            {post?.coverImage && (
-              <img src={post?.coverImage} alt="cover-image" className="mb-6 h-full brightness-[80%] w-full transition-transform duration-700 hover:scale-105 object-cover" />
-            )}
+          <div className="w-full h-72 overflow-hidden rounded-2xl border !border-white/20 p-5">
+            <div className="h-full w-full relative overflow-hidden rounded-xl">
+                {post?.coverImage && (
+                  <img src={post?.coverImage} alt="cover-image" className="mb-6 h-full brightness-[80%] w-full transition-transform duration-700 hover:scale-[1.1] rounded-xl object-cover" />
+                )}
+            </div>
           </div>
 
           <div className="my-5 w-full md:w-max md:flex justify-between items-center gap-2.5">

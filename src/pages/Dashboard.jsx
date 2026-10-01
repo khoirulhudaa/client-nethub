@@ -317,7 +317,9 @@ const Dashboard = () => {
 
   // ✅ useEffect KEDUA — ini yang benar, biarkan
   useEffect(() => {
+    let cancelled = false;
     const isLoadMore = page > 1;
+
     if (isLoadMore) {
       setLoadingMore(true);
     } else {
@@ -327,16 +329,26 @@ const Dashboard = () => {
     api
       .get("/posts", { params: { category, page, limit: LIMIT } })
       .then(({ data: res }) => {
-        setData((prev) => ({
-          ...res,
-          posts: isLoadMore ? [...prev.posts, ...res.posts] : res.posts,
-        }));
+        if (cancelled) return;
+
+        setData((prev) => {
+          if (!isLoadMore) return { ...res };
+
+          const seen = new Set(prev.posts.map((p) => p._id));
+          const fresh = res.posts.filter((p) => !seen.has(p._id));
+          return { ...res, pinned: prev.pinned, posts: [...prev.posts, ...fresh] };
+        });
       })
       .catch((err) => console.error("Error fetching posts:", err))
       .finally(() => {
+        if (cancelled) return;
         setLoading(false);
         setLoadingMore(false);
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [category, page]);
 
   // Sync localSearch dari URL
@@ -474,6 +486,46 @@ const { remainingPosts } = useMemo(() => {
     if (value) next.set(key, value);
     else next.delete(key);
     setSearchParams(next);
+  };
+
+  const handlePinChange = (post, isPinned) => {
+    const updated = { ...post, isPinned };
+    const without = (list) => list.filter((p) => p._id !== post._id);
+    const setFlag = (list) =>
+      list.map((p) => (p._id === post._id ? { ...p, isPinned } : p));
+    const sortNewest = (a, b) => new Date(b.createdAt) - new Date(a.createdAt);
+
+    setData((prev) => {
+      // Mode search/kategori: backend tetap menampilkan post di daftar biasa,
+      // jadi cukup ubah flag-nya dan update daftar pinned
+      if (!showOverviewSections) {
+        return {
+          ...prev,
+          posts: setFlag(prev.posts),
+          pinned: isPinned ? [updated, ...without(prev.pinned)] : without(prev.pinned),
+        };
+      }
+
+      // Overview + pin: pindah dari Other guides ke Pinned
+      if (isPinned) {
+        return {
+          ...prev,
+          pinned: [updated, ...without(prev.pinned)],
+          posts: without(prev.posts),
+          total: Math.max(0, (prev.total || 0) - 1),
+        };
+      }
+
+      // Overview + unpin: kembali ke Other guides sesuai urutan tanggal
+      return {
+        ...prev,
+        pinned: without(prev.pinned),
+        posts: [...without(prev.posts), updated].sort(sortNewest),
+        total: (prev.total || 0) + 1,
+      };
+    });
+
+    setAllPostsForSearch((prev) => setFlag(prev));
   };
 
   const showOverviewSections = !search && !category;
@@ -629,7 +681,7 @@ const { remainingPosts } = useMemo(() => {
                 <>
                   {!isGuest && showOverviewSections && data.pinned?.length > 0 && (
                     <section className="mb-8 px-3 md:px-4 md:mt-0 mt-4">
-                      <PinnedHero pinned={data.pinned} />
+                      <PinnedHero pinned={data.pinned} onPinChange={handlePinChange} />
                     </section>
                   )}
                   
@@ -660,7 +712,7 @@ const { remainingPosts } = useMemo(() => {
                     <>
                       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
                         {remainingPosts.map((post) => (
-                          <PostCard roundedNormal={true} key={post._id} post={post} status={false} />
+                          <PostCard roundedNormal={true} key={post._id} post={post} status={false} onPinChange={handlePinChange} />
                         ))}
                       </div>
 

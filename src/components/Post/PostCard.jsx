@@ -22,7 +22,7 @@ const timeAgo = (date) => {
   return "just now";
 };
 
-const PostCard = ({ post, roundedNormal = false, featured = false, status = true }) => {
+const PostCard = ({ post, roundedNormal = false, featured = false, status = true, onPinChange }) => {
   const { user } = useAuth();
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
@@ -106,10 +106,11 @@ const handlePin = async (e) => {
   const previous = pinned;
   setPinned(!previous); // optimistic
   setPinning(true);
-
+  
   try {
     const { data } = await api.patch(`/posts/${post._id}/pin`);
     setPinned(data.isPinned);
+    onPinChange?.(post, data.isPinned);   
     toast.success(data.isPinned ? "Guide dipin" : "Guide di-unpin");
   } catch (err) {
     setPinned(previous);
@@ -322,7 +323,7 @@ const handlePin = async (e) => {
             ${pinned ? "bg-green-600" : "bg-slate-700 bg-transparent border border-white"}
             `}
             >
-              <p>Pin</p>
+              <p>{pinned ? 'Unpin' : 'Pin'}</p>
               <div className="rounded-full hover:bg-slate-900 active:scale-[0.98] hover:text-white duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
                 {pinning ? (
                   <Loader2 size={18} className="animate-spin" />
