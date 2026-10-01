@@ -1,4 +1,4 @@
-import { FileText, Loader2, PlusCircle } from "lucide-react";
+import { Plus, PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios.js";
@@ -39,6 +39,11 @@ const MyPosts = () => {
           </div>
       ) : posts.length === 0 ? (
         <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
+          <Link to="/create">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl cursor-pointer active:scale-[0.98] duration-100 hover:!brightness-75 hover:border border-dashed border-white/20 bg-gray-100 dark:bg-white/5">
+              <Plus size={28} className="text-gray-400" />
+            </div>
+          </Link>
           <p className="font-medium">You haven't published anything yet</p>
           <p className="text-sm text-gray-500">Share your first fix, install guide, or topology diagram.</p>
         </div>

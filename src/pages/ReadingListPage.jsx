@@ -19,11 +19,10 @@ import {
   BookOpen,
   Calendar,
   CheckCircle2,
-  ChevronDown,
-  ChevronUp,
   Circle,
   GripVertical,
   Loader2,
+  Plus,
   Target,
   Trash2
 } from "lucide-react";
@@ -351,11 +350,7 @@ const ReadingListPage = () => {
 
         {/* Empty State */}
         {list.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 py-20 text-center dark:border-white/15">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-gray-100 dark:bg-[#0c0c18]">
-              <BookOpen size={28} className="text-gray-400" />
-              </div>
-
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 py-0 text-center dark:border-white/15">
               {isGuest ? (
                   <>
                       <h3 className="text-lg font-semibold">Login to use Reading List</h3>
@@ -370,19 +365,15 @@ const ReadingListPage = () => {
                       </button>
                   </>
                   ) : (
-                  <>
-                      <h3 className="text-lg font-semibold">No guides in your Reading List yet</h3>
-                      <p className="mt-2 max-w-sm text-sm text-gray-500">
-                      Add guides from the Dashboard using the “Add” button.
-                      </p>
-                      <Link
-                      to="/"
-                      className="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
-                      >
-                      Explore Guides
-                      <ArrowRight size={16} />
-                      </Link>
-                  </>
+                  <div className="w-full flex flex-col items-center justify-center gap-2 py-16 text-center">
+                    <Link to="/">
+                      <div className="mb-4 flex h-16 w-16 items-center justify-center cursor-pointer active:scale-[0.98] duration-100 hover:!brightness-75 hover:border border-dashed border-white/20 rounded-xl bg-gray-100 dark:bg-white/5">
+                        <Plus size={28} className="text-gray-400" />
+                      </div>
+                    </Link>
+                    <p className="font-medium">You haven't published anything yet</p>
+                    <p className="text-sm text-gray-500">Share your first fix, install guide, or topology diagram.</p>
+                  </div>
                   )}
           </div>
           ) : (
