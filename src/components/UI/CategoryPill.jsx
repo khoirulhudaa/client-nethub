@@ -4,7 +4,7 @@ const CATEGORY_STYLES = {
   Topology: {
     icon: Network,
     className:
-      "bg-blue-500 text-white dark:!bg-blue-500/10 md:dark:!bg-blue-950 md:dark:!text-slate-300 dark:!text-slate-300",
+      "bg-blue-500 text-white dark:!bg-blue-500/10 md:dark:!bg-blue-950 md:dark:!text-white dark:!text-white",
   },
   Maintenance: {
     icon: Wrench,
@@ -14,17 +14,17 @@ const CATEGORY_STYLES = {
   Installation: {
     icon: Boxes,
     className:
-      "bg-purple-500 text-white dark:bg-purple-500/10 md:dark:!bg-purple-950 md:dark:!text-slate-300 dark:!text-slate-300",
+      "bg-purple-500 text-white dark:bg-purple-500/10 md:dark:!bg-purple-950 md:dark:!text-white dark:!text-white",
   },
   Hardware: {
     icon: HardDrive,
     className:
-      "bg-emerald-500 text-white dark:bg-emerald-500/10 md:dark:!bg-emerald-950 md:dark:!text-slate-300 dark:!text-slate-300",
+      "bg-emerald-500 text-white dark:bg-emerald-500/10 md:dark:!bg-emerald-950 md:dark:!text-white dark:!text-white",
   },
   Eproc: {
     icon: FileText,
     className:
-      "bg-sky-500 text-white dark:!bg-sky-500/10 md:dark:!bg-sky-950 md:dark:!text-slate-300 dark:!text-slate-300",
+      "bg-sky-500 text-white dark:!bg-sky-500/10 md:dark:!bg-sky-950 md:dark:!text-white dark:!text-white",
   },
   "E-kantin": {
     icon: Utensils,
@@ -34,22 +34,22 @@ const CATEGORY_STYLES = {
   EHRD: {
     icon: Users,
     className:
-      "bg-indigo-500 text-white dark:!bg-indigo-500/10 md:dark:!bg-indigo-950 md:dark:!text-slate-300 dark:!text-slate-300",
+      "bg-indigo-500 text-white dark:!bg-indigo-500/10 md:dark:!bg-indigo-950 md:dark:!text-white dark:!text-white",
   },
   General: {
     icon: LayoutGrid,
     className:
-      "bg-slate-500 text-white dark:!bg-slate-500/10 md:dark:!bg-slate-800 md:dark:!text-slate-300 dark:!text-slate-300",
+      "bg-slate-500 text-white dark:!bg-slate-500/10 md:dark:!bg-slate-800 md:dark:!text-white dark:!text-white",
   },
   Pemrograman: {
     icon: Code2,
     className:
-      "bg-cyan-500 text-white dark:!bg-cyan-500/10 md:dark:!bg-cyan-950 md:dark:!text-slate-300 dark:!text-slate-300",
+      "bg-cyan-500 text-white dark:!bg-cyan-500/10 md:dark:!bg-cyan-950 md:dark:!text-white dark:!text-white",
   },
   Security: {
     icon: Shield,
     className:
-      "bg-rose-500 text-white dark:!bg-rose-500/10 md:dark:!bg-rose-950 md:dark:!text-slate-300 dark:!text-slate-300",
+      "bg-rose-500 text-white dark:!bg-rose-500/10 md:dark:!bg-rose-950 md:dark:!text-white dark:!text-white",
   },
 };
 

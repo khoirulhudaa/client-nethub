@@ -446,7 +446,7 @@ const overviewPosts = useMemo(() => {
   return filteredPosts;
 }, [isGuest, search, category, data.pinned, data.posts, filteredPosts]);
 
-const { newestThree, remainingPosts } = useMemo(() => {
+const { remainingPosts } = useMemo(() => {
   if (search.trim() || category) {
     return { newestThree: [], remainingPosts: overviewPosts };
   }

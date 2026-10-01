@@ -767,12 +767,12 @@ const isOwner = user?.id === post?.author?._id;
 
           <div className="my-5 w-full md:w-max md:flex justify-between items-center gap-2.5">
               <div className="flex-wrap flex items-center w-full gap-2 md:gap-2.5 z-[999]">
+              <button onClick={handlePin} className="rounded-lg btn-secondary hover:!bg-blue-700 hover:dark:!bg-blue-700 hover:!text-white !text-white dark:!bg-blue-500/15 !bg-blue-500/30 md:!bg-blue-500 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
+                <Pin size={13} className={post?.isPinned ? "fill-accent text-accent" : ""} />
+                {post?.isPinned ? "Pinned" : "Pin"}
+              </button>
               {isOwner && (
                 <>
-                  <button onClick={handlePin} className="rounded-lg btn-secondary hover:!bg-blue-700 hover:dark:!bg-blue-700 hover:!text-white !text-white dark:!bg-blue-500/15 !bg-blue-500/30 md:!bg-blue-500 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
-                    <Pin size={13} className={post?.isPinned ? "fill-accent text-accent" : ""} />
-                    {post?.isPinned ? "Pinned" : "Pin"}
-                  </button>
                   <div className="h-[18px] w-[1.3px] md:flex hidden bg-slate-400 dark:bg-white/20 mx-1" />
                   <Link to={`/edit/${post?._id}`} className="rounded-lg btn-secondary hover:!bg-yellow-700 hover:dark:!bg-yellow-700 hover:!text-white !text-white dark:!bg-yellow-500/10 md:!bg-yellow-500 !bg-yellow-500/30 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
                     <Pencil size={13} />
