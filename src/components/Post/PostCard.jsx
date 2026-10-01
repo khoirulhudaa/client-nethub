@@ -246,7 +246,7 @@ const handlePin = async (e) => {
                 e.stopPropagation();
                 setShowShare((v) => !v);
               }}
-              className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-3 active:scale-[0.98] duration-100 items-center px-2 py-1.5 pl-3 rounded-full bg-purple-600 text-sm font-medium text-white transition-all ease-in-out hover:bg-accent-dark ${
+              className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-3 active:scale-[0.98] duration-100 items-center px-2 py-1.5 pl-3 rounded-full border dark:!border-white bg-purple-600 text-sm font-medium text-white transition-all ease-in-out hover:bg-accent-dark ${
                 featured ? "mt-3" : "mt-2"
               }`}
             >
@@ -317,14 +317,14 @@ const handlePin = async (e) => {
               onClick={handlePin}
               disabled={pinning}
               title={pinned ? "Unpin" : "Pin"}
-              className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-3 active:scale-[0.98] duration-100 items-center px-2 py-1.5 pl-3 rounded-full text-sm font-medium text-white transition-all ease-in-out hover:bg-accent-dark ${
+              className={`group flex mt-auto h-max w-max gap-x-3 active:scale-[0.98] duration-100 items-center px-2 py-1.5 pl-3 rounded-full text-sm font-medium text-white transition-all ease-in-out bg-slate-900  hover:brightness-75 hover:dark:!bg-accent-dark ${
               featured ? "mt-3" : "mt-2"
             }
-            ${pinned ? "bg-green-600" : "bg-slate-700 bg-transparent border border-white"}
+            ${pinned ? "bg-green-600" : "bg-slate-700 border !border-slate-900 dark:!border-white"}
             `}
             >
-              <p>{pinned ? 'Unpin' : 'Pin'}</p>
-              <div className="rounded-full hover:bg-slate-900 active:scale-[0.98] hover:text-white duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
+              <p className="dark:!text-white group-hover:!text-white !text-slate-900">{pinned ? 'Unpin' : 'Pin'}</p>
+              <div className="rounded-full hover:dark:!bg-slate-900 active:scale-[0.98] hover:dark:text-white duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
                 {pinning ? (
                   <Loader2 size={18} className="animate-spin" />
                 ) : (
@@ -336,7 +336,7 @@ const handlePin = async (e) => {
 
           <Link
             to={`/posts/${post.slug}`}
-            className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-3 active:scale-[0.98] duration-100 items-center px-2 py-1.5 pl-3 rounded-full bg-accent text-sm font-medium text-white transition-all ease-in-out hover:bg-accent-dark ${
+            className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-3 active:scale-[0.98] duration-100 border dark:!border-white items-center px-2 py-1.5 pl-3 rounded-full bg-accent text-sm font-medium text-white transition-all ease-in-out hover:bg-accent-dark ${
               featured ? "mt-3" : "mt-2"
             }`}
           >
