@@ -141,7 +141,7 @@ const PostCard = ({ post, roundedNormal = false, featured = false, status = true
       </div>
 
       <div
-        className={`absolute bottom-0 left-0 w-full group-hover:h-[100%] ease-out animation-height duration-500 h-[35%] z-[33] flex flex-1 flex-col gap-3 p-3.5 py-4
+        className={`absolute bottom-0 pt-7 left-0 w-full group-hover:h-[100%] ease-out animation-height duration-500 h-[35%] z-[33] flex flex-1 flex-col gap-3 p-3.5 py-4
           bg-white/30
            dark:bg-black/30
           backdrop-blur-lg
