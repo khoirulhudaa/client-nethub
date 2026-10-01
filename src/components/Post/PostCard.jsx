@@ -1,4 +1,4 @@
-import { ArrowRight, BookPlus, Check, Link2, Link2Icon, Loader2, Pin } from "lucide-react";
+import { BookPlus, Check, ChevronRight, Link2, Link2Icon, Loader2, Pin } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -317,7 +317,7 @@ const handlePin = async (e) => {
               onClick={handlePin}
               disabled={pinning}
               title={pinned ? "Unpin" : "Pin"}
-              className={`group flex mt-auto h-max w-max gap-x-3 active:scale-[0.98] duration-100 items-center px-2 py-1.5 pl-3 rounded-full text-sm font-medium text-white transition-all ease-in-out bg-slate-900  hover:brightness-75 hover:dark:!bg-accent-dark ${
+              className={`group flex mt-auto h-max w-max gap-x-3 border border-white active:scale-[0.98] duration-100 items-center px-2 py-1.5 pl-3 rounded-full text-sm font-medium text-white transition-all ease-in-out bg-slate-900 hover:brightness-75 hover:dark:!bg-accent-dark ${
               featured ? "mt-3" : "mt-2"
             }
             ${pinned ? "bg-green-600" : "bg-slate-700 border !border-slate-900 dark:!border-white"}
@@ -342,7 +342,7 @@ const handlePin = async (e) => {
           >
             <p>Read</p>
             <div className="rounded-full active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
-              <ArrowRight />
+              <ChevronRight />
             </div>
           </Link>
         </div>
