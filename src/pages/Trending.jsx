@@ -107,7 +107,8 @@ const ViewsChart = ({ posts }) => {
   if (top5.length === 0) return null;
 
   return (
-    <div className="rounded-2xl w-full border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
+    <div className="rounded-2xl w-full border border-gray-200 p-5 shadow-sm dark:border-white/10 dark:!bg-[#0c0c18]
+           !bg-slate-200">
       <div className="mb-3 flex items-center gap-2">
         {/* <TrendingUp size={16} className="text-accent" /> */}
         <h3 className="text-sm font-semibold">Top 3 Guides by Views</h3>
@@ -126,17 +127,18 @@ const QuizCard = ({ quiz, type }) => {
   return (
     <Link
       to={`/quizzes/${quiz._id || quiz.slug}`}
-      className="group relative flex flex-col rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-accent/40 hover:shadow-md dark:border-white/10 dark:bg-white/5"
+      className="group relative flex flex-col rounded-2xl border border-gray-200 dark:!bg-[#0c0c18]
+           !bg-slate-200 p-3.5 shadow-sm transition hover:border-accent/40 hover:shadow-md dark:border-white/10"
     >
-      <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-slate-950 dark:bg-gradient-to-br from-blue-400 to-blue-900-soft text-white dark:text-blue-950">
+      <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl !bg-slate-900 dark:!bg-white text-white dark:text-blue-950">
         <HelpCircle size={20} />
       </div>
 
-      <h4 className="line-clamp-2 hover:underline text-base font-semibold group-hover:text-blue-400">
+      <h4 className="line-clamp-2 dark:text-slate dark:text-white text-slate-900 hover:underline text-base font-semibold group-hover:text-blue-400">
         {quiz.title}
       </h4>
 
-      <p className="mt-1.5 line-clamp-2 text-sm text-gray-500">
+      <p className="mt-1.5 line-clamp-2 text-sm !text-gray-500 dark:!text-slate-500">
         {quiz.description || quiz.category || "Quiz"}
       </p>
 
@@ -144,18 +146,18 @@ const QuizCard = ({ quiz, type }) => {
         {type === "loved" ? (
           <span className="flex items-center gap-1.5">
             <Heart size={14} className="text-rose-500" />
-            <span className="font-medium">{likes}</span> likes
+            <span className="text-gray-600 dark:!text-slate-500">{likes} likes</span> 
           </span>
         ) : (
           <span className="flex items-center gap-1.5">
             <Star size={14} className="fill-amber-400 text-amber-500" />
             <span className="font-medium">{Number(rating).toFixed(1)}</span>
             {quiz.ratingCount > 0 && (
-              <span className="text-gray-400">({quiz.ratingCount})</span>
+              <span className="text-gray-600 dark:!text-slate-500">({quiz.ratingCount})</span>
             )}
           </span>
         )}
-        <span>{questions} questions</span>
+        <span className="text-gray-600 dark:!text-slate-500">{questions} questions</span>
       </div>
     </Link>
   );
