@@ -89,6 +89,53 @@ const CodeBlockItem = ({ block }) => {
   );
 };
 
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  // kalau layout punya container scroll sendiri
+  document.querySelector("main")?.scrollTo?.({ top: 0, left: 0, behavior: "instant" });
+};
+
+const PostDetailSkeleton = () => (
+  <div className="md:p-6 mx-auto max-w-full md:border-x border-white dark:border-white/15 space-y-3 pb-16">
+    <div className="p-0 md:p-5 md:bg-slate-100 dark:md:bg-white/5 rounded-xl">
+      {/* <div className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-white md:text-slate-900 dark:text-white">
+        <Loader2 size={18} className="animate-spin" />
+        Memuat guide...
+      </div> */}
+
+      <div className="animate-pulse">
+        <div className="mb-3 h-8 w-2/3 rounded-xl bg-slate-300 dark:bg-white/10" />
+
+        <div className="mb-4 flex items-center gap-2">
+          <div className="h-[44px] w-[44px] rounded-lg bg-slate-300 dark:bg-white/10" />
+          <div className="space-y-2">
+            <div className="h-3 w-32 rounded bg-slate-300 dark:bg-white/10" />
+            <div className="h-3 w-20 rounded bg-slate-300 dark:bg-white/10" />
+          </div>
+        </div>
+
+        <div className="h-72 w-full rounded-2xl bg-slate-300 dark:bg-white/10" />
+
+        <div className="my-5 flex gap-2">
+          <div className="h-[28px] w-20 rounded-lg bg-slate-300 dark:bg-white/10" />
+          <div className="h-[28px] w-20 rounded-lg bg-slate-300 dark:bg-white/10" />
+          <div className="h-[28px] w-24 rounded-lg bg-slate-300 dark:bg-white/10" />
+        </div>
+
+        <div className="mb-2 h-4 w-28 rounded bg-slate-300 dark:bg-white/10" />
+        <div className="space-y-3 rounded-2xl bg-slate-300 p-5 dark:bg-white/10">
+          <div className="h-3 w-full rounded bg-slate-200/70 dark:bg-white/10" />
+          <div className="h-3 w-11/12 rounded bg-slate-200/70 dark:bg-white/10" />
+          <div className="h-3 w-4/5 rounded bg-slate-200/70 dark:bg-white/10" />
+          <div className="h-3 w-2/3 rounded bg-slate-200/70 dark:bg-white/10" />
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const PostDetail = () => {
   const { slug } = useParams();
   const { user } = useAuth();
@@ -138,21 +185,49 @@ const PostDetail = () => {
   const isGuest = user?.isGuest || user?.role === "guest";
   const canPin = !!user && !isGuest; // guest & belum login tidak boleh pin
 
+  const lastSlugRef = useRef(null);
+  const reqIdRef = useRef(0);
+
   const load = useCallback(async () => {
-    setLoading(true);
-    const { data } = await api.get(`/posts/${slug}`);
-    setPost(data.post);
-    setRelated(data.related);
-    setLikesCount(data.post?.likes?.length || 0);
-    setLiked(data.post?.likes?.some((l) => l === user?.id || l?._id === user?.id));
+    const reqId = ++reqIdRef.current;
+    const isNewSlug = lastSlugRef.current !== slug;
+    lastSlugRef.current = slug;
 
-    // Status saved sekarang langsung dibaca dari Post?.savedBy (sisi post dari
-    // relasi bookmark), jadi tidak perlu request terpisah ke /users/me/bookmarks.
-    setBookmarked(data.post?.savedBy?.some((b) => b === user?.id || b?._id === user?.id));
+    // Pindah ke guide lain: kosongkan tampilan lama & tampilkan loading
+    if (isNewSlug) {
+      setIsSpeaking(false);
+      setPost(null);
+      setRelated([]);
+      setComments([]);
+      setHighlights([]);
+      setSidebarType(null);
+      setSelectedStep(null);
+      setShowHighlightMenu(false);
+      setInReadingList(false);
+      setIsCompleted(false);
+      setCommentText("");
+      setLoading(true);
+    }
 
-    const commentsRes = await api.get(`/posts/${data.post?._id}/comments`);
-    setComments(commentsRes.data.comments);
-    setLoading(false);
+    try {
+      const { data } = await api.get(`/posts/${slug}`);
+      if (reqId !== reqIdRef.current) return; // respons lama diabaikan
+
+      setPost(data.post);
+      setRelated(data.related || []);
+      setLikesCount(data.post?.likes?.length || 0);
+      setLiked(!!data.post?.likes?.some((l) => l === user?.id || l?._id === user?.id));
+      setBookmarked(!!data.post?.savedBy?.some((b) => b === user?.id || b?._id === user?.id));
+
+      const commentsRes = await api.get(`/posts/${data.post?._id}/comments`);
+      if (reqId !== reqIdRef.current) return;
+      setComments(commentsRes.data.comments);
+    } catch (err) {
+      if (reqId !== reqIdRef.current) return;
+      toast.error(err?.response?.data?.message || "Gagal memuat guide");
+    } finally {
+      if (reqId === reqIdRef.current) setLoading(false);
+    }
   }, [slug, user?.id]);
 
   useEffect(() => {
@@ -177,9 +252,9 @@ const PostDetail = () => {
     }
 }, [user, post?.author?._id]);
 
-// Auto scroll ke paling atas setiap kali halaman ini diakses / slug berubah
+// Auto scroll ke atas setiap kali halaman dibuka / slug berubah
 useEffect(() => {
-  window.scrollTo({ top: 0, left: 0, behavior: "instant" }); // atau "smooth" kalau mau animasi
+  scrollToTop();
 }, [slug]);
 
 const handleFollow = async () => {
@@ -735,6 +810,19 @@ const handlePin = async () => {
       toast.error(err?.response?.data?.message || "Gagal menghapus komentar");
     }
   };
+
+  if (loading) return <PostDetailSkeleton />;
+
+  if (!post) {
+    return (
+      <div className="mx-auto flex max-w-full flex-col items-center gap-3 py-24 text-center text-white md:text-slate-900 dark:text-white">
+        <p className="font-medium">Guide tidak ditemukan</p>
+        <Link to="/" className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
+          Kembali ke beranda
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="md:p-6 mx-auto max-w-full md:border-x border-white dark:border-white/15 space-y-3 pb-16">
