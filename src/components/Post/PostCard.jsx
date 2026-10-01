@@ -114,7 +114,7 @@ const PostCard = ({ post, featured = false, status = true }) => {
 
   return (
     <div
-      className={`group relative h-[380px] bg-slate-300 rounded-[34px] dark:!bg-[#0c0c18] border dark:!border-white/20 group duration-100 flex flex-col overflow-hidden ${
+      className={`group relative h-[380px] bg-slate-300 rounded-[24px] dark:!bg-[#0c0c18] border dark:!border-white/20 group duration-100 flex flex-col overflow-hidden ${
         featured ? "h-full" : ""
       }`}
     >
@@ -125,7 +125,7 @@ const PostCard = ({ post, featured = false, status = true }) => {
         </div>
       )}
 
-      <div className={`relative overflow-hidden bg-gray-100 dark:bg-slate-200 ${featured ? "h-56" : "h-[64%]"}`}>
+      <div className={`relative overflow-hidden bg-gray-100 dark:bg-slate-200 ${featured ? "h-56" : "h-[100%]"}`}>
         {post.coverImage ? (
           <img
             src={post.coverImage}
@@ -140,9 +140,9 @@ const PostCard = ({ post, featured = false, status = true }) => {
       </div>
 
       <div
-        className={`absolute bottom-0 left-0 w-full group-hover:h-[100%] ease-out animation-height duration-500 h-[50%] z-[33] flex flex-1 flex-col gap-3 p-3.5 py-4
+        className={`absolute bottom-0 left-0 w-full group-hover:h-[100%] ease-out animation-height duration-500 h-[35%] z-[33] flex flex-1 flex-col gap-3 p-3.5 py-4
           bg-white/30 dark:bg-slate-900/40 
-          backdrop-blur-md 
+          backdrop-blur-lg
           border-t border-white/20 dark:border-white/10
           shadow-[0_-4px_20px_rgba(0,0,0,0.05)]
           transition-all
@@ -150,11 +150,8 @@ const PostCard = ({ post, featured = false, status = true }) => {
         `}
       >
         <div className="flex items-center justify-between gap-2">
-          <CategoryPill category={post.category} />
-
           <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-900 dark:text-gray-300">{timeAgo(post.createdAt)}</span>
-
+            <CategoryPill category={post.category} />
             {!isGuest && (
               <button
                 onClick={handleAddToReadingList}
@@ -162,7 +159,7 @@ const PostCard = ({ post, featured = false, status = true }) => {
                 className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${
                   added
                     ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400"
-                    : "bg-gray-100 text-gray-600 hover:bg-accent hover:text-white dark:bg-white/10 dark:text-gray-300 dark:hover:bg-accent"
+                    : "bg-gray-100 text-gray-600 hover:bg-accent hover:text-white dark:bg-white/20 dark:text-gray-300 dark:hover:bg-accent"
                 }`}
                 title={added ? "Sudah di Reading List" : "Tambah ke Reading List"}
               >
@@ -191,12 +188,14 @@ const PostCard = ({ post, featured = false, status = true }) => {
         >
           {post.title}
         </h3>
-
-        <p className="mt-0 group-hover:hidden text-sm leading-relaxed text-gray-600 dark:text-gray-300 line-clamp-1">
-          {post.content
-            ? post.content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()
-            : post.excerpt}
-        </p>
+        <div className="flex items-center gap-2">
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-[11px] font-semibold text-slate-900 dark:text-slate-900">
+            {post.author?.name?.[0]?.toUpperCase()}
+          </div>
+          <span className="text-xs max-w-[80%] overflow-hidden truncate font-medium text-gray-800 dark:text-gray-200">
+            {post.author?.name}
+          </span>
+        </div>
 
         <div
           className={`absolute bottom-[25%] -translate-x-1/2 left-1/2 w-full flex items-center justify-center gap-3 transition-opacity duration-300 ease-in-out opacity-0 group-hover:opacity-100 ${
@@ -287,25 +286,6 @@ const PostCard = ({ post, featured = false, status = true }) => {
               <ArrowRight />
             </div>
           </Link>
-        </div>
-
-        <div className="mt-auto flex items-center pr-1.5 justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white dark:bg-accent-soft text-[11px] font-semibold text-slate-900 dark:text-accent">
-              {post.author?.name?.[0]?.toUpperCase()}
-            </div>
-            <span className="text-xs font-medium text-gray-800 dark:text-gray-300">
-              {post.author?.name}
-            </span>
-          </div>
-          <div className="flex items-center gap-3 text-slate-900 dark:text-gray-300">
-            <span className="flex items-center gap-1 text-xs">
-              <Eye size={13} /> {post.views ?? 0}
-            </span>
-            <span className="flex items-center gap-1 text-xs">
-              <Heart size={13} /> {post.likes?.length ?? 0}
-            </span>
-          </div>
         </div>
       </div>
     </div>

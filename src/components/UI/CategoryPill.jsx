@@ -9,7 +9,7 @@ const CATEGORY_STYLES = {
   Maintenance: {
     icon: Wrench,
     className:
-      "bg-amber-500 text-white dark:bg-amber-500/10 md:dark:!bg-amber-950 md:dark:!text-slate-300 dark:!text-slate-300",
+      "bg-orange-500 text-white dark:bg-orange-500 md:dark:!bg-orange-500 md:dark:!text-white dark:!text-slate-300",
   },
   Installation: {
     icon: Boxes,
@@ -29,7 +29,7 @@ const CATEGORY_STYLES = {
   "E-kantin": {
     icon: Utensils,
     className:
-      "bg-orange-500 text-white dark:!bg-orange-500/10 md:dark:!bg-orange-950 md:dark:!text-slate-300 dark:!text-slate-300",
+      "bg-orange-500 text-white dark:!bg-orange-500 md:dark:!bg-orange-500 md:dark:!text-white dark:!text-slate-300",
   },
   EHRD: {
     icon: Users,
@@ -60,7 +60,7 @@ const CATEGORY_STYLES_NON_SOLID = {
   },
   Maintenance: {
     icon: Wrench,
-    className: "bg-amber-500 text-white dark:bg-amber-500/10 dark:text-slate-300",
+    className: "bg-orange-500 text-white dark:bg-orange-500/10 dark:text-slate-300",
   },
   Fixing: {
     icon: ShieldAlert,
@@ -100,14 +100,14 @@ const CATEGORY_STYLES_NON_SOLID = {
   },
 };
 
-const CategoryPill = ({ category, border = false, solid = true }) => {
+const CategoryPill = ({ category, solid = true }) => {
   const styles = solid ? CATEGORY_STYLES : CATEGORY_STYLES_NON_SOLID;
   const style = styles[category] || styles.Topology; // or a safer default
   const Icon = style.icon;
 
   return (
     <span
-      className={`pill rounded-lg gap-1 ${border ? "border border-white/20" : ""} ${style.className}`}
+      className={`pill rounded-lg gap-1 border border-white/40 ${style.className}`}
     >
       <Icon size={12} />
       {category}
