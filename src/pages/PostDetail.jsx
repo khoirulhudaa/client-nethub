@@ -692,7 +692,7 @@ const handlePin = async () => {
   }
 };
   
- const postUrl = `${window.location.origin}/posts/${post?.slug || slug}`;
+  const postUrl = `${window.location.origin}/posts/${post?.slug || slug}?ref=share`;
 
   const createShareText = () => {
     const title = post?.title || "Guide";
