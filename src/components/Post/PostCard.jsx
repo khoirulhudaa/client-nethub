@@ -30,6 +30,11 @@ const PostCard = ({ post, roundedNormal = false, featured = false, status = true
   const [copied, setCopied] = useState(false);
 
   const isGuest = user?.isGuest || user?.role === "guest";
+  const canPin = !!user && !isGuest;
+
+  const [pinned, setPinned] = useState(!!post.isPinned);
+  const [pinning, setPinning] = useState(false);
+
 
   const postUrl = `${window.location.origin}/posts/${post?.slug}`;
 
@@ -87,6 +92,33 @@ const PostCard = ({ post, roundedNormal = false, featured = false, status = true
     toast.error("Gagal menyalin link");
   }
 };
+
+const handlePin = async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  if (!canPin) {
+    toast.error("Login dulu untuk pin guide");
+    return;
+  }
+  if (pinning) return;
+
+  const previous = pinned;
+  setPinned(!previous); // optimistic
+  setPinning(true);
+
+  try {
+    const { data } = await api.patch(`/posts/${post._id}/pin`);
+    setPinned(data.isPinned);
+    toast.success(data.isPinned ? "Guide dipin" : "Guide di-unpin");
+  } catch (err) {
+    setPinned(previous);
+    toast.error(err?.response?.data?.message || "Gagal mengubah status pin");
+  } finally {
+    setPinning(false);
+  }
+};
+
   const handleAddToReadingList = async (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -118,7 +150,7 @@ const PostCard = ({ post, roundedNormal = false, featured = false, status = true
         featured ? "h-full" : ""
       }`}
     >
-      {post.isPinned && status && (
+      {pinned && status && (
         <div className="absolute left-3.5 top-3.5 z-[9] flex items-center gap-1 rounded-lg bg-accent px-2.5 py-1 text-[11px] font-medium text-white shadow-sm">
           <Pin size={11} />
           Pinned
@@ -204,8 +236,8 @@ const PostCard = ({ post, roundedNormal = false, featured = false, status = true
             featured ? "mt-3" : "mt-2"
           }`}
         >
-          {/* ===== SHARE BUTTON (dengan dropdown seperti PostDetail) ===== */}
-          <div className="relative">
+
+            <div className="relative">
             <button
               type="button"
               onClick={(e) => {
@@ -213,12 +245,12 @@ const PostCard = ({ post, roundedNormal = false, featured = false, status = true
                 e.stopPropagation();
                 setShowShare((v) => !v);
               }}
-              className={`flex mt-auto hover:brightness-75 h-14 w-max gap-x-3 active:scale-[0.98] duration-100 items-center px-2 pl-4 rounded-full bg-purple-600 text-sm font-medium text-white transition-all ease-in-out hover:bg-accent-dark ${
+              className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-3 active:scale-[0.98] duration-100 items-center px-2 py-1.5 pl-3 rounded-full bg-purple-600 text-sm font-medium text-white transition-all ease-in-out hover:bg-accent-dark ${
                 featured ? "mt-3" : "mt-2"
               }`}
             >
               <p>Share</p>
-              <div className="rounded-full hover:bg-slate-900 active:scale-[0.98] hover:text-white duration-100 text-slate-900 flex items-center justify-center bg-white h-[40px] w-[40px]">
+              <div className="rounded-full hover:bg-slate-900 active:scale-[0.98] hover:text-white duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
                 <Link2Icon size={18} />
               </div>
             </button>
@@ -276,15 +308,39 @@ const PostCard = ({ post, roundedNormal = false, featured = false, status = true
               </>
             )}
           </div>
+          
+          {/* ===== SHARE BUTTON (dengan dropdown seperti PostDetail) ===== */}
+          {canPin && (
+            <button
+              type="button"
+              onClick={handlePin}
+              disabled={pinning}
+              title={pinned ? "Unpin" : "Pin"}
+              className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-3 active:scale-[0.98] duration-100 items-center px-2 py-1.5 pl-3 rounded-full text-sm font-medium text-white transition-all ease-in-out hover:bg-accent-dark ${
+              featured ? "mt-3" : "mt-2"
+            }
+            ${pinned ? "bg-green-600" : "bg-slate-700 bg-transparent border border-white"}
+            `}
+            >
+              <p>Pin</p>
+              <div className="rounded-full hover:bg-slate-900 active:scale-[0.98] hover:text-white duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
+                {pinning ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : (
+                  <Pin size={18} className={pinned ? "fill-white" : ""} />
+                )}
+              </div>
+            </button>
+          )}
 
           <Link
             to={`/posts/${post.slug}`}
-            className={`flex mt-auto hover:brightness-75 h-14 w-max gap-x-3 active:scale-[0.98] duration-100 items-center px-2 pl-4 rounded-full bg-accent text-sm font-medium text-white transition-all ease-in-out hover:bg-accent-dark ${
+            className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-3 active:scale-[0.98] duration-100 items-center px-2 py-1.5 pl-3 rounded-full bg-accent text-sm font-medium text-white transition-all ease-in-out hover:bg-accent-dark ${
               featured ? "mt-3" : "mt-2"
             }`}
           >
-            <p>Reading</p>
-            <div className="rounded-full hover:bg-slate-900 active:scale-[0.98] hover:text-white duration-100 text-slate-900 flex items-center justify-center bg-white h-[40px] w-[40px]">
+            <p>Read</p>
+            <div className="rounded-full hover:bg-slate-900 active:scale-[0.98] hover:text-white duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
               <ArrowRight />
             </div>
           </Link>
