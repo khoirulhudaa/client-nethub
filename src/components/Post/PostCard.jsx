@@ -176,7 +176,7 @@ const handlePin = async (e) => {
       <div
         className={`absolute bottom-0 pt-7 left-0 w-full group-hover:h-[100%] ease-out animation-height duration-500 h-[35%] z-[33] flex flex-1 flex-col gap-3 p-3.5 py-4
           bg-white/30
-           dark:bg-black/30
+           dark:bg-black/40
           backdrop-blur-lg
           border-white/20 dark:border-white/10
           shadow-[0_-4px_20px_rgba(0,0,0,0.05)]
