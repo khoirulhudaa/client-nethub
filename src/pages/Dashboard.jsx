@@ -3,6 +3,7 @@ import {
   BookOpen,
   Box,
   Brain,
+  ChevronDown,
   ChevronRight,
   Eye,
   Newspaper,
@@ -718,14 +719,12 @@ const { remainingPosts } = useMemo(() => {
 
                       {/* ===== LOAD MORE - diperbaiki ===== */}
                       {!search && hasMore && (
-                        <div className="mt-6 flex justify-center">
-                          <button
-                            onClick={handleLoadMore}
-                            disabled={loadingMore}
-                            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 dark:bg-slate-200 bg-slate-950 px-3 dark:h-[40px] h-[43px] text-sm font-medium text-white dark:text-slate-900 shadow-sm transition hover:brightness-[80%] active:scale-[0.99] duration-100 disabled:opacity-50"
-                          >
-                            {loadingMore ? "Loading..." : "Load more guides"}
-                          </button>
+                        <div className="mt-6 cursor-pointer active:scale-[0.98] duration-100 hover:brightness-75 flex flex-col items-center justify-center"
+                          onClick={handleLoadMore}
+                          disabled={loadingMore}
+                        >
+                          <p>Load more</p>
+                          <ChevronDown size={14} className='relative top-1.5 duration-300 ease-out animate animate-bounce' />
                         </div>
                       )}
                     </>
