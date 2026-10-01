@@ -1,5 +1,3 @@
-import Highcharts from "highcharts";
-import HighchartsReact from "highcharts-react-official";
 import {
   Flame,
   Heart,
@@ -31,92 +29,6 @@ const StatCard = ({ icon: Icon, label, value, sub }) => (
   </div>
 );
 
-// ========== HIGHCHARTS - Top Guides by Views ==========
-const ViewsChart = ({ posts }) => {
-  const top5 = posts.slice(0, 5);
-
-  const options = useMemo(() => {
-    return {
-      chart: {
-        type: "bar",
-        backgroundColor: "transparent",
-        height: 280,
-        style: { fontFamily: "inherit" },
-      },
-      title: { text: null },
-      xAxis: {
-        categories: top5.map((p) =>
-          p.title.length > 28 ? p.title.slice(0, 28) + "…" : p.title
-        ),
-        labels: {
-          style: { color: "#9ca3af", fontSize: "12px" },
-        },
-        lineWidth: 0,
-        tickLength: 0,
-      },
-      yAxis: {
-        min: 0,
-        title: { text: null },
-        labels: {
-          style: { color: "#9ca3af", fontSize: "11px" },
-        },
-        gridLineColor: "rgba(156, 163, 175, 0.15)",
-      },
-      tooltip: {
-        backgroundColor: "#1f2937",
-        borderWidth: 0,
-        borderRadius: 8,
-        style: { color: "#fff", fontSize: "12px" },
-        pointFormat: "<b>{point.y}</b> views",
-      },
-      plotOptions: {
-        bar: {
-          borderRadius: 6,
-          pointPadding: 0.15,
-          groupPadding: 0.1,
-          color: {
-            linearGradient: { x1: 0, x2: 1, y1: 0, y2: 0 },
-            stops: [
-              [0, "#3b82f6"],
-              [1, "#1d4ed8"],
-            ],
-          },
-          dataLabels: {
-            enabled: true,
-            format: "{y}",
-            style: {
-              color: "#6b7280",
-              fontSize: "11px",
-              fontWeight: "500",
-              textOutline: "none",
-            },
-          },
-        },
-      },
-      legend: { enabled: false },
-      credits: { enabled: false },
-      series: [
-        {
-          name: "Views",
-          data: top5.map((p) => p.views || 0),
-        },
-      ],
-    };
-  }, [top5]);
-
-  if (top5.length === 0) return null;
-
-  return (
-    <div className="rounded-2xl w-full border border-gray-200 p-5 shadow-sm dark:border-white/10 dark:!bg-[#0c0c18]
-           !bg-slate-200">
-      <div className="mb-3 flex items-center gap-2">
-        {/* <TrendingUp size={16} className="text-accent" /> */}
-        <h3 className="text-sm font-semibold">Top 3 Guides by Views</h3>
-      </div>
-      <HighchartsReact highcharts={Highcharts} options={options} />
-    </div>
-  );
-};
 
 // ========== Quiz Card (single top item) ==========
 const QuizCard = ({ quiz, type }) => {
@@ -268,10 +180,6 @@ const Trending = () => {
         </div>
       ) : (
         <div>
-          <div className="mb-8 md:flex hidden">
-            <ViewsChart posts={posts} />
-          </div>
-
           <div className="mb-4 flex items-center gap-2 text-sm text-white dark:text-gray-500">
             <TrendingUp size={16} className="text-accent" />
             <span>Top 3 Guides · Ranked by views & likes</span>
