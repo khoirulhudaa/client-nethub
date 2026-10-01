@@ -175,7 +175,7 @@ const Card1 = () => {
       href="https://mikrotik.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-slate-950 hover:brightness-[80%] p-3 md:p-5 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-slate-950 hover:brightness-[80%] !p-4 md:!p-5 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
         <span className="flex items-center gap-1 text-sm font-medium text-slate-900 dark:text-white group-hover:underline">
@@ -209,7 +209,7 @@ const Card2 = () => {
       href="https://ui.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-slate-950 hover:brightness-[80%] p-3 md:p-5 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-slate-950 hover:brightness-[80%] !p-4 md:!p-5 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
         <span className="flex items-center gap-1 text-sm font-medium text-slate-900 dark:text-white group-hover:underline">
@@ -243,7 +243,7 @@ const Card3 = () => {
       href="https://www.tp-link.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-slate-950 hover:brightness-[80%] p-3 md:p-5 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-slate-950 hover:brightness-[80%] !p-4 md:!p-5 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
         <span className="flex items-center gap-1 text-sm font-medium text-slate-900 dark:text-white group-hover:underline">
