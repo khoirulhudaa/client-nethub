@@ -544,38 +544,58 @@ const removeHighlight = async (text) => {
 
 const isOwner = user?.id === post?.author?._id;
 
-  const handlePin = async () => {
-    if (!post) return;
+//   const handlePin = async () => {
+//     if (!post) return;
 
-    // Simpan state lama untuk rollback
-    const previousPinned = post?.isPinned;
+//     // Simpan state lama untuk rollback
+//     const previousPinned = post?.isPinned;
 
-    // Langsung ubah tampilan dulu (optimistic)
-    setPost((prev) => ({
-      ...prev,
-      isPinned: !prev.isPinned,
-    }));
+//     // Langsung ubah tampilan dulu (optimistic)
+//     setPost((prev) => ({
+//       ...prev,
+//       isPinned: !prev.isPinned,
+//     }));
 
-    try {
-      const { data } = await api.patch(`/posts/${post?._id}/pin`);
+//     try {
+//       const { data } = await api.patch(`/posts/${post?._id}/pin`);
 
-      // Sinkronkan dengan server, tetap jaga author supaya menu tidak hilang
-      setPost((prev) => ({
-        ...prev,
-        ...data.post,
-        author: prev.author,
-        isPinned: data.post?.isPinned,
-      }));
+//       // Sinkronkan dengan server, tetap jaga author supaya menu tidak hilang
+//       setPost((prev) => ({
+//         ...prev,
+//         ...data.post,
+//         author: prev.author,
+//         isPinned: data.post?.isPinned,
+//       }));
 
-      toast.success(data.post?.isPinned ? "Guide dipin" : "Guide di-unpin");
-    } catch (err) {
-      // Jika gagal → kembalikan ke state sebelumnya
-      setPost((prev) => ({
-        ...prev,
-        isPinned: previousPinned,
-      }));
-      toast.error(err?.response?.data?.message || "Gagal mengubah status pin");
-    }
+//       toast.success(data.post?.isPinned ? "Guide dipin" : "Guide di-unpin");
+//     } catch (err) {
+//       // Jika gagal → kembalikan ke state sebelumnya
+//       setPost((prev) => ({
+//         ...prev,
+//         isPinned: previousPinned,
+//       }));
+//       toast.error(err?.response?.data?.message || "Gagal mengubah status pin");
+//     }
+// };
+
+const handlePin = async () => {
+  if (!post) return;
+  if (!user || isGuest) {
+    toast.error("Login dulu untuk pin guide");
+    return;
+  }
+
+  const previousPinned = post.isPinned;
+  setPost((prev) => ({ ...prev, isPinned: !prev.isPinned })); // optimistic
+
+  try {
+    const { data } = await api.patch(`/posts/${post._id}/pin`);
+    setPost((prev) => ({ ...prev, isPinned: data.isPinned }));
+    toast.success(data.isPinned ? "Guide dipin" : "Guide di-unpin");
+  } catch (err) {
+    setPost((prev) => ({ ...prev, isPinned: previousPinned }));
+    toast.error(err?.response?.data?.message || "Gagal mengubah status pin");
+  }
 };
   
  const postUrl = `${window.location.origin}/posts/${post?.slug || slug}`;

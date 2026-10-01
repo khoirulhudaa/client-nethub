@@ -109,26 +109,13 @@ const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
 };
 
 // --- Metric cards ------------------------------------------------------------
-const MetricCard = ({ icon: Icon, iconClass, label, value, delta, deltaTone = "positive" }) => (
+const MetricCard = ({ icon: Icon, iconClass, label, value }) => (
   <div className="bg-slate-200 dark:bg-gradient-to-br dark:from-blue-400 dark:to-blue-100 flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-none p-3 md:p-4 shadow-sm dark:shadow-none">
     <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${iconClass}`}>
       <Icon size={16} />
     </div>
     <span className="text-sm font-semibold text-blue-950">{label}</span>
     <strong className="text-xl font-semibold text-blue-950">{value}</strong>
-    <small className="text-xs text-blue-950">
-      <span
-        className={
-          deltaTone === "positive"
-            ? "text-emerald-600 dark:text-emerald-400"
-            : deltaTone === "neutral"
-            ? "text-blue-950"
-            : "text-rose-600 dark:text-rose-400"
-        }
-      >
-        {delta}
-      </span>
-    </small>
   </div>
 );
 
@@ -147,7 +134,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
     <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4 md:px-6 z-[9999] relative">
       <MetricCard
         icon={Wifi}
-        iconClass="bg-slate-900 text-white"
+        iconClass="bg-orange-600 text-white"
         label="Signal condition"
         value={signal ? signal.effectiveType.toUpperCase() : "N/A"}
         delta={signal ? `${signal.downlink} Mbps · ${signal.rtt}ms RTT` : "Not supported by this browser"}
@@ -155,7 +142,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
       />
       <MetricCard
         icon={BookOpen}
-        iconClass="bg-slate-900 text-white"
+        iconClass="bg-green-600 text-white"
         label="Total guides"
         value={totalGuides}
         delta="Across all categories"
@@ -163,7 +150,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
       />
       <MetricCard
         icon={Eye}
-        iconClass="bg-slate-900 text-white"
+        iconClass="bg-blue-600 text-white"
         label="Total reads"
         value={totalReads}
         delta="All-time views"
@@ -171,7 +158,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
       />
       <MetricCard
         icon={Tag}
-        iconClass="bg-slate-900 text-white"
+        iconClass="bg-purple-600 text-white"
         label="Categories"
         value={totalCategories}
         delta="Active categories"
