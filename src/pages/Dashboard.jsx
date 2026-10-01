@@ -120,12 +120,32 @@ const MetricCard = ({ icon: Icon, iconClass, label, value }) => (
   </div>
 );
 
+const CategoryBarSkeleton = () => (
+  <>
+    {/* Mobile: dropdown */}
+    <div className="mt-2 w-full sm:hidden">
+      <SkeletonBlock className="h-10 w-full rounded-xl" />
+    </div>
+
+    {/* Desktop: pills */}
+    <div className="hidden sm:flex flex-wrap items-center mt-3 gap-2.5">
+      {[96, 80, 104, 88, 72].map((w, i) => (
+        <SkeletonBlock key={i} className="h-9 rounded-xl" style={{ width: w }} />
+      ))}
+    </div>
+  </>
+);
+
+// const SkeletonBlock = ({ className = "", style }) => (
+//   <div style={style} className={`animate-pulse rounded-lg bg-slate-300 dark:bg-white/10 ${className}`} />
+// );
+
 const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading }) => {
   if (loading) {
     return (
-      <div className="mb-8 grid grid-cols-2 md:px-5 gap-4 lg:grid-cols-4">
+      <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4 md:px-6 relative">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-[104px] animate-pulse rounded-xl border border-white bg-white" />
+          <MetricCardSkeleton key={i} />
         ))}
       </div>
     );
@@ -271,6 +291,58 @@ const Card3 = () => {
     </a>
   );
 };
+
+// --- Skeleton ----------------------------------------------------------------
+const SkeletonBlock = ({ className = "" }) => (
+  <div className={`animate-pulse rounded-lg bg-slate-300 dark:bg-white/10 ${className}`} />
+);
+
+const MetricCardSkeleton = () => (
+  <div className="flex flex-col gap-2 rounded-xl border border-transparent bg-slate-200 dark:bg-white/5 p-3 md:p-4 !pb-2">
+    <SkeletonBlock className="h-8 w-8 rounded-lg" />
+    <SkeletonBlock className="h-4 w-24" />
+    <SkeletonBlock className="h-6 w-14" />
+  </div>
+);
+
+const PostCardSkeleton = () => (
+  <div className="rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-slate-950 p-3 md:p-4">
+    <SkeletonBlock className="h-40 w-full rounded-lg" />
+    <div className="mt-4 flex gap-2">
+      <SkeletonBlock className="h-5 w-16 rounded-full" />
+      <SkeletonBlock className="h-5 w-20 rounded-full" />
+    </div>
+    <SkeletonBlock className="mt-3 h-5 w-4/5" />
+    <SkeletonBlock className="mt-2 h-4 w-full" />
+    <SkeletonBlock className="mt-1.5 h-4 w-2/3" />
+    <div className="mt-4 flex items-center gap-2">
+      <SkeletonBlock className="h-6 w-6 rounded-full" />
+      <SkeletonBlock className="h-3 w-24" />
+    </div>
+  </div>
+);
+
+const DashboardSkeleton = ({ showPinned = false }) => (
+  <div aria-busy="true" aria-label="Loading content">
+    {showPinned && (
+      <section className="mb-8 px-3 md:px-4 mt-4 md:mt-0">
+        <SkeletonBlock className="h-56 md:h-72 w-full rounded-2xl" />
+      </section>
+    )}
+
+    <section className="mb-8 px-3 md:px-4">
+      <div className="mb-4 flex items-center gap-2">
+        <SkeletonBlock className="h-5 w-5" />
+        <SkeletonBlock className="h-5 w-32" />
+      </div>
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <PostCardSkeleton key={i} />
+        ))}
+      </div>
+    </section>
+  </div>
+);
 
 // --- Dashboard Component -----------------------------------------------------
 const Dashboard = () => {
@@ -612,6 +684,8 @@ const { remainingPosts } = useMemo(() => {
               )}
             </form>
 
+            {loading && !data.categories?.length && <CategoryBarSkeleton />}
+
             {/* Categories bar — responsive: pills di desktop, dropdown di mobile */}
             {data.categories?.length > 0 && (
               <>
@@ -669,12 +743,7 @@ const { remainingPosts } = useMemo(() => {
 
           {/* Content */}
           {loading || (search.trim() && searchLoading) ? (
-            <div className="p-3 md:p-4">
-              <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
-                <img src="/cloud.png" alt="icon-cloud" className="w-20" />
-                <p className="mt-2">Load content ...</p>
-              </div>
-            </div>
+            <DashboardSkeleton showPinned={!isGuest && showOverviewSections} />
           ) : (
             <>
               {/* ========== PINNED FIRST ========== */}
@@ -717,14 +786,23 @@ const { remainingPosts } = useMemo(() => {
                         ))}
                       </div>
 
-                      {/* ===== LOAD MORE - diperbaiki ===== */}
-                      {!search && hasMore && (
-                        <div className="mt-6 cursor-pointer active:scale-[0.98] duration-100 hover:brightness-75 flex flex-col items-center justify-center"
+                      {/* Skeleton saat load more */}
+                      {loadingMore && (
+                        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                          {Array.from({ length: 3 }).map((_, i) => (
+                            <PostCardSkeleton key={i} />
+                          ))}
+                        </div>
+                      )}
+
+                      {/* ===== LOAD MORE ===== */}
+                      {!search && hasMore && !loadingMore && (
+                        <div
+                          className="mt-6 cursor-pointer active:scale-[0.98] duration-100 hover:brightness-75 flex flex-col items-center justify-center"
                           onClick={handleLoadMore}
-                          disabled={loadingMore}
                         >
                           <p>Load more</p>
-                          <ChevronDown size={14} className='relative top-1.5 duration-300 ease-out animate animate-bounce' />
+                          <ChevronDown size={14} className="relative top-1.5 duration-300 ease-out animate-bounce" />
                         </div>
                       )}
                     </>
