@@ -1,4 +1,4 @@
-import { Check, Copy, ChevronDown } from "lucide-react";
+import { Check, Copy, ChevronDown, Network, Hash, Globe, Radio, Shield, Users } from "lucide-react";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -54,11 +54,10 @@ function calcSubnet(ip, cidr) {
     lastHost: intToIp(lastHost),
     totalHosts,
     usableHosts,
-    binaryMask: mask.toString(2).padStart(32, "0").match(/.{8}/g).join("."),
   };
 }
 
-const ResultRow = ({ label, value, mono = true }) => {
+const InfoCard = ({ icon: Icon, label, value, mono = true, accent = false }) => {
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
@@ -73,20 +72,46 @@ const ResultRow = ({ label, value, mono = true }) => {
   };
 
   return (
-    <div className="flex items-center justify-between gap-3 border-b border-gray-100 py-2.5 last:border-0 dark:border-white/5">
-      <span className="text-sm text-gray-500">{label}</span>
-      <div className="flex items-center gap-2">
-        <span className={`text-sm font-medium text-gray-900 dark:text-gray-100 ${mono ? "font-mono" : ""}`}>
-          {value}
-        </span>
+    <div
+      className={`group relative flex flex-col gap-2 rounded-xl border p-4 transition-all hover:shadow-md ${
+        accent
+          ? "border-accent/30 bg-accent/5 dark:border-accent/20 dark:bg-accent/10"
+          : "border-gray-100 bg-white dark:border-white/5 dark:bg-[#0c0c18]"
+      }`}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div
+            className={`flex h-7 w-7 items-center justify-center rounded-lg ${
+              accent
+                ? "bg-accent/15 text-accent"
+                : "bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-gray-400"
+            }`}
+          >
+            <Icon size={14} />
+          </div>
+          <span className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+            {label}
+          </span>
+        </div>
+
         <button
           type="button"
           onClick={copy}
-          className="rounded-md p-1 text-gray-400 transition hover:bg-gray-100 hover:text-accent dark:hover:bg-white/10"
+          className="rounded-md p-1.5 text-gray-400 opacity-0 transition-all group-hover:opacity-100 hover:bg-gray-100 hover:text-accent dark:hover:bg-white/10"
+          aria-label="Copy"
         >
           {copied ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
         </button>
       </div>
+
+      <p
+        className={`text-[15px] font-semibold tracking-tight text-gray-900 dark:text-white ${
+          mono ? "font-mono" : ""
+        }`}
+      >
+        {value}
+      </p>
     </div>
   );
 };
@@ -99,42 +124,45 @@ const SubnetCalculator = () => {
 
   return (
     <div className="mx-auto max-w-full md:border-x border-white dark:border-white/10 px-0 py-0 md:py-6 md:px-6">
+      {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-2 text-accent">
-          <span className="text-xs font-semibold uppercase tracking-wide">Tools</span>
+          <span className="text-xs font-semibold uppercase tracking-wider">Tools</span>
         </div>
-        <h1 className="text-xl font-semibold text-white tracking-tight">Subnet Calculator</h1>
+        <h1 className="mt-1 text-xl font-semibold tracking-tight text-white">
+          Subnet Calculator
+        </h1>
       </div>
 
-      <div className="surface-card rounded-2xl border border-gray-200 bg-white p-3 md:p-5 dark:border-white/10 dark:bg-white/[0.03]">
+      {/* Main Card — tetap bg-slate-200 / dark:bg-white/[0.03] */}
+      <div className="surface-card rounded-2xl border border-gray-200 bg-slate-200 p-4 md:p-5 dark:border-white/10 dark:bg-white/[0.03]">
         {/* Input */}
-        <div className="mb-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
-          {/* IP Address */}
+        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-gray-400">
+            <label className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <Network size={13} />
               IP Address
             </label>
             <input
-              className="input-field w-full font-mono !bg-[#0c0c18]"
+              className="input-field w-full rounded-xl border-0 bg-white font-mono text-sm shadow-sm ring-1 ring-gray-200/70 transition focus:ring-2 focus:ring-accent/40 dark:!bg-[#0c0c18] dark:ring-white/10"
               value={ip}
               onChange={(e) => setIp(e.target.value)}
               placeholder="192.168.1.0"
+              spellCheck={false}
             />
           </div>
 
-          {/* CIDR / Prefix */}
           <div>
-            <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-gray-400">
+            <label className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <Hash size={13} />
               CIDR / Prefix
             </label>
-
-            <div className="flex items-center gap-2">
-              {/* Select dropdown */}
+            <div className="flex items-center gap-2.5">
               <div className="relative flex-1">
                 <select
                   value={cidr}
                   onChange={(e) => setCidr(Number(e.target.value))}
-                  className="input-field w-full appearance-none !bg-[#0c0c18] pr-9 font-mono"
+                  className="input-field w-full appearance-none rounded-xl border-0 bg-white pr-9 font-mono text-sm shadow-sm ring-1 ring-gray-200/70 transition focus:ring-2 focus:ring-accent/40 dark:!bg-[#0c0c18] dark:ring-white/10"
                 >
                   {Array.from({ length: 33 }, (_, i) => (
                     <option key={i} value={i} className="text-black">
@@ -147,8 +175,6 @@ const SubnetCalculator = () => {
                   className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
                 />
               </div>
-
-              {/* Manual number input */}
               <input
                 type="number"
                 min={0}
@@ -157,51 +183,59 @@ const SubnetCalculator = () => {
                 onChange={(e) =>
                   setCidr(Math.min(32, Math.max(0, Number(e.target.value) || 0)))
                 }
-                className="input-field w-20 text-center font-mono"
+                className="input-field w-[72px] rounded-xl border-0 bg-white text-center font-mono text-sm shadow-sm ring-1 ring-gray-200/70 transition focus:ring-2 focus:ring-accent/40 dark:!bg-[#0c0c18] dark:ring-white/10"
               />
             </div>
-
           </div>
         </div>
 
-        {/* Result */}
+        {/* Results — Card Grid (bukan list) */}
         {!result ? (
-          <p className="text-sm text-red-500">Invalid IP address</p>
+          <div className="rounded-xl border border-red-200/60 bg-red-50/80 px-4 py-3 text-sm text-red-600 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-400">
+            Invalid IP address
+          </div>
         ) : (
-          <div className="rounded-xl border border-gray-100 bg-gray-50/50 px-4 py-2 dark:border-white/5 dark:!bg-[#0c0c18]">
-            <ResultRow label="Network Address" value={`${result.network}/${result.cidr}`} />
-            <ResultRow label="Broadcast Address" value={result.broadcast} />
-            <ResultRow label="Subnet Mask" value={result.netmask} />
-            <ResultRow label="Wildcard Mask" value={result.wildcard} />
-            <ResultRow label="First Host" value={result.firstHost} />
-            <ResultRow label="Last Host" value={result.lastHost} />
-            <ResultRow label="Total Hosts" value={result.totalHosts} mono={false} />
-            <ResultRow label="Usable Hosts" value={result.usableHosts} mono={false} />
-            {/* <ResultRow label="Binary Mask" value={result.binaryMask} /> */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {/* Network (accent) */}
+            <InfoCard
+              icon={Globe}
+              label="Network Address"
+              value={`${result.network}/${result.cidr}`}
+              accent
+            />
+
+            {/* Broadcast */}
+            <InfoCard icon={Radio} label="Broadcast Address" value={result.broadcast} />
+
+            {/* Subnet Mask */}
+            <InfoCard icon={Shield} label="Subnet Mask" value={result.netmask} />
+
+            {/* Wildcard */}
+            <InfoCard icon={Shield} label="Wildcard Mask" value={result.wildcard} />
+
+            {/* First Host */}
+            <InfoCard icon={Users} label="First Host" value={result.firstHost} />
+
+            {/* Last Host */}
+            <InfoCard icon={Users} label="Last Host" value={result.lastHost} />
+
+            {/* Total Hosts */}
+            <InfoCard
+              icon={Users}
+              label="Total Hosts"
+              value={result.totalHosts.toLocaleString()}
+              mono={false}
+            />
+
+            {/* Usable Hosts */}
+            <InfoCard
+              icon={Users}
+              label="Usable Hosts"
+              value={result.usableHosts.toLocaleString()}
+              mono={false}
+            />
           </div>
         )}
-      </div>
-
-      {/* Quick examples */}
-      <div className="mt-4 flex flex-wrap gap-2">
-        {[
-          { ip: "192.168.1.0", cidr: 24 },
-          { ip: "10.0.0.0", cidr: 8 },
-          { ip: "172.16.0.0", cidr: 12 },
-          { ip: "192.168.0.0", cidr: 16 },
-        ].map((ex) => (
-          <button
-            key={`${ex.ip}/${ex.cidr}`}
-            type="button"
-            onClick={() => {
-              setIp(ex.ip);
-              setCidr(ex.cidr);
-            }}
-            className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-mono text-gray-600 transition hover:border-accent hover:text-accent dark:border-white/10 dark:text-gray-300"
-          >
-            {ex.ip}/{ex.cidr}
-          </button>
-        ))}
       </div>
     </div>
   );
