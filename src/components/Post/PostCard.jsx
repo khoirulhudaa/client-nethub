@@ -166,13 +166,13 @@ const handlePin = async (e) => {
 
       <div
         className={`absolute bottom-0 pt-7 left-0 w-full group-hover:h-[100%] ease-out animation-height duration-500 h-[35%] z-[33] flex flex-1 flex-col gap-3 p-3.5 py-4
-          bg-white/30
+          bg-black/30
            dark:bg-black/40
           backdrop-blur-lg
           border-white/20 dark:border-white/10
           shadow-[0_-4px_20px_rgba(0,0,0,0.05)]
           transition-all
-          group-hover:bg-white/40 dark:group-hover:bg-slate-900/50
+          group-hover:bg-black/40 dark:group-hover:bg-slate-900/50
         `}
       >
         <div className="flex items-center justify-between gap-2">
@@ -214,7 +214,7 @@ const handlePin = async (e) => {
         </div>
 
         <h3
-          className={`font-semibold text-slate-900 dark:text-white truncate max-w-[90%] overflow-x-hidden leading-snug tracking-tight ${
+          className={`font-semibold  text-white truncate max-w-[90%] overflow-x-hidden leading-snug tracking-tight ${
             featured ? "text-xl" : "text-base"
           }`}
         >
@@ -222,7 +222,7 @@ const handlePin = async (e) => {
         </h3>
         <div className="flex items-center gap-2">
           
-          <span className="text-xs max-w-[80%] overflow-hidden truncate font-medium text-gray-800 dark:text-gray-200">
+          <span className="text-xs max-w-[80%] overflow-hidden truncate font-medium text-gray-200">
             {post.author?.name}
           </span>
         </div>
