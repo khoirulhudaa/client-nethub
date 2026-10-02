@@ -103,14 +103,12 @@ const Register = () => {
             Sign in
           </Link>
         </p>
-
-        <p className="mt-3 text-xs text-gray-400 text-center">
-          By continuing, you agree to our{" "}
-          <Link to="/terms" className="underline">Terms</Link>,{" "}
-          <Link to="/privacy" className="underline">Privacy Policy</Link>, and{" "}
-          <Link to="/content-policy" className="underline">Content Policy</Link>.
-        </p>
       </div>
+      <p className="absolute w-max gap-[2px] flex items-center left-1/2 bottom-8 z-[3333] -translate-x-1/2 mt-3 text-xs text-gray-400 text-center">
+        <Link to="/terms" className="underline">Terms</Link>,{" "}
+        <Link to="/privacy" className="underline">Privacy Policy</Link>,
+        <Link to="/content-policy" className="underline">Content Policy</Link>
+      </p>
     </div>
   );
 };
