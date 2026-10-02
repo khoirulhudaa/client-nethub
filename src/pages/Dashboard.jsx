@@ -629,9 +629,9 @@ const { remainingPosts } = useMemo(() => {
           {/* Header */}
           <header className="mt-1 px-3 md:px-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-900 dark:text-blue-500">
+              {/* <p className="text-xs font-medium uppercase tracking-wide text-slate-900 dark:text-blue-500">
                 New Knowledge
-              </p>
+              </p> */}
               <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mt-1">
                 <Brain size={17} className="text-slate-900 dark:text-white" />
                 <span className="relative top-[-1.2px] text-slate-900 dark:text-white">
@@ -744,7 +744,7 @@ const { remainingPosts } = useMemo(() => {
                   
                 {/* Posts Grid — Other guides */}
                  <section className="mb-8 px-3 md:px-4 border-white/10">
-                  <div className="mb-4 flex items-center gap-2">
+                  <div className={`mb-4 flex items-center gap-2 ${isGuest ? 'hidden' : ''}`}>
                     <h2 className="flex items-center text-lg mt-1 font-medium tracking-tight">
                       <Newspaper size={17} className="relative top-[-1px] mr-2 text-slate-900 dark:text-white" />
                       <span className="relative top-[-1.7px] text-slate-900 dark:text-white">
