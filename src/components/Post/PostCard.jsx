@@ -325,7 +325,7 @@ const handlePin = async (e) => {
                 {pinning ? (
                   <Loader2 size={18} className="animate-spin" />
                 ) : (
-                  <Pin size={18} className={pinned ? "fill-slate-900" : ""} />
+                  <Pin size={18} className={pinned ? "fill-slate-950" : ""} />
                 )}
               </div>
             </button>
