@@ -135,36 +135,47 @@ const PostCard = ({ post, roundedNormal = false, featured = false, status = true
     }
   };
 
-  const confirmReplace = (oldest) => {
+ const confirmReplace = (oldest) => {
     toast(
       (t) => (
-        <div className="flex flex-col gap-2 text-sm max-w-max">
+        <div className="flex w-full flex-col rounded-2xl gap-3 text-sm">
           <div>
-            <p className="font-medium">Pinned sudah penuh (maks. 4)</p>
-            <p className="text-slate-300 mt-1">
+            <p className="font-semibold">Pinned sudah penuh (maks. 4)</p>
+            <p className="mt-1 text-slate-300 break-words">
               Lepas pin “{oldest.title}” dan ganti dengan “{post.title}”?
             </p>
           </div>
-          <div className="flex gap-2 mt-1">
+          <div className="flex gap-2">
             <button
               onClick={() => {
                 toast.dismiss(t.id);
                 requestPin(true);
               }}
-              className="px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-medium hover:bg-blue-500"
+              className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-xs font-medium text-white hover:bg-blue-500"
             >
               Lanjutkan
             </button>
             <button
               onClick={() => toast.dismiss(t.id)}
-              className="px-3 py-1.5 rounded-lg bg-slate-600 text-white text-xs font-medium hover:bg-slate-500"
+              className="flex-1 rounded-lg bg-slate-600 px-4 py-2 text-xs font-medium text-white hover:bg-slate-500"
             >
               Batal
             </button>
           </div>
         </div>
       ),
-      { duration: 10000, icon: "📌" }
+      {
+        duration: 10000,
+        icon: "📌",
+        style: {
+          maxWidth: "none",            // buang batas 350px bawaan
+          width: "min(480px, 92vw)",   // lebar modal; di mobile maksimal 92% layar
+          padding: "16px 18px",
+          marginRight: "30px",
+          borderRadius: "20px",
+          border: "1px solid rgba(255, 255, 255, 0.2)",
+        },
+      }
     );
   };
 

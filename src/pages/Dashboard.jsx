@@ -19,7 +19,6 @@ import api from "../api/axios.js";
 import PinnedHero from "../components/Post/PinnedHero.jsx";
 import PostCard from "../components/Post/PostCard.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
-import toast from "react-hot-toast";
 
 const GuestJumbotron = ({ onRegister }) => {
   return (
