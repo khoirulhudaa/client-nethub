@@ -65,7 +65,7 @@ const ActivityLog = () => {
   return (
     <div className="mx-auto max-w-7xl px-[3px] md:py-6 md:px-6">
       {/* Header */}
-      <div className="mb-6 flex justify-between items-center md:flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-6 flex justify-between w-full items-center gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <div className="flex items-center gap-2 text-accent">
             <span className="text-xs font-medium uppercase tracking-wide">
@@ -77,7 +77,6 @@ const ActivityLog = () => {
 
         {/* Filter */}
         <div className="flex items-center gap-2">
-          <Filter size={16} className="text-gray-400" />
           <select
             value={actionFilter}
             onChange={(e) => {
