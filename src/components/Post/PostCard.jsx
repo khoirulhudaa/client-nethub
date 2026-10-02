@@ -317,7 +317,7 @@ const handlePin = async (e) => {
                   featured ? "mt-3" : "mt-2"
                 } ${
                   pinned
-                    ? "bg-green-600 border-white"
+                    ? "bg-red-600 border-white"
                     : "bg-slate-700 border-slate-900 dark:border-white"
                 }`}
               >
