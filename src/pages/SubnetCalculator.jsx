@@ -135,7 +135,7 @@ const SubnetCalculator = () => {
       </div>
 
       {/* Main Card — tetap bg-slate-200 / dark:bg-white/[0.03] */}
-      <div className="surface-card rounded-2xl border border-gray-200 bg-slate-200 p-4 md:p-5 dark:border-white/10 dark:bg-white/[0.03]">
+      <div className="surface-card rounded-2xl border border-gray-200 bg-slate-200 p-4 md:p-5 dark:border-white/10 dark:bg-white/5">
         {/* Input */}
         <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>

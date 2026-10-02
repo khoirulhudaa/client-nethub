@@ -63,9 +63,9 @@ const ActivityLog = () => {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 md:px-6">
+    <div className="mx-auto max-w-7xl px-[3px] md:py-6 md:px-6">
       {/* Header */}
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-6 flex justify-between items-center md:flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <div className="flex items-center gap-2 text-accent">
             <span className="text-xs font-medium uppercase tracking-wide">
@@ -106,7 +106,7 @@ const ActivityLog = () => {
           Belum ada aktivitas
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="surface-card rounded-2xl border border-gray-200 bg-slate-200 p-3 md:p-5 dark:border-white/10 dark:bg-white/5">
           {data.activities.map((act) => {
             const meta = ACTION_LABELS[act.action] || {
               label: act.action,
@@ -118,10 +118,10 @@ const ActivityLog = () => {
             return (
               <div
                 key={act._id}
-                className="flex gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-slate-950"
+                className="flex gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#0c0c18]"
               >
                 <div
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 dark:bg-white/5 ${meta.color}`}
+                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 white`}
                 >
                   <Icon size={18} />
                 </div>
@@ -131,26 +131,21 @@ const ActivityLog = () => {
                     <span className="font-medium text-slate-900 dark:text-white">
                       {act.user?.name || "Unknown"}
                     </span>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-gray-500 dark:!text-white/50">
                       {meta.label}
                     </span>
-                    {act.metadata?.title && (
-                      <span className="truncate text-sm text-blue-600 dark:text-blue-400">
-                        “{act.metadata.title}”
-                      </span>
-                    )}
                   </div>
 
-                  <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-gray-500">
+                  <div className="mt-1 flex flex-wrap items-center gap-3 text-xs dark:text-white/50 text-gray-500">
                     <span>
                       {new Date(act.createdAt).toLocaleString("id-ID", {
                         dateStyle: "medium",
                         timeStyle: "short",
                       })}
                     </span>
-                    {act.ip && <span>IP: {act.ip}</span>}
+                    {/* {act.ip && <span>IP: {act.ip}</span>} */}
                     {act.user?.role && (
-                      <span className="rounded bg-slate-100 px-1.5 py-0.5 dark:bg-white/10">
+                      <span className="rounded bg-blue-600 px-1.5 py-0.5 text-white">
                         {act.user.role}
                       </span>
                     )}
