@@ -105,7 +105,7 @@ const ActivityLog = () => {
           Belum ada aktivitas
         </div>
       ) : (
-        <div className="surface-card rounded-2xl border border-gray-200 bg-slate-200 p-3 md:p-5 dark:border-white/10 dark:bg-white/5">
+        <div className="surface-card rounded-2xl border-none bg-slate-200 p-3 md:p-5 dark:border-white/10 dark:bg-white/5">
           {data.activities.map((act) => {
             const meta = ACTION_LABELS[act.action] || {
               label: act.action,

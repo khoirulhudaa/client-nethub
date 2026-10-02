@@ -167,7 +167,7 @@ const Trending = () => {
       {/* Chart + Guides */}
       {loading ? (
         <div className="">
-            <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20">
+            <div className="flex surface-card justify-center flex-col h-full items-center text-center py-20 mb-10">
               <img src="/cloud.png" alt="icon-cloud" className="w-20" />
               <p className="mt-2">Load content ...</p>
             </div>
@@ -201,7 +201,7 @@ const Trending = () => {
       )}
 
       {/* ===================== TRENDING QUIZZES ===================== */}
-      <div className="border-t border-gray-200 pt-10 dark:border-white/10">
+      <div className="border-gray-200 dark:border-white/10">
         <div className="mb-6">
           <div className="flex items-center gap-2 text-accent">
             <HelpCircle size={16} />
