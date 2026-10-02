@@ -629,9 +629,6 @@ const { remainingPosts } = useMemo(() => {
           {/* Header */}
           <header className="mt-1 px-3 md:px-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              {/* <p className="text-xs font-medium uppercase tracking-wide text-slate-900 dark:text-blue-500">
-                New Knowledge
-              </p> */}
               <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mt-1">
                 <Brain size={17} className="text-slate-900 dark:text-white" />
                 <span className="relative top-[-1.2px] text-slate-900 dark:text-white">
@@ -696,7 +693,7 @@ const { remainingPosts } = useMemo(() => {
                 <div className="hidden sm:flex flex-wrap items-center mt-3 gap-2.5">
                   <button
                     onClick={() => updateParam("category", "")}
-                    className={`flex items-center border border-slate-400 gap-1.5 rounded-xl font-medium active:scale-[0.99] px-3 md:px-3 py-2 text-sm transition ${
+                    className={`flex items-center border border-slate-400 hover:brightness-[85%] gap-1.5 rounded-xl font-medium active:scale-[0.99] px-3 md:px-3 py-2 text-sm transition ${
                       !category
                         ? "bg-slate-950 dark:bg-gradient-to-br from-blue-400 to-blue-100 dark:text-slate-900 text-white"
                         : "bg-slate-200 text-gray-600 hover:border-accent/50 hover:bg-slate-200"
@@ -711,7 +708,7 @@ const { remainingPosts } = useMemo(() => {
                     <button
                       key={item}
                       onClick={() => updateParam("category", item)}
-                      className={`flex active:scale-[0.99] border border-slate-400 font-medium duration-100 items-center gap-1.5 rounded-xl px-3 md:px-3 py-2 text-sm transition ${
+                      className={`flex active:scale-[0.99] border border-slate-400 font-medium duration-100 hover:brightness-[85%] items-center gap-1.5 rounded-xl px-3 md:px-3 py-2 text-sm transition ${
                         category === item
                           ? "bg-slate-950 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900"
                           : "bg-slate-200 text-gray-600 hover:border-accent/50 hover:bg-slate-200"
