@@ -26,6 +26,7 @@ import ReadingListPage from "./pages/ReadingListPage.jsx";
 import TagPosts from "./pages/TagPosts.jsx";
 import Following from "./pages/Following.jsx";
 import { ContentPolicyPage, PrivacyPage, TermsPage } from "./pages/Legal.jsx";
+import ActivityLog from "./pages/ActivityLog.jsx";
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
         <Route path="/following" element={<Following />} />
         <Route path="tags/:tag" element={<TagPosts />} />
         <Route path="/quizzes/:id" element={<TakeQuiz />} />
+        <Route path="admin/activities" element={<ActivityLog />} />
         <Route path="/practice" element={<PracticeHub />} />
         <Route path="/hardware" element={<HardwareCollection />} /> 
         <Route path="/quizzes" element={<Quizzes />} />

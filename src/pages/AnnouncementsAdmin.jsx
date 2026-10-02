@@ -318,7 +318,7 @@ const AnnouncementsAdmin = () => {
               SuperAdmin
             </span>
           </div>
-          <h1 className="text-xl font-semibold text-white tracking-tight">Pengumuman</h1>
+          <h1 className="text-xl font-semibold text-white tracking-tight">Announcements</h1>
         </div>
 
         <div className="flex items-center gap-3">
