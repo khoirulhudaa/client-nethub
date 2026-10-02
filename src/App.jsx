@@ -25,6 +25,7 @@ import AnnouncementDetail from "./pages/AnnouncementDetail.jsx";
 import ReadingListPage from "./pages/ReadingListPage.jsx";
 import TagPosts from "./pages/TagPosts.jsx";
 import Following from "./pages/Following.jsx";
+import { ContentPolicyPage, PrivacyPage, TermsPage } from "./pages/Legal.jsx";
 
 function App() {
   return (
@@ -55,6 +56,9 @@ function App() {
         <Route path="/quizzes" element={<Quizzes />} />
         <Route path="/topology-practice" element={<TopologyPractice />} />
         <Route path="quiz-builder" element={<QuizBuilder />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/content-policy" element={<ContentPolicyPage />} />
         <Route path="/trending" element={<Trending />} />
         <Route path="/tools/subnet" element={<SubnetCalculator />} />
         <Route path="/announcements/:id" element={<AnnouncementDetail />} />

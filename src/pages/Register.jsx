@@ -103,6 +103,13 @@ const Register = () => {
             Sign in
           </Link>
         </p>
+
+        <p className="mt-3 text-xs text-gray-400 text-center">
+          By continuing, you agree to our{" "}
+          <Link to="/terms" className="underline">Terms</Link>,{" "}
+          <Link to="/privacy" className="underline">Privacy Policy</Link>, and{" "}
+          <Link to="/content-policy" className="underline">Content Policy</Link>.
+        </p>
       </div>
     </div>
   );
