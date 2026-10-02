@@ -22,34 +22,27 @@ import { useAuth } from "../context/AuthContext.jsx";
 
 const GuestJumbotron = ({ onRegister }) => {
   return (
-    <section className="relative mb-7 overflow-hidden rounded-3xl border border-gray-200 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:border-white/10">
+    <section className="relative mb-7 overflow-hidden">
       {/* Background image / pattern */}
-      <div className="absolute inset-0 opacity-10 top-0 left-0">
+      {/* <div className="absolute inset-0 opacity-10 top-0 left-0">
         <img
           src="/hero.jpg"   // ganti dengan gambar kamu, atau hapus kalau tidak ada
           alt="hero"
           className="h-full w-full object-cover"
         />
-      </div>
+      </div> */}
 
       {/* Decorative blobs */}
-      <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-accent/30 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-16 -right-16 h-56 w-56 rounded-full bg-blue-500/20 blur-3xl" />
+      {/* <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-accent/30 blur-3xl" /> */}
+      {/* <div className="pointer-events-none absolute -bottom-16 -right-16 h-56 w-56 rounded-full bg-blue-500/20 blur-3xl" /> */}
 
-      <div className="relative z-2 flex flex-col items-start gap-6 p-3 md:p-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="relative z-2 flex flex-col items-start gap-6 lg:flex-row lg:items-center lg:justify-between">
         {/* Text content */}
         <div className="max-w-xl">
 
-          <h1 className="text-2xl font-bold tracking-tight text-white md:text-4xl">
+          <h1 className="text-2xl font-bold tracking-tight text-white md:text-3xl">
             Explore networking guides
-            <br />
-            <span className="text-accent">Share your knowledge</span>
           </h1>
-
-          <p className="mt-4 text-sm md:text-base leading-relaxed text-gray-300">
-            You are reading as a guest. Sign up for free to create guides, share topologies, write step-by-step instructions, and help the networking community.
-          </p>
-
           <div className="mt-7 flex flex-wrap items-center gap-3">
             <button
               onClick={onRegister}
@@ -67,10 +60,6 @@ const GuestJumbotron = ({ onRegister }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
               </svg>
             </button>
-
-            <span className="text-sm text-gray-400">
-              Free forever
-            </span>
           </div>
         </div>
       </div>
@@ -615,9 +604,7 @@ const { remainingPosts } = useMemo(() => {
     <div className="mx-auto max-w-full md:border-x border-white dark:border-white/10 pr-0 shadow-none">
       {/* Guest / Welcome tetap sama */}
       {user?.isGuest || user?.role === "guest" ? (
-        <div className="w-full md:px-6 md:pt-6">
-          <GuestJumbotron onRegister={() => navigate("/register")} />
-        </div>
+        <></>
       ) : (
         <div className="w-full h-max">
           <WelcomeRow
