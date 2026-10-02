@@ -19,6 +19,7 @@ import api from "../api/axios.js";
 import PinnedHero from "../components/Post/PinnedHero.jsx";
 import PostCard from "../components/Post/PostCard.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+import toast from "react-hot-toast";
 
 const GuestJumbotron = ({ onRegister }) => {
   return (
@@ -550,44 +551,58 @@ const { remainingPosts } = useMemo(() => {
     setSearchParams(next);
   };
 
-  const handlePinChange = (post, isPinned) => {
-    const updated = { ...post, isPinned };
-    const without = (list) => list.filter((p) => p._id !== post._id);
-    const setFlag = (list) =>
-      list.map((p) => (p._id === post._id ? { ...p, isPinned } : p));
+  const handlePinChange = (post, isPinned, unpinnedIds = []) => {
+    const removedIds = new Set(unpinnedIds.map(String));
+    const same = (p) => String(p._id) === String(post._id);
     const sortNewest = (a, b) => new Date(b.createdAt) - new Date(a.createdAt);
 
     setData((prev) => {
-      // Mode search/kategori: backend tetap menampilkan post di daftar biasa,
-      // jadi cukup ubah flag-nya dan update daftar pinned
+      const updated = { ...post, isPinned };
+
+      // Mode search / kategori: post tetap di grid, hanya flag berubah
       if (!showOverviewSections) {
+        const setFlag = (list) =>
+          list.map((p) =>
+            same(p) ? { ...p, isPinned } : removedIds.has(String(p._id)) ? { ...p, isPinned: false } : p
+          );
+        const keptPinned = prev.pinned.filter((p) => !same(p) && !removedIds.has(String(p._id)));
         return {
           ...prev,
           posts: setFlag(prev.posts),
-          pinned: isPinned ? [updated, ...without(prev.pinned)] : without(prev.pinned),
+          pinned: isPinned ? [updated, ...keptPinned].slice(0, 4) : keptPinned,
         };
       }
 
-      // Overview + pin: pindah dari Other guides ke Pinned
+      // Overview
+      const removed = prev.pinned
+        .filter((p) => removedIds.has(String(p._id)))
+        .map((p) => ({ ...p, isPinned: false }));
+      const keptPinned = prev.pinned.filter((p) => !same(p) && !removedIds.has(String(p._id)));
+      const postsWithoutCurrent = prev.posts.filter((p) => !same(p));
+
       if (isPinned) {
         return {
           ...prev,
-          pinned: [updated, ...without(prev.pinned)],
-          posts: without(prev.posts),
-          total: Math.max(0, (prev.total || 0) - 1),
+          pinned: [updated, ...keptPinned],
+          posts: [...postsWithoutCurrent, ...removed].sort(sortNewest),
+          total: Math.max(0, (prev.total || 0) - 1 + removed.length),
         };
       }
 
-      // Overview + unpin: kembali ke Other guides sesuai urutan tanggal
+      // Unpin
       return {
         ...prev,
-        pinned: without(prev.pinned),
-        posts: [...without(prev.posts), updated].sort(sortNewest),
+        pinned: keptPinned,
+        posts: [...postsWithoutCurrent, updated].sort(sortNewest),
         total: (prev.total || 0) + 1,
       };
     });
 
-    setAllPostsForSearch((prev) => setFlag(prev));
+    setAllPostsForSearch((list) =>
+      list.map((p) =>
+        same(p) ? { ...p, isPinned } : removedIds.has(String(p._id)) ? { ...p, isPinned: false } : p
+      )
+    );
   };
 
   const showOverviewSections = !search && !category;

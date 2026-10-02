@@ -27,51 +27,67 @@ import TagPosts from "./pages/TagPosts.jsx";
 import Following from "./pages/Following.jsx";
 import { ContentPolicyPage, PrivacyPage, TermsPage } from "./pages/Legal.jsx";
 import ActivityLog from "./pages/ActivityLog.jsx";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+    <>
+      {/* Toaster harus di luar Routes */}
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: "#1e293b",
+            color: "#f1f5f9",
+            border: "1px solid #334155",
+          },
+        }}
+      />
 
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <AppLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<Dashboard />} />
-        <Route path="create" element={<CreatePost />} />
-        <Route path="edit/:id" element={<CreatePost />} />
-        <Route path="posts/:slug" element={<PostDetail />} />
-        <Route path="authors/:id" element={<AuthorProfile />} />
-        <Route path="my-posts" element={<MyPosts />} />
-        <Route path="profile" element={<Profile />} />
-        <Route path="/following" element={<Following />} />
-        <Route path="tags/:tag" element={<TagPosts />} />
-        <Route path="/quizzes/:id" element={<TakeQuiz />} />
-        <Route path="admin/activities" element={<ActivityLog />} />
-        <Route path="/practice" element={<PracticeHub />} />
-        <Route path="/hardware" element={<HardwareCollection />} /> 
-        <Route path="/quizzes" element={<Quizzes />} />
-        <Route path="/topology-practice" element={<TopologyPractice />} />
-        <Route path="quiz-builder" element={<QuizBuilder />} />
-        <Route path="/terms" element={<TermsPage />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/content-policy" element={<ContentPolicyPage />} />
-        <Route path="/trending" element={<Trending />} />
-        <Route path="/tools/subnet" element={<SubnetCalculator />} />
-        <Route path="/announcements/:id" element={<AnnouncementDetail />} />
-        <Route path="/reading-list" element={<ReadingListPage />} />
-        <Route path="/authors/detail/:id" element={<AuthorBio />} />
-        <Route path="/pc-build-practice" element={<PCBuildCanvas />} />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-        {/* SuperAdmin only */}
-        <Route path="admin/announcements" element={<AnnouncementsAdmin />} />
-      </Route>
-    </Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <AppLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Dashboard />} />
+          <Route path="create" element={<CreatePost />} />
+          <Route path="edit/:id" element={<CreatePost />} />
+          <Route path="posts/:slug" element={<PostDetail />} />
+          <Route path="authors/:id" element={<AuthorProfile />} />
+          <Route path="my-posts" element={<MyPosts />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="/following" element={<Following />} />
+          <Route path="tags/:tag" element={<TagPosts />} />
+          <Route path="/quizzes/:id" element={<TakeQuiz />} />
+          <Route path="admin/activities" element={<ActivityLog />} />
+          <Route path="/practice" element={<PracticeHub />} />
+          <Route path="/hardware" element={<HardwareCollection />} />
+          <Route path="/quizzes" element={<Quizzes />} />
+          <Route path="/topology-practice" element={<TopologyPractice />} />
+          <Route path="quiz-builder" element={<QuizBuilder />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/content-policy" element={<ContentPolicyPage />} />
+          <Route path="/trending" element={<Trending />} />
+          <Route path="/tools/subnet" element={<SubnetCalculator />} />
+          <Route path="/announcements/:id" element={<AnnouncementDetail />} />
+          <Route path="/reading-list" element={<ReadingListPage />} />
+          <Route path="/authors/detail/:id" element={<AuthorBio />} />
+          <Route path="/pc-build-practice" element={<PCBuildCanvas />} />
+
+          {/* SuperAdmin only */}
+          <Route path="admin/announcements" element={<AnnouncementsAdmin />} />
+        </Route>
+      </Routes>
+    </>
   );
 }
 

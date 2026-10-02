@@ -90,32 +90,91 @@ const PostCard = ({ post, roundedNormal = false, featured = false, status = true
   }
 };
 
-const handlePin = async (e) => {
-  e.preventDefault();
-  e.stopPropagation();
+// const handlePin = async (e) => {
+//   e.preventDefault();
+//   e.stopPropagation();
 
-  if (!canPin) {
-    toast.error("Login dulu untuk pin guide");
-    return;
-  }
-  if (pinning) return;
+//   if (!canPin) {
+//     toast.error("Login dulu untuk pin guide");
+//     return;
+//   }
+//   if (pinning) return;
 
-  const previous = pinned;
-  setPinned(!previous); // optimistic
-  setPinning(true);
+//   const previous = pinned;
+//   setPinned(!previous); // optimistic
+//   setPinning(true);
   
-  try {
-    const { data } = await api.patch(`/posts/${post._id}/pin`);
-    setPinned(data.isPinned);
-    onPinChange?.(post, data.isPinned);   
-    toast.success(data.isPinned ? "Guide dipin" : "Guide di-unpin");
-  } catch (err) {
-    setPinned(previous);
-    toast.error(err?.response?.data?.message || "Gagal mengubah status pin");
-  } finally {
-    setPinning(false);
-  }
-};
+//   try {
+//     const { data } = await api.patch(`/posts/${post._id}/pin`);
+//     setPinned(data.isPinned);
+//     onPinChange?.(post, data.isPinned);   
+//     toast.success(data.isPinned ? "Guide dipin" : "Guide di-unpin");
+//   } catch (err) {
+//     setPinned(previous);
+//     toast.error(err?.response?.data?.message || "Gagal mengubah status pin");
+//   } finally {
+//     setPinning(false);
+//   }
+// };
+
+  const requestPin = async (replace = false) => {
+    setPinning(true);
+    try {
+      const { data } = await api.patch(`/posts/${post._id}/pin`, { replace });
+      setPinned(data.isPinned);
+      onPinChange?.(post, data.isPinned, data.unpinnedIds || []);
+      toast.success(data.isPinned ? "Guide dipin" : "Guide di-unpin");
+    } catch (err) {
+      if (err?.response?.status === 409 && err.response.data?.code === "PIN_LIMIT") {
+        confirmReplace(err.response.data.oldest);
+      } else {
+        toast.error(err?.response?.data?.message || "Gagal mengubah status pin");
+      }
+    } finally {
+      setPinning(false);
+    }
+  };
+
+  const confirmReplace = (oldest) => {
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-2 text-sm max-w-max">
+          <div>
+            <p className="font-medium">Pinned sudah penuh (maks. 4)</p>
+            <p className="text-slate-300 mt-1">
+              Lepas pin “{oldest.title}” dan ganti dengan “{post.title}”?
+            </p>
+          </div>
+          <div className="flex gap-2 mt-1">
+            <button
+              onClick={() => {
+                toast.dismiss(t.id);
+                requestPin(true);
+              }}
+              className="px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-medium hover:bg-blue-500"
+            >
+              Lanjutkan
+            </button>
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="px-3 py-1.5 rounded-lg bg-slate-600 text-white text-xs font-medium hover:bg-slate-500"
+            >
+              Batal
+            </button>
+          </div>
+        </div>
+      ),
+      { duration: 10000, icon: "📌" }
+    );
+  };
+
+  const handlePin = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!canPin) return toast.error("Login dulu untuk pin guide");
+    if (pinning) return;
+    requestPin(false);
+  };
 
   const handleAddToReadingList = async (e) => {
     e.preventDefault();
@@ -334,7 +393,7 @@ const handlePin = async (e) => {
 
             <Link
               to={`/posts/${post.slug}`}
-              className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-2 hover:gap-x-5 active:scale-[0.98] duration-300 border dark:!border-white items-center px-2 py-1.5 pl-3 rounded-full bg-accent text-sm font-medium text-white transition-all ease-in-out hover:bg-accent-dark ${
+              className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-2 hover:gap-x-5 active:scale-[0.98] duration-300 border dark:!border-white items-center px-2 py-1.5 pl-3 rounded-full bg-blue-600 text-sm font-medium text-white transition-all ease-in-out hover:bg-accent-dark ${
                 featured ? "mt-3" : "mt-2"
               }`}
             >
