@@ -221,9 +221,7 @@ const handlePin = async (e) => {
           {post.title}
         </h3>
         <div className="flex items-center gap-2">
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-[11px] font-semibold text-slate-900 dark:text-slate-900">
-            {post.author?.name?.[0]?.toUpperCase()}
-          </div>
+          
           <span className="text-xs max-w-[80%] overflow-hidden truncate font-medium text-gray-800 dark:text-gray-200">
             {post.author?.name}
           </span>
