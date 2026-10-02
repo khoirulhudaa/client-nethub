@@ -150,7 +150,7 @@ const handlePin = async (e) => {
     >
 
       <div className={`relative bg-white/30
-           dark:bg-slate-900/40  overflow-hidden ${featured ? "h-56" : `${roundedNormal ? 'rounded-[16px]' : 'rounded-[24px]'} h-[100%]`}`}>
+           dark:bg-slate-900/40  overflow-hidden ${featured ? "h-56" : `${roundedNormal ? 'rounded-[16px]' : 'rounded-[14px]'} h-[100%]`}`}>
         {post.coverImage ? (
           <img
             src={post.coverImage}
