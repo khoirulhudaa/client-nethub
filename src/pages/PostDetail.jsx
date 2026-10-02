@@ -1099,93 +1099,93 @@ const handlePin = async () => {
             <h2 className="mb-2 text-sm font-medium tracking-widest text-white md:text-slate-900 dark:text-white uppercase">
               Flow System
             </h2>
-            {(post?.topology?.nodes?.length > 0 || post?.flowchart?.nodes?.length > 0) && (
-              <div className="mt-0 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {/* Topology Card */}
-                {post?.topology?.nodes?.length > 0 ? (
-                  <button
-                    type="button"
-                    onClick={() => setSidebarType("topology")}
-                    className="group flex items-center active:scale-[0.99] duration-100 gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/15 dark:!bg-[#0c0c18] dark:hover:border-accent"
-                  >
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-800 dark:text-gray-100">Network Topology</p>
-                      <p className="text-xs text-gray-500">
-                        {post?.topology.nodes.length} devices · Klik untuk melihat
-                      </p>
-                    </div>
-                    <span className="ml-auto md:text-slate-900 dark:text-white transition group-hover:text-accent">→</span>
-                  </button>
-                ): (
-                  <button
-                    type="button"
-                    onClick={() => setSidebarType("flowchart")}
-                    disabled
-                    className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition dark:border-white/15 dark:!bg-[#0c0c18]"
-                  >
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-800 dark:text-slate-600">Network Topology</p>
-                      <p className="text-xs text-gray-600">
-                        {post?.flowchart.nodes.length} steps · Klik untuk melihat
-                      </p>
-                    </div>
-                    <span className="ml-auto text-gray-600 transition">→</span>
-                  </button>
-                )}
+            {/* {(post?.topology?.nodes?.length > 0 || post?.flowchart?.nodes?.length > 0) && (
+            )} */}
+            <div className="mt-0 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {/* Topology Card */}
+              {post?.topology?.nodes?.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => setSidebarType("topology")}
+                  className="group flex items-center active:scale-[0.99] duration-100 gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/15 dark:!bg-[#0c0c18] dark:hover:border-accent"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800 dark:text-gray-100">Network Topology</p>
+                    <p className="text-xs text-gray-500">
+                      {post?.topology.nodes.length} devices · Klik untuk melihat
+                    </p>
+                  </div>
+                  <span className="ml-auto md:text-slate-900 dark:text-white transition group-hover:text-accent">→</span>
+                </button>
+              ): (
+                <button
+                  type="button"
+                  onClick={() => setSidebarType("flowchart")}
+                  disabled
+                  className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition dark:border-white/15 dark:!bg-[#0c0c18]"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800 dark:text-slate-600">Network Topology</p>
+                    <p className="text-xs text-gray-600">
+                      {post?.flowchart.nodes.length} steps · Klik untuk melihat
+                    </p>
+                  </div>
+                  <span className="ml-auto text-gray-600 transition">→</span>
+                </button>
+              )}
 
-                {/* Flowchart Card */}
-                {post?.flowchart?.nodes?.length > 0 ? (
-                  <button
-                    type="button"
-                    onClick={() => setSidebarType("flowchart")}
-                    className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/15 dark:!bg-[#0c0c18] dark:hover:border-accent"
-                  >
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-800 dark:text-gray-100">Flowchart</p>
-                      <p className="text-xs text-gray-500">
-                        {post?.flowchart.nodes.length} steps · Klik untuk melihat
-                      </p>
-                    </div>
-                    <span className="ml-auto md:text-slate-900 dark:text-white transition group-hover:text-accent">→</span>
-                  </button>
-                ): (
-                  <button
-                    type="button"
-                    onClick={() => setSidebarType("flowchart")}
-                    disabled
-                    className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition dark:border-white/15 dark:!bg-[#0c0c18]"
-                  >
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-800 dark:text-slate-600">Flowchart</p>
-                      <p className="text-xs text-gray-600">
-                        {post?.flowchart.nodes.length} steps · Klik untuk melihat
-                      </p>
-                    </div>
-                    <span className="ml-auto text-gray-600 transition">→</span>
-                  </button>
-                )}
-              </div>
-            )}
+              {/* Flowchart Card */}
+              {post?.flowchart?.nodes?.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => setSidebarType("flowchart")}
+                  className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/15 dark:!bg-[#0c0c18] dark:hover:border-accent"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800 dark:text-gray-100">Flowchart</p>
+                    <p className="text-xs text-gray-500">
+                      {post?.flowchart.nodes.length} steps · Klik untuk melihat
+                    </p>
+                  </div>
+                  <span className="ml-auto md:text-slate-900 dark:text-white transition group-hover:text-accent">→</span>
+                </button>
+              ): (
+                <button
+                  type="button"
+                  onClick={() => setSidebarType("flowchart")}
+                  disabled
+                  className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition dark:border-white/15 dark:!bg-[#0c0c18]"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800 dark:text-slate-600">Flowchart</p>
+                    <p className="text-xs text-gray-600">
+                      {post?.flowchart.nodes.length} steps · Klik untuk melihat
+                    </p>
+                  </div>
+                  <span className="ml-auto text-gray-600 transition">→</span>
+                </button>
+              )}
+            </div>
           </div>
           
           {/* ===== Step-by-step Wizard (Zigzag + Clickable) ===== */}
