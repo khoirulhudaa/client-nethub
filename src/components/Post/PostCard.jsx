@@ -350,12 +350,11 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
             </div>
             
             {/* ===== SHARE BUTTON (dengan dropdown seperti PostDetail) ===== */}
-          {canPin && (
+            {canPin && (
               <button
                 type="button"
                 onClick={handlePin}
                 disabled={pinning}
-                title={pinned ? "Unpin" : "Pin"}
                 className={`group/btn flex h-max w-max items-center gap-x-2 rounded-full border px-2 py-1.5 pl-3 text-sm font-medium text-slate-950 transition-all duration-300 ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98] ${
                   featured ? "mt-3" : "mt-2"
                 } ${
@@ -383,7 +382,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
             >
               <p>Read</p>
               <div className="rounded-full active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
-                <ChevronRight size={22} />
+                <ChevronRight size={21} />
               </div>
             </Link>
           </div>
