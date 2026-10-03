@@ -234,15 +234,15 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                   title={added ? "Sudah di Reading List" : "Tambah ke Reading List"}
                 >
                   {adding ? (
-                    <Loader2 size={12} className="animate-spin" />
+                    <Loader2 size={11} className="animate-spin" />
                   ) : added ? (
                     <>
-                      <Check size={12} />
+                      <Check size={11} />
                       Added
                     </>
                   ) : (
                     <>
-                      <BookPlus size={12} />
+                      <BookPlus size={11} />
                       Add
                     </>
                   )}

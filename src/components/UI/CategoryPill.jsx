@@ -14,7 +14,7 @@ const CATEGORY_STYLES = {
   Installation: {
     icon: Boxes,
     className:
-      "bg-purple-500 text-white dark:bg-purple-500/10 md:dark:!bg-purple-950 md:dark:!text-white dark:!text-white",
+      "bg-pink-500 text-white dark:bg-pink-500/10 md:dark:!bg-red-600 md:dark:!text-white dark:!text-white",
   },
   Hardware: {
     icon: HardDrive,
@@ -68,7 +68,7 @@ const CATEGORY_STYLES_NON_SOLID = {
   },
   Installation: {
     icon: Boxes,
-    className: "bg-purple-500 text-white dark:bg-purple-500/10 dark:text-slate-300",
+    className: "bg-pink-500 text-white dark:bg-pink-500/10 dark:text-slate-300",
   },
   Hardware: {
     icon: HardDrive,
@@ -106,8 +106,7 @@ const CategoryPill = ({ category, solid = true }) => {
   const Icon = style.icon;
 
   return (
-    <span
-      className={`px-2 py-1 text-[11px] font-medium flex items-center rounded-lg gap-1 ${style.className}`}
+    <span className={`px-2 py-1 text-[11px] font-medium flex items-center rounded-lg gap-1 ${style.className}`}
     >
       <Icon size={12} />
       {category}
