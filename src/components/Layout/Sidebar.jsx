@@ -101,9 +101,9 @@ const Sidebar = ({ onNavigate }) => {
 
   const [openGroups, setOpenGroups] = useState({
     categories: true,
-    discover: true,
+    discover: false,
     quiz: false,
-    library: false,
+    library: true,
     admin: false,
   });
 
