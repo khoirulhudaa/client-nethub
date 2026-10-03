@@ -383,6 +383,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
               <p>Read</p>
               <div className="rounded-full active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
                 <ChevronRight size={21} />
+                
               </div>
             </Link>
           </div>
