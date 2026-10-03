@@ -17,8 +17,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../api/axios.js";
 import PinnedHero from "../components/Post/PinnedHero.jsx";
-import PostCard from "../components/Post/PostCard.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+import PostCard from "../components/Post/PostCard.jsx";
 
 const GuestJumbotron = ({ onRegister }) => {
   return (
@@ -780,7 +780,7 @@ const { remainingPosts } = useMemo(() => {
                     <>
                       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
                         {remainingPosts.map((post) => (
-                          <PostCard roundedNormal={true} key={post._id} post={post} status={false} onPinChange={handlePinChange} />
+                          <PostCard slug={post.slug} roundedNormal={true} key={post._id} post={post} status={false} onPinChange={handlePinChange} />
                         ))}
                       </div>
 
@@ -827,7 +827,7 @@ const { remainingPosts } = useMemo(() => {
                     ) : (
                       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
                         {filteredPosts.map((post) => (
-                          <PostCard key={post._id} post={post} />
+                          <PostCard slug={post.slug} key={post._id} post={post} />
                         ))}
 
                         {/* Placeholder cards jika post kurang dari 3 */}

@@ -22,7 +22,7 @@ const timeAgo = (date) => {
   return "just now";
 };
 
-const PostCard = ({ post, roundedNormal = false, featured = false, status = true, onPinChange }) => {
+const PostCard = ({ slug, post, roundedNormal = false, featured = false, status = true, onPinChange }) => {
   const { user } = useAuth();
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
@@ -89,33 +89,6 @@ const PostCard = ({ post, roundedNormal = false, featured = false, status = true
     toast.error("Gagal menyalin link");
   }
 };
-
-// const handlePin = async (e) => {
-//   e.preventDefault();
-//   e.stopPropagation();
-
-//   if (!canPin) {
-//     toast.error("Login dulu untuk pin guide");
-//     return;
-//   }
-//   if (pinning) return;
-
-//   const previous = pinned;
-//   setPinned(!previous); // optimistic
-//   setPinning(true);
-  
-//   try {
-//     const { data } = await api.patch(`/posts/${post._id}/pin`);
-//     setPinned(data.isPinned);
-//     onPinChange?.(post, data.isPinned);   
-//     toast.success(data.isPinned ? "Guide dipin" : "Guide di-unpin");
-//   } catch (err) {
-//     setPinned(previous);
-//     toast.error(err?.response?.data?.message || "Gagal mengubah status pin");
-//   } finally {
-//     setPinning(false);
-//   }
-// };
 
   const requestPin = async (replace = false) => {
     setPinning(true);
@@ -213,7 +186,7 @@ const PostCard = ({ post, roundedNormal = false, featured = false, status = true
   };
 
   return (
-    <Link href={`/posts/${post._id}`}>
+    <Link to={`/posts/${post.slug}`} className="block">
       <div
         className={`group cursor-pointer hover:dark:!border-blue-300/50 active:scale-[0.99] ease-out relative h-[420px] p-3.5 bg-slate-300 rounded-[24px] dark:!bg-[#0c0c18] border dark:!border-white/20 group duration-100 flex flex-col overflow-hidden ${
           featured ? "h-full" : ""
@@ -255,7 +228,7 @@ const PostCard = ({ post, roundedNormal = false, featured = false, status = true
                   disabled={adding || added}
                   className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${
                     added
-                      ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400"
+                      ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-600 dark:text-white"
                       : "bg-gray-100 text-gray-600 hover:bg-accent hover:text-white dark:bg-white dark:text-slate-900 dark:hover:text-white dark:hover:bg-accent"
                   }`}
                   title={added ? "Sudah di Reading List" : "Tambah ke Reading List"}

@@ -107,7 +107,7 @@ const CategoryPill = ({ category, solid = true }) => {
 
   return (
     <span
-      className={`pill rounded-lg gap-1 border border-white/40 ${style.className}`}
+      className={`px-2 py-1 text-[11px] font-medium flex items-center rounded-lg gap-1 ${style.className}`}
     >
       <Icon size={12} />
       {category}

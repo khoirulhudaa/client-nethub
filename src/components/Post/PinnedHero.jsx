@@ -5,7 +5,7 @@ import PostCard from "./PostCard.jsx";
 // - 1 pinned : 1 kartu lebar penuh
 // - 2 pinned : kiri 1 kartu lebar, kanan 1 kartu kecil
 // - 3-4      : kiri 2 kartu (lebar), kanan 1-2 kartu (kecil)
-const PinnedHero = ({ pinned, onPinChange }) => {
+const PinnedHero = ({ slug, pinned, onPinChange }) => {
   if (!pinned?.length) return null;
 
   const items = pinned.slice(0, 4);
@@ -32,7 +32,7 @@ const PinnedHero = ({ pinned, onPinChange }) => {
           }`}
         >
           {leftCards.map((post) => (
-            <PostCard key={post._id} post={post} onPinChange={onPinChange} />
+            <PostCard post={post} onPinChange={onPinChange} />
           ))}
         </div>
 
@@ -40,7 +40,7 @@ const PinnedHero = ({ pinned, onPinChange }) => {
         {hasRight && (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1">
             {rightCards.map((post) => (
-              <PostCard key={post._id} post={post} onPinChange={onPinChange} />
+              <PostCard post={post} onPinChange={onPinChange} />
             ))}
           </div>
         )}
