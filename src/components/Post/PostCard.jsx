@@ -285,7 +285,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                   e.stopPropagation();
                   setShowShare((v) => !v);
                 }}
-                className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-2 hover:gap-x-5 active:scale-[0.98] duration-300 items-center px-2 py-1.5 pl-3 rounded-full border dark:!border-white bg-purple-600 text-sm font-medium text-white transition-all ease-in-out hover:bg-accent-dark ${
+                className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-2 hover:gap-x-5 active:scale-[0.98] duration-300 items-center px-2 py-1.5 pl-3 rounded-full border dark:!border-white bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
                   featured ? "mt-3" : "mt-2"
                 }`}
               >
@@ -313,7 +313,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                       className={`flex w-full items-center gap-3 px-4 py-2.5 text-sm transition ${
                         copied
                           ? "bg-emerald-500 text-white"
-                          : "text-gray-700 hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800"
+                          : "text-gray-700 hover:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-800"
                       }`}
                     >
                       {copied ? (
@@ -356,15 +356,15 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                 onClick={handlePin}
                 disabled={pinning}
                 title={pinned ? "Unpin" : "Pin"}
-                className={`group/btn flex h-max w-max items-center gap-x-2 rounded-full border px-2 py-1.5 pl-3 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98] ${
+                className={`group/btn flex h-max w-max items-center gap-x-2 rounded-full border px-2 py-1.5 pl-3 text-sm font-medium text-slate-950 transition-all duration-300 ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98] ${
                   featured ? "mt-3" : "mt-2"
                 } ${
                   pinned
-                    ? "bg-red-600 border-white"
-                    : "bg-slate-700 border-slate-900 dark:border-white"
+                    ? "bg-red-600 border-white text-white"
+                    : "bg-white text-slate-950 border-slate-900 dark:border-white"
                 }`}
               >
-                <p className="text-white">{pinned ? "Unpin" : "Pin"}</p>
+                <p className={`${pinned ? 'text-white' : 'text-slate-950'}`}>{pinned ? "Unpin" : "Pin"}</p>
                 <div className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-white text-slate-900">
                   {pinning ? (
                     <Loader2 size={18} className="animate-spin" />
@@ -377,13 +377,13 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
 
             <Link
               to={`/posts/${post.slug}`}
-              className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-2 hover:gap-x-5 active:scale-[0.98] duration-300 border dark:!border-white items-center px-2 py-1.5 pl-3 rounded-full bg-blue-600 text-sm font-medium text-white transition-all ease-in-out hover:bg-accent-dark ${
+              className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-2 hover:gap-x-5 active:scale-[0.98] duration-300 border dark:!border-white items-center px-2 py-1.5 pl-3 rounded-full bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
                 featured ? "mt-3" : "mt-2"
               }`}
             >
               <p>Read</p>
               <div className="rounded-full active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
-                <ChevronRight />
+                <ChevronRight size={22} />
               </div>
             </Link>
           </div>
