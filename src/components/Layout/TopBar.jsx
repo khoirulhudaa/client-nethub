@@ -191,7 +191,7 @@ const TopBar = ({ onMenuClick }) => {
                   <button
                     type="button"
                     onClick={() => setOpenNotif(false)}
-                    className="rounded-lg p-1.5 text-gray-400 hover:bg-black/5 dark:hover:bg-white/10"
+                    className="rounded-lg active:scale-[0.98] p-1.5 text-gray-400 hover:bg-black/5 dark:hover:bg-white/10"
                   >
                     <X size={16} />
                   </button>

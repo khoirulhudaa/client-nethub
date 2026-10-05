@@ -356,8 +356,6 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                 onClick={handlePin}
                 disabled={pinning}
                 className={`group/btn flex h-max w-max items-center gap-x-2 rounded-full border px-2 py-1.5 pl-3 text-sm font-medium text-slate-950 transition-all duration-300 ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98] ${
-                  featured ? "mt-3" : "mt-2"
-                } ${
                   pinned
                     ? "bg-red-600 border-white text-white"
                     : "bg-white text-slate-950 border-slate-900 dark:border-white"
