@@ -38,25 +38,38 @@ const TicketDetailPage = () => {
   const [newStatus, setNewStatus] = useState(ticket?.status || "Baru");
   const [statusNote, setStatusNote] = useState("");
 
-  const fetchTicket = async () => {
-    try {
-      setLoading(true);
-      const { data } = await api.get(`/tickets/${id}`);
-      setTicket(data.ticket);
-      setBestGuide(data.bestGuide);
-      setRecommendedGuides(data.recommendedGuides || []);
-    } catch (err) {
-      console.error(err);
-      alert("Tiket tidak ditemukan");
-      navigate("/tickets");
-    } finally {
-      setLoading(false);
-    }
-  };
+const fetchTicket = async (silent = false) => {
+try {
+    if (!silent) setLoading(true);
 
-  useEffect(() => {
-    fetchTicket();
-  }, [id]);
+    const { data } = await api.get(`/tickets/${id}`);
+    setTicket(data.ticket);
+    setBestGuide(data.bestGuide);
+    setRecommendedGuides(data.recommendedGuides || []);
+
+    // Sinkronkan select dengan status terbaru
+    if (data.ticket?.status) {
+    setNewStatus(data.ticket.status);
+    }
+} catch (err) {
+    console.error(err);
+    toast.error("Tiket tidak ditemukan");
+    navigate("/tickets");
+} finally {
+    if (!silent) setLoading(false);
+}
+};
+
+useEffect(() => {
+fetchTicket();
+}, [id]);
+
+// Kalau ticket berubah, pastikan select selalu ikut
+useEffect(() => {
+  if (ticket?.status) {
+    setNewStatus(ticket.status);
+  }
+}, [ticket?.status]);
 
   const handleAddComment = async (e) => {
     e.preventDefault();
@@ -74,32 +87,53 @@ const TicketDetailPage = () => {
     }
   };
 
-  const handleStatusChange = async (newStatus) => {
-    try {
-      setUpdatingStatus(true);
-      await api.patch(`/tickets/${id}/status`, { status: newStatus });
-      await fetchTicket();
-    } catch (err) {
-      console.error(err);
-      alert("Gagal mengubah status");
-    } finally {
-      setUpdatingStatus(false);
-    }
-  };
-
+  // Update status dari form sidebar (dengan catatan)
     const handleStatusUpdate = async () => {
     if (!newStatus) return;
+
     try {
         setUpdatingStatus(true);
-        await api.patch(`/tickets/${id}/status`, {
+
+        const { data } = await api.patch(`/tickets/${id}/status`, {
         status: newStatus,
         note: statusNote.trim(),
         });
-        toast.success("Status berhasil diubah");
+
+        // Langsung update state lokal (tanpa loading penuh)
+        if (data.ticket) {
+        setTicket(data.ticket);
+        setNewStatus(data.ticket.status);
+        } else {
+        // fallback: fetch diam-diam
+        await fetchTicket(true);
+        }
+
         setStatusNote("");
-        await fetchTicket(); // reload data
+        toast.success("Status berhasil diubah");
     } catch (err) {
         toast.error(err.response?.data?.message || "Gagal ubah status");
+    } finally {
+        setUpdatingStatus(false);
+    }
+    };
+
+    // Update status dari dropdown di header (opsional, bisa dihapus kalau pakai form saja)
+    const handleStatusChange = async (status) => {
+    try {
+        setUpdatingStatus(true);
+
+        const { data } = await api.patch(`/tickets/${id}/status`, { status });
+
+        if (data.ticket) {
+        setTicket(data.ticket);
+        setNewStatus(data.ticket.status);
+        } else {
+        await fetchTicket(true);
+        }
+
+        toast.success("Status diubah");
+    } catch (err) {
+        toast.error("Gagal mengubah status");
     } finally {
         setUpdatingStatus(false);
     }
@@ -142,18 +176,18 @@ const TicketDetailPage = () => {
 
           {isAdmin && (
             <select
-              value={ticket.status}
-              onChange={(e) => handleStatusChange(e.target.value)}
-              disabled={updatingStatus}
-              className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-accent focus:outline-none"
+                value={ticket.status}           // ← pakai status dari ticket, bukan newStatus
+                onChange={(e) => handleStatusChange(e.target.value)}
+                disabled={updatingStatus}
+                className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-accent focus:outline-none"
             >
-              <option value="Baru" className="bg-[#0c0c18]">Baru</option>
-              <option value="Sedang Dikerjakan" className="bg-[#0c0c18]">Sedang Dikerjakan</option>
-              <option value="Menunggu Info" className="bg-[#0c0c18]">Menunggu Info</option>
-              <option value="Selesai" className="bg-[#0c0c18]">Selesai</option>
-              <option value="Ditutup" className="bg-[#0c0c18]">Ditutup</option>
+                <option value="Baru" className="bg-[#0c0c18]">Baru</option>
+                <option value="Sedang Dikerjakan" className="bg-[#0c0c18]">Sedang Dikerjakan</option>
+                <option value="Menunggu Info" className="bg-[#0c0c18]">Menunggu Info</option>
+                <option value="Selesai" className="bg-[#0c0c18]">Selesai</option>
+                <option value="Ditutup" className="bg-[#0c0c18]">Ditutup</option>
             </select>
-          )}
+            )}
         </div>
       </div>
 
