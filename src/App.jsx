@@ -84,7 +84,7 @@ function App() {
           
           <Route path="tickets" element={<TicketsPage />} />
           <Route path="tickets/:id" element={<TicketDetailPage />} />
-          <Route path="tickets/:id" element={<CreateTicketPage />} />
+          <Route path="tickets/create" element={<CreateTicketPage />} />
           
           <Route path="hardware" element={<HardwareCollection />} />
           <Route path="quizzes" element={<Quizzes />} />

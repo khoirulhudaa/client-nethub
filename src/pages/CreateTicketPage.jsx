@@ -99,36 +99,36 @@ const CreateTicketPage = () => {
             <div className="flex items-center gap-2 text-accent">
             <span className="text-xs font-semibold uppercase tracking-wider">Support</span>
             </div>
-            <h1 className="text-xl font-medium tracking-tight text-white">Buat Tiket Bantuan</h1>
+            <h1 className="text-xl font-medium tracking-tight text-white">Create Support Ticket</h1>
         </div>
 
         <div className="surface-card rounded-3xl border border-white/10 dark:!bg-white/5 p-6">
             <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                     <label className="mb-1.5 block text-sm font-medium text-gray-300">
-                        Nama Pelapor <span className="text-red-400">*</span>
+                        Your Name and Position <span className="text-red-400">*</span>
                     </label>
                     <input
                         type="text"
                         name="requesterName"
                         value={form.requesterName}
                         onChange={handleChange}
-                        placeholder="Nama kamu yang sedang lapor"
-                        className="..."
+                        placeholder="Example: John Doe - IT Staff"
+                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition"
                         required
                     />
-                    </div>
+                </div>
                 {/* Judul */}
                 <div>
                 <label className="mb-1.5 block text-sm font-medium text-white/90">
-                    Judul Masalah <span className="text-red-400">*</span>
+                    Issue Title <span className="text-red-400">*</span>
                 </label>
                 <input
                     type="text"
                     name="title"
                     value={form.title}
                     onChange={handleChange}
-                    placeholder="Contoh: Tidak bisa konek WiFi di Ruang Meeting"
+                    placeholder="Example: Cannot connect to WiFi in Meeting Room"
                     className="w-full rounded-xl border border-white/10 bg-slate-100/10 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
                     required
                 />
@@ -137,14 +137,14 @@ const CreateTicketPage = () => {
                 {/* Deskripsi */}
                 <div>
                 <label className="mb-1.5 block text-sm font-medium text-white/90">
-                    Deskripsi Lengkap <span className="text-red-400">*</span>
+                    Complete Description <span className="text-red-400">*</span>
                 </label>
                 <textarea
                     name="description"
                     value={form.description}
                     onChange={handleChange}
                     rows={5}
-                    placeholder="Jelaskan gejala, apa yang sudah dicoba, pesan error (jika ada)..."
+                    placeholder="Describe the symptoms, what you've already tried, and any error messages..."
                     className="w-full rounded-xl border border-white/10 bg-slate-100/10 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none resize-none"
                     required
                 />
@@ -154,7 +154,7 @@ const CreateTicketPage = () => {
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                     <label className="mb-1.5 block text-sm font-medium text-white/90">
-                    Kategori <span className="text-red-400">*</span>
+                    Category <span className="text-red-400">*</span>
                     </label>
                     <select
                     name="category"
@@ -171,7 +171,9 @@ const CreateTicketPage = () => {
                 </div>
 
                 <div>
-                    <label className="mb-1.5 block text-sm font-medium text-white/90">Prioritas</label>
+                    <label className="mb-1.5 block text-sm font-medium text-white/90">
+                        Priority <span className="text-red-400">*</span>
+                    </label>
                     <select
                     name="priority"
                     value={form.priority}
@@ -190,7 +192,7 @@ const CreateTicketPage = () => {
                 {/* Sejak Kapan */}
                 <div>
                 <label className="mb-1.5 block text-sm font-medium text-white/90">
-                    Sejak Kapan Masalah Terjadi <span className="text-red-400">*</span>
+                    Since When Did the Issue Occur <span className="text-red-400">*</span>
                 </label>
                 <select
                     name="sinceWhen"
@@ -210,14 +212,14 @@ const CreateTicketPage = () => {
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                     <label className="mb-1.5 block text-sm font-medium text-white/90">
-                    Lokasi / Ruangan <span className="text-red-400">*</span>
+                    Location / Room <span className="text-red-400">*</span>
                     </label>
                     <input
                     type="text"
                     name="location"
                     value={form.location}
                     onChange={handleChange}
-                    placeholder="Contoh: Ruang IT, Lantai 2"
+                    placeholder="Example: IT Room, Floor 2"
                     className="w-full rounded-xl border border-white/10 bg-slate-100/10 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
                     required
                     />
@@ -225,7 +227,7 @@ const CreateTicketPage = () => {
 
                 <div>
                     <label className="mb-1.5 block text-sm font-medium text-white/90">
-                    Pemilik PC / User <span className="text-red-400">*</span>
+                    PC Owner / User <span className="text-red-400">*</span>
                     </label>
                     <input
                     type="text"
@@ -241,14 +243,14 @@ const CreateTicketPage = () => {
                 {/* Nama Komputer */}
                 <div>
                 <label className="mb-1.5 block text-sm font-medium text-white/90">
-                    Nama Komputer / IP Address
+                    Computer Name / IP Address
                 </label>
                 <input
                     type="text"
                     name="computerName"
                     value={form.computerName}
                     onChange={handleChange}
-                    placeholder="Contoh: PC-HRD-01 atau 192.168.1.45"
+                    placeholder="Example: PC-HRD-01 or 192.168.1.45"
                     className="w-full rounded-xl border border-white/10 bg-slate-100/10 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
                 />
                 </div>
@@ -258,13 +260,13 @@ const CreateTicketPage = () => {
                 <p className="mb-3 text-sm font-medium text-white/90">Remote Access (Opsional)</p>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                    <label className="mb-1.5 block text-xs text-gray-400">Nomor AnyDesk</label>
+                    <label className="mb-1.5 block text-xs text-gray-400">Number AnyDesk</label>
                     <input
                         type="text"
                         name="anydeskNumber"
                         value={form.anydeskNumber}
                         onChange={handleChange}
-                        placeholder="Contoh: 123 456 789"
+                        placeholder="Example: 123 456 789"
                         className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
                     />
                     </div>
@@ -275,13 +277,13 @@ const CreateTicketPage = () => {
                         name="anydeskPassword"
                         value={form.anydeskPassword}
                         onChange={handleChange}
-                        placeholder="Password sementara"
+                        placeholder="Temporary Password"
                         className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
                     />
                     </div>
                 </div>
                 <p className="mt-2 text-xs text-gray-500">
-                    Data ini akan otomatis dihapus setelah tiket selesai.
+                    This data will be automatically deleted once the ticket is closed.
                 </p>
                 </div>
 
@@ -292,7 +294,7 @@ const CreateTicketPage = () => {
                     onClick={() => navigate(-1)}
                     className="rounded-xl border border-white/10 px-5 py-2.5 text-sm font-medium text-gray-300 transition hover:bg-white/5"
                 >
-                    Batal
+                    Cancel
                 </button>
                 <button
                     type="submit"
@@ -302,12 +304,12 @@ const CreateTicketPage = () => {
                     {submitting ? (
                     <>
                         <Loader2 size={16} className="animate-spin" />
-                        Mengirim...
+                        Sending...
                     </>
                     ) : (
                     <>
                         <Send size={16} />
-                        Kirim Tiket
+                        Send Ticket
                     </>
                     )}
                 </button>

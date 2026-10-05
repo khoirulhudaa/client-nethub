@@ -133,7 +133,7 @@ const CreateTicketUserPage = () => {
                     className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition"
                     required
                 />
-                </div>
+            </div>
             {/* Judul */}
             <div></div>
             {/* Judul */}
@@ -207,7 +207,7 @@ const CreateTicketUserPage = () => {
               </div>
             </div>
 
-            {/* Sejak Kapan */}
+            {/* Since When */}
             <div>
               <label className="mb-1.5 block text-sm font-medium text-gray-300">
                 When Did the Issue Occur <span className="text-red-400">*</span>
