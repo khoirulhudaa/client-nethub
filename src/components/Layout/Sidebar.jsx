@@ -46,8 +46,8 @@ const quizLinks = [
 ];
 
 const supportLinks = [
-  { label: "Buat Tiket", icon: LifeBuoy, to: "/tickets/create" },
-  { label: "Daftar Tiket", icon: Ticket, to: "/tickets" },
+  { label: "Ticket List", icon: Ticket, to: "/tickets" },
+  { label: "Create Ticket", icon: LifeBuoy, to: "/tickets/create" },
 ];
 
 const NavGroup = ({ title, open, onToggle, collapsed, children }) => {

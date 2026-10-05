@@ -102,10 +102,10 @@ const CreateTicketPage = () => {
             <h1 className="text-xl font-medium tracking-tight text-white">Create Support Ticket</h1>
         </div>
 
-        <div className="surface-card rounded-3xl border border-white/10 dark:!bg-white/5 p-6">
+        <div className="surface-card rounded-3xl border border-white/10 dark:!bg-white/5 p-5">
             <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                    <label className="mb-1.5 block text-sm font-medium text-gray-300">
+                    <label className="mb-1.5 block text-sm font-medium">
                         Your Name and Position <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -114,13 +114,13 @@ const CreateTicketPage = () => {
                         value={form.requesterName}
                         onChange={handleChange}
                         placeholder="Example: John Doe - IT Staff"
-                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition"
+                        className="w-full rounded-xl border border-white/10 px-4 py-3 text-sm dark:!bg-slate-100/10 dark:!text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition"
                         required
                     />
                 </div>
                 {/* Judul */}
                 <div>
-                <label className="mb-1.5 block text-sm font-medium text-white/90">
+                <label className="mb-1.5 block text-sm font-medium">
                     Issue Title <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -129,14 +129,14 @@ const CreateTicketPage = () => {
                     value={form.title}
                     onChange={handleChange}
                     placeholder="Example: Cannot connect to WiFi in Meeting Room"
-                    className="w-full rounded-xl border border-white/10 bg-slate-100/10 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-sm dark:!bg-slate-100/10 dark:!text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
                     required
                 />
                 </div>
 
                 {/* Deskripsi */}
                 <div>
-                <label className="mb-1.5 block text-sm font-medium text-white/90">
+                <label className="mb-1.5 block text-sm font-medium">
                     Complete Description <span className="text-red-400">*</span>
                 </label>
                 <textarea
@@ -145,7 +145,7 @@ const CreateTicketPage = () => {
                     onChange={handleChange}
                     rows={5}
                     placeholder="Describe the symptoms, what you've already tried, and any error messages..."
-                    className="w-full rounded-xl border border-white/10 bg-slate-100/10 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none resize-none"
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-sm dark:!bg-slate-100/10 dark:!text-white placeholder:text-gray-500 focus:border-accent focus:outline-none resize-none"
                     required
                 />
                 </div>
@@ -153,14 +153,14 @@ const CreateTicketPage = () => {
                 {/* Kategori & Prioritas */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                    <label className="mb-1.5 block text-sm font-medium text-white/90">
+                    <label className="mb-1.5 block text-sm font-medium">
                     Category <span className="text-red-400">*</span>
                     </label>
                     <select
                     name="category"
                     value={form.category}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-white/10 bg-slate-100/10 px-4 py-2.5 text-sm text-white focus:border-accent focus:outline-none"
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-sm dark:!bg-slate-100/10 dark:!text-white focus:border-accent focus:outline-none"
                     >
                     {options.categories.map((cat) => (
                         <option key={cat} value={cat} className="bg-[#0c0c18]">
@@ -171,14 +171,14 @@ const CreateTicketPage = () => {
                 </div>
 
                 <div>
-                    <label className="mb-1.5 block text-sm font-medium text-white/90">
+                    <label className="mb-1.5 block text-sm font-medium">
                         Priority <span className="text-red-400">*</span>
                     </label>
                     <select
                     name="priority"
                     value={form.priority}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-white/10 bg-slate-100/10 px-4 py-2.5 text-sm text-white focus:border-accent focus:outline-none"
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-sm dark:!bg-slate-100/10 dark:!text-white focus:border-accent focus:outline-none"
                     >
                     {options.priorities.map((p) => (
                         <option key={p} value={p} className="bg-[#0c0c18]">
@@ -191,14 +191,14 @@ const CreateTicketPage = () => {
 
                 {/* Sejak Kapan */}
                 <div>
-                <label className="mb-1.5 block text-sm font-medium text-white/90">
+                <label className="mb-1.5 block text-sm font-medium">
                     Since When Did the Issue Occur <span className="text-red-400">*</span>
                 </label>
                 <select
                     name="sinceWhen"
                     value={form.sinceWhen}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-white/10 bg-slate-100/10 px-4 py-2.5 text-sm text-white focus:border-accent focus:outline-none"
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-sm dark:!bg-slate-100/10 dark:!text-white focus:border-accent focus:outline-none"
                 >
                     {sinceOptions.map((opt) => (
                     <option key={opt} value={opt} className="bg-[#0c0c18]">
@@ -211,7 +211,7 @@ const CreateTicketPage = () => {
                 {/* Lokasi & Pemilik */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                    <label className="mb-1.5 block text-sm font-medium text-white/90">
+                    <label className="mb-1.5 block text-sm font-medium">
                     Location / Room <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -220,13 +220,13 @@ const CreateTicketPage = () => {
                     value={form.location}
                     onChange={handleChange}
                     placeholder="Example: IT Room, Floor 2"
-                    className="w-full rounded-xl border border-white/10 bg-slate-100/10 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-sm dark:!bg-slate-100/10 dark:!text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
                     required
                     />
                 </div>
 
                 <div>
-                    <label className="mb-1.5 block text-sm font-medium text-white/90">
+                    <label className="mb-1.5 block text-sm font-medium">
                     PC Owner / User <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -234,7 +234,7 @@ const CreateTicketPage = () => {
                     name="pcOwner"
                     value={form.pcOwner}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-white/10 bg-slate-100/10 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-sm dark:!bg-slate-100/10 dark:!text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
                     required
                     />
                 </div>
@@ -242,7 +242,7 @@ const CreateTicketPage = () => {
 
                 {/* Nama Komputer */}
                 <div>
-                <label className="mb-1.5 block text-sm font-medium text-white/90">
+                <label className="mb-1.5 block text-sm font-medium">
                     Computer Name / IP Address
                 </label>
                 <input
@@ -251,13 +251,13 @@ const CreateTicketPage = () => {
                     value={form.computerName}
                     onChange={handleChange}
                     placeholder="Example: PC-HRD-01 or 192.168.1.45"
-                    className="w-full rounded-xl border border-white/10 bg-slate-100/10 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-sm dark:!bg-slate-100/10 dark:!text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
                 />
                 </div>
 
                 {/* AnyDesk */}
-                <div className="rounded-2xl border border-white/10 bg-slate-100/10 p-4">
-                <p className="mb-3 text-sm font-medium text-white/90">Remote Access (Opsional)</p>
+                <div className="rounded-2xl border border-white/10 p-4">
+                <p className="mb-3 text-sm font-medium">Remote Access (Opsional)</p>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                     <label className="mb-1.5 block text-xs text-gray-400">Number AnyDesk</label>
@@ -267,7 +267,7 @@ const CreateTicketPage = () => {
                         value={form.anydeskNumber}
                         onChange={handleChange}
                         placeholder="Example: 123 456 789"
-                        className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
+                        className="w-full rounded-xl border border-white/10 dark:!bg-slate-100/10 dark:!text-white px-4 py-2.5 text-sm placeholder:text-gray-500 focus:border-accent focus:outline-none"
                     />
                     </div>
                     <div>
@@ -278,7 +278,7 @@ const CreateTicketPage = () => {
                         value={form.anydeskPassword}
                         onChange={handleChange}
                         placeholder="Temporary Password"
-                        className="w-full rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
+                        className="w-full rounded-xl border border-white/10 dark:!bg-slate-100/10 dark:!text-white px-4 py-2.5 text-sm placeholder:text-gray-500 focus:border-accent focus:outline-none"
                     />
                     </div>
                 </div>
@@ -292,7 +292,7 @@ const CreateTicketPage = () => {
                 <button
                     type="button"
                     onClick={() => navigate(-1)}
-                    className="rounded-xl border border-white/10 px-5 py-2.5 text-sm font-medium text-gray-300 transition hover:bg-white/5"
+                    className="rounded-xl border border-white/10 px-5 py-2.5 text-sm font-medium transition hover:bg-white/5"
                 >
                     Cancel
                 </button>

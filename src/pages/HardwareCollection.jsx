@@ -620,7 +620,7 @@ const HardwareCollections = () => {
         )}
       </div>
 
-      <div className="mb-6 flex flex-wrap items-center gap-2 border-white/10 border !bg-white/5 p-2.5 md:p-4 rounded-xl">
+      <div className="mb-6 flex flex-wrap items-center gap-2 border-white/10 border bg-white dark:!bg-white/5 p-2.5 md:p-4 rounded-xl">
         <form onSubmit={handleSearch} className="relative">
           <Search
             size={14}
@@ -630,7 +630,7 @@ const HardwareCollections = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search name or brand…"
-            className="input-field w-48 py-2 pl-8 text-sm sm:w-56"
+            className="input-field w-48 py-2 pl-8 text-sm sm:w-56 bg-white"
           />
         </form>
 
@@ -677,11 +677,11 @@ const HardwareCollections = () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 border-x border-t rounded-xl border-white/10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 border-x border-t rounded-xl bg-white dark:!bg-white/5 border-white/10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {items.map((item) => (
             <div
               key={item._id}
-              className="border-b border-white/10 px-3 py-4 sm:border-r sm:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0 xl:[&:nth-child(3n)]:border-r xl:[&:nth-child(4n)]:border-r-0"
+              className="border-b dark:!border-white/10 px-3 py-4 sm:border-r sm:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0 xl:[&:nth-child(3n)]:border-r xl:[&:nth-child(4n)]:border-r-0"
             >
               <HardwareCard3D
                 item={item}

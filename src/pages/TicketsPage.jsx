@@ -70,7 +70,7 @@ const TicketsPage = () => {
             <span className="text-xs font-semibold uppercase tracking-wider">Support</span>
           </div>
           <h1 className="text-xl font-medium tracking-tight text-white">
-            {isAdmin ? "Semua Tiket" : "Tiket Saya"}
+            {isAdmin ? "All Tickets" : "My Tickets"}
           </h1>
         </div>
 
@@ -79,7 +79,7 @@ const TicketsPage = () => {
           className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
         >
           <Plus size={16} />
-          Buat Tiket
+          Create Ticket
         </Link>
       </div>
 
@@ -91,7 +91,7 @@ const TicketsPage = () => {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari judul atau deskripsi..."
+            placeholder="Search title or description..."
             className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
           />
         </form>
@@ -101,12 +101,12 @@ const TicketsPage = () => {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white focus:border-accent focus:outline-none"
         >
-          <option value="" className="bg-[#0c0c18]">Semua Status</option>
-          <option value="Baru" className="bg-[#0c0c18]">Baru</option>
-          <option value="Sedang Dikerjakan" className="bg-[#0c0c18]">Sedang Dikerjakan</option>
-          <option value="Menunggu Info" className="bg-[#0c0c18]">Menunggu Info</option>
-          <option value="Selesai" className="bg-[#0c0c18]">Selesai</option>
-          <option value="Ditutup" className="bg-[#0c0c18]">Ditutup</option>
+          <option value="" className="bg-[#0c0c18]">All Status</option>
+          <option value="Baru" className="bg-[#0c0c18]">New</option>
+          <option value="Sedang Dikerjakan" className="bg-[#0c0c18]">In Progress</option>
+          <option value="Menunggu Info" className="bg-[#0c0c18]">Waiting for Info</option>
+          <option value="Selesai" className="bg-[#0c0c18]">Completed</option>
+          <option value="Ditutup" className="bg-[#0c0c18]">Closed</option>
         </select>
       </div>
 
@@ -118,21 +118,21 @@ const TicketsPage = () => {
       ) : tickets.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 py-16 text-center">
           <Ticket size={40} className="mb-3 text-gray-500" />
-          <p className="font-medium text-white">Belum ada tiket</p>
-          <p className="mt-1 text-sm text-gray-500">Buat tiket baru jika mengalami masalah</p>
+          <p className="font-medium text-white">No tickets found</p>
+          <p className="mt-1 text-sm text-gray-500">Create a new ticket if you're experiencing issues</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 surface-card rounded-3xl border border-white/10 dark:!bg-white/5 p-5">
           {tickets.map((ticket) => (
             <Link
               key={ticket._id}
               to={`/tickets/${ticket._id}`}
-              className="block rounded-2xl border border-white/10 bg-white/5 p-4 transition hover:bg-white/[0.07]"
+              className="block rounded-2xl border border-white/10 bg-white dark:!bg-slate-100/10 dark:!text-white p-4 transition hover:bg-white/80 active:scale-[0.99] duration-100"
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-medium text-white">{ticket.title}</h3>
+                    <h3 className="font-medium dark:!text-white">{ticket.title}</h3>
                     <span className={`rounded-md border px-2 py-0.5 text-xs font-medium ${statusColor[ticket.status]}`}>
                       {ticket.status}
                     </span>
