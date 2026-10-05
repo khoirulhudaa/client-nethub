@@ -153,16 +153,13 @@ useEffect(() => {
     <div className="mx-auto min-h-screen max-w-7xl md:border-x border-white dark:border-white/10 md:p-6 p-4">
       {/* Header */}
       <div className="mb-6">
-        <button
-          onClick={() => navigate("/tickets")}
-          className="mb-3 flex items-center gap-1.5 text-sm hover:text-gray-400 text-white transition"
-        >
-          <ArrowLeft size={16} />
-          Kembali ke Daftar Tiket
-        </button>
+        <div className="flex items-center gap-2 text-accent">
+          <span className="text-xs font-semibold uppercase tracking-wider">Ticket</span>
+        </div>
+        <h1 className="text-xl font-medium text-white tracking-tight">Detail Ticket</h1>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-3 p-5 bg-white/5 rounded-3xl">
         {/* Left - Detail */}
         <div className="lg:col-span-2 space-y-3">
           
@@ -384,9 +381,9 @@ useEffect(() => {
                 <h2 className="mb-3 text-sm font-semibold text-white">Update Status</h2>
 
                 <select
-                value={newStatus}
-                onChange={(e) => setNewStatus(e.target.value)}
-                className="mb-3 w-full rounded-xl border border-white/10 bg-white dark:bg-white/5 px-3 py-2.5 text-sm text-white"
+                    value={newStatus}
+                    onChange={(e) => setNewStatus(e.target.value)}
+                    className="cursor-pointer hover:brightness-90 mb-3 w-full rounded-xl border border-white/10 bg-white dark:bg-white/5 px-3 py-2.5 text-sm text-white"
                 >
                 <option value="Baru" className="bg-[#0c0c18]">Baru</option>
                 <option value="Sedang Dikerjakan" className="bg-[#0c0c18]">Sedang Dikerjakan</option>
