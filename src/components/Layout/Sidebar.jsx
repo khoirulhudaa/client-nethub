@@ -12,11 +12,13 @@ import {
   HardDrive,
   HelpCircle,
   LayoutGrid,
+  LifeBuoy,
   Loader2,
   LogOut,
   Network,
   PencilRuler,
   Shrink,
+  Ticket,
   Wrench,
   X
 } from "lucide-react";
@@ -41,6 +43,11 @@ const quizLinks = [
   { label: "Build Exam", icon: HelpCircle, to: "/quiz-builder" },
   { label: "Go Practice", icon: PencilRuler, to: "/practice" },
   { label: "Test Knowledge", icon: Brain, to: "/quizzes" },
+];
+
+const supportLinks = [
+  { label: "Buat Tiket", icon: LifeBuoy, to: "/tickets/create" },
+  { label: "Daftar Tiket", icon: Ticket, to: "/tickets" },
 ];
 
 const NavGroup = ({ title, open, onToggle, collapsed, children }) => {
@@ -104,6 +111,7 @@ const Sidebar = ({ onNavigate }) => {
     discover: false,
     quiz: false,
     library: true,
+    support: false,
     admin: false,
   });
 
@@ -424,6 +432,32 @@ const Sidebar = ({ onNavigate }) => {
               </div>
             </div>
           </NavGroup>
+
+          {/* Support */}
+          {!isGuest && (
+            <NavGroup
+              title="Support"
+              open={openGroups.support ?? false}
+              onToggle={() => toggleGroup("support")}
+              collapsed={collapsed}
+            >
+              <div data-tour="support">
+                {supportLinks.map(({ label, icon: Icon, to }) => (
+                  <div key={label} className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
+                    <NavLink
+                      to={to}
+                      onClick={onNavigate}
+                      title={collapsed ? label : undefined}
+                      className={({ isActive }) => linkClass(isActive)}
+                    >
+                      <Icon size={17} />
+                      {!collapsed && label}
+                    </NavLink>
+                  </div>
+                ))}
+              </div>
+            </NavGroup>
+          )}
 
           {/* Admin — hanya superAdmin */}
           {isSuperAdmin && (

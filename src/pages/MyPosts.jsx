@@ -48,7 +48,7 @@ const MyPosts = () => {
           <p className="text-sm text-gray-500">Share your first fix, install guide, or topology diagram.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 p-2.5 md:px-4 w-full md:py-4 relative bg-white/5 rounded-3xl">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 p-2.5 md:px-5 md:py-5 w-full relative bg-white/5 rounded-3xl">
           {posts.map((post) => (
             <PostCard key={post._id} post={post} />
           ))}

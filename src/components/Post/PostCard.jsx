@@ -188,7 +188,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
   return (
     <Link to={`/posts/${post.slug}`} className="block">
       <div
-        className={`group cursor-pointer hover:dark:!border-blue-300/50 active:scale-[0.99] ease-out relative h-[420px] p-3.5 bg-slate-300 rounded-[24px] dark:!bg-[#0c0c18] border dark:!border-white/20 group duration-100 flex flex-col overflow-hidden ${
+        className={`group cursor-pointer hover:dark:!border-blue-300/50 relative h-[420px] p-3.5 bg-slate-300 rounded-[24px] dark:!bg-[#0c0c18] border dark:!border-white/20 group duration-100 flex flex-col overflow-hidden ${
           featured ? "h-full" : ""
         }`}
       >
@@ -211,12 +211,14 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
         <div
           className={`absolute bottom-0 pt-7 left-0 w-full group-hover:h-[100%] ease-out animation-height duration-500 h-[35%] z-[33] flex flex-1 flex-col gap-3 p-3.5 py-4
             bg-black/30
-            dark:bg-black/40
+            dark:!bg-black/40
             backdrop-blur-lg
             border-white/20 dark:border-white/10
             shadow-[0_-4px_20px_rgba(0,0,0,0.05)]
             transition-all
-            group-hover:bg-black/40 dark:group-hover:bg-slate-900/50
+            group-hover:bg-black/40 
+            group-hover:duration-700
+            group-hover:ease-out
           `}
         >
           <div className="flex items-center justify-between gap-2">
