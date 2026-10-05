@@ -66,7 +66,7 @@ const CreateTicketUserPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.title.trim() || !form.description.trim() || !form.location.trim() || !form.pcOwner.trim()) {
+    if (!form.title.trim() || !form.description.trim() || !form.location.trim() || !form.pcOwner.trim() || !form.requesterName.trim()) {
       alert("Mohon lengkapi semua field yang wajib diisi");
       return;
     }

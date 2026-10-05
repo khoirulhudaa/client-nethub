@@ -1,4 +1,4 @@
-import { Eye, EyeOff, Loader2, Network } from "lucide-react";
+import { Download, Eye, EyeOff, Loader2, Network } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -107,7 +107,7 @@ const Login = () => {
           </div>
         </form>
 
-        <div className="mt-5">
+        <div className="mt-5 grid grid-cols-2 gap-x-2">
           <Link
             to="/user/tickets/create"
             className="flex w-full items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 py-2.5 text-sm font-medium text-blue-700 transition hover:bg-blue-100 active:scale-[0.99]"
@@ -115,6 +115,13 @@ const Login = () => {
             <Network size={16} />
             Butuh Bantuan IT? Buat Tiket
           </Link>
+          <Link
+              to="/install"
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-gray-50 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-100 active:scale-[0.99]"
+            >
+              <Download size={16} />
+              Install TEXNet sebagai Aplikasi
+            </Link>
         </div>
 
         <p className="mt-6 text-center text-sm text-gray-500">

@@ -32,6 +32,7 @@ import TicketsPage from "./pages/TicketsPage.jsx";
 import TopologyPractice from "./pages/TopologyPractice.jsx";
 import Trending from "./pages/Trending.jsx";
 import CreateTicketUserPage from "./pages/CreateTicketUserPage.jsx";
+import InstallAppPage from "./pages/InstallAppPage.jsx";
 
 function App() {
   return (
@@ -81,6 +82,8 @@ function App() {
           <Route path="quizzes/:id" element={<TakeQuiz />} />
           <Route path="admin/activities" element={<ActivityLog />} />
           <Route path="practice" element={<PracticeHub />} />
+          
+          <Route path="/install" element={<InstallAppPage />} />
           
           <Route path="tickets" element={<TicketsPage />} />
           <Route path="tickets/:id" element={<TicketDetailPage />} />
