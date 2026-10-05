@@ -15,6 +15,7 @@ import {
   Plus,
   Search,
   Sun,
+  Ticket,
   User,
   X,
 } from "lucide-react";
@@ -26,11 +27,13 @@ import { useTheme } from "../../context/ThemeContext.jsx";
 
 const TopBar = ({ onMenuClick }) => {
   const [openNotif, setOpenNotif] = useState(false);
+  const [openNotifTicket, setOpenNotifTicket] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
   const [announcements, setAnnouncements] = useState([]);
   const [notifLoading, setNotifLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const notifRef = useRef(null);
+  const notifRefNotif = useRef(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false); 
   const [loggingOut, setLoggingOut] = useState(false);           
   const profileRef = useRef(null);
@@ -47,6 +50,25 @@ const TopBar = ({ onMenuClick }) => {
     success: { icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-500/10" },
     important: { icon: Ban, color: "text-rose-500", bg: "bg-rose-500/10" },
   };
+
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCountNotification, setUnreadCountNotification] = useState(0);
+
+  const fetchNotifications = async () => {
+    try {
+      const { data } = await api.get("/notifications");
+      setNotifications(data.notifications);
+      setUnreadCountNotification(data.unreadCount);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+useEffect(() => {
+  fetchNotifications();
+  const interval = setInterval(fetchNotifications, 30000); // setiap 30 detik
+  return () => clearInterval(interval);
+}, []);
 
   const fetchAnnouncements = async () => {
     try {
@@ -165,6 +187,144 @@ const TopBar = ({ onMenuClick }) => {
               <Plus size={16} />
             </button>
           )}
+
+          {/* Notification */}
+          <div className="relative" ref={notifRefNotif} data-tour="notif">
+            <button
+              type="button"
+              className="active:scale-[0.98] duration-100 relative border-slate-400 dark:md:border-white/20 dark:border-white/30 border rounded-control p-2.5 text-gray-500 transition hover:bg-black/10 dark:text-gray-300 dark:hover:bg-white/10"
+              title="Notifications"
+              onClick={() => {
+                setOpenNotifTicket((prev) => !prev);
+                setOpenProfile(false);
+              }}
+            >
+              <Ticket size={18} />
+              {unreadCountNotification > 0 && (
+                <span className="absolute right-1.5 top-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-blue-900 px-1 text-[10px] font-semibold text-white">
+                  {unreadCountNotification > 9 ? "9+" : unreadCountNotification}
+                </span>
+              )}
+            </button>
+
+            {openNotifTicket && (
+              <div className="absolute right-[-236%] md:right-[122%] top-full z-[99] mt-2 w-[min(100vw-2rem,360px)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-white/10 dark:bg-[#12121a]">
+                {/* Header */}
+                <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-white/10">
+                  <div>
+                    <p className="text-sm font-semibold">Tiket</p>
+                    {unreadCountNotification > 0 && (
+                      <p className="text-xs text-gray-500">{unreadCountNotification} belum dibaca</p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    {unreadCountNotification > 0 && (
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            await api.patch("/notifications/read-all");
+                            setNotifications((prev) =>
+                              prev.map((n) => ({ ...n, isRead: true }))
+                            );
+                            setUnreadCountNotification(0);
+                          } catch (err) {
+                            console.error(err);
+                          }
+                        }}
+                        className="rounded-lg px-2 py-1 text-xs text-accent hover:bg-accent/10"
+                      >
+                        Tandai semua
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setOpenNotifTicket(false)}
+                      className="rounded-lg active:scale-[0.98] p-1.5 text-gray-400 hover:bg-black/5 dark:hover:bg-white/10"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* List Notifikasi */}
+                <div className="max-h-[min(60vh,380px)] overflow-y-auto">
+                  {notifications.length === 0 ? (
+                    <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
+                      <Bell size={24} className="text-gray-400" />
+                      <p className="text-sm font-medium">Tidak ada permintaan</p>
+                    </div>
+                  ) : (
+                    <ul className="divide-y divide-gray-100 dark:divide-white/5">
+                      {notifications.map((item) => (
+                        <li key={item._id}>
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              // Tandai sudah dibaca
+                              if (!item.isRead) {
+                                try {
+                                  await api.patch(`/notifications/${item._id}/read`);
+                                  setNotifications((prev) =>
+                                    prev.map((n) =>
+                                      n._id === item._id ? { ...n, isRead: true } : n
+                                    )
+                                  );
+                                  setUnreadCountNotification((prev) => Math.max(0, prev - 1));
+                                } catch (err) {
+                                  console.error(err);
+                                }
+                              }
+                              setOpenNotif(false);
+                              if (item.link) {
+                                navigate(item.link);
+                              }
+                            }}
+                            className={`w-full px-4 py-3 text-left transition hover:bg-black/[0.02] dark:hover:bg-white/[0.03] ${
+                              !item.isRead ? "bg-blue-50/50 dark:bg-blue-500/5" : ""
+                            }`}
+                          >
+                            <div className="flex gap-3">
+                              <div
+                                className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                                  item.type === "new_ticket"
+                                    ? "bg-blue-500/15 text-blue-500"
+                                    : "bg-gray-500/15 text-gray-500"
+                                }`}
+                              >
+                                <Bell size={15} />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-start justify-between gap-2">
+                                  <p className={`text-sm font-medium ${!item.isRead ? "text-white" : ""}`}>
+                                    {item.title}
+                                  </p>
+                                  {!item.isRead && (
+                                    <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
+                                  )}
+                                </div>
+                                <p className="mt-0.5 line-clamp-2 text-xs text-gray-500">
+                                  {item.message}
+                                </p>
+                                <p className="mt-1.5 text-[11px] text-gray-400">
+                                  {new Date(item.createdAt).toLocaleDateString("id-ID", {
+                                    day: "numeric",
+                                    month: "short",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                                </p>
+                              </div>
+                            </div>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Notification */}
           <div className="relative" ref={notifRef} data-tour="notif">

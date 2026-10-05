@@ -446,6 +446,7 @@ const Sidebar = ({ onNavigate }) => {
                   <div key={label} className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
                     <NavLink
                       to={to}
+                      end={to === "/tickets"}   // ← ini yang penting
                       onClick={onNavigate}
                       title={collapsed ? label : undefined}
                       className={({ isActive }) => linkClass(isActive)}

@@ -31,11 +31,11 @@ import TicketDetailPage from "./pages/TicketDetailPage.jsx";
 import TicketsPage from "./pages/TicketsPage.jsx";
 import TopologyPractice from "./pages/TopologyPractice.jsx";
 import Trending from "./pages/Trending.jsx";
+import CreateTicketUserPage from "./pages/CreateTicketUserPage.jsx";
 
 function App() {
   return (
     <>
-      {/* Toaster harus di luar Routes */}
       <Toaster
         position="bottom-right"
         toastOptions={{
@@ -52,6 +52,17 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
+        {/* ===== HALAMAN KHUSUS TANPA SIDEBAR & TOPBAR ===== */}
+        <Route
+          path="/user/tickets/create"
+          element={
+            <ProtectedRoute>
+              <CreateTicketUserPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ===== LAYOUT UTAMA (ada Sidebar + TopBar) ===== */}
         <Route
           path="/"
           element={
@@ -67,29 +78,29 @@ function App() {
           <Route path="authors/:id" element={<AuthorProfile />} />
           <Route path="my-posts" element={<MyPosts />} />
           <Route path="profile" element={<Profile />} />
-          <Route path="/following" element={<Following />} />
+          <Route path="following" element={<Following />} />
           <Route path="tags/:tag" element={<TagPosts />} />
-          <Route path="/quizzes/:id" element={<TakeQuiz />} />
+          <Route path="quizzes/:id" element={<TakeQuiz />} />
           <Route path="admin/activities" element={<ActivityLog />} />
-          <Route path="/practice" element={<PracticeHub />} />
-          <Route path="/tickets" element={<TicketsPage />} />
-          <Route path="/tickets/create" element={<CreateTicketPage />} />
-          <Route path="/tickets/:id" element={<TicketDetailPage />} />
-          <Route path="/hardware" element={<HardwareCollection />} />
-          <Route path="/quizzes" element={<Quizzes />} />
-          <Route path="/topology-practice" element={<TopologyPractice />} />
+          <Route path="practice" element={<PracticeHub />} />
+          
+          <Route path="tickets" element={<TicketsPage />} />
+          <Route path="tickets/:id" element={<TicketDetailPage />} />
+          <Route path="tickets/:id" element={<CreateTicketPage />} />
+          
+          <Route path="hardware" element={<HardwareCollection />} />
+          <Route path="quizzes" element={<Quizzes />} />
+          <Route path="topology-practice" element={<TopologyPractice />} />
           <Route path="quiz-builder" element={<QuizBuilder />} />
-          <Route path="/terms" element={<TermsPage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/content-policy" element={<ContentPolicyPage />} />
-          <Route path="/trending" element={<Trending />} />
-          <Route path="/tools/subnet" element={<SubnetCalculator />} />
-          <Route path="/announcements/:id" element={<AnnouncementDetail />} />
-          <Route path="/reading-list" element={<ReadingListPage />} />
-          <Route path="/authors/detail/:id" element={<AuthorBio />} />
-          <Route path="/pc-build-practice" element={<PCBuildCanvas />} />
-
-          {/* SuperAdmin only */}
+          <Route path="terms" element={<TermsPage />} />
+          <Route path="privacy" element={<PrivacyPage />} />
+          <Route path="content-policy" element={<ContentPolicyPage />} />
+          <Route path="trending" element={<Trending />} />
+          <Route path="tools/subnet" element={<SubnetCalculator />} />
+          <Route path="announcements/:id" element={<AnnouncementDetail />} />
+          <Route path="reading-list" element={<ReadingListPage />} />
+          <Route path="authors/detail/:id" element={<AuthorBio />} />
+          <Route path="pc-build-practice" element={<PCBuildCanvas />} />
           <Route path="admin/announcements" element={<AnnouncementsAdmin />} />
         </Route>
       </Routes>
