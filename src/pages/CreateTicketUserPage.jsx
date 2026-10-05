@@ -73,8 +73,19 @@ const CreateTicketUserPage = () => {
 
     try {
       setSubmitting(true);
-      const { data } = await api.post("/tickets", form);
-      navigate(`/tickets/${data.ticket._id}`);
+      setForm({
+        title: "",
+        description: "",
+        category: options.categories[0] || "",
+        sinceWhen: "Baru saja",
+        location: "",
+        pcOwner: "",
+        computerName: "",
+        anydeskNumber: "",
+        anydeskPassword: "",
+        requesterName: "",
+        priority: "Medium",
+      });
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.message || "Gagal membuat tiket");
