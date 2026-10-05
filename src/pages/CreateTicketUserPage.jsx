@@ -289,7 +289,7 @@ const CreateTicketUserPage = () => {
                     value={form.anydeskNumber}
                     onChange={handleChange}
                     placeholder="123 456 789"
-                    className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-blue-500 focus:outline-none"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -302,7 +302,7 @@ const CreateTicketUserPage = () => {
                     value={form.anydeskPassword}
                     onChange={handleChange}
                     placeholder="Temporary Password"
-                    className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-blue-500 focus:outline-none"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
               </div>
