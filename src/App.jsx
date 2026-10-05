@@ -56,9 +56,7 @@ function App() {
         <Route
           path="/user/tickets/create"
           element={
-            <ProtectedRoute>
-              <CreateTicketUserPage />
-            </ProtectedRoute>
+            <CreateTicketUserPage />
           }
         />
 

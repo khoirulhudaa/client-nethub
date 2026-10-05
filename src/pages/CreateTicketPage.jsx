@@ -27,6 +27,7 @@ const CreateTicketPage = () => {
     location: "",
     pcOwner: user?.name || "",
     computerName: "",
+    requesterName: "",
     anydeskNumber: "",
     anydeskPassword: "",
     priority: "Medium",
@@ -103,6 +104,20 @@ const CreateTicketPage = () => {
 
         <div className="surface-card rounded-3xl border border-white/10 dark:!bg-white/5 p-6">
             <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                    <label className="mb-1.5 block text-sm font-medium text-gray-300">
+                        Nama Pelapor <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        name="requesterName"
+                        value={form.requesterName}
+                        onChange={handleChange}
+                        placeholder="Nama kamu yang sedang lapor"
+                        className="..."
+                        required
+                    />
+                    </div>
                 {/* Judul */}
                 <div>
                 <label className="mb-1.5 block text-sm font-medium text-white/90">

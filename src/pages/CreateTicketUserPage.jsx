@@ -30,6 +30,7 @@ const CreateTicketUserPage = () => {
     computerName: "",
     anydeskNumber: "",
     anydeskPassword: "",
+    requesterName: "",
     priority: "Medium",
   });
 
@@ -119,6 +120,22 @@ const CreateTicketUserPage = () => {
           className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-8 backdrop-blur-sm"
         >
           <div className="space-y-5">
+             <div>
+                <label className="mb-1.5 block text-sm font-medium text-gray-300">
+                    Your Name and Position <span className="text-red-400">*</span>
+                </label>
+                <input
+                    type="text"
+                    name="requesterName"
+                    value={form.requesterName}
+                    onChange={handleChange}
+                    placeholder="Example: John Doe - IT Staff"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition"
+                    required
+                />
+                </div>
+            {/* Judul */}
+            <div></div>
             {/* Judul */}
             <div>
               <label className="mb-1.5 block text-sm font-medium text-gray-300">
