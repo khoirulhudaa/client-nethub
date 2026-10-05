@@ -35,6 +35,8 @@ const TicketDetailPage = () => {
   const [comment, setComment] = useState("");
   const [submittingComment, setSubmittingComment] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [newStatus, setNewStatus] = useState(ticket?.status || "Baru");
+  const [statusNote, setStatusNote] = useState("");
 
   const fetchTicket = async () => {
     try {
@@ -85,6 +87,24 @@ const TicketDetailPage = () => {
     }
   };
 
+    const handleStatusUpdate = async () => {
+    if (!newStatus) return;
+    try {
+        setUpdatingStatus(true);
+        await api.patch(`/tickets/${id}/status`, {
+        status: newStatus,
+        note: statusNote.trim(),
+        });
+        toast.success("Status berhasil diubah");
+        setStatusNote("");
+        await fetchTicket(); // reload data
+    } catch (err) {
+        toast.error(err.response?.data?.message || "Gagal ubah status");
+    } finally {
+        setUpdatingStatus(false);
+    }
+    };
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -96,7 +116,7 @@ const TicketDetailPage = () => {
   if (!ticket) return null;
 
   return (
-    <div className="mx-auto min-h-screen max-w-5xl md:border-x border-white dark:border-white/10 md:p-6 p-4">
+    <div className="mx-auto min-h-screen max-w-7xl md:border-x border-white dark:border-white/10 md:p-6 p-4">
       {/* Header */}
       <div className="mb-6">
         <button
@@ -137,9 +157,9 @@ const TicketDetailPage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
         {/* Left - Detail */}
-        <div className="lg:col-span-2 space-y-5">
+        <div className="lg:col-span-2 space-y-3">
           {/* Deskripsi */}
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
             <h2 className="mb-3 text-sm font-semibold text-white">Deskripsi Masalah</h2>
@@ -183,61 +203,76 @@ const TicketDetailPage = () => {
             </div>
           </div>
 
-          {/* Komentar */}
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold text-white">
-              <MessageSquare size={16} />
-              Diskusi
-            </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3">
+            {/* Komentar */}
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold text-white">
+                <MessageSquare size={16} />
+                Diskusi
+                </h2>
 
-            <div className="space-y-4 mb-5">
-              {ticket.comments?.length === 0 && (
-                <p className="text-sm text-gray-500">Belum ada komentar</p>
-              )}
-              {ticket.comments?.map((c) => (
-                <div key={c._id} className="flex gap-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/20 text-xs font-semibold text-accent">
-                    {c.user?.name?.[0]?.toUpperCase() || "U"}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-white">{c.user?.name}</span>
-                      <span className="text-xs text-gray-500">
-                        {new Date(c.createdAt).toLocaleString("id-ID")}
-                      </span>
-                      {c.isInternal && (
-                        <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-[10px] text-amber-400">
-                          Internal
-                        </span>
-                      )}
+                <div className="space-y-3 mb-5">
+                {ticket.comments?.length === 0 && (
+                    <p className="text-sm text-gray-500">Belum ada komentar</p>
+                )}
+                {ticket.comments?.map((c) => (
+                    <div key={c._id} className="flex gap-3">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/20 text-xs font-semibold text-accent">
+                        {c.user?.name?.[0]?.toUpperCase() || "U"}
                     </div>
-                    <p className="mt-0.5 text-sm text-gray-300">{c.content}</p>
-                  </div>
+                    <div>
+                        <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-white">{c.user?.name}</span>
+                        <span className="text-xs text-gray-500">
+                            {new Date(c.createdAt).toLocaleString("id-ID")}
+                        </span>
+                        {c.isInternal && (
+                            <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-[10px] text-amber-400">
+                            Internal
+                            </span>
+                        )}
+                        </div>
+                        <p className="mt-0.5 text-sm text-gray-300">{c.content}</p>
+                    </div>
+                    </div>
+                ))}
                 </div>
-              ))}
-            </div>
 
-            <form onSubmit={handleAddComment} className="flex gap-2">
-              <input
-                type="text"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Tulis komentar..."
-                className="flex-1 rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
-              />
-              <button
-                type="submit"
-                disabled={submittingComment || !comment.trim()}
-                className="rounded-xl bg-accent px-4 py-2.5 text-white transition hover:opacity-90 disabled:opacity-50"
-              >
-                {submittingComment ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
-              </button>
-            </form>
+                <form onSubmit={handleAddComment} className="flex gap-2">
+                <input
+                    type="text"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Tulis komentar..."
+                    className="flex-1 rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
+                />
+                <button
+                    type="submit"
+                    disabled={submittingComment || !comment.trim()}
+                    className="rounded-xl bg-accent px-4 py-2.5 text-white transition hover:opacity-90 disabled:opacity-50"
+                >
+                    {submittingComment ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+                </button>
+                </form>
+            </div>
+            {/* Info Pembuat */}
+            <div className="rounded-2xl h-max border border-white/10 bg-white/5 p-5">
+                <h2 className="mb-3 text-sm font-semibold text-white">Dilaporkan Oleh</h2>
+                <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/20 text-sm font-semibold text-accent">
+                    {ticket.createdBy?.name?.[0]?.toUpperCase() || "U"}
+                </div>
+                <div>
+                    <p className="text-sm font-medium text-white">{ticket.createdBy?.name}</p>
+                    <p className="text-xs text-gray-500">{ticket.createdBy?.title || "User"}</p>
+                </div>
+                </div>
+            </div>
           </div>
         </div>
 
         {/* Right - Rekomendasi Guides */}
-        <div className="space-y-5">
+        <div className="space-y-3">
           {/* Best Guide */}
           {bestGuide && (
             <div className="rounded-2xl border border-accent/40 bg-accent/10 p-5">
@@ -291,19 +326,39 @@ const TicketDetailPage = () => {
             )}
           </div>
 
-          {/* Info Pembuat */}
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <h2 className="mb-3 text-sm font-semibold text-white">Dilaporkan Oleh</h2>
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/20 text-sm font-semibold text-accent">
-                {ticket.createdBy?.name?.[0]?.toUpperCase() || "U"}
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">{ticket.createdBy?.name}</p>
-                <p className="text-xs text-gray-500">{ticket.createdBy?.title || "User"}</p>
-              </div>
+          {isAdmin && (
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <h2 className="mb-3 text-sm font-semibold text-white">Update Status</h2>
+
+                <select
+                value={newStatus}
+                onChange={(e) => setNewStatus(e.target.value)}
+                className="mb-3 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white"
+                >
+                <option value="Baru" className="bg-[#0c0c18]">Baru</option>
+                <option value="Sedang Dikerjakan" className="bg-[#0c0c18]">Sedang Dikerjakan</option>
+                <option value="Menunggu Info" className="bg-[#0c0c18]">Menunggu Info</option>
+                <option value="Selesai" className="bg-[#0c0c18]">Selesai</option>
+                <option value="Ditutup" className="bg-[#0c0c18]">Ditutup</option>
+                </select>
+
+                <textarea
+                value={statusNote}
+                onChange={(e) => setStatusNote(e.target.value)}
+                rows={2}
+                placeholder="Catatan progress (opsional)..."
+                className="mb-3 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-gray-500 resize-none"
+                />
+
+                <button
+                onClick={handleStatusUpdate}
+                disabled={updatingStatus}
+                className="w-full rounded-xl bg-blue-600 py-2.5 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-60"
+                >
+                {updatingStatus ? "Menyimpan..." : "Simpan Status"}
+                </button>
             </div>
-          </div>
+            )}
         </div>
       </div>
     </div>

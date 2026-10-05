@@ -33,6 +33,7 @@ import TopologyPractice from "./pages/TopologyPractice.jsx";
 import Trending from "./pages/Trending.jsx";
 import CreateTicketUserPage from "./pages/CreateTicketUserPage.jsx";
 import InstallAppPage from "./pages/InstallAppPage.jsx";
+import TrackTicketPage from "./pages/TrackTicketPage.jsx";
 
 function App() {
   return (
@@ -84,7 +85,9 @@ function App() {
           <Route path="practice" element={<PracticeHub />} />
           
           <Route path="/install" element={<InstallAppPage />} />
-          
+
+          <Route path="/user/tickets/track" element={<TrackTicketPage />} />
+
           <Route path="tickets" element={<TicketsPage />} />
           <Route path="tickets/:id" element={<TicketDetailPage />} />
           <Route path="tickets/create" element={<CreateTicketPage />} />
