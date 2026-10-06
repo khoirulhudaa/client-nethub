@@ -75,19 +75,19 @@ const Barcode = ({ value = "", height = 40 }) => {
 const TicketShell = ({ stubWidth = "16rem", band, children, stub }) => (
   <div className="drop-shadow-2xl">
     <div
-      className="ticket-cut flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#12121a] lg:flex-row"
+      className="ticket-cut flex flex-col overflow-hidden rounded-xl md:rounded-3xl border border-white/10 bg-[#12121a] lg:flex-row"
       style={{ "--stub": stubWidth }}
     >
       <div className="min-w-0 flex-1">
         {band && (
-          <div className="flex items-center justify-between gap-3 bg-blue-500/15 px-6 py-3">
+          <div className="flex items-center justify-between gap-3 bg-blue-500/15 px-2.5 md:px-6 py-3">
             <span className="text-sm font-semibold text-blue-400">Tiket Helpdesk IT</span>
             <span className="font-mono text-xs text-gray-400">{band}</span>
           </div>
         )}
-        <div className="p-6">{children}</div>
+        <div className="p-3 md:p-6">{children}</div>
       </div>
-      <div className="flex flex-col justify-between gap-6 border-t-2 border-dashed border-white/40 bg-white/[0.03] p-6 lg:w-[var(--stub)] lg:shrink-0 lg:border-l-2 lg:border-t-0">
+      <div className="flex flex-col justify-between gap-6 border-t-2 border-dashed border-white/40 bg-white/[0.03] p-3 md:p-6 lg:w-[var(--stub)] lg:shrink-0 lg:border-l-2 lg:border-t-0">
         {stub}
       </div>
     </div>
@@ -263,18 +263,18 @@ const CreateTicketUserPage = () => {
 
       <div className="relative mx-auto w-[97vw] px-4 py-8 sm:py-12 md:!max-w-6xl">
         {/* Header */}
-        <div className="mb-6 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-400">
+        <div className="mb-6 md:text-center">
+          <div className="mx-auto mb-4 hidden md:flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-400">
             <LifeBuoy size={26} />
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight">TEXNET TICKET</h1>
-          <p className="mt-1 text-sm text-gray-400">
+          <h1 className="text-lg md:text-2xl font-semibold tracking-tight">TEXNET TICKET</h1>
+          <p className="mt-1 text-xs md:text-sm text-gray-400">
             Buat tiket baru atau lacak progress tiket Anda
           </p>
         </div>
 
         {/* Tabs */}
-        <div className="mb-6 flex gap-x-1.5 rounded-[20px] border border-white/10 bg-white/[0.03] p-2">
+        <div className="mb-6 flex gap-x-1.5 rounded-xl md:rounded-[20px] border border-white/10 bg-white/[0.03] p-2">
           {[
             { key: "create", label: "Buat Tiket" },
             { key: "track", label: "Lacak Tiket" },
@@ -283,7 +283,7 @@ const CreateTicketUserPage = () => {
               key={t.key}
               type="button"
               onClick={() => setActiveTab(t.key)}
-              className={`flex-1 rounded-[16px] py-3 text-sm font-medium transition ${
+              className={`flex-1 rounded-lg md:rounded-[16px] py-2 md:py-3 text-sm font-medium transition ${
                 activeTab === t.key
                   ? "bg-blue-600 text-white"
                   : "bg-white/5 text-gray-400 hover:text-white"
