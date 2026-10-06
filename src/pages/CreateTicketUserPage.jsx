@@ -31,18 +31,20 @@ const sinceOptions = [
   "Lebih dari seminggu",
 ];
 
-// Lekukan sobekan di sisi kiri & kanan, tepat di atas "stub" di bagian bawah tiket.
-// Tinggi stub diatur lewat CSS variable --stub (harus sama dengan tinggi stub-nya).
+// Lekukan sobekan di sisi atas & bawah, tepat di garis pemisah badan tiket dan stub (kanan).
+// Lebar stub diatur lewat CSS variable --stub. Di layar kecil stub pindah ke bawah tanpa lekukan.
 const ticketCss = `
-.ticket-cut {
-  -webkit-mask:
-    radial-gradient(circle 14px at 0 calc(100% - var(--stub)), #0000 98%, #000),
-    radial-gradient(circle 14px at 100% calc(100% - var(--stub)), #0000 98%, #000);
-  -webkit-mask-composite: source-in;
-  mask:
-    radial-gradient(circle 14px at 0 calc(100% - var(--stub)), #0000 98%, #000),
-    radial-gradient(circle 14px at 100% calc(100% - var(--stub)), #0000 98%, #000);
-  mask-composite: intersect;
+@media (min-width: 1024px) {
+  .ticket-cut {
+    -webkit-mask:
+      radial-gradient(circle 14px at calc(100% - var(--stub)) 0, #0000 98%, #000),
+      radial-gradient(circle 14px at calc(100% - var(--stub)) 100%, #0000 98%, #000);
+    -webkit-mask-composite: source-in;
+    mask:
+      radial-gradient(circle 14px at calc(100% - var(--stub)) 0, #0000 98%, #000),
+      radial-gradient(circle 14px at calc(100% - var(--stub)) 100%, #0000 98%, #000);
+    mask-composite: intersect;
+  }
 }
 `;
 
@@ -53,7 +55,7 @@ const inputCls =
 const Barcode = ({ value = "", height = 40 }) => {
   const bars = useMemo(() => {
     const out = [];
-    for (let i = 0; i < 44; i++) {
+    for (let i = 0; i < 70; i++) {
       const c = value.charCodeAt(i % Math.max(value.length, 1)) || 7;
       out.push({ w: 1 + ((c + i) % 3), gap: 1 + ((c * (i + 1)) % 2) });
     }
@@ -69,33 +71,37 @@ const Barcode = ({ value = "", height = 40 }) => {
   );
 };
 
-// Pembungkus bentuk tiket: badan di atas, stub (tinggi tetap) di bawah
-const TicketShell = ({ stubHeight = "6rem", band, children, stub }) => (
+// Pembungkus tiket landscape: badan di kiri, stub di kanan (di mobile stub di bawah)
+const TicketShell = ({ stubWidth = "16rem", band, children, stub }) => (
   <div className="drop-shadow-2xl">
     <div
-      className="ticket-cut overflow-hidden rounded-3xl border border-white/10 bg-[#12121a]"
-      style={{ "--stub": stubHeight }}
+      className="ticket-cut flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#12121a] lg:flex-row"
+      style={{ "--stub": stubWidth }}
     >
-      {band && (
-        <div className="flex items-center justify-between gap-3 bg-blue-500/15 px-6 py-3">
-          <span className="text-sm font-semibold text-blue-400">Tiket Helpdesk IT</span>
-          <span className="font-mono text-xs text-gray-400">{band}</span>
-        </div>
-      )}
-      <div className="p-6">{children}</div>
-      <div
-        className="border-t-2 border-dashed border-white/15 bg-white/[0.03] px-6 py-4"
-        style={{ height: stubHeight }}
-      >
+      <div className="min-w-0 flex-1">
+        {band && (
+          <div className="flex items-center justify-between gap-3 bg-blue-500/15 px-6 py-3">
+            <span className="text-sm font-semibold text-blue-400">Tiket Helpdesk IT</span>
+            <span className="font-mono text-xs text-gray-400">{band}</span>
+          </div>
+        )}
+        <div className="p-6">{children}</div>
+      </div>
+      <div className="flex flex-col justify-between gap-6 border-t-2 border-dashed border-white/40 bg-white/[0.03] p-6 lg:w-[var(--stub)] lg:shrink-0 lg:border-l-2 lg:border-t-0">
         {stub}
       </div>
     </div>
   </div>
 );
 
+// Field bergaya tiket: label kecil + isian dengan garis putus-putus di bawahnya
+const fieldCls =
+  "w-full border-x-0 border-t-0 border-b-2 border-dashed border-white/40 bg-transparent px-0 py-1.5 text-sm text-white placeholder:text-gray-600 focus:border-blue-500 focus:outline-none";
+
 const Label = ({ children, required }) => (
-  <label className="mb-1.5 block text-sm font-medium text-gray-300">
-    {children} {required && <span className="text-red-400">*</span>}
+  <label className="mb-0.5 block text-xs font-semibold text-white">
+    {children}
+    {required && <span className="ml-0.5 text-red-400">*</span>}
   </label>
 );
 
@@ -248,7 +254,7 @@ const CreateTicketUserPage = () => {
       <style>{ticketCss}</style>
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-blue-950/90 via-transparent to-purple-800/20" />
 
-      <div className="relative mx-auto w-[97vw] px-4 py-8 sm:py-12 md:!max-w-2xl">
+      <div className="relative mx-auto w-[97vw] px-4 py-8 sm:py-12 md:!max-w-6xl">
         {/* Header */}
         <div className="mb-6 text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-400">
@@ -285,95 +291,89 @@ const CreateTicketUserPage = () => {
         {activeTab === "create" && (
           <form onSubmit={handleSubmit}>
             <TicketShell
-              stubHeight="6rem"
+              stubWidth="19rem"
               band="Tiket baru"
               stub={
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="flex h-full w-full items-center justify-center gap-2 rounded-xl bg-blue-600 text-sm font-medium text-white transition hover:bg-blue-500 disabled:opacity-60"
-                >
-                  {submitting ? (
-                    <>
-                      <Loader2 size={16} className="animate-spin" />
-                      Mengirim Tiket...
-                    </>
-                  ) : (
-                    <>
-                      <Send size={16} />
-                      Kirim Tiket
-                    </>
-                  )}
-                </button>
+                <>
+                  <div className="space-y-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/15 text-blue-400">
+                      <LifeBuoy size={22} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">Siap dikirim?</p>
+                      <p className="mt-1 text-xs leading-relaxed text-gray-400">
+                        Kode tiket dibuat otomatis setelah tiket terkirim. Simpan kodenya untuk
+                        melacak progress.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="space-y-4 relative top-[-7.2px]">
+                    <div className="w-full flex items-center justify-center">
+                      <Barcode value="TEXNET" height={40} />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-medium text-white transition hover:bg-blue-500 disabled:opacity-60"
+                    >
+                      {submitting ? (
+                        <>
+                          <Loader2 size={16} className="animate-spin" />
+                          Mengirim...
+                        </>
+                      ) : (
+                        <>
+                          <Send size={16} />
+                          Kirim Tiket
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </>
               }
             >
-              <div className="space-y-5">
-                {/* Pelapor */}
+              <div className="space-y-6">
+                {/* Judul (seperti judul tiket) */}
                 <div>
-                  <Label required>Nama & Jabatan Anda</Label>
-                  <input
-                    type="text"
-                    name="requesterName"
-                    value={form.requesterName}
-                    onChange={handleChange}
-                    placeholder="Contoh: Budi Santoso - Staff HRD"
-                    className={inputCls}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label required>Judul Masalah</Label>
+                  <Label required>Judul masalah</Label>
                   <input
                     type="text"
                     name="title"
                     value={form.title}
                     onChange={handleChange}
                     placeholder="Contoh: Tidak bisa konek WiFi di Ruang Meeting"
-                    className={inputCls}
+                    className={`${fieldCls} text-xl font-semibold tracking-tight`}
                     required
                   />
                 </div>
 
-                <div>
-                  <Label required>Deskripsi Lengkap</Label>
-                  <textarea
-                    name="description"
-                    value={form.description}
-                    onChange={handleChange}
-                    rows={4}
-                    placeholder="Jelaskan gejala, apa yang sudah dicoba, pesan error..."
-                    className={`${inputCls} resize-none`}
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div>
+                {/* Kategori (kiri) + prioritas (kanan) */}
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="min-w-[10rem] flex-1">
                     <Label required>Kategori</Label>
                     <select
                       name="category"
                       value={form.category}
                       onChange={handleChange}
-                      className={inputCls}
+                      className={`${fieldCls} text-lg font-semibold`}
                     >
                       {options.categories.map((cat) => (
-                        <option key={cat} value={cat} className="bg-[#0c0c18]">
+                        <option key={cat} value={cat} className="bg-[#0c0c18] text-base">
                           {cat}
                         </option>
                       ))}
                     </select>
                   </div>
-                  <div>
+                  <div className="w-full sm:w-40">
                     <Label>Prioritas</Label>
                     <select
                       name="priority"
                       value={form.priority}
                       onChange={handleChange}
-                      className={inputCls}
+                      className={`${fieldCls} text-lg font-semibold sm:text-left`}
                     >
                       {options.priorities.map((p) => (
-                        <option key={p} value={p} className="bg-[#0c0c18]">
+                        <option key={p} value={p} className="bg-[#0c0c18] text-base">
                           {p}
                         </option>
                       ))}
@@ -381,96 +381,117 @@ const CreateTicketUserPage = () => {
                   </div>
                 </div>
 
-                <div>
-                  <Label required>Sejak Kapan</Label>
-                  <select
-                    name="sinceWhen"
-                    value={form.sinceWhen}
-                    onChange={handleChange}
-                    className={inputCls}
-                  >
-                    {sinceOptions.map((opt) => (
-                      <option key={opt} value={opt} className="bg-[#0c0c18]">
-                        {opt}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Garis sobekan pemisah bagian perangkat */}
-                <div className="flex items-center gap-3 pt-1 text-blue-400">
-                  <Monitor size={16} />
-                  <span className="text-sm font-medium">Perangkat</span>
-                  <span className="flex-1 border-t-2 border-dashed border-white/15" />
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div>
-                    <Label required>Lokasi / Ruangan</Label>
+                {/* "Rute": pelapor -> lokasi */}
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-3">
+                  <div className="min-w-0 flex-1">
+                    <Label required>Pelapor</Label>
+                    <input
+                      type="text"
+                      name="requesterName"
+                      value={form.requesterName}
+                      onChange={handleChange}
+                      placeholder="Nama - Jabatan"
+                      className={`${fieldCls} text-base font-medium`}
+                      required
+                    />
+                  </div>
+                  <div className="relative top-4 hidden items-center gap-2 pb-2 text-blue-400 sm:flex sm:w-20">
+                    <span className="h-0 flex-1 border-t-2 border-dotted border-current opacity-50" />
+                    <Monitor size={18} />
+                    <span className="h-0 flex-1 border-t-2 border-dotted border-current opacity-50" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <Label required>Lokasi / ruangan</Label>
                     <input
                       type="text"
                       name="location"
                       value={form.location}
                       onChange={handleChange}
-                      placeholder="Contoh: Ruang IT Lantai 2"
-                      className={inputCls}
+                      placeholder="Contoh: Ruang IT Lt. 2"
+                      className={`${fieldCls} text-base font-medium sm:text-right`}
                       required
                     />
                   </div>
+                </div>
+
+                {/* Garis sobekan */}
+                {/* <div className="border-t-2 border-dashed border-white" /> */}
+
+                {/* Detail perangkat, tersebar seperti grid di tiket */}
+                <div className="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-3">
                   <div>
-                    <Label required>Pemilik PC / User</Label>
+                    <Label required>Sejak kapan</Label>
+                    <select
+                      name="sinceWhen"
+                      value={form.sinceWhen}
+                      onChange={handleChange}
+                      className={fieldCls}
+                    >
+                      {sinceOptions.map((opt) => (
+                        <option key={opt} value={opt} className="bg-[#0c0c18]">
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <Label required>Pemilik PC</Label>
                     <input
                       type="text"
                       name="pcOwner"
                       value={form.pcOwner}
                       onChange={handleChange}
-                      className={inputCls}
+                      className={fieldCls}
                       required
+                    />
+                  </div>
+                  <div>
+                    <Label>Nama komputer / IP</Label>
+                    <input
+                      type="text"
+                      name="computerName"
+                      value={form.computerName}
+                      onChange={handleChange}
+                      placeholder="PC-HRD-01 / 192.168.1.45"
+                      className={fieldCls}
+                    />
+                  </div>
+                  <div>
+                    <Label>Nomor AnyDesk (opsional)</Label>
+                    <input
+                      type="text"
+                      name="anydeskNumber"
+                      value={form.anydeskNumber}
+                      onChange={handleChange}
+                      placeholder="123 456 789"
+                      className={`${fieldCls} font-mono`}
+                    />
+                  </div>
+                  <div>
+                    <Label>Password AnyDesk (opsional)</Label>
+                    <input
+                      type="text"
+                      name="anydeskPassword"
+                      value={form.anydeskPassword}
+                      onChange={handleChange}
+                      placeholder="Password sementara"
+                      className={`${fieldCls} font-mono`}
                     />
                   </div>
                 </div>
 
+                {/* Deskripsi */}
                 <div>
-                  <Label>Nama Komputer / IP</Label>
-                  <input
-                    type="text"
-                    name="computerName"
-                    value={form.computerName}
+                  <Label required>Deskripsi masalah</Label>
+                  <textarea
+                    name="description"
+                    value={form.description}
                     onChange={handleChange}
-                    placeholder="Contoh: PC-HRD-01 atau 192.168.1.45"
-                    className={inputCls}
+                    rows={4}
+                    placeholder="Jelaskan gejala, apa yang sudah dicoba, pesan error..."
+                    className="mt-1 w-full resize-none rounded-xl border-2 border-dashed border-white/40 bg-white/[0.03] px-4 py-3 text-sm leading-relaxed text-white placeholder:text-gray-600 focus:border-blue-500 focus:outline-none"
+                    required
                   />
-                </div>
-
-                {/* AnyDesk */}
-                <div className="rounded-2xl border-2 border-dashed border-white/15 p-4">
-                  <p className="mb-3 text-sm font-medium text-gray-300">
-                    Remote Access <span className="text-gray-500">(Opsional)</span>
-                  </p>
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="mb-1.5 block text-xs text-gray-500">Nomor AnyDesk</label>
-                      <input
-                        type="text"
-                        name="anydeskNumber"
-                        value={form.anydeskNumber}
-                        onChange={handleChange}
-                        placeholder="123 456 789"
-                        className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-blue-500 focus:outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="mb-1.5 block text-xs text-gray-500">Password AnyDesk</label>
-                      <input
-                        type="text"
-                        name="anydeskPassword"
-                        value={form.anydeskPassword}
-                        onChange={handleChange}
-                        placeholder="Password sementara"
-                        className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-blue-500 focus:outline-none"
-                      />
-                    </div>
-                  </div>
                 </div>
               </div>
             </TicketShell>
@@ -517,7 +538,7 @@ const CreateTicketUserPage = () => {
             )}
 
             {!trackLoading && hasSearched && !trackedTicket && (
-              <div className="rounded-2xl border border-dashed border-white/15 py-12 text-center text-gray-400">
+              <div className="rounded-2xl border border-dashed border-white/40 py-12 text-center text-gray-400">
                 Tiket tidak ditemukan
               </div>
             )}
@@ -526,14 +547,14 @@ const CreateTicketUserPage = () => {
               <div className="space-y-4">
                 {/* ===== TIKET ===== */}
                 <TicketShell
-                  stubHeight="8.5rem"
+                  stubWidth="16rem"
                   band={`#${String(trackedTicket._id).slice(-8).toUpperCase()}`}
                   stub={
-                    <div className="flex h-full flex-col justify-between">
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="text-xs font-semibold text-gray-500">Status</span>
+                    <>
+                      <div>
+                        <p className="text-xs font-semibold text-gray-500">Status</p>
                         <span
-                          className={`rounded-lg border px-3 py-1 text-sm font-semibold ${
+                          className={`mt-1.5 inline-flex rounded-lg border px-3 py-1.5 text-sm font-semibold ${
                             statusColor[trackedTicket.status] || statusColor.Baru
                           }`}
                         >
@@ -541,12 +562,12 @@ const CreateTicketUserPage = () => {
                         </span>
                       </div>
                       <div>
-                        <Barcode value={String(trackedTicket._id)} height={32} />
-                        <p className="mt-1.5 select-all break-all font-mono text-[11px] text-blue-400">
+                        <Barcode value={String(trackedTicket._id)} height={40} />
+                        <p className="mt-2 select-all break-all font-mono text-[11px] text-blue-400">
                           {trackedTicket._id}
                         </p>
                       </div>
-                    </div>
+                    </>
                   }
                 >
                   <div className="space-y-5">
@@ -572,7 +593,7 @@ const CreateTicketUserPage = () => {
                       </div>
                     </div>
 
-                    <div className="border-t-2 border-dashed border-white/15" />
+                    <div className="border-t-2 border-dashed border-white/40" />
 
                     <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-300">
                       {trackedTicket.description}
@@ -666,20 +687,20 @@ const CreateTicketUserPage = () => {
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
             onClick={() => setShowSuccessModal(false)}
           />
-          <div className="relative w-full max-w-md">
+          <div className="relative max-h-[92vh] w-full max-w-2xl overflow-y-auto">
             <TicketShell
-              stubHeight="8rem"
+              stubWidth="15rem"
               band="Tiket terkirim"
               stub={
-                <div className="flex h-full flex-col justify-between">
+                <>
                   <p className="text-xs font-semibold text-gray-500">Kode Tiket Anda</p>
                   <div>
-                    <Barcode value={createdTicketId} height={32} />
-                    <p className="mt-1.5 select-all break-all font-mono text-xs text-blue-300">
+                    <Barcode value={createdTicketId} height={40} />
+                    <p className="mt-2 select-all break-all font-mono text-xs text-blue-300">
                       {createdTicketId}
                     </p>
                   </div>
-                </div>
+                </>
               }
             >
               <div className="text-center">
@@ -688,7 +709,7 @@ const CreateTicketUserPage = () => {
                 </div>
                 <h3 className="text-lg font-semibold">Tiket Berhasil Dikirim!</h3>
                 <p className="mt-2 text-sm text-gray-400">
-                  Simpan kode tiket di bawah ini untuk melacak progress.
+                  Simpan kode tiket pada stub untuk melacak progress.
                 </p>
 
                 <button
