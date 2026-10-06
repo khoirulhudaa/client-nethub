@@ -409,11 +409,6 @@ const CreateTicketUserPage = () => {
                       required
                     />
                   </div>
-                  <div className="relative top-4 hidden items-center gap-2 pb-2 text-blue-400 sm:flex sm:w-20">
-                    <span className="h-0 flex-1 border-t-2 border-dotted border-current opacity-50" />
-                    <Monitor size={18} />
-                    <span className="h-0 flex-1 border-t-2 border-dotted border-current opacity-50" />
-                  </div>
                   <div className="min-w-0 flex-1">
                     <Label required>Lokasi / ruangan</Label>
                     <input
