@@ -52,7 +52,7 @@ function App() {
 
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/private/1a2b3c4d/register" element={<Register />} />
 
         {/* ===== HALAMAN KHUSUS TANPA SIDEBAR & TOPBAR ===== */}
         <Route
