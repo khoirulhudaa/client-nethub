@@ -137,13 +137,13 @@ const InstallAppPage = () => {
             <div className="md:mt-8 w-[92vw] md:space-y-0 space-y-5 md:w-[60vw] h-screen overflow-hidden items-center justify-center md:flex-row flex-col flex md:gap-4">
             <button
               onClick={handleShare}
-              className="w-full md:!w-1/2 h-[45vh] md:h-1/2 hover:bg-green-600 flex justify-center flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-6 transition duration-100 active:scale-[0.99]"
+              className="w-full md:!w-1/2 h-[40vh] md:h-1/2 hover:bg-green-600 flex justify-center flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-6 transition duration-100 active:scale-[0.99]"
             >
               <WhatsAppIcon size={120} className="text-white" />
               <span className="text-xl mt-3.5 font-medium">Share your device</span>
             </button>
 
-            <div className="group relative w-full md:!w-1/2 h-[45vh] md:h-1/2">
+            <div className="group relative w-full md:!w-1/2 h-[40vh] md:h-1/2">
               <button
                 onClick={handleInstall}
                 disabled={!canInstallNow}
