@@ -261,7 +261,7 @@ const CreateTicketUserPage = () => {
 
   // Link yang bisa dibuka di PC/HP siapa pun: otomatis membuka tab "Lacak Tiket" dan memuat tiketnya
   const buildTrackUrl = (id) =>
-    `${window.location.origin}/user/tickets/create?code=${encodeURIComponent(id)}`;
+    `https://texnet-hub.vercel.app/user/tickets/create?code=${encodeURIComponent(id)}`;
 
   const shareToWhatsApp = ({ id, title }) => {
     const text = [
@@ -272,7 +272,7 @@ const CreateTicketUserPage = () => {
       buildTrackUrl(id),
       "",
       "Install aplikasi TEXNet:",
-      `${window.location.origin}/install`,
+      `https://texnet-hub.vercel.app/install`,
     ].join("\n");
 
     // wa.me tanpa nomor = WhatsApp menampilkan pilihan kontak/grup tujuan
@@ -283,10 +283,10 @@ const CreateTicketUserPage = () => {
     const text = [
       "*TEXNet - Helpdesk IT*",
       "Butuh bantuan IT? Buat atau lacak tiket di sini:",
-      `${window.location.origin}/user/tickets/create`,
+      `https://texnet-hub.vercel.app/user/tickets/create`,
       "",
       "Install aplikasi TEXNet:",
-      `${window.location.origin}/install`,
+      `https://texnet-hub.vercel.app/install`,
     ].join("\n");
 
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
