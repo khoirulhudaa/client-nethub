@@ -8,6 +8,7 @@ import {
   Search,
   Clock,
   MessageSquare,
+  RefreshCcw,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import api from "../api/axios.js";
@@ -142,6 +143,7 @@ const CreateTicketUserPage = () => {
 
   const handleTrack = async (e) => {
     e?.preventDefault();
+    if (trackLoading) return; // cegah double-click
     if (!trackCode.trim()) {
       toast.error("Masukkan kode tiket");
       return;
@@ -187,11 +189,11 @@ const CreateTicketUserPage = () => {
         </div>
 
         {/* Tabs */}
-        <div className="mb-6 flex rounded-xl gap-x-1 border border-white/10 bg-white/[0.03] p-1">
+        <div className="mb-6 flex rounded-xl gap-x-1.5 border border-white/10 bg-white/[0.03] p-2">
           <button
             type="button"
             onClick={() => setActiveTab("create")}
-            className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition ${
+            className={`flex-1 rounded-lg py-3 text-sm font-medium transition ${
               activeTab === "create"
                 ? "bg-blue-600 text-white"
                 : "text-gray-400 hover:text-white bg-white/5"
@@ -202,7 +204,7 @@ const CreateTicketUserPage = () => {
           <button
             type="button"
             onClick={() => setActiveTab("track")}
-            className={`flex-1 rounded-lg py-2.5 text-sm font-medium transition ${
+            className={`flex-1 rounded-lg py-3 text-sm font-medium transition ${
               activeTab === "track"
                 ? "bg-blue-600 text-white"
                 : "text-gray-400 hover:text-white bg-white/5"
@@ -210,20 +212,13 @@ const CreateTicketUserPage = () => {
           >
             Lacak Tiket
           </button>
-          <button
-            type="button"
-            onClick={handleTrack}
-            className="text-xs text-blue-400 hover:text-blue-300"
-            >
-            Refresh status
-          </button>
         </div>
 
         {/* ==================== TAB: BUAT TIKET ==================== */}
         {activeTab === "create" && (
           <form
             onSubmit={handleSubmit}
-            className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-8 backdrop-blur-sm"
+            className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm"
           >
             <div className="space-y-5">
               {/* Nama Pelapor */}
@@ -449,12 +444,12 @@ const CreateTicketUserPage = () => {
                   value={trackCode}
                   onChange={(e) => setTrackCode(e.target.value)}
                   placeholder="Tempel kode tiket di sini..."
-                  className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none font-mono"
+                  className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none"
                 />
                 <button
                   type="submit"
                   disabled={trackLoading}
-                  className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-60"
+                  className="rounded-xl bg-blue-600 w-[48px] flex items-center justify-center text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-60"
                 >
                   {trackLoading ? (
                     <Loader2 size={18} className="animate-spin" />
@@ -462,6 +457,18 @@ const CreateTicketUserPage = () => {
                     <Search size={18} />
                   )}
                 </button>
+              <button
+                type="button"
+                onClick={handleTrack}
+                disabled={trackLoading}
+                className="rounded-xl bg-green-600 w-[48px] flex items-center justify-center text-sm font-medium text-white hover:bg-green-500 disabled:opacity-60"
+              >
+                {trackLoading ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : (
+                  <RefreshCcw size={18} />
+                )}
+              </button>
               </div>
             </form>
 
