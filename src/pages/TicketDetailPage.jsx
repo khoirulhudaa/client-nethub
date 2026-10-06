@@ -211,7 +211,7 @@ useEffect(() => {
           {/* Deskripsi */}
           <div className="rounded-2xl border border-white/10 bg-white dark:bg-[#0c0c18] p-5">
             <h2 className="mb-3 text-sm font-semibold dark:text-white">Deskripsi Masalah</h2>
-            <p className="whitespace-pre-wrap text-sm text-gray-300 leading-relaxed">
+            <p className="whitespace-pre-wrap text-sm dark:text-gray-300 leading-relaxed">
               {ticket.description}
             </p>
           </div>
@@ -381,21 +381,21 @@ useEffect(() => {
                 <select
                     value={newStatus}
                     onChange={(e) => setNewStatus(e.target.value)}
-                    className="cursor-pointer hover:brightness-90 mb-3 w-full rounded-xl border border-white/10 bg-white dark:bg-[#0c0c18] px-3 py-2.5 text-sm text-white"
+                    className="cursor-pointer hover:brightness-90 mb-3 w-full rounded-xl border border-white/10 bg-slate-200 dark:bg-[#0c0c18] px-3 py-2.5 text-sm dark:text-white"
                 >
-                <option value="Baru" className="bg-[#0c0c18]">Baru</option>
-                <option value="Sedang Dikerjakan" className="bg-[#0c0c18]">Sedang Dikerjakan</option>
-                <option value="Menunggu Info" className="bg-[#0c0c18]">Menunggu Info</option>
-                <option value="Selesai" className="bg-[#0c0c18]">Selesai</option>
-                <option value="Ditutup" className="bg-[#0c0c18]">Ditutup</option>
+                <option value="Baru" className="text-white bg-[#0c0c18]">Baru</option>
+                <option value="Sedang Dikerjakan" className="text-white bg-[#0c0c18]">Sedang Dikerjakan</option>
+                <option value="Menunggu Info" className="text-white bg-[#0c0c18]">Menunggu Info</option>
+                <option value="Selesai" className="text-white bg-[#0c0c18]">Selesai</option>
+                <option value="Ditutup" className="text-white bg-[#0c0c18]">Ditutup</option>
                 </select>
 
                 <textarea
-                value={statusNote}
-                onChange={(e) => setStatusNote(e.target.value)}
-                rows={2}
-                placeholder="Catatan progress (opsional)..."
-                className="mb-3 w-full rounded-xl border border-white/10 bg-white dark:bg-[#0c0c18] px-3 py-2.5 text-sm text-white placeholder:text-gray-500 resize-none"
+                  value={statusNote}
+                  onChange={(e) => setStatusNote(e.target.value)}
+                  rows={2}
+                  placeholder="Catatan progress (opsional)..."
+                  className="mb-3 w-full rounded-xl border border-white/10 bg-slate-200 dark:bg-[#0c0c18] px-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder:text-gray-500 resize-none"
                 />
 
                 <button
