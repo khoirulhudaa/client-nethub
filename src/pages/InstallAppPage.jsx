@@ -117,10 +117,10 @@ const InstallAppPage = () => {
   };
 
   return (
-    <div className="flex max-h-screen overflow-hidden items-center justify-center bg-[#0a0a12] px-5 text-white">
+    <div className="flex min-h-screen md:max-h-screen md:overflow-hidden items-center justify-center bg-[#0a0a12] px-5 text-white">
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-blue-950/50 via-transparent to-indigo-950/30" />
 
-      <div className="relative flex w-full max-w-md h-screen justify-center flex-col items-center text-center">
+      <div className="relative flex w-full max-w-md md:h-screen justify-center flex-col items-center text-center">
         {isInstalled ? (
          <div className="w-full rounded-3xl border border-white/10 bg-white/[0.03] px-8 py-10 text-center">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/15 ring-8 ring-emerald-500/5">
@@ -134,16 +134,16 @@ const InstallAppPage = () => {
           </div>
         ) : (
           <>
-            <div className="mt-8 w-[60vw] h-screen overflow-hidden items-center justify-center flex gap-4">
-              <button
-                onClick={handleShare}
-                className="!w-1/2 h-1/2 hover:bg-green-600 flex justify-center flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-6 transition duration-100 active:scale-[0.99]"
-              >
-                <WhatsAppIcon size={120} className="text-white" />
-                <span className="text-xl mt-3.5 font-medium">Share your device</span>
-              </button>
+            <div className="md:mt-8 w-[92vw] md:space-y-0 space-y-5 md:w-[60vw] h-screen overflow-hidden items-center justify-center md:flex-row flex-col flex md:gap-4">
+            <button
+              onClick={handleShare}
+              className="w-full md:!w-1/2 h-[45vh] md:h-1/2 hover:bg-green-600 flex justify-center flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-6 transition duration-100 active:scale-[0.99]"
+            >
+              <WhatsAppIcon size={120} className="text-white" />
+              <span className="text-xl mt-3.5 font-medium">Share your device</span>
+            </button>
 
-            <div className="group relative !w-1/2 h-1/2">
+            <div className="group relative w-full md:!w-1/2 h-[45vh] md:h-1/2">
               <button
                 onClick={handleInstall}
                 disabled={!canInstallNow}
