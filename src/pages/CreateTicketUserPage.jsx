@@ -96,10 +96,10 @@ const TicketShell = ({ stubWidth = "16rem", band, children, stub }) => (
 
 // Field bergaya tiket: label kecil + isian dengan garis putus-putus di bawahnya
 const fieldCls =
-  "w-full border-x-0 border-t-0 border-b-2 border-dashed border-white/40 bg-transparent px-0 py-1.5 text-sm text-white placeholder:text-gray-600 focus:border-blue-500 focus:outline-none";
+  "w-full border-x-0 border-t-0 border-b-2 border-dashed border-white/40 bg-transparent px-0 py-1.5 text-xs text-white placeholder:text-gray-600 focus:border-blue-500 focus:outline-none";
 
 const Label = ({ children, required }) => (
-  <label className="mb-0.5 block text-xs font-semibold text-white">
+  <label className="mb-0.5 block text-sm font-semibold text-white">
     {children}
     {required && <span className="ml-0.5 text-red-400">*</span>}
   </label>
@@ -250,8 +250,15 @@ const CreateTicketUserPage = () => {
   const panel = "rounded-2xl border border-white/10 bg-white/[0.03] p-5";
 
   return (
-    <div className="min-h-screen bg-[#0a0a12] text-white">
+    <div className="relative max-h-screen bg-[#0a0a12] overflow-y-auto overflow-x-hidden text-white">
       <style>{ticketCss}</style>
+      <img
+        draggable={false}
+        onContextMenu={(e) => e.preventDefault()}
+        onDragStart={(e) => e.preventDefault()}
+        src="/sidebar.png" alt="wallpaper-sidebar" className={`rotate-[14deg] scale-[2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-15 left-0`} 
+      />
+      
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-blue-950/90 via-transparent to-purple-800/20" />
 
       <div className="relative mx-auto w-[97vw] px-4 py-8 sm:py-12 md:!max-w-6xl">
@@ -349,16 +356,16 @@ const CreateTicketUserPage = () => {
 
                 {/* Kategori (kiri) + prioritas (kanan) */}
                 <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div className="min-w-[10rem] flex-1">
+                  <div className="flex-1">
                     <Label required>Kategori</Label>
                     <select
                       name="category"
                       value={form.category}
                       onChange={handleChange}
-                      className={`${fieldCls} text-lg font-semibold`}
+                      className={`${fieldCls} text-md font-semibold`}
                     >
                       {options.categories.map((cat) => (
-                        <option key={cat} value={cat} className="bg-[#0c0c18] text-base">
+                        <option key={cat} value={cat} className="bg-[#0c0c18] text-xs">
                           {cat}
                         </option>
                       ))}
@@ -370,10 +377,10 @@ const CreateTicketUserPage = () => {
                       name="priority"
                       value={form.priority}
                       onChange={handleChange}
-                      className={`${fieldCls} text-lg font-semibold sm:text-left`}
+                      className={`${fieldCls} text-md font-semibold sm:text-left`}
                     >
                       {options.priorities.map((p) => (
-                        <option key={p} value={p} className="bg-[#0c0c18] text-base">
+                        <option key={p} value={p} className="bg-[#0c0c18] text-xs">
                           {p}
                         </option>
                       ))}
@@ -391,7 +398,7 @@ const CreateTicketUserPage = () => {
                       value={form.requesterName}
                       onChange={handleChange}
                       placeholder="Nama - Jabatan"
-                      className={`${fieldCls} text-base font-medium`}
+                      className={`${fieldCls} text-xs font-medium`}
                       required
                     />
                   </div>
@@ -408,7 +415,7 @@ const CreateTicketUserPage = () => {
                       value={form.location}
                       onChange={handleChange}
                       placeholder="Contoh: Ruang IT Lt. 2"
-                      className={`${fieldCls} text-base font-medium sm:text-left`}
+                      className={`${fieldCls} text-xs font-medium sm:text-left`}
                       required
                     />
                   </div>
@@ -419,6 +426,17 @@ const CreateTicketUserPage = () => {
 
                 {/* Detail perangkat, tersebar seperti grid di tiket */}
                 <div className="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-3">
+                  <div>
+                    <Label required>Pemilik PC</Label>
+                    <input
+                      type="text"
+                      name="pcOwner"
+                      value={form.pcOwner}
+                      onChange={handleChange}
+                      className={fieldCls}
+                      required
+                    />
+                  </div>
                   <div>
                     <Label required>Sejak kapan</Label>
                     <select
@@ -435,17 +453,6 @@ const CreateTicketUserPage = () => {
                     </select>
                   </div>
                   <div>
-                    <Label required>Pemilik PC</Label>
-                    <input
-                      type="text"
-                      name="pcOwner"
-                      value={form.pcOwner}
-                      onChange={handleChange}
-                      className={fieldCls}
-                      required
-                    />
-                  </div>
-                  <div>
                     <Label>Nama komputer / IP</Label>
                     <input
                       type="text"
@@ -456,6 +463,9 @@ const CreateTicketUserPage = () => {
                       className={fieldCls}
                     />
                   </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-x-4">
                   <div>
                     <Label>Nomor AnyDesk (opsional)</Label>
                     <input
@@ -580,7 +590,7 @@ const CreateTicketUserPage = () => {
                     <div className="flex items-center gap-3">
                       <div className="min-w-0">
                         <p className="text-xs font-semibold text-gray-500">Pelapor</p>
-                        <p className="truncate text-base font-medium">{trackedTicket.requesterName}</p>
+                        <p className="truncate text-xs font-medium">{trackedTicket.requesterName}</p>
                       </div>
                       <div className="flex flex-1 items-center gap-2 text-blue-400">
                         <span className="h-0 flex-1 border-t-2 border-dotted border-current opacity-50" />
@@ -589,7 +599,7 @@ const CreateTicketUserPage = () => {
                       </div>
                       <div className="min-w-0 text-right">
                         <p className="text-xs font-semibold text-gray-500">Lokasi</p>
-                        <p className="truncate text-base font-medium">{trackedTicket.location}</p>
+                        <p className="truncate text-xs font-medium">{trackedTicket.location}</p>
                       </div>
                     </div>
 
@@ -707,7 +717,7 @@ const CreateTicketUserPage = () => {
                 <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15">
                   <Check size={28} className="text-emerald-400" />
                 </div>
-                <h3 className="text-lg font-semibold">Tiket Berhasil Dikirim!</h3>
+                <h3 className="text-md font-semibold">Tiket Berhasil Dikirim!</h3>
                 <p className="mt-2 text-sm text-gray-400">
                   Simpan kode tiket pada stub untuk melacak progress.
                 </p>
