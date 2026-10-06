@@ -263,14 +263,16 @@ const CreateTicketUserPage = () => {
 
       <div className="relative mx-auto w-[97vw] px-4 py-8 sm:py-12 md:!max-w-7xl">
         {/* Header */}
-        <div className="mb-6 md:text-center">
-          <div className="mx-auto mb-4 hidden md:flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-400">
+        <div className="mb-6 gap-2.5 md:text-left flex items-center w-max">
+          <div className="mx-auto hidden md:flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-400">
             <LifeBuoy size={26} />
           </div>
-          <h1 className="text-lg md:text-2xl font-semibold tracking-tight">TEXNET TICKET</h1>
-          <p className="mt-1 text-xs md:text-sm text-gray-400">
-            Buat tiket baru atau lacak progress tiket Anda
-          </p>
+          <div className="relative top-[-3px]">
+            <h1 className="text-lg font-semibold tracking-tight">TEXNET TICKET</h1>
+            <p className="text-xs md:text-sm text-gray-400">
+              Buat tiket baru atau lacak progress tiket Anda
+            </p>
+          </div>
         </div>
 
         {/* Tabs */}
