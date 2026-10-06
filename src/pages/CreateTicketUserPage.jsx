@@ -1,21 +1,21 @@
-import { useEffect, useMemo, useState } from "react";
 import {
-  Loader2,
-  LifeBuoy,
-  Send,
-  Copy,
   Check,
-  Search,
   Clock,
+  Copy,
+  LifeBuoy,
+  Loader2,
   MessageSquare,
+  Share2,
   Monitor,
   RefreshCcw,
+  Search,
+  Send,
   TicketPlus,
 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
-import { Link } from "react-router-dom";
 
 const statusColor = {
   Baru: "bg-blue-500/15 text-blue-400 border-blue-500/30",
@@ -241,6 +241,16 @@ const CreateTicketUserPage = () => {
     }
   };
 
+  // Dibuka lewat link yang dibagikan: /user/tickets/create?code=<kode>
+  useEffect(() => {
+    const code = new URLSearchParams(window.location.search).get("code");
+    if (!code) return;
+    setActiveTab("track");
+    setTrackCode(code);
+    handleTrack(null, code);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#0a0a12]">
@@ -248,6 +258,39 @@ const CreateTicketUserPage = () => {
       </div>
     );
   }
+
+  // Link yang bisa dibuka di PC/HP siapa pun: otomatis membuka tab "Lacak Tiket" dan memuat tiketnya
+  const buildTrackUrl = (id) =>
+    `${window.location.origin}/user/tickets/create?code=${encodeURIComponent(id)}`;
+
+  const shareToWhatsApp = ({ id, title }) => {
+    const text = [
+      `*Tiket Helpdesk IT*${title ? ` - ${title}` : ""}`,
+      `Kode tiket: ${id}`,
+      "",
+      "Lihat / lacak tiket di sini:",
+      buildTrackUrl(id),
+      "",
+      "Install aplikasi TEXNet:",
+      `${window.location.origin}/install`,
+    ].join("\n");
+
+    // wa.me tanpa nomor = WhatsApp menampilkan pilihan kontak/grup tujuan
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+  };
+
+  const sharePageToWhatsApp = () => {
+    const text = [
+      "*TEXNet - Helpdesk IT*",
+      "Butuh bantuan IT? Buat atau lacak tiket di sini:",
+      `${window.location.origin}/user/tickets/create`,
+      "",
+      "Install aplikasi TEXNet:",
+      `${window.location.origin}/install`,
+    ].join("\n");
+
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+  };
 
   const panel = "rounded-2xl border border-white/10 bg-white/[0.03] p-5";
 
@@ -299,6 +342,15 @@ const CreateTicketUserPage = () => {
               {t.label}
             </button>
           ))}
+          <button
+            type="button"
+            onClick={sharePageToWhatsApp}
+            aria-label="Bagikan halaman ke WhatsApp"
+            className="flex items-center justify-center gap-2 rounded-lg md:rounded-[16px] border border-white/20 bg-emerald-600 px-4 py-2 md:py-3 text-sm font-medium text-white transition hover:bg-emerald-500 active:scale-[0.99]"
+          >
+            <Share2 size={16} />
+            <span className="hidden sm:inline">Bagikan</span>
+          </button>
         </div>
 
         {/* ==================== TAB: BUAT TIKET ==================== */}
@@ -581,6 +633,15 @@ const CreateTicketUserPage = () => {
                         <p className="mt-2 select-all break-all font-mono text-[11px] text-blue-400">
                           {trackedTicket._id}
                         </p>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            shareToWhatsApp({ id: trackedTicket._id, title: trackedTicket.title })
+                          }
+                          className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-sm font-medium text-white hover:bg-emerald-500 active:scale-[0.99]"
+                        >
+                          <Share2 size={16} /> Bagikan ke WhatsApp
+                        </button>
                       </div>
                     </>
                   }
@@ -740,6 +801,13 @@ const CreateTicketUserPage = () => {
                       <Copy size={16} /> Salin Kode Tiket
                     </>
                   )}
+                </button>
+
+                <button
+                  onClick={() => shareToWhatsApp({ id: createdTicketId })}
+                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-sm font-medium text-white hover:bg-emerald-500 active:scale-[0.99]"
+                >
+                  <Share2 size={16} /> Bagikan ke WhatsApp
                 </button>
 
                 <div className="mt-3 flex gap-2">
