@@ -74,9 +74,9 @@ const Barcode = ({ value = "", height = 40 }) => {
 
 // Pembungkus tiket landscape: badan di kiri, stub di kanan (di mobile stub di bawah)
 const TicketShell = ({ stubWidth = "16rem", band, children, stub }) => (
-  <div className="drop-shadow-2xl">
+  <div className="drop-shadow-2xl w-full">
     <div
-      className="ticket-cut flex flex-col overflow-hidden rounded-xl md:rounded-3xl border border-white/10 bg-[#12121a9a] lg:flex-row"
+      className="ticket-cut w-[80vw] flex flex-col overflow-hidden rounded-lg md:rounded-2xl border border-white/40 bg-[#12121a9a] lg:flex-row"
       style={{ "--stub": stubWidth }}
     >
       <div className="min-w-0 flex-1">
@@ -251,20 +251,20 @@ const CreateTicketUserPage = () => {
   const panel = "rounded-2xl border border-white/10 bg-white/[0.03] p-5";
 
   return (
-    <div className="relative h-screen bg-[#0a0a12] overflow-y-auto overflow-x-hidden text-white">
+    <div className="relative h-screen bg-[#0a0a12] overflow-y-hidden overflow-x-hidden text-white">
       <style>{ticketCss}</style>
       <img
         draggable={false}
         onContextMenu={(e) => e.preventDefault()}
         onDragStart={(e) => e.preventDefault()}
-        src="/sidebar.png" alt="wallpaper-sidebar" className={`rotate-[14deg] scale-[2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-15 left-0`} 
+        src="/sidebar.png" alt="wallpaper-sidebar" className={`rotate-[14deg] scale-[2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-5 left-0`} 
       />
       
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-blue-950/90 via-transparent to-purple-800/20" />
 
-      <div className="relative mx-auto w-[97vw] px-4 py-8 sm:py-12 md:!max-w-7xl">
+      <div className="relative mx-auto w-[97vw] h-screen flex flex-col items-center justify-center px-4 py-6 md:!max-w-7xl">
         {/* Header */}
-        <div className="mb-6 gap-2.5 md:text-left flex items-center w-max">
+        {/* <div className="mb-6 gap-2.5 md:text-left flex items-center w-max">
           <Link to="/login" className="cursor-pointer active:scale-[0.99] hover:brightness-90">
             <div className="mx-auto border border-white/20 hidden md:flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-400">
               <LifeBuoy size={26} />
@@ -276,10 +276,10 @@ const CreateTicketUserPage = () => {
               Buat tiket baru atau lacak progress tiket Anda
             </p>
           </div>
-        </div>
+        </div> */}
 
         {/* Tabs */}
-        <div className="mb-6 flex gap-x-1.5 rounded-xl md:rounded-[20px] border border-white/10 bg-white/[0.03] p-2">
+        <div className="w-[80vw] mb-6 flex gap-x-1.5 rounded-xl md:rounded-[20px] border border-white/40 bg-white/[0.03] p-2">
           {[
             { key: "create", label: "Buat Tiket" },
             { key: "track", label: "Lacak Tiket" },
@@ -288,7 +288,7 @@ const CreateTicketUserPage = () => {
               key={t.key}
               type="button"
               onClick={() => setActiveTab(t.key)}
-              className={`flex-1 rounded-lg md:rounded-[16px] py-2 md:py-3 text-sm font-medium transition ${
+              className={`flex-1 border border-white/20 rounded-lg md:rounded-[16px] py-2 md:py-3 text-sm font-medium transition ${
                 activeTab === t.key
                   ? "bg-blue-600 text-white"
                   : "bg-white/5 text-gray-400 hover:text-white"
@@ -430,7 +430,7 @@ const CreateTicketUserPage = () => {
                 {/* <div className="border-t-2 border-dashed border-white" /> */}
 
                 {/* Detail perangkat, tersebar seperti grid di tiket */}
-                <div className="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2">
                   <div>
                     <Label required>Pemilik PC</Label>
                     <input
@@ -457,6 +457,9 @@ const CreateTicketUserPage = () => {
                       ))}
                     </select>
                   </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-x-4 gap-y-5">
                   <div>
                     <Label>Nama komputer / IP</Label>
                     <input
@@ -692,7 +695,7 @@ const CreateTicketUserPage = () => {
           </div>
         )}
 
-        <p className="mt-8 text-center text-xs text-gray-600">TEXNet Support • Bantuan IT Internal</p>
+        {/* <p className="mt-8 text-center text-xs text-gray-600">TEXNet Support • Bantuan IT Internal</p> */}
       </div>
 
       {/* ===== SUCCESS MODAL (tiket dengan stub berisi kode) ===== */}
