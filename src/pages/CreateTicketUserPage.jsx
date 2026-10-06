@@ -96,7 +96,7 @@ const TicketShell = ({ stubWidth = "16rem", band, children, stub }) => (
 
 // Field bergaya tiket: label kecil + isian dengan garis putus-putus di bawahnya
 const fieldCls =
-  "w-full border-x-0 border-t-0 border-b-2 border-dashed border-white/40 bg-transparent px-0 py-1.5 text-xs text-white placeholder:text-gray-600 focus:border-blue-500 focus:outline-none";
+  "w-full border-x-0 border-t-0 border-b-2 border-dashed border-white/40 bg-transparent px-0 py-1.5 text-xs text-slate-300 placeholder:text-gray-600 focus:border-blue-500 focus:outline-none";
 
 const Label = ({ children, required }) => (
   <label className="mb-0.5 block text-sm font-semibold text-white">
@@ -499,7 +499,7 @@ const CreateTicketUserPage = () => {
                     onChange={handleChange}
                     rows={4}
                     placeholder="Jelaskan gejala, apa yang sudah dicoba, pesan error..."
-                    className="mt-1 w-full resize-none rounded-xl border-2 border-dashed border-white/40 bg-white/[0.03] px-4 py-3 text-sm leading-relaxed text-white placeholder:text-gray-600 focus:border-blue-500 focus:outline-none"
+                    className="mt-1 w-full resize-none rounded-xl border-2 border-dashed border-white/40 bg-white/[0.03] px-4 py-3 text-xs leading-relaxed text-slate-300 placeholder:text-gray-600 focus:border-blue-500 focus:outline-none"
                     required
                   />
                 </div>
