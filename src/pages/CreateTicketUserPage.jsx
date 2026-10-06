@@ -75,7 +75,7 @@ const Barcode = ({ value = "", height = 40 }) => {
 const TicketShell = ({ stubWidth = "16rem", band, children, stub }) => (
   <div className="drop-shadow-2xl">
     <div
-      className="ticket-cut flex flex-col overflow-hidden rounded-xl md:rounded-3xl border border-white/10 bg-[#12121a] lg:flex-row"
+      className="ticket-cut flex flex-col overflow-hidden rounded-xl md:rounded-3xl border border-white/10 bg-[#12121a9a] lg:flex-row"
       style={{ "--stub": stubWidth }}
     >
       <div className="min-w-0 flex-1">
@@ -250,7 +250,7 @@ const CreateTicketUserPage = () => {
   const panel = "rounded-2xl border border-white/10 bg-white/[0.03] p-5";
 
   return (
-    <div className="relative max-h-screen bg-[#0a0a12] overflow-y-auto overflow-x-hidden text-white">
+    <div className="relative h-screen bg-[#0a0a12] overflow-y-auto overflow-x-hidden text-white">
       <style>{ticketCss}</style>
       <img
         draggable={false}
