@@ -267,7 +267,7 @@ const CreateTicketUserPage = () => {
         </div>
 
         {/* Tabs */}
-        <div className="mb-6 flex gap-x-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-2">
+        <div className="mb-6 flex gap-x-1.5 rounded-[20px] border border-white/10 bg-white/[0.03] p-2">
           {[
             { key: "create", label: "Buat Tiket" },
             { key: "track", label: "Lacak Tiket" },
@@ -276,7 +276,7 @@ const CreateTicketUserPage = () => {
               key={t.key}
               type="button"
               onClick={() => setActiveTab(t.key)}
-              className={`flex-1 rounded-lg py-3 text-sm font-medium transition ${
+              className={`flex-1 rounded-[16px] py-3 text-sm font-medium transition ${
                 activeTab === t.key
                   ? "bg-blue-600 text-white"
                   : "bg-white/5 text-gray-400 hover:text-white"
@@ -408,7 +408,7 @@ const CreateTicketUserPage = () => {
                       value={form.location}
                       onChange={handleChange}
                       placeholder="Contoh: Ruang IT Lt. 2"
-                      className={`${fieldCls} text-base font-medium sm:text-right`}
+                      className={`${fieldCls} text-base font-medium sm:text-left`}
                       required
                     />
                   </div>
