@@ -10,6 +10,7 @@ import {
   MessageSquare,
   Monitor,
   RefreshCcw,
+  TicketPlus,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import api from "../api/axios.js";
@@ -76,7 +77,7 @@ const Barcode = ({ value = "", height = 40 }) => {
 const TicketShell = ({ stubWidth = "16rem", band, children, stub }) => (
   <div className="drop-shadow-2xl w-full">
     <div
-      className="ticket-cut w-[80vw] flex flex-col overflow-hidden rounded-lg md:rounded-2xl border border-white/40 bg-[#12121a9a] lg:flex-row"
+      className="ticket-cut w-[70vw] flex flex-col overflow-hidden rounded-lg md:rounded-2xl border border-white/40 bg-[#12121a9a] lg:flex-row"
       style={{ "--stub": stubWidth }}
     >
       <div className="min-w-0 flex-1">
@@ -279,21 +280,22 @@ const CreateTicketUserPage = () => {
         </div> */}
 
         {/* Tabs */}
-        <div className="w-[80vw] mb-6 flex gap-x-1.5 rounded-xl md:rounded-[20px] border border-white/40 bg-white/[0.03] p-2">
+        <div className="w-[70vw] mb-6 flex gap-x-1.5 rounded-xl md:rounded-[20px] border border-white/40 bg-white/[0.03] p-2">
           {[
-            { key: "create", label: "Buat Tiket" },
-            { key: "track", label: "Lacak Tiket" },
+            { key: "create", label: "Buat Tiket", icon: TicketPlus },
+            { key: "track", label: "Lacak Tiket", icon: Search },
           ].map((t) => (
             <button
               key={t.key}
               type="button"
               onClick={() => setActiveTab(t.key)}
-              className={`flex-1 border border-white/20 rounded-lg md:rounded-[16px] py-2 md:py-3 text-sm font-medium transition ${
+              className={`flex-1 flex items-center gap-2 justify-center border border-white/20 rounded-lg md:rounded-[16px] py-2 md:py-3 text-sm font-medium transition ${
                 activeTab === t.key
                   ? "bg-blue-600 text-white"
                   : "bg-white/5 text-gray-400 hover:text-white"
               }`}
             >
+              {t.icon && <t.icon size={16} />}
               {t.label}
             </button>
           ))}
