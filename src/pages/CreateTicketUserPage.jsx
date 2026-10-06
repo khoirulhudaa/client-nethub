@@ -251,7 +251,7 @@ const CreateTicketUserPage = () => {
   const panel = "rounded-2xl border border-white/10 bg-white/[0.03] p-5";
 
   return (
-    <div className="relative h-screen bg-[#0a0a12] overflow-y-hidden overflow-x-hidden text-white">
+    <div className="relative md:h-screen bg-[#0a0a12] md:overflow-y-hidden overflow-x-hidden text-white">
       <style>{ticketCss}</style>
       <img
         draggable={false}
