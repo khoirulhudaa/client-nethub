@@ -264,7 +264,7 @@ const CreateTicketUserPage = () => {
       <div className="relative mx-auto w-[97vw] px-4 py-8 sm:py-12 md:!max-w-7xl">
         {/* Header */}
         <div className="mb-6 gap-2.5 md:text-left flex items-center w-max">
-          <div className="mx-auto hidden md:flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-400">
+          <div className="mx-auto border border-white/20 hidden md:flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-400">
             <LifeBuoy size={26} />
           </div>
           <div className="relative top-[-3px]">
