@@ -164,18 +164,18 @@ useEffect(() => {
         <div className="lg:col-span-2 space-y-3">
           
         {/* Info Laporan */}
-        <div className="rounded-2xl border border-white/10 bg-white dark:bg-white/5 p-5">
-            <h2 className="mb-3 text-sm font-semibold text-white">Informasi Laporan</h2>
+        <div className="rounded-2xl border border-white/10 bg-white dark:bg-[#0c0c18] p-5">
+            <h2 className="mb-3 text-sm font-semibold dark:text-white">Informasi Laporan</h2>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 text-sm">
             <div>
-                <p className="text-gray-500">Nama Pelapor</p>
-                <p className="text-white">
+                <p className="font-semibold dark:text-gray-500">Nama Pelapor</p>
+                <p className="dark:text-white">
                 {ticket.requesterName || ticket.createdBy?.name || "-"}
                 </p>
             </div>
             <div>
-                <p className="text-gray-500">Waktu Laporan</p>
-                <p className="text-white">
+                <p className="font-semibold dark:text-gray-500">Waktu Laporan</p>
+                <p className="dark:text-white">
                 {new Date(ticket.createdAt).toLocaleString("id-ID", {
                     day: "numeric",
                     month: "long",
@@ -186,66 +186,64 @@ useEffect(() => {
                 </p>
             </div>
             <div>
-                <p className="text-gray-500">Kategori</p>
-                <p className="text-white">{ticket.category}</p>
+                <p className="font-semibold dark:text-gray-500">Kategori</p>
+                <p className="dark:text-white">{ticket.category}</p>
             </div>
             <div>
-                <p className="text-gray-500">Prioritas</p>
-                <p className="text-white">{ticket.priority}</p>
+                <p className="font-semibold dark:text-gray-500">Prioritas</p>
+                <p className="dark:text-white">{ticket.priority}</p>
             </div>
             <div>
-                <p className="text-gray-500">Status Saat Ini</p>
+                <p className="font-semibold dark:text-gray-500">Status Saat Ini</p>
                 <span
-                className={`inline-flex rounded-md border px-2 py-0.5 text-xs font-medium ${
-                    statusColor[ticket.status]
-                }`}
+                className={`inline-flex rounded-md dark:text-blue-400`}
                 >
                 {ticket.status}
                 </span>
             </div>
             <div>
-                <p className="text-gray-500">Sejak Kapan Masalah</p>
-                <p className="text-white">{ticket.sinceWhen}</p>
+                <p className="font-semibold dark:text-gray-500">Sejak Kapan Masalah</p>
+                <p className="dark:text-white">{ticket.sinceWhen}</p>
             </div>
             </div>
         </div>
 
           {/* Deskripsi */}
-          <div className="rounded-2xl border border-white/10 bg-white dark:bg-white/5 p-5">
-            <h2 className="mb-3 text-sm font-semibold text-white">Deskripsi Masalah</h2>
+          <div className="rounded-2xl border border-white/10 bg-white dark:bg-[#0c0c18] p-5">
+            <h2 className="mb-3 text-sm font-semibold dark:text-white">Deskripsi Masalah</h2>
             <p className="whitespace-pre-wrap text-sm text-gray-300 leading-relaxed">
               {ticket.description}
             </p>
           </div>
 
           {/* Info Perangkat */}
-          <div className="rounded-2xl border border-white/10 bg-white dark:bg-white/5 p-5">
-            <h2 className="mb-3 text-sm font-semibold text-white">Informasi Perangkat</h2>
+          <div className="rounded-2xl border border-white/10 bg-white dark:bg-[#0c0c18] p-5">
+            <h2 className="mb-3 text-sm font-semibold dark:text-white">Informasi Perangkat</h2>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 text-sm">
               <div>
-                <p className="text-gray-500">Lokasi / Ruangan</p>
-                <p className="text-white">{ticket.location}</p>
+                <p className="font-semibold dark:text-gray-500">Lokasi / Ruangan</p>
+                <p className="dark:text-white">{ticket.location}</p>
               </div>
               <div>
-                <p className="text-gray-500">Pemilik PC</p>
-                <p className="text-white">{ticket.pcOwner}</p>
+                <p className="font-semibold dark:text-gray-500">Pemilik PC</p>
+                <p className="dark:text-white">{ticket.pcOwner}</p>
               </div>
               <div>
-                <p className="text-gray-500">Nama Komputer / IP</p>
-                <p className="text-white">{ticket.computerName || "-"}</p>
+                <p className="font-semibold dark:text-gray-500">Nama Komputer / IP</p>
+                <p className="dark:text-white">{ticket.computerName || "-"}</p>
               </div>
               <div>
-                <p className="text-gray-500">Sejak Kapan</p>
-                <p className="text-white">{ticket.sinceWhen}</p>
+                <p className="font-semibold dark:text-gray-500">Sejak Kapan</p>
+                <p className="dark:text-white">{ticket.sinceWhen}</p>
               </div>
               {ticket.anydeskNumber && (
                 <>
                   <div>
-                    <p className="text-gray-500">Nomor AnyDesk</p>
+                    <p className="font-semibold dark:text-gray-500">Nomor AnyDesk</p>
                     <p className="text-white font-mono">{ticket.anydeskNumber}</p>
                   </div>
                   <div>
-                    <p className="text-gray-500">Password AnyDesk</p>
+                    <p className="font-semibold dark:text-gray-500">Password AnyDesk</p>
                     <p className="text-white font-mono">{ticket.anydeskPassword || "-"}</p>
                   </div>
                 </>
@@ -255,8 +253,8 @@ useEffect(() => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3">
             {/* Komentar */}
-            <div className="rounded-2xl border border-white/10 bg-white dark:bg-white/5 p-5">
-                <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold text-white">
+            <div className="rounded-2xl border border-white/10 bg-white dark:bg-[#0c0c18] p-5">
+                <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold dark:text-white">
                 <MessageSquare size={16} />
                 Diskusi
                 </h2>
@@ -306,8 +304,8 @@ useEffect(() => {
                 </form>
             </div>
             {/* Info Pembuat */}
-            <div className="rounded-2xl h-max border border-white/10 bg-white dark:bg-white/5 p-5">
-                <h2 className="mb-3 text-sm font-semibold text-white">Dilaporkan Oleh</h2>
+            <div className="w-full rounded-2xl h-max border border-white/10 bg-white dark:bg-[#0c0c18] p-5">
+                <h2 className="mb-3 text-sm font-semibold dark:text-white">Dilaporkan Oleh</h2>
                 <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/20 text-sm font-semibold text-accent">
                     {ticket.createdBy?.name?.[0]?.toUpperCase() || "U"}
@@ -350,8 +348,8 @@ useEffect(() => {
           )}
 
           {/* Other Recommendations */}
-          <div className="rounded-2xl border border-white/10 bg-white dark:bg-white/5 p-5">
-            <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold text-white">
+          <div className="rounded-2xl border border-white/10 bg-white dark:bg-[#0c0c18] p-5">
+            <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold dark:text-white">
               <BookOpen size={16} />
               Guides Terkait
             </h2>
@@ -377,13 +375,13 @@ useEffect(() => {
           </div>
 
           {isAdmin && (
-            <div className="rounded-2xl border border-white/10 bg-white dark:bg-white/5 p-5">
-                <h2 className="mb-3 text-sm font-semibold text-white">Update Status</h2>
+            <div className="rounded-2xl border border-white/10 bg-white dark:bg-[#0c0c18] p-5">
+                <h2 className="mb-3 text-sm font-semibold dark:text-white">Update Status</h2>
 
                 <select
                     value={newStatus}
                     onChange={(e) => setNewStatus(e.target.value)}
-                    className="cursor-pointer hover:brightness-90 mb-3 w-full rounded-xl border border-white/10 bg-white dark:bg-white/5 px-3 py-2.5 text-sm text-white"
+                    className="cursor-pointer hover:brightness-90 mb-3 w-full rounded-xl border border-white/10 bg-white dark:bg-[#0c0c18] px-3 py-2.5 text-sm text-white"
                 >
                 <option value="Baru" className="bg-[#0c0c18]">Baru</option>
                 <option value="Sedang Dikerjakan" className="bg-[#0c0c18]">Sedang Dikerjakan</option>
@@ -397,7 +395,7 @@ useEffect(() => {
                 onChange={(e) => setStatusNote(e.target.value)}
                 rows={2}
                 placeholder="Catatan progress (opsional)..."
-                className="mb-3 w-full rounded-xl border border-white/10 bg-white dark:bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-gray-500 resize-none"
+                className="mb-3 w-full rounded-xl border border-white/10 bg-white dark:bg-[#0c0c18] px-3 py-2.5 text-sm text-white placeholder:text-gray-500 resize-none"
                 />
 
                 <button
