@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Loader2,
   LifeBuoy,
@@ -8,6 +8,7 @@ import {
   Search,
   Clock,
   MessageSquare,
+  Monitor,
   RefreshCcw,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -21,6 +22,82 @@ const statusColor = {
   Selesai: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
   Ditutup: "bg-gray-500/15 text-gray-400 border-gray-500/30",
 };
+
+const sinceOptions = [
+  "Baru saja",
+  "Hari ini",
+  "Beberapa hari",
+  "Minggu ini",
+  "Lebih dari seminggu",
+];
+
+// Lekukan sobekan di sisi kiri & kanan, tepat di atas "stub" di bagian bawah tiket.
+// Tinggi stub diatur lewat CSS variable --stub (harus sama dengan tinggi stub-nya).
+const ticketCss = `
+.ticket-cut {
+  -webkit-mask:
+    radial-gradient(circle 14px at 0 calc(100% - var(--stub)), #0000 98%, #000),
+    radial-gradient(circle 14px at 100% calc(100% - var(--stub)), #0000 98%, #000);
+  -webkit-mask-composite: source-in;
+  mask:
+    radial-gradient(circle 14px at 0 calc(100% - var(--stub)), #0000 98%, #000),
+    radial-gradient(circle 14px at 100% calc(100% - var(--stub)), #0000 98%, #000);
+  mask-composite: intersect;
+}
+`;
+
+const inputCls =
+  "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none";
+
+// Barcode dekoratif dari kode tiket
+const Barcode = ({ value = "", height = 40 }) => {
+  const bars = useMemo(() => {
+    const out = [];
+    for (let i = 0; i < 44; i++) {
+      const c = value.charCodeAt(i % Math.max(value.length, 1)) || 7;
+      out.push({ w: 1 + ((c + i) % 3), gap: 1 + ((c * (i + 1)) % 2) });
+    }
+    return out;
+  }, [value]);
+
+  return (
+    <div className="flex items-stretch overflow-hidden" style={{ height }} aria-hidden="true">
+      {bars.map((b, i) => (
+        <span key={i} className="bg-white/80" style={{ width: b.w, marginRight: b.gap }} />
+      ))}
+    </div>
+  );
+};
+
+// Pembungkus bentuk tiket: badan di atas, stub (tinggi tetap) di bawah
+const TicketShell = ({ stubHeight = "6rem", band, children, stub }) => (
+  <div className="drop-shadow-2xl">
+    <div
+      className="ticket-cut overflow-hidden rounded-3xl border border-white/10 bg-[#12121a]"
+      style={{ "--stub": stubHeight }}
+    >
+      {band && (
+        <div className="flex items-center justify-between gap-3 bg-blue-500/15 px-6 py-3">
+          <span className="text-sm font-semibold text-blue-400">Tiket Helpdesk IT</span>
+          <span className="font-mono text-xs text-gray-400">{band}</span>
+        </div>
+      )}
+      <div className="p-6">{children}</div>
+      <div
+        className="border-t-2 border-dashed border-white/15 bg-white/[0.03] px-6 py-4"
+        style={{ height: stubHeight }}
+      >
+        {stub}
+      </div>
+    </div>
+  </div>
+);
+
+const Label = ({ children, required }) => (
+  <label className="mb-1.5 block text-sm font-medium text-gray-300">
+    {children} {required && <span className="text-red-400">*</span>}
+  </label>
+);
 
 const CreateTicketUserPage = () => {
   const { user } = useAuth();
@@ -56,14 +133,6 @@ const CreateTicketUserPage = () => {
     requesterName: "",
     priority: "Medium",
   });
-
-  const sinceOptions = [
-    "Baru saja",
-    "Hari ini",
-    "Beberapa hari",
-    "Minggu ini",
-    "Lebih dari seminggu",
-  ];
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -119,7 +188,6 @@ const CreateTicketUserPage = () => {
       setCreatedTicketId(data.ticket._id);
       setShowSuccessModal(true);
 
-      // Reset form
       setForm({
         title: "",
         description: "",
@@ -141,10 +209,13 @@ const CreateTicketUserPage = () => {
     }
   };
 
-  const handleTrack = async (e) => {
-    e?.preventDefault();
-    if (trackLoading) return; // cegah double-click
-    if (!trackCode.trim()) {
+  // codeOverride dipakai tombol "Lacak Sekarang" agar tidak bergantung pada state yang belum ter-update
+  const handleTrack = async (e, codeOverride) => {
+    e?.preventDefault?.();
+    if (trackLoading) return;
+
+    const code = (codeOverride ?? trackCode).trim();
+    if (!code) {
       toast.error("Masukkan kode tiket");
       return;
     }
@@ -152,7 +223,7 @@ const CreateTicketUserPage = () => {
     try {
       setTrackLoading(true);
       setHasSearched(true);
-      const { data } = await api.get(`/tickets/public/${trackCode.trim()}`);
+      const { data } = await api.get(`/tickets/public/${code}`);
       setTrackedTicket(data.ticket);
     } catch (err) {
       setTrackedTicket(null);
@@ -170,305 +241,272 @@ const CreateTicketUserPage = () => {
     );
   }
 
+  const panel = "rounded-2xl border border-white/10 bg-white/[0.03] p-5";
+
   return (
     <div className="min-h-screen bg-[#0a0a12] text-white">
-      <div className="fixed inset-0 bg-gradient-to-br from-blue-950/90 via-transparent to-purple-800/20 pointer-events-none" />
+      <style>{ticketCss}</style>
+      <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-blue-950/90 via-transparent to-purple-800/20" />
 
-      <div className="relative mx-auto w-[97vw] md:!max-w-2xl px-4 py-8 sm:py-12">
+      <div className="relative mx-auto w-[97vw] px-4 py-8 sm:py-12 md:!max-w-2xl">
         {/* Header */}
         <div className="mb-6 text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-400">
             <LifeBuoy size={26} />
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            TEXNET TICKET
-          </h1>
+          <h1 className="text-2xl font-semibold tracking-tight">TEXNET TICKET</h1>
           <p className="mt-1 text-sm text-gray-400">
             Buat tiket baru atau lacak progress tiket Anda
           </p>
         </div>
 
         {/* Tabs */}
-        <div className="mb-6 flex rounded-xl gap-x-1.5 border border-white/10 bg-white/[0.03] p-2">
-          <button
-            type="button"
-            onClick={() => setActiveTab("create")}
-            className={`flex-1 rounded-lg py-3 text-sm font-medium transition ${
-              activeTab === "create"
-                ? "bg-blue-600 text-white"
-                : "text-gray-400 hover:text-white bg-white/5"
-            }`}
-          >
-            Buat Tiket
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("track")}
-            className={`flex-1 rounded-lg py-3 text-sm font-medium transition ${
-              activeTab === "track"
-                ? "bg-blue-600 text-white"
-                : "text-gray-400 hover:text-white bg-white/5"
-            }`}
-          >
-            Lacak Tiket
-          </button>
+        <div className="mb-6 flex gap-x-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-2">
+          {[
+            { key: "create", label: "Buat Tiket" },
+            { key: "track", label: "Lacak Tiket" },
+          ].map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              onClick={() => setActiveTab(t.key)}
+              className={`flex-1 rounded-lg py-3 text-sm font-medium transition ${
+                activeTab === t.key
+                  ? "bg-blue-600 text-white"
+                  : "bg-white/5 text-gray-400 hover:text-white"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
         </div>
 
         {/* ==================== TAB: BUAT TIKET ==================== */}
         {activeTab === "create" && (
-          <form
-            onSubmit={handleSubmit}
-            className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm"
-          >
-            <div className="space-y-5">
-              {/* Nama Pelapor */}
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-300">
-                  Nama & Jabatan Anda <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="requesterName"
-                  value={form.requesterName}
-                  onChange={handleChange}
-                  placeholder="Contoh: Budi Santoso - Staff HRD"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none"
-                  required
-                />
-              </div>
-
-              {/* Judul */}
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-300">
-                  Judul Masalah <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  value={form.title}
-                  onChange={handleChange}
-                  placeholder="Contoh: Tidak bisa konek WiFi di Ruang Meeting"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none"
-                  required
-                />
-              </div>
-
-              {/* Deskripsi */}
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-300">
-                  Deskripsi Lengkap <span className="text-red-400">*</span>
-                </label>
-                <textarea
-                  name="description"
-                  value={form.description}
-                  onChange={handleChange}
-                  rows={4}
-                  placeholder="Jelaskan gejala, apa yang sudah dicoba, pesan error..."
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none resize-none"
-                  required
-                />
-              </div>
-
-              {/* Kategori & Prioritas */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-gray-300">
-                    Kategori <span className="text-red-400">*</span>
-                  </label>
-                  <select
-                    name="category"
-                    value={form.category}
-                    onChange={handleChange}
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-blue-500 focus:outline-none"
-                  >
-                    {options.categories.map((cat) => (
-                      <option key={cat} value={cat} className="bg-[#0c0c18]">
-                        {cat}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-gray-300">
-                    Prioritas
-                  </label>
-                  <select
-                    name="priority"
-                    value={form.priority}
-                    onChange={handleChange}
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-blue-500 focus:outline-none"
-                  >
-                    {options.priorities.map((p) => (
-                      <option key={p} value={p} className="bg-[#0c0c18]">
-                        {p}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Sejak Kapan */}
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-300">
-                  Sejak Kapan <span className="text-red-400">*</span>
-                </label>
-                <select
-                  name="sinceWhen"
-                  value={form.sinceWhen}
-                  onChange={handleChange}
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-blue-500 focus:outline-none"
+          <form onSubmit={handleSubmit}>
+            <TicketShell
+              stubHeight="6rem"
+              band="Tiket baru"
+              stub={
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="flex h-full w-full items-center justify-center gap-2 rounded-xl bg-blue-600 text-sm font-medium text-white transition hover:bg-blue-500 disabled:opacity-60"
                 >
-                  {sinceOptions.map((opt) => (
-                    <option key={opt} value={opt} className="bg-[#0c0c18]">
-                      {opt}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Lokasi & Pemilik PC */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  {submitting ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      Mengirim Tiket...
+                    </>
+                  ) : (
+                    <>
+                      <Send size={16} />
+                      Kirim Tiket
+                    </>
+                  )}
+                </button>
+              }
+            >
+              <div className="space-y-5">
+                {/* Pelapor */}
                 <div>
-                  <label className="mb-1.5 block text-sm font-medium text-gray-300">
-                    Lokasi / Ruangan <span className="text-red-400">*</span>
-                  </label>
+                  <Label required>Nama & Jabatan Anda</Label>
                   <input
                     type="text"
-                    name="location"
-                    value={form.location}
+                    name="requesterName"
+                    value={form.requesterName}
                     onChange={handleChange}
-                    placeholder="Contoh: Ruang IT Lantai 2"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none"
+                    placeholder="Contoh: Budi Santoso - Staff HRD"
+                    className={inputCls}
                     required
                   />
                 </div>
+
                 <div>
-                  <label className="mb-1.5 block text-sm font-medium text-gray-300">
-                    Pemilik PC / User <span className="text-red-400">*</span>
-                  </label>
+                  <Label required>Judul Masalah</Label>
                   <input
                     type="text"
-                    name="pcOwner"
-                    value={form.pcOwner}
+                    name="title"
+                    value={form.title}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none"
+                    placeholder="Contoh: Tidak bisa konek WiFi di Ruang Meeting"
+                    className={inputCls}
                     required
                   />
                 </div>
-              </div>
 
-              {/* Nama Komputer */}
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-300">
-                  Nama Komputer / IP
-                </label>
-                <input
-                  type="text"
-                  name="computerName"
-                  value={form.computerName}
-                  onChange={handleChange}
-                  placeholder="Contoh: PC-HRD-01 atau 192.168.1.45"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none"
-                />
-              </div>
+                <div>
+                  <Label required>Deskripsi Lengkap</Label>
+                  <textarea
+                    name="description"
+                    value={form.description}
+                    onChange={handleChange}
+                    rows={4}
+                    placeholder="Jelaskan gejala, apa yang sudah dicoba, pesan error..."
+                    className={`${inputCls} resize-none`}
+                    required
+                  />
+                </div>
 
-              {/* AnyDesk */}
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-                <p className="mb-3 text-sm font-medium text-gray-300">
-                  Remote Access <span className="text-gray-500">(Opsional)</span>
-                </p>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="mb-1.5 block text-xs text-gray-500">
-                      Nomor AnyDesk
-                    </label>
+                    <Label required>Kategori</Label>
+                    <select
+                      name="category"
+                      value={form.category}
+                      onChange={handleChange}
+                      className={inputCls}
+                    >
+                      {options.categories.map((cat) => (
+                        <option key={cat} value={cat} className="bg-[#0c0c18]">
+                          {cat}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <Label>Prioritas</Label>
+                    <select
+                      name="priority"
+                      value={form.priority}
+                      onChange={handleChange}
+                      className={inputCls}
+                    >
+                      {options.priorities.map((p) => (
+                        <option key={p} value={p} className="bg-[#0c0c18]">
+                          {p}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <Label required>Sejak Kapan</Label>
+                  <select
+                    name="sinceWhen"
+                    value={form.sinceWhen}
+                    onChange={handleChange}
+                    className={inputCls}
+                  >
+                    {sinceOptions.map((opt) => (
+                      <option key={opt} value={opt} className="bg-[#0c0c18]">
+                        {opt}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Garis sobekan pemisah bagian perangkat */}
+                <div className="flex items-center gap-3 pt-1 text-blue-400">
+                  <Monitor size={16} />
+                  <span className="text-sm font-medium">Perangkat</span>
+                  <span className="flex-1 border-t-2 border-dashed border-white/15" />
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <Label required>Lokasi / Ruangan</Label>
                     <input
                       type="text"
-                      name="anydeskNumber"
-                      value={form.anydeskNumber}
+                      name="location"
+                      value={form.location}
                       onChange={handleChange}
-                      placeholder="123 456 789"
-                      className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-blue-500 focus:outline-none"
+                      placeholder="Contoh: Ruang IT Lantai 2"
+                      className={inputCls}
+                      required
                     />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-xs text-gray-500">
-                      Password AnyDesk
-                    </label>
+                    <Label required>Pemilik PC / User</Label>
                     <input
                       type="text"
-                      name="anydeskPassword"
-                      value={form.anydeskPassword}
+                      name="pcOwner"
+                      value={form.pcOwner}
                       onChange={handleChange}
-                      placeholder="Password sementara"
-                      className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-blue-500 focus:outline-none"
+                      className={inputCls}
+                      required
                     />
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <button
-              type="submit"
-              disabled={submitting}
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3.5 text-sm font-medium text-white transition hover:bg-blue-500 disabled:opacity-60"
-            >
-              {submitting ? (
-                <>
-                  <Loader2 size={16} className="animate-spin" />
-                  Mengirim Tiket...
-                </>
-              ) : (
-                <>
-                  <Send size={16} />
-                  Kirim Tiket
-                </>
-              )}
-            </button>
+                <div>
+                  <Label>Nama Komputer / IP</Label>
+                  <input
+                    type="text"
+                    name="computerName"
+                    value={form.computerName}
+                    onChange={handleChange}
+                    placeholder="Contoh: PC-HRD-01 atau 192.168.1.45"
+                    className={inputCls}
+                  />
+                </div>
+
+                {/* AnyDesk */}
+                <div className="rounded-2xl border-2 border-dashed border-white/15 p-4">
+                  <p className="mb-3 text-sm font-medium text-gray-300">
+                    Remote Access <span className="text-gray-500">(Opsional)</span>
+                  </p>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="mb-1.5 block text-xs text-gray-500">Nomor AnyDesk</label>
+                      <input
+                        type="text"
+                        name="anydeskNumber"
+                        value={form.anydeskNumber}
+                        onChange={handleChange}
+                        placeholder="123 456 789"
+                        className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-blue-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1.5 block text-xs text-gray-500">Password AnyDesk</label>
+                      <input
+                        type="text"
+                        name="anydeskPassword"
+                        value={form.anydeskPassword}
+                        onChange={handleChange}
+                        placeholder="Password sementara"
+                        className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-blue-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TicketShell>
           </form>
         )}
 
         {/* ==================== TAB: LACAK TIKET ==================== */}
         {activeTab === "track" && (
           <div className="space-y-5">
-            <form
-              onSubmit={handleTrack}
-              className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"
-            >
-              <label className="mb-2 block text-sm font-medium text-gray-300">
-                Kode Tiket
-              </label>
+            <form onSubmit={handleTrack} className={panel}>
+              <label className="mb-2 block text-sm font-medium text-gray-300">Kode Tiket</label>
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={trackCode}
                   onChange={(e) => setTrackCode(e.target.value)}
                   placeholder="Tempel kode tiket di sini..."
-                  className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none"
+                  className={`${inputCls} flex-1`}
                 />
                 <button
                   type="submit"
                   disabled={trackLoading}
-                  className="rounded-xl bg-blue-600 w-[48px] flex items-center justify-center text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-60"
+                  aria-label="Cari tiket"
+                  className="flex w-[48px] items-center justify-center rounded-xl bg-blue-600 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-60"
                 >
-                  {trackLoading ? (
-                    <Loader2 size={18} className="animate-spin" />
-                  ) : (
-                    <Search size={18} />
-                  )}
+                  {trackLoading ? <Loader2 size={18} className="animate-spin" /> : <Search size={18} />}
                 </button>
-              <button
-                type="button"
-                onClick={handleTrack}
-                disabled={trackLoading}
-                className="rounded-xl bg-green-600 w-[48px] flex items-center justify-center text-sm font-medium text-white hover:bg-green-500 disabled:opacity-60"
-              >
-                {trackLoading ? (
-                  <Loader2 size={18} className="animate-spin" />
-                ) : (
-                  <RefreshCcw size={18} />
-                )}
-              </button>
+                <button
+                  type="button"
+                  onClick={() => handleTrack()}
+                  disabled={trackLoading}
+                  aria-label="Muat ulang"
+                  className="flex w-[48px] items-center justify-center rounded-xl bg-green-600 text-sm font-medium text-white hover:bg-green-500 disabled:opacity-60"
+                >
+                  {trackLoading ? <Loader2 size={18} className="animate-spin" /> : <RefreshCcw size={18} />}
+                </button>
               </div>
             </form>
 
@@ -486,95 +524,111 @@ const CreateTicketUserPage = () => {
 
             {!trackLoading && trackedTicket && (
               <div className="space-y-4">
-                {/* Info Tiket */}
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <h2 className="text-lg font-semibold">
-                        {trackedTicket.title}
-                      </h2>
-                      <p className="mt-1 text-sm text-gray-400">
-                        {trackedTicket.category} • {trackedTicket.requesterName}
-                      </p>
-                      {/* Kode Tiket */}
-                      <p className="mt-2 text-xs text-gray-500">
-                        Kode:{" "}
-                        <span className="font-mono text-blue-400 select-all">
-                          {trackedTicket._id}
+                {/* ===== TIKET ===== */}
+                <TicketShell
+                  stubHeight="8.5rem"
+                  band={`#${String(trackedTicket._id).slice(-8).toUpperCase()}`}
+                  stub={
+                    <div className="flex h-full flex-col justify-between">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-xs font-semibold text-gray-500">Status</span>
+                        <span
+                          className={`rounded-lg border px-3 py-1 text-sm font-semibold ${
+                            statusColor[trackedTicket.status] || statusColor.Baru
+                          }`}
+                        >
+                          {trackedTicket.status}
                         </span>
-                      </p>
+                      </div>
+                      <div>
+                        <Barcode value={String(trackedTicket._id)} height={32} />
+                        <p className="mt-1.5 select-all break-all font-mono text-[11px] text-blue-400">
+                          {trackedTicket._id}
+                        </p>
+                      </div>
                     </div>
-                    <span
-                      className={`rounded-md border px-2.5 py-1 text-xs font-medium ${
-                        statusColor[trackedTicket.status] || statusColor.Baru
-                      }`}
-                    >
-                      {trackedTicket.status}
-                    </span>
-                  </div>
+                  }
+                >
+                  <div className="space-y-5">
+                    <div>
+                      <h2 className="text-xl font-semibold tracking-tight">{trackedTicket.title}</h2>
+                      <p className="mt-1 text-sm text-gray-400">{trackedTicket.category}</p>
+                    </div>
 
-                  <p className="mt-4 text-sm text-gray-300 whitespace-pre-wrap">
-                    {trackedTicket.description}
-                  </p>
+                    {/* "Rute": pelapor -> lokasi */}
+                    <div className="flex items-center gap-3">
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold text-gray-500">Pelapor</p>
+                        <p className="truncate text-base font-medium">{trackedTicket.requesterName}</p>
+                      </div>
+                      <div className="flex flex-1 items-center gap-2 text-blue-400">
+                        <span className="h-0 flex-1 border-t-2 border-dotted border-current opacity-50" />
+                        <Monitor size={18} />
+                        <span className="h-0 flex-1 border-t-2 border-dotted border-current opacity-50" />
+                      </div>
+                      <div className="min-w-0 text-right">
+                        <p className="text-xs font-semibold text-gray-500">Lokasi</p>
+                        <p className="truncate text-base font-medium">{trackedTicket.location}</p>
+                      </div>
+                    </div>
 
-                  <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                    <div>
-                      <p className="text-gray-500">Lokasi</p>
-                      <p>{trackedTicket.location}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500">Pemilik PC</p>
-                      <p>{trackedTicket.pcOwner}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500">Prioritas</p>
-                      <p>{trackedTicket.priority}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500">Dibuat</p>
-                      <p>
-                        {new Date(trackedTicket.createdAt).toLocaleString("id-ID")}
-                      </p>
+                    <div className="border-t-2 border-dashed border-white/15" />
+
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-300">
+                      {trackedTicket.description}
+                    </p>
+
+                    <div className="grid grid-cols-3 gap-3 text-sm">
+                      <div>
+                        <p className="text-xs font-semibold text-gray-500">Pemilik PC</p>
+                        <p className="mt-0.5">{trackedTicket.pcOwner}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold text-gray-500">Prioritas</p>
+                        <p className="mt-0.5">{trackedTicket.priority}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold text-gray-500">Dibuat</p>
+                        <p className="mt-0.5">
+                          {new Date(trackedTicket.createdAt).toLocaleString("id-ID")}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </TicketShell>
 
                 {/* Progress Status */}
                 {trackedTicket.statusHistory?.length > 0 && (
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+                  <div className={panel}>
                     <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold">
                       <Clock size={16} />
                       Progress Status
                     </h3>
                     <div className="space-y-3">
-                      {[...trackedTicket.statusHistory]
-                        .reverse()
-                        .map((item, idx) => (
-                          <div key={idx} className="flex gap-3 text-sm">
-                            <div className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-400" />
-                            <div>
-                              <p className="font-medium">{item.status}</p>
-                              {item.note && (
-                                <p className="text-gray-400">{item.note}</p>
-                              )}
-                              <p className="text-xs text-gray-500">
-                                {new Date(item.changedAt).toLocaleString("id-ID")}
-                              </p>
-                            </div>
+                      {[...trackedTicket.statusHistory].reverse().map((item, idx) => (
+                        <div key={idx} className="flex gap-3 text-sm">
+                          <div className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-400" />
+                          <div>
+                            <p className="font-medium">{item.status}</p>
+                            {item.note && <p className="text-gray-400">{item.note}</p>}
+                            <p className="text-xs text-gray-500">
+                              {new Date(item.changedAt).toLocaleString("id-ID")}
+                            </p>
                           </div>
-                        ))}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
 
                 {/* Komentar */}
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+                <div className={panel}>
                   <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold">
                     <MessageSquare size={16} />
                     Komentar / Update
                   </h3>
 
-                  {trackedTicket.comments?.length === 0 ? (
+                  {!trackedTicket.comments?.length ? (
                     <p className="text-sm text-gray-500">Belum ada komentar</p>
                   ) : (
                     <div className="space-y-4">
@@ -585,16 +639,12 @@ const CreateTicketUserPage = () => {
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium">
-                                {c.user?.name || "Admin"}
-                              </span>
+                              <span className="text-sm font-medium">{c.user?.name || "Admin"}</span>
                               <span className="text-xs text-gray-500">
                                 {new Date(c.createdAt).toLocaleString("id-ID")}
                               </span>
                             </div>
-                            <p className="mt-0.5 text-sm text-gray-300">
-                              {c.content}
-                            </p>
+                            <p className="mt-0.5 text-sm text-gray-300">{c.content}</p>
                           </div>
                         </div>
                       ))}
@@ -606,74 +656,77 @@ const CreateTicketUserPage = () => {
           </div>
         )}
 
-        <p className="mt-8 text-center text-xs text-gray-600">
-          TEXNet Support • Bantuan IT Internal
-        </p>
+        <p className="mt-8 text-center text-xs text-gray-600">TEXNet Support • Bantuan IT Internal</p>
       </div>
 
-      {/* ===== SUCCESS MODAL ===== */}
+      {/* ===== SUCCESS MODAL (tiket dengan stub berisi kode) ===== */}
       {showSuccessModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
             onClick={() => setShowSuccessModal(false)}
           />
-          <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-[#12121a] shadow-2xl">
-            <div className="p-6 text-center">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15">
-                <Check size={28} className="text-emerald-400" />
-              </div>
-              <h3 className="text-lg font-semibold">Tiket Berhasil Dikirim!</h3>
-              <p className="mt-2 text-sm text-gray-400">
-                Simpan kode tiket di bawah ini untuk melacak progress.
-              </p>
-
-              <div className="mt-5 rounded-xl border border-white/10 bg-black/40 p-4">
-                <p className="mb-1 text-xs text-gray-500">Kode Tiket Anda</p>
-                <p className="break-all font-mono text-sm text-blue-300 select-all">
-                  {createdTicketId}
+          <div className="relative w-full max-w-md">
+            <TicketShell
+              stubHeight="8rem"
+              band="Tiket terkirim"
+              stub={
+                <div className="flex h-full flex-col justify-between">
+                  <p className="text-xs font-semibold text-gray-500">Kode Tiket Anda</p>
+                  <div>
+                    <Barcode value={createdTicketId} height={32} />
+                    <p className="mt-1.5 select-all break-all font-mono text-xs text-blue-300">
+                      {createdTicketId}
+                    </p>
+                  </div>
+                </div>
+              }
+            >
+              <div className="text-center">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15">
+                  <Check size={28} className="text-emerald-400" />
+                </div>
+                <h3 className="text-lg font-semibold">Tiket Berhasil Dikirim!</h3>
+                <p className="mt-2 text-sm text-gray-400">
+                  Simpan kode tiket di bawah ini untuk melacak progress.
                 </p>
-              </div>
 
-              <button
-                onClick={handleCopy}
-                className="mt-4 flex w-full active:scale-[0.99] items-center justify-center gap-2 rounded-xl bg-blue-600 py-2.5 text-sm font-medium text-white hover:bg-blue-500"
-              >
-                {copied ? (
-                  <>
-                    <Check size={16} /> Tersalin!
-                  </>
-                ) : (
-                  <>
-                    <Copy size={16} /> Salin Kode Tiket
-                  </>
-                )}
-              </button>
-
-              <div className="mt-3 flex gap-2">
                 <button
-                  onClick={() => {
-                    setTrackCode(createdTicketId);
-                    setActiveTab("track");
-                    setShowSuccessModal(false);
-                    // Auto search
-                    setTimeout(() => {
+                  onClick={handleCopy}
+                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-2.5 text-sm font-medium text-white hover:bg-blue-500 active:scale-[0.99]"
+                >
+                  {copied ? (
+                    <>
+                      <Check size={16} /> Tersalin!
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={16} /> Salin Kode Tiket
+                    </>
+                  )}
+                </button>
+
+                <div className="mt-3 flex gap-2">
+                  <button
+                    onClick={() => {
                       setTrackCode(createdTicketId);
-                      handleTrack({ preventDefault: () => {} });
-                    }, 100);
-                  }}
-                  className="flex-1 active:scale-[0.99] rounded-xl border border-white/10 py-2.5 text-sm text-gray-300 hover:bg-white/5"
-                >
-                  Lacak Sekarang
-                </button>
-                <button
-                  onClick={() => setShowSuccessModal(false)}
-                  className="flex-1 active:scale-[0.99] rounded-xl border border-white/10 py-2.5 text-sm text-gray-300 hover:bg-white/5"
-                >
-                  Tutup
-                </button>
+                      setActiveTab("track");
+                      setShowSuccessModal(false);
+                      handleTrack(null, createdTicketId);
+                    }}
+                    className="flex-1 rounded-xl border border-white/10 py-2.5 text-sm text-gray-300 hover:bg-white/5 active:scale-[0.99]"
+                  >
+                    Lacak Sekarang
+                  </button>
+                  <button
+                    onClick={() => setShowSuccessModal(false)}
+                    className="flex-1 rounded-xl border border-white/10 py-2.5 text-sm text-gray-300 hover:bg-white/5 active:scale-[0.99]"
+                  >
+                    Tutup
+                  </button>
+                </div>
               </div>
-            </div>
+            </TicketShell>
           </div>
         </div>
       )}
