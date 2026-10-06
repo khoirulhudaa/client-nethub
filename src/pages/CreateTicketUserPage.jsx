@@ -88,9 +88,9 @@ const Barcode = ({ value = "", height = 40 }) => {
 
 // Landscape ticket wrapper: body on the left, stub on the right (stub goes below on mobile)
 const TicketShell = ({ stubWidth = "16rem", band, children, stub }) => (
-  <div className="drop-shadow-2xl w-full">
+  <div className="drop-shadow-2xl w-full mb-6">
     <div
-      className="ticket-cut w-[70vw] flex flex-col overflow-hidden rounded-lg md:rounded-2xl border border-white/40 bg-[#12121a9a] lg:flex-row"
+      className="ticket-cut w-[92vw] md:w-[70vw] flex flex-col overflow-hidden rounded-lg md:rounded-2xl border border-white/40 bg-[#12121a9a] lg:flex-row"
       style={{ "--stub": stubWidth }}
     >
       <div className="min-w-0 flex-1">
@@ -310,7 +310,7 @@ const CreateTicketUserPage = () => {
   const panel = "rounded-2xl border border-white/10 bg-white/[0.03] p-5";
 
   return (
-    <div className="relative md:h-screen bg-[#0a0a12] md:overflow-y-hidden overflow-x-hidden text-white">
+    <div className="relative h-max md:h-screen bg-[#0a0a12] overflow-auto md:!overflow-y-hidden overflow-x-hidden text-white">
       <style>{ticketCss}</style>
       <img
         draggable={false}
@@ -321,9 +321,9 @@ const CreateTicketUserPage = () => {
       
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-blue-950/90 via-transparent to-purple-800/20" />
 
-      <div className="relative mx-auto w-[97vw] h-screen flex flex-col items-center justify-center px-4 py-6 md:!max-w-7xl">
+      <div className="relative mx-auto w-[97vw] h-screen flex flex-col md:items-center md:justify-center px-2 md:!px-4 py-4 md:py-6 md:!max-w-7xl">
         {/* Tabs */}
-        <div className="w-[70vw] mb-6 flex gap-x-1.5 rounded-xl md:rounded-[20px] border border-white/40 bg-white/[0.03] p-2">
+        <div className="w-[92vw] md:w-[70vw] mb-6 flex gap-x-1.5 rounded-xl md:rounded-[20px] border border-white/40 bg-white/[0.03] p-2">
           {[
             { key: "create", label: "Create Ticket", icon: TicketPlus },
             { key: "track", label: "Track Ticket", icon: Search },
@@ -519,7 +519,7 @@ const CreateTicketUserPage = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-x-4">
+                <div className="grid grid-cols-1 md:space-y-0 space-y-6 md:grid-cols-2 gap-x-4">
                   <div>
                     <Label>AnyDesk number (optional)</Label>
                     <input
