@@ -342,7 +342,7 @@ const CreateTicketUserPage = () => {
                     value={form.title}
                     onChange={handleChange}
                     placeholder="Contoh: Tidak bisa konek WiFi di Ruang Meeting"
-                    className={`${fieldCls} text-xl font-semibold tracking-tight`}
+                    className={`${fieldCls} font-semibold tracking-tight`}
                     required
                   />
                 </div>
