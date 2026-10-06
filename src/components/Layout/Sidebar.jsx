@@ -469,17 +469,6 @@ const Sidebar = ({ onNavigate }) => {
               collapsed={collapsed}
             >
               <div className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
-                <NavLink
-                  to="/admin/announcements"
-                  onClick={onNavigate}
-                  title={collapsed ? "Pengumuman" : undefined}
-                  className={({ isActive }) => linkClass(isActive)}
-                >
-                  <Bell size={17} />
-                  {!collapsed && "Announcement"}
-                </NavLink>
-              </div>
-              <div className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
                 <NavLink 
                   to="/admin/activities"
                   onClick={onNavigate}
@@ -488,6 +477,17 @@ const Sidebar = ({ onNavigate }) => {
                 >
                   <FileText size={17} />   {/* atau import Activity / History dari lucide */}
                   {!collapsed && "Activity Log"}
+                </NavLink>
+              </div>
+              <div className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
+                <NavLink
+                  to="/admin/announcements"
+                  onClick={onNavigate}
+                  title={collapsed ? "Pengumuman" : undefined}
+                  className={({ isActive }) => linkClass(isActive)}
+                >
+                  <Bell size={17} />
+                  {!collapsed && "Announcement"}
                 </NavLink>
               </div>
             </NavGroup>
