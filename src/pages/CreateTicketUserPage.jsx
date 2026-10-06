@@ -496,6 +496,13 @@ const CreateTicketUserPage = () => {
                       <p className="mt-1 text-sm text-gray-400">
                         {trackedTicket.category} • {trackedTicket.requesterName}
                       </p>
+                      {/* Kode Tiket */}
+                      <p className="mt-2 text-xs text-gray-500">
+                        Kode:{" "}
+                        <span className="font-mono text-blue-400 select-all">
+                          {trackedTicket._id}
+                        </span>
+                      </p>
                     </div>
                     <span
                       className={`rounded-md border px-2.5 py-1 text-xs font-medium ${
