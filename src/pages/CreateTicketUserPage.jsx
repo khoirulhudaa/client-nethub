@@ -261,7 +261,7 @@ const CreateTicketUserPage = () => {
       
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-blue-950/90 via-transparent to-purple-800/20" />
 
-      <div className="relative mx-auto w-[97vw] px-4 py-8 sm:py-12 md:!max-w-6xl">
+      <div className="relative mx-auto w-[97vw] px-4 py-8 sm:py-12 md:!max-w-7xl">
         {/* Header */}
         <div className="mb-6 md:text-center">
           <div className="mx-auto mb-4 hidden md:flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-400">
