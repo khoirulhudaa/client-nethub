@@ -17,6 +17,10 @@ import { toast } from "react-hot-toast";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
+const SITE_URL = "https://texnet-hub.vercel.app";
+const LOCALE = "en-US";
+
+// Keys must match the status values stored in the backend; only the labels are translated.
 const statusColor = {
   Baru: "bg-blue-500/15 text-blue-400 border-blue-500/30",
   "Sedang Dikerjakan": "bg-amber-500/15 text-amber-400 border-amber-500/30",
@@ -25,16 +29,25 @@ const statusColor = {
   Ditutup: "bg-gray-500/15 text-gray-400 border-gray-500/30",
 };
 
+const statusLabel = {
+  Baru: "New",
+  "Sedang Dikerjakan": "In Progress",
+  "Menunggu Info": "Waiting for Info",
+  Selesai: "Resolved",
+  Ditutup: "Closed",
+};
+
+// `value` is what gets saved in the backend (unchanged); `label` is what the user sees.
 const sinceOptions = [
-  "Baru saja",
-  "Hari ini",
-  "Beberapa hari",
-  "Minggu ini",
-  "Lebih dari seminggu",
+  { value: "Baru saja", label: "Just now" },
+  { value: "Hari ini", label: "Today" },
+  { value: "Beberapa hari", label: "A few days" },
+  { value: "Minggu ini", label: "This week" },
+  { value: "Lebih dari seminggu", label: "More than a week" },
 ];
 
-// Lekukan sobekan di sisi atas & bawah, tepat di garis pemisah badan tiket dan stub (kanan).
-// Lebar stub diatur lewat CSS variable --stub. Di layar kecil stub pindah ke bawah tanpa lekukan.
+// Notches on the top & bottom edges, exactly on the divider between the ticket body and the stub (right).
+// Stub width is set via the --stub CSS variable. On small screens the stub moves below, without notches.
 const ticketCss = `
 @media (min-width: 1024px) {
   .ticket-cut {
@@ -53,7 +66,7 @@ const ticketCss = `
 const inputCls =
   "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none";
 
-// Barcode dekoratif dari kode tiket
+// Decorative barcode generated from the ticket code
 const Barcode = ({ value = "", height = 40 }) => {
   const bars = useMemo(() => {
     const out = [];
@@ -73,7 +86,7 @@ const Barcode = ({ value = "", height = 40 }) => {
   );
 };
 
-// Pembungkus tiket landscape: badan di kiri, stub di kanan (di mobile stub di bawah)
+// Landscape ticket wrapper: body on the left, stub on the right (stub goes below on mobile)
 const TicketShell = ({ stubWidth = "16rem", band, children, stub }) => (
   <div className="drop-shadow-2xl w-full">
     <div
@@ -83,7 +96,7 @@ const TicketShell = ({ stubWidth = "16rem", band, children, stub }) => (
       <div className="min-w-0 flex-1">
         {band && (
           <div className="flex items-center justify-between gap-3 bg-blue-500/15 px-2.5 md:px-6 py-3">
-            <span className="text-sm font-semibold text-blue-400">Tiket Helpdesk IT</span>
+            <span className="text-sm font-semibold text-blue-400">IT Helpdesk Ticket</span>
             <span className="font-mono text-xs text-gray-400">{band}</span>
           </div>
         )}
@@ -96,7 +109,7 @@ const TicketShell = ({ stubWidth = "16rem", band, children, stub }) => (
   </div>
 );
 
-// Field bergaya tiket: label kecil + isian dengan garis putus-putus di bawahnya
+// Ticket-style field: small label + input with a dashed underline
 const fieldCls =
   "w-full border-x-0 border-t-0 border-b-2 border-dashed border-white/40 bg-transparent px-0 py-1.5 text-xs text-slate-300 placeholder:text-gray-600 focus:border-blue-500 focus:outline-none";
 
@@ -168,10 +181,10 @@ const CreateTicketUserPage = () => {
     try {
       await navigator.clipboard.writeText(createdTicketId);
       setCopied(true);
-      toast.success("Kode tiket berhasil disalin");
+      toast.success("Ticket code copied");
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      toast.error("Gagal menyalin");
+      toast.error("Failed to copy");
     }
   };
 
@@ -185,7 +198,7 @@ const CreateTicketUserPage = () => {
       !form.pcOwner.trim() ||
       !form.requesterName.trim()
     ) {
-      toast.error("Mohon lengkapi semua field yang wajib diisi");
+      toast.error("Please fill in all required fields");
       return;
     }
 
@@ -211,20 +224,20 @@ const CreateTicketUserPage = () => {
       });
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.message || "Gagal membuat tiket");
+      toast.error(err.response?.data?.message || "Failed to create ticket");
     } finally {
       setSubmitting(false);
     }
   };
 
-  // codeOverride dipakai tombol "Lacak Sekarang" agar tidak bergantung pada state yang belum ter-update
+  // codeOverride is used by the "Track Now" button so it doesn't depend on state that hasn't updated yet
   const handleTrack = async (e, codeOverride) => {
     e?.preventDefault?.();
     if (trackLoading) return;
 
     const code = (codeOverride ?? trackCode).trim();
     if (!code) {
-      toast.error("Masukkan kode tiket");
+      toast.error("Enter a ticket code");
       return;
     }
 
@@ -235,13 +248,13 @@ const CreateTicketUserPage = () => {
       setTrackedTicket(data.ticket);
     } catch (err) {
       setTrackedTicket(null);
-      toast.error(err.response?.data?.message || "Tiket tidak ditemukan");
+      toast.error(err.response?.data?.message || "Ticket not found");
     } finally {
       setTrackLoading(false);
     }
   };
 
-  // Dibuka lewat link yang dibagikan: /user/tickets/create?code=<kode>
+  // Opened via a shared link: /user/tickets/create?code=<code>
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
     if (!code) return;
@@ -259,37 +272,39 @@ const CreateTicketUserPage = () => {
     );
   }
 
-  // Link yang bisa dibuka di PC/HP siapa pun: otomatis membuka tab "Lacak Tiket" dan memuat tiketnya
-  const buildTrackUrl = (id) =>
-    `https://texnet-hub.vercel.app/user/tickets/create?code=${encodeURIComponent(id)}`;
+  // Link that works on anyone's PC/phone: opens the "Track Ticket" tab and loads the ticket
+  const buildTrackUrl = (id) => `${SITE_URL}/user/tickets/create?code=${encodeURIComponent(id)}`;
+
+  const openWhatsApp = (text) =>
+    // wa.me without a number = WhatsApp lets the user pick a contact/group
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
 
   const shareToWhatsApp = ({ id, title }) => {
-    const text = [
-      `*Tiket Helpdesk IT*${title ? ` - ${title}` : ""}`,
-      `Kode tiket: ${id}`,
-      "",
-      "Lihat / lacak tiket di sini:",
-      buildTrackUrl(id),
-      "",
-      "Install aplikasi TEXNet:",
-      `https://texnet-hub.vercel.app/install`,
-    ].join("\n");
-
-    // wa.me tanpa nomor = WhatsApp menampilkan pilihan kontak/grup tujuan
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+    openWhatsApp(
+      [
+        `*IT Helpdesk Ticket*${title ? ` - ${title}` : ""}`,
+        `Ticket code: ${id}`,
+        "",
+        "View / track the ticket here:",
+        buildTrackUrl(id),
+        "",
+        "Install the TEXNet app:",
+        `${SITE_URL}/install`,
+      ].join("\n")
+    );
   };
 
   const sharePageToWhatsApp = () => {
-    const text = [
-      "*TEXNet - Helpdesk IT*",
-      "Butuh bantuan IT? Buat atau lacak tiket di sini:",
-      `https://texnet-hub.vercel.app/user/tickets/create`,
-      "",
-      "Install aplikasi TEXNet:",
-      `https://texnet-hub.vercel.app/install`,
-    ].join("\n");
-
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+    openWhatsApp(
+      [
+        "*TEXNet - IT Helpdesk*",
+        "Need IT help? Create or track a ticket here:",
+        `${SITE_URL}/user/tickets/create`,
+        "",
+        "Install the TEXNet app:",
+        `${SITE_URL}/install`,
+      ].join("\n")
+    );
   };
 
   const panel = "rounded-2xl border border-white/10 bg-white/[0.03] p-5";
@@ -307,26 +322,11 @@ const CreateTicketUserPage = () => {
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-blue-950/90 via-transparent to-purple-800/20" />
 
       <div className="relative mx-auto w-[97vw] h-screen flex flex-col items-center justify-center px-4 py-6 md:!max-w-7xl">
-        {/* Header */}
-        {/* <div className="mb-6 gap-2.5 md:text-left flex items-center w-max">
-          <Link to="/login" className="cursor-pointer active:scale-[0.99] hover:brightness-90">
-            <div className="mx-auto border border-white/20 hidden md:flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-400">
-              <LifeBuoy size={26} />
-            </div>
-          </Link>
-          <div className="relative top-[-3px]">
-            <h1 className="text-lg font-semibold tracking-tight">TEXNET TICKET</h1>
-            <p className="text-xs md:text-sm text-gray-400">
-              Buat tiket baru atau lacak progress tiket Anda
-            </p>
-          </div>
-        </div> */}
-
         {/* Tabs */}
         <div className="w-[70vw] mb-6 flex gap-x-1.5 rounded-xl md:rounded-[20px] border border-white/40 bg-white/[0.03] p-2">
           {[
-            { key: "create", label: "Buat Tiket", icon: TicketPlus },
-            { key: "track", label: "Lacak Tiket", icon: Search },
+            { key: "create", label: "Create Ticket", icon: TicketPlus },
+            { key: "track", label: "Track Ticket", icon: Search },
           ].map((t) => (
             <button
               key={t.key}
@@ -345,20 +345,20 @@ const CreateTicketUserPage = () => {
           <button
             type="button"
             onClick={sharePageToWhatsApp}
-            aria-label="Bagikan halaman ke WhatsApp"
+            aria-label="Share this page on WhatsApp"
             className="flex items-center justify-center gap-2 rounded-lg md:rounded-[16px] border border-white/20 bg-emerald-600 px-4 py-2 md:py-3 text-sm font-medium text-white transition hover:bg-emerald-500 active:scale-[0.99]"
           >
             <Share2 size={16} />
-            <span className="hidden sm:inline">Bagikan</span>
+            <span className="hidden sm:inline">Share</span>
           </button>
         </div>
 
-        {/* ==================== TAB: BUAT TIKET ==================== */}
+        {/* ==================== TAB: CREATE TICKET ==================== */}
         {activeTab === "create" && (
           <form onSubmit={handleSubmit}>
             <TicketShell
               stubWidth="19rem"
-              band="Tiket baru"
+              band="New ticket"
               stub={
                 <>
                   <div className="space-y-4">
@@ -366,10 +366,10 @@ const CreateTicketUserPage = () => {
                       <LifeBuoy size={22} />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold">Siap dikirim?</p>
+                      <p className="text-sm font-semibold">Ready to send?</p>
                       <p className="mt-1 text-xs leading-relaxed text-gray-400">
-                        Kode tiket dibuat otomatis setelah tiket terkirim. Simpan kodenya untuk
-                        melacak progress.
+                        The ticket code is generated automatically once the ticket is sent. Keep
+                        the code to track its progress.
                       </p>
                     </div>
                   </div>
@@ -385,12 +385,12 @@ const CreateTicketUserPage = () => {
                       {submitting ? (
                         <>
                           <Loader2 size={16} className="animate-spin" />
-                          Mengirim...
+                          Sending...
                         </>
                       ) : (
                         <>
                           <Send size={16} />
-                          Kirim Tiket
+                          Send Ticket
                         </>
                       )}
                     </button>
@@ -399,24 +399,24 @@ const CreateTicketUserPage = () => {
               }
             >
               <div className="space-y-6">
-                {/* Judul (seperti judul tiket) */}
+                {/* Title (like a ticket heading) */}
                 <div>
-                  <Label required>Judul masalah</Label>
+                  <Label required>Problem title</Label>
                   <input
                     type="text"
                     name="title"
                     value={form.title}
                     onChange={handleChange}
-                    placeholder="Contoh: Tidak bisa konek WiFi di Ruang Meeting"
+                    placeholder="Example: Can't connect to WiFi in the Meeting Room"
                     className={`${fieldCls} font-semibold tracking-tight`}
                     required
                   />
                 </div>
 
-                {/* Kategori (kiri) + prioritas (kanan) */}
+                {/* Category (left) + priority (right) */}
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="flex-1">
-                    <Label required>Kategori</Label>
+                    <Label required>Category</Label>
                     <select
                       name="category"
                       value={form.category}
@@ -431,7 +431,7 @@ const CreateTicketUserPage = () => {
                     </select>
                   </div>
                   <div className="w-full sm:w-40">
-                    <Label>Prioritas</Label>
+                    <Label>Priority</Label>
                     <select
                       name="priority"
                       value={form.priority}
@@ -447,41 +447,38 @@ const CreateTicketUserPage = () => {
                   </div>
                 </div>
 
-                {/* "Rute": pelapor -> lokasi */}
+                {/* "Route": reporter -> location */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-3">
                   <div className="min-w-0 flex-1">
-                    <Label required>Pelapor</Label>
+                    <Label required>Reporter</Label>
                     <input
                       type="text"
                       name="requesterName"
                       value={form.requesterName}
                       onChange={handleChange}
-                      placeholder="Nama - Jabatan"
+                      placeholder="Name - Position"
                       className={`${fieldCls} text-xs font-medium`}
                       required
                     />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <Label required>Lokasi / ruangan</Label>
+                    <Label required>Location / room</Label>
                     <input
                       type="text"
                       name="location"
                       value={form.location}
                       onChange={handleChange}
-                      placeholder="Contoh: Ruang IT Lt. 2"
+                      placeholder="Example: IT Room, 2nd Floor"
                       className={`${fieldCls} text-xs font-medium sm:text-left`}
                       required
                     />
                   </div>
                 </div>
 
-                {/* Garis sobekan */}
-                {/* <div className="border-t-2 border-dashed border-white" /> */}
-
-                {/* Detail perangkat, tersebar seperti grid di tiket */}
+                {/* Device details, laid out like the grid on the ticket */}
                 <div className="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2">
                   <div>
-                    <Label required>Pemilik PC</Label>
+                    <Label required>PC owner</Label>
                     <input
                       type="text"
                       name="pcOwner"
@@ -492,7 +489,7 @@ const CreateTicketUserPage = () => {
                     />
                   </div>
                   <div>
-                    <Label required>Sejak kapan</Label>
+                    <Label required>Since when</Label>
                     <select
                       name="sinceWhen"
                       value={form.sinceWhen}
@@ -500,8 +497,8 @@ const CreateTicketUserPage = () => {
                       className={fieldCls}
                     >
                       {sinceOptions.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#0c0c18]">
-                          {opt}
+                        <option key={opt.value} value={opt.value} className="bg-[#0c0c18]">
+                          {opt.label}
                         </option>
                       ))}
                     </select>
@@ -510,7 +507,7 @@ const CreateTicketUserPage = () => {
 
                 <div className="grid grid-cols-1 gap-x-4 gap-y-5">
                   <div>
-                    <Label>Nama komputer / IP</Label>
+                    <Label>Computer name / IP</Label>
                     <input
                       type="text"
                       name="computerName"
@@ -524,7 +521,7 @@ const CreateTicketUserPage = () => {
 
                 <div className="grid grid-cols-2 gap-x-4">
                   <div>
-                    <Label>Nomor AnyDesk (opsional)</Label>
+                    <Label>AnyDesk number (optional)</Label>
                     <input
                       type="text"
                       name="anydeskNumber"
@@ -535,27 +532,27 @@ const CreateTicketUserPage = () => {
                     />
                   </div>
                   <div>
-                    <Label>Password AnyDesk (opsional)</Label>
+                    <Label>AnyDesk password (optional)</Label>
                     <input
                       type="text"
                       name="anydeskPassword"
                       value={form.anydeskPassword}
                       onChange={handleChange}
-                      placeholder="Password sementara"
+                      placeholder="Temporary password"
                       className={`${fieldCls} font-mono`}
                     />
                   </div>
                 </div>
 
-                {/* Deskripsi */}
+                {/* Description */}
                 <div>
-                  <Label required>Deskripsi masalah</Label>
+                  <Label required>Problem description</Label>
                   <textarea
                     name="description"
                     value={form.description}
                     onChange={handleChange}
                     rows={4}
-                    placeholder="Jelaskan gejala, apa yang sudah dicoba, pesan error..."
+                    placeholder="Describe the symptoms, what you've tried, any error messages..."
                     className="mt-1 w-full resize-none rounded-xl border-2 border-dashed border-white/40 bg-white/[0.03] px-4 py-3 text-xs leading-relaxed text-slate-300 placeholder:text-gray-600 focus:border-blue-500 focus:outline-none"
                     required
                   />
@@ -565,23 +562,23 @@ const CreateTicketUserPage = () => {
           </form>
         )}
 
-        {/* ==================== TAB: LACAK TIKET ==================== */}
+        {/* ==================== TAB: TRACK TICKET ==================== */}
         {activeTab === "track" && (
           <div className="space-y-5">
             <form onSubmit={handleTrack} className={panel}>
-              <label className="mb-2 block text-sm font-medium text-gray-300">Kode Tiket</label>
+              <label className="mb-2 block text-sm font-medium text-gray-300">Ticket Code</label>
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={trackCode}
                   onChange={(e) => setTrackCode(e.target.value)}
-                  placeholder="Tempel kode tiket di sini..."
+                  placeholder="Paste your ticket code here..."
                   className={`${inputCls} flex-1`}
                 />
                 <button
                   type="submit"
                   disabled={trackLoading}
-                  aria-label="Cari tiket"
+                  aria-label="Search ticket"
                   className="flex w-[48px] items-center justify-center rounded-xl bg-blue-600 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-60"
                 >
                   {trackLoading ? <Loader2 size={18} className="animate-spin" /> : <Search size={18} />}
@@ -590,7 +587,7 @@ const CreateTicketUserPage = () => {
                   type="button"
                   onClick={() => handleTrack()}
                   disabled={trackLoading}
-                  aria-label="Muat ulang"
+                  aria-label="Refresh"
                   className="flex w-[48px] items-center justify-center rounded-xl bg-green-600 text-sm font-medium text-white hover:bg-green-500 disabled:opacity-60"
                 >
                   {trackLoading ? <Loader2 size={18} className="animate-spin" /> : <RefreshCcw size={18} />}
@@ -606,13 +603,13 @@ const CreateTicketUserPage = () => {
 
             {!trackLoading && hasSearched && !trackedTicket && (
               <div className="rounded-2xl border border-dashed border-white/40 py-12 text-center text-gray-400">
-                Tiket tidak ditemukan
+                Ticket not found
               </div>
             )}
 
             {!trackLoading && trackedTicket && (
               <div className="space-y-4">
-                {/* ===== TIKET ===== */}
+                {/* ===== TICKET ===== */}
                 <TicketShell
                   stubWidth="16rem"
                   band={`#${String(trackedTicket._id).slice(-8).toUpperCase()}`}
@@ -625,7 +622,7 @@ const CreateTicketUserPage = () => {
                             statusColor[trackedTicket.status] || statusColor.Baru
                           }`}
                         >
-                          {trackedTicket.status}
+                          {statusLabel[trackedTicket.status] || trackedTicket.status}
                         </span>
                       </div>
                       <div>
@@ -640,7 +637,7 @@ const CreateTicketUserPage = () => {
                           }
                           className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-sm font-medium text-white hover:bg-emerald-500 active:scale-[0.99]"
                         >
-                          <Share2 size={16} /> Bagikan ke WhatsApp
+                          <Share2 size={16} /> Share on WhatsApp
                         </button>
                       </div>
                     </>
@@ -652,10 +649,10 @@ const CreateTicketUserPage = () => {
                       <p className="mt-1 text-sm text-gray-400">{trackedTicket.category}</p>
                     </div>
 
-                    {/* "Rute": pelapor -> lokasi */}
+                    {/* "Route": reporter -> location */}
                     <div className="flex items-center gap-3">
                       <div className="min-w-0">
-                        <p className="text-xs font-semibold text-gray-500">Pelapor</p>
+                        <p className="text-xs font-semibold text-gray-500">Reporter</p>
                         <p className="truncate text-xs font-medium">{trackedTicket.requesterName}</p>
                       </div>
                       <div className="flex flex-1 items-center gap-2 text-blue-400">
@@ -664,7 +661,7 @@ const CreateTicketUserPage = () => {
                         <span className="h-0 flex-1 border-t-2 border-dotted border-current opacity-50" />
                       </div>
                       <div className="min-w-0 text-right">
-                        <p className="text-xs font-semibold text-gray-500">Lokasi</p>
+                        <p className="text-xs font-semibold text-gray-500">Location</p>
                         <p className="truncate text-xs font-medium">{trackedTicket.location}</p>
                       </div>
                     </div>
@@ -677,39 +674,39 @@ const CreateTicketUserPage = () => {
 
                     <div className="grid grid-cols-3 gap-3 text-sm">
                       <div>
-                        <p className="text-xs font-semibold text-gray-500">Pemilik PC</p>
+                        <p className="text-xs font-semibold text-gray-500">PC owner</p>
                         <p className="mt-0.5">{trackedTicket.pcOwner}</p>
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-500">Prioritas</p>
+                        <p className="text-xs font-semibold text-gray-500">Priority</p>
                         <p className="mt-0.5">{trackedTicket.priority}</p>
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-500">Dibuat</p>
+                        <p className="text-xs font-semibold text-gray-500">Created</p>
                         <p className="mt-0.5">
-                          {new Date(trackedTicket.createdAt).toLocaleString("id-ID")}
+                          {new Date(trackedTicket.createdAt).toLocaleString(LOCALE)}
                         </p>
                       </div>
                     </div>
                   </div>
                 </TicketShell>
 
-                {/* Progress Status */}
+                {/* Status progress */}
                 {trackedTicket.statusHistory?.length > 0 && (
                   <div className={panel}>
                     <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold">
                       <Clock size={16} />
-                      Progress Status
+                      Status Progress
                     </h3>
                     <div className="space-y-3">
                       {[...trackedTicket.statusHistory].reverse().map((item, idx) => (
                         <div key={idx} className="flex gap-3 text-sm">
                           <div className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-400" />
                           <div>
-                            <p className="font-medium">{item.status}</p>
+                            <p className="font-medium">{statusLabel[item.status] || item.status}</p>
                             {item.note && <p className="text-gray-400">{item.note}</p>}
                             <p className="text-xs text-gray-500">
-                              {new Date(item.changedAt).toLocaleString("id-ID")}
+                              {new Date(item.changedAt).toLocaleString(LOCALE)}
                             </p>
                           </div>
                         </div>
@@ -718,15 +715,15 @@ const CreateTicketUserPage = () => {
                   </div>
                 )}
 
-                {/* Komentar */}
+                {/* Comments */}
                 <div className={panel}>
                   <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold">
                     <MessageSquare size={16} />
-                    Komentar / Update
+                    Comments / Updates
                   </h3>
 
                   {!trackedTicket.comments?.length ? (
-                    <p className="text-sm text-gray-500">Belum ada komentar</p>
+                    <p className="text-sm text-gray-500">No comments yet</p>
                   ) : (
                     <div className="space-y-4">
                       {trackedTicket.comments.map((c, idx) => (
@@ -738,7 +735,7 @@ const CreateTicketUserPage = () => {
                             <div className="flex items-center gap-2">
                               <span className="text-sm font-medium">{c.user?.name || "Admin"}</span>
                               <span className="text-xs text-gray-500">
-                                {new Date(c.createdAt).toLocaleString("id-ID")}
+                                {new Date(c.createdAt).toLocaleString(LOCALE)}
                               </span>
                             </div>
                             <p className="mt-0.5 text-sm text-gray-300">{c.content}</p>
@@ -752,11 +749,9 @@ const CreateTicketUserPage = () => {
             )}
           </div>
         )}
-
-        {/* <p className="mt-8 text-center text-xs text-gray-600">TEXNet Support • Bantuan IT Internal</p> */}
       </div>
 
-      {/* ===== SUCCESS MODAL (tiket dengan stub berisi kode) ===== */}
+      {/* ===== SUCCESS MODAL (ticket with the code on the stub) ===== */}
       {showSuccessModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
           <div
@@ -766,10 +761,10 @@ const CreateTicketUserPage = () => {
           <div className="relative max-h-[92vh] w-full max-w-2xl overflow-y-auto">
             <TicketShell
               stubWidth="15rem"
-              band="Tiket terkirim"
+              band="Ticket sent"
               stub={
                 <>
-                  <p className="text-xs font-semibold text-gray-500">Kode Tiket Anda</p>
+                  <p className="text-xs font-semibold text-gray-500">Your Ticket Code</p>
                   <div>
                     <Barcode value={createdTicketId} height={40} />
                     <p className="mt-2 select-all break-all font-mono text-xs text-blue-300">
@@ -783,9 +778,9 @@ const CreateTicketUserPage = () => {
                 <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15">
                   <Check size={28} className="text-emerald-400" />
                 </div>
-                <h3 className="text-md font-semibold">Tiket Berhasil Dikirim!</h3>
+                <h3 className="text-md font-semibold">Ticket Sent Successfully!</h3>
                 <p className="mt-2 text-sm text-gray-400">
-                  Simpan kode tiket pada stub untuk melacak progress.
+                  Keep the ticket code on the stub to track its progress.
                 </p>
 
                 <button
@@ -794,11 +789,11 @@ const CreateTicketUserPage = () => {
                 >
                   {copied ? (
                     <>
-                      <Check size={16} /> Tersalin!
+                      <Check size={16} /> Copied!
                     </>
                   ) : (
                     <>
-                      <Copy size={16} /> Salin Kode Tiket
+                      <Copy size={16} /> Copy Ticket Code
                     </>
                   )}
                 </button>
@@ -807,7 +802,7 @@ const CreateTicketUserPage = () => {
                   onClick={() => shareToWhatsApp({ id: createdTicketId })}
                   className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-sm font-medium text-white hover:bg-emerald-500 active:scale-[0.99]"
                 >
-                  <Share2 size={16} /> Bagikan ke WhatsApp
+                  <Share2 size={16} /> Share on WhatsApp
                 </button>
 
                 <div className="mt-3 flex gap-2">
@@ -820,13 +815,13 @@ const CreateTicketUserPage = () => {
                     }}
                     className="flex-1 rounded-xl border border-white/10 py-2.5 text-sm text-gray-300 hover:bg-white/5 active:scale-[0.99]"
                   >
-                    Lacak Sekarang
+                    Track Now
                   </button>
                   <button
                     onClick={() => setShowSuccessModal(false)}
                     className="flex-1 rounded-xl border border-white/10 py-2.5 text-sm text-gray-300 hover:bg-white/5 active:scale-[0.99]"
                   >
-                    Tutup
+                    Close
                   </button>
                 </div>
               </div>
