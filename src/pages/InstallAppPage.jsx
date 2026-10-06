@@ -52,36 +52,27 @@ const InstallAppPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a12] text-white">
+    <div className="min-h-screen flex items-center justify-center md:h-screen overflow-x-hidden md:overflow-hidden bg-[#0a0a12] text-white">
       {/* Background */}
       <div className="fixed inset-0 bg-gradient-to-br from-blue-950/50 via-transparent to-indigo-950/30 pointer-events-none" />
 
-      <div className="relative mx-auto max-w-lg px-5 py-10 sm:py-14">
-        {/* Back */}
-        <Link
-          to="/"
-          className="mb-8 inline-flex items-center gap-2 text-sm text-gray-400 transition hover:text-white"
-        >
-          <ArrowLeft size={16} />
-          Kembali ke TEXNet
-        </Link>
-
-        {/* Header */}
-        <div className="mb-10 text-center">
-          <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg shadow-blue-500/25">
+      <div className="relative mx-auto w-[98vw] md:max-w-6xl px-5 py-10 sm:py-14">
+          {/* Header */}
+        <div className="mb-8 gap-x-2 flex items-center text-left">
+          <div className="flex w-14 md:h-16 h-14 md:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg shadow-blue-500/25">
             <img
               src="/icons/icon-192x192.png"
               alt="TEXNet"
-              className="h-12 w-12"
+              className="h-[88%] w-[88%]"
               draggable={false}
             />
           </div>
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
             Install TEXNet
           </h1>
-          <p className="mt-2 text-sm text-gray-400">
+          {/* <p className="mt-2 text-sm text-gray-400">
             Pasang sebagai aplikasi di HP supaya lebih cepat & praktis
-          </p>
+          </p> */}
         </div>
 
         {/* Sudah terinstall */}
@@ -115,7 +106,7 @@ const InstallAppPage = () => {
             )}
 
             {/* Instruksi berdasarkan platform */}
-            <div className="space-y-5">
+            <div className="grid md:grid-cols-2 md:space-y-0 space-y-4 gap-x-3">
               {/* Android */}
               {(platform === "android" || platform === "desktop") && (
                 <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
@@ -213,7 +204,7 @@ const InstallAppPage = () => {
             </div>
 
             {/* Keuntungan */}
-            <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+            <div className="mt-4 md:mt-8 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
               <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold">
                 <MonitorSmartphone size={16} />
                 Keuntungan Install sebagai Aplikasi
@@ -235,11 +226,6 @@ const InstallAppPage = () => {
             </div>
           </>
         )}
-
-        {/* Footer */}
-        <p className="mt-10 text-center text-xs text-gray-600">
-          TEXNet • Internal Networking Knowledge Base
-        </p>
       </div>
     </div>
   );

@@ -83,6 +83,7 @@ const PUBLIC_PATHS = [
   "/login",
   "/register",
   "/privacy",
+  "/install",
   "/terms",
   "/legal",
   "/about",

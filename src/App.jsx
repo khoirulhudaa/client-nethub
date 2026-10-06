@@ -61,6 +61,7 @@ function App() {
             <CreateTicketUserPage />
           }
         />
+        <Route path="/install" element={<InstallAppPage />} />
 
         {/* ===== LAYOUT UTAMA (ada Sidebar + TopBar) ===== */}
         <Route
@@ -84,7 +85,6 @@ function App() {
           <Route path="admin/activities" element={<ActivityLog />} />
           <Route path="practice" element={<PracticeHub />} />
           
-          <Route path="/install" element={<InstallAppPage />} />
 
           <Route path="/user/tickets/track" element={<TrackTicketPage />} />
 
