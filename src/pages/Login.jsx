@@ -29,7 +29,7 @@ const Login = () => {
   return (
     <div className="flex flex-col min-h-screen items-center justify-center bg-surface-light px-4 dark:bg-surface-dark">
       <img src="/hero.jpg" alt="hero" className="w-screen h-screen absolute z-[1] opacity-20" />
-      <div className="bg-white w-full rounded-2xl max-w-xl p-8 z-[22]">
+      <div className="bg-white w-full rounded-2xl max-w-xl p-7 z-[22]">
         <div className="mb-6 flex flex-col items-center gap-2.5">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent text-white">
             <img 
@@ -124,12 +124,12 @@ const Login = () => {
             </Link>
         </div>
 
-        <p className="mt-6 text-center text-sm text-gray-500">
+        {/* <p className="mt-6 text-center text-sm text-gray-500">
           New here?{" "}
           <Link to="/register" className="font-medium text-accent hover:underline">
             Create an account
           </Link>
-        </p>
+        </p> */}
 
       </div>
       <p className="absolute w-max gap-[2px] flex items-center left-1/2 bottom-8 z-[3333] -translate-x-1/2 mt-3 text-xs text-gray-400 text-center">

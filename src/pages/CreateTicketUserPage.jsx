@@ -14,6 +14,7 @@ import {
 import { toast } from "react-hot-toast";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import { Link } from "react-router-dom";
 
 const statusColor = {
   Baru: "bg-blue-500/15 text-blue-400 border-blue-500/30",
@@ -264,9 +265,11 @@ const CreateTicketUserPage = () => {
       <div className="relative mx-auto w-[97vw] px-4 py-8 sm:py-12 md:!max-w-7xl">
         {/* Header */}
         <div className="mb-6 gap-2.5 md:text-left flex items-center w-max">
-          <div className="mx-auto border border-white/20 hidden md:flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-400">
-            <LifeBuoy size={26} />
-          </div>
+          <Link to="/login" className="cursor-pointer active:scale-[0.99] hover:brightness-90">
+            <div className="mx-auto border border-white/20 hidden md:flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-400">
+              <LifeBuoy size={26} />
+            </div>
+          </Link>
           <div className="relative top-[-3px]">
             <h1 className="text-lg font-semibold tracking-tight">TEXNET TICKET</h1>
             <p className="text-xs md:text-sm text-gray-400">
