@@ -607,13 +607,6 @@ const TicketDetailPage = () => {
   return (
     <div className="mx-auto min-h-screen max-w-7xl md:border-x border-white dark:border-white/10 md:p-6">
       <style>{ticketCss}</style>
-
-      {/* Header */}
-      <div className="mb-6">
-        <span className="text-xs font-semibold uppercase tracking-wider text-accent">Ticket</span>
-        <h1 className="text-xl font-medium text-white tracking-tight">Ticket Details</h1>
-      </div>
-
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-3 rounded-3xl">
         {/* Left */}
         <div className="lg:col-span-2 space-y-3">
