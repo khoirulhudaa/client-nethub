@@ -115,7 +115,7 @@ const InstallAppPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen md:max-h-screen md:overflow-hidden items-center justify-center bg-[#0a0a12] px-5 text-white">
+    <div className="flex h-screen md:max-h-screen md:overflow-hidden items-center justify-center bg-[#0a0a12] px-5 text-white">
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-blue-950/50 via-transparent to-indigo-950/30" />
 
       <div className="relative flex w-full max-w-md md:h-screen justify-center flex-col items-center text-center">
