@@ -107,9 +107,9 @@ const Login = () => {
           </div>
         </form>
 
-        <div className="mt-5 grid grid-cols-2 gap-x-2">
+        <div className="mt-5 grid grid-cols-1 space-y-3 gap-x-2">
           <Link
-            to="/user/tickets/create"
+            to="/ticket"
             className="flex w-full items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 py-2.5 text-sm font-medium text-blue-700 transition hover:bg-blue-100 active:scale-[0.99]"
           >
             <Network size={16} />
@@ -120,7 +120,7 @@ const Login = () => {
               className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-gray-50 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-100 active:scale-[0.99]"
             >
               <Download size={16} />
-              Install TEXNet sebagai Aplikasi
+              Install Ticket
             </Link>
         </div>
 
