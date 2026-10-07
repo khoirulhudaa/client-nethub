@@ -23,11 +23,11 @@ const STATUSES = [
 ];
 
 const statusStyle = {
-  Baru: { dot: "bg-blue-400", badge: "bg-blue-500/10 text-blue-300 ring-blue-500/25" },
-  "Sedang Dikerjakan": { dot: "bg-amber-400", badge: "bg-amber-500/10 text-amber-300 ring-amber-500/25" },
-  "Menunggu Info": { dot: "bg-purple-400", badge: "bg-purple-500/10 text-purple-300 ring-purple-500/25" },
-  Selesai: { dot: "bg-emerald-400", badge: "bg-emerald-500/10 text-emerald-300 ring-emerald-500/25" },
-  Ditutup: { dot: "bg-gray-400", badge: "bg-gray-500/10 text-gray-300 ring-gray-500/25" },
+  Baru: { dot: "bg-blue-400", badge: "text-blue-300" },
+  "Sedang Dikerjakan": { dot: "bg-amber-400", badge: "text-amber-300" },
+  "Menunggu Info": { dot: "bg-purple-400", badge: "text-purple-300" },
+  Selesai: { dot: "bg-emerald-400", badge: "text-emerald-300" },
+  Ditutup: { dot: "bg-gray-400", badge: "text-gray-300" },
 };
 
 const priorityStyle = {
@@ -54,20 +54,20 @@ const TicketCard = ({ ticket }) => {
   return (
     <Link
       to={`/tickets/${ticket._id}`}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-100/10 p-5 pl-6 transition duration-200 hover:border-white/20 hover:bg-white/[0.07] hover:shadow-xl hover:shadow-black/20 active:scale-[0.99]"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border-gray-200 bg-white border dark:border-white/10 dark:bg-[#0c0c18] p-5 pl-6 transition duration-200 hover:border-white/20 hover:brightness-[80%] hover:shadow-xl hover:shadow-black/20 active:scale-[0.99]"
     >
       {/* Priority accent */}
       <span className={`absolute inset-y-0 left-0 w-1 ${priority.bar}`} />
 
       {/* Top: category + status */}
-      <div className="flex items-center justify-between gap-3">
-        <span className="truncate rounded-lg bg-white/5 px-2.5 py-1 text-xs text-gray-300">
+      <div className="flex items-center justify-start">
+        <span className="truncate text-xs text-white">
           {ticket.category}
         </span>
+        ,
         <span
-          className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${status.badge}`}
+          className={`inline-flex shrink-0 items-center ml-1 gap-1.5 text-xs ${status.badge}`}
         >
-          <span className={`h-1.5 w-1.5 rounded-lg ${status.dot}`} />
           {statusLabel(ticket.status)}
         </span>
       </div>
@@ -85,8 +85,7 @@ const TicketCard = ({ ticket }) => {
       {/* Footer */}
       <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/10 pt-4 text-xs text-gray-500">
         <div className="flex min-w-0 items-center gap-3">
-          <span className={`inline-flex items-center gap-1.5 font-medium ${priority.text}`}>
-            <span className={`h-2 w-2 rounded-full ${priority.bar}`} />
+          <span className={`inline-flex items-center text-xs uppercase gap-1.5 font-medium ${priority.text}`}>
             {ticket.priority}
           </span>
           {ticket.location && (
@@ -154,24 +153,6 @@ const TicketsPage = () => {
 
   return (
     <div className="mx-auto min-h-screen max-w-full border-white md:border-x md:p-6 p-4 dark:border-white/10">
-      {/* Header */}
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        {/* <div>
-          <p className="text-xs font-medium uppercase text-accent">Support</p>
-          <h1 className="text-xl font-semibold tracking-tight text-white">
-            {isAdmin ? "All Tickets" : "My Tickets"}
-          </h1>
-        </div> */}
-
-        <Link
-          to="/tickets/create"
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-accent/20 transition hover:opacity-90"
-        >
-          <Plus size={16} />
-          Create Ticket
-        </Link>
-      </div>
-
       {/* Toolbar */}
       <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 lg:flex-row lg:items-center">
         {/* Status tabs */}

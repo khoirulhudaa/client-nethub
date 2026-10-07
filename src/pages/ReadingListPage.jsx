@@ -15,8 +15,6 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
-  ArrowRight,
-  BookOpen,
   Calendar,
   CheckCircle2,
   Circle,
@@ -110,9 +108,9 @@ const SortableItem = ({
             </p>
           </div>
               
-          <div className="w-max flex items-center md:items-start gap-3">
+          <div className="w-max flex flex-row-reverse items-center md:items-start gap-3">
             {/* Actions */}
-            <div className="mt-2 flex items-center md:items-start gap-1 sm:mt-0">
+            <div className="mt-2 flex items-center w-full justify-end gap-1 sm:mt-0">
               {/* Remove */}
               <button
                 onClick={() => onRemove(post._id)}
