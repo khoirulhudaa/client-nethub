@@ -671,7 +671,7 @@ const CreateTicketUserPage = () => {
                       {trackedTicket.description}
                     </p>
 
-                    <div className="grid grid-cols-3 gap-3 text-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
                       <div>
                         <p className="text-xs font-semibold text-gray-500">PC owner</p>
                         <p className="mt-0.5">{trackedTicket.pcOwner}</p>
