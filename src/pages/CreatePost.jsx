@@ -275,7 +275,7 @@ const CreatePost = () => {
 
       <form onSubmit={handleSubmit} className="space-y-6 !mt-4 md:!mt-6 z-[99999] relative">
         {/* ===== Basic Info ===== */}
-        <div className="surface-card rounded-lg md:rounded-3xl dark:!bg-white/5 space-y-4 p-3 md:p-6">
+        <div className="surface-card rounded-lg md:rounded-3xl dark:!bg-white/5 space-y-4 p-3 md:p-5">
           <div>
             <label className="mb-1.5 block text-sm font-medium">Title item</label>
             <input

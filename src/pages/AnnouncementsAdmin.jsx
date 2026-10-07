@@ -312,14 +312,14 @@ const AnnouncementsAdmin = () => {
 
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
+        {/* <div>
           <div className="flex items-center gap-2 text-accent">
             <span className="text-xs font-medium uppercase tracking-wide">
               SuperAdmin
             </span>
           </div>
           <h1 className="text-xl font-semibold text-white tracking-tight">Announcements</h1>
-        </div>
+        </div> */}
 
         <div className="flex items-center gap-3">
           {/* Search bar */}

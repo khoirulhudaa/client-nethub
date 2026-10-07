@@ -125,14 +125,14 @@ const SubnetCalculator = () => {
   return (
     <div className="mx-auto max-w-full md:border-x border-white dark:border-white/10 px-0 py-0 md:py-6 md:px-6">
       {/* Header */}
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <div className="flex items-center gap-2 text-accent">
           <span className="text-xs font-semibold uppercase tracking-wider">Tools</span>
         </div>
         <h1 className="mt-1 text-xl font-semibold tracking-tight text-white">
           Subnet Calculator
         </h1>
-      </div>
+      </div> */}
 
       {/* Main Card — tetap bg-slate-200 / dark:bg-white/[0.03] */}
       <div className="surface-card rounded-2xl border-none bg-slate-200 p-4 md:p-5 dark:border-white/10 dark:bg-white/5">

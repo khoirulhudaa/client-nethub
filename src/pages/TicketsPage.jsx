@@ -1,34 +1,117 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
+  ArrowUpRight,
   Clock,
-  Filter,
   Loader2,
+  MapPin,
   Plus,
   Search,
   Ticket,
+  X,
 } from "lucide-react";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
-const statusColor = {
-  Baru: "bg-blue-500/15 text-blue-400 border-blue-500/30",
-  "Sedang Dikerjakan": "bg-amber-500/15 text-amber-400 border-amber-500/30",
-  "Menunggu Info": "bg-purple-500/15 text-purple-400 border-purple-500/30",
-  Selesai: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  Ditutup: "bg-gray-500/15 text-gray-400 border-gray-500/30",
+const STATUSES = [
+  { value: "", label: "All" },
+  { value: "Baru", label: "New" },
+  { value: "Sedang Dikerjakan", label: "In Progress" },
+  { value: "Menunggu Info", label: "Waiting" },
+  { value: "Selesai", label: "Completed" },
+  { value: "Ditutup", label: "Closed" },
+];
+
+const statusStyle = {
+  Baru: { dot: "bg-blue-400", badge: "bg-blue-500/10 text-blue-300 ring-blue-500/25" },
+  "Sedang Dikerjakan": { dot: "bg-amber-400", badge: "bg-amber-500/10 text-amber-300 ring-amber-500/25" },
+  "Menunggu Info": { dot: "bg-purple-400", badge: "bg-purple-500/10 text-purple-300 ring-purple-500/25" },
+  Selesai: { dot: "bg-emerald-400", badge: "bg-emerald-500/10 text-emerald-300 ring-emerald-500/25" },
+  Ditutup: { dot: "bg-gray-400", badge: "bg-gray-500/10 text-gray-300 ring-gray-500/25" },
 };
 
-const priorityColor = {
-  Low: "text-gray-400",
-  Medium: "text-blue-400",
-  High: "text-orange-400",
-  Critical: "text-red-400",
+const priorityStyle = {
+  Low: { bar: "bg-gray-500", text: "text-gray-400" },
+  Medium: { bar: "bg-blue-500", text: "text-blue-400" },
+  High: { bar: "bg-orange-500", text: "text-orange-400" },
+  Critical: { bar: "bg-red-500", text: "text-red-400" },
+};
+
+const statusLabel = (value) =>
+  STATUSES.find((s) => s.value === value)?.label || value;
+
+const formatDate = (date) =>
+  new Date(date).toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
+const TicketCard = ({ ticket }) => {
+  const status = statusStyle[ticket.status] || statusStyle.Ditutup;
+  const priority = priorityStyle[ticket.priority] || priorityStyle.Low;
+
+  return (
+    <Link
+      to={`/tickets/${ticket._id}`}
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-100/10 p-5 pl-6 transition duration-200 hover:border-white/20 hover:bg-white/[0.07] hover:shadow-xl hover:shadow-black/20 active:scale-[0.99]"
+    >
+      {/* Priority accent */}
+      <span className={`absolute inset-y-0 left-0 w-1 ${priority.bar}`} />
+
+      {/* Top: category + status */}
+      <div className="flex items-center justify-between gap-3">
+        <span className="truncate rounded-lg bg-white/5 px-2.5 py-1 text-xs text-gray-300">
+          {ticket.category}
+        </span>
+        <span
+          className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${status.badge}`}
+        >
+          <span className={`h-1.5 w-1.5 rounded-lg ${status.dot}`} />
+          {statusLabel(ticket.status)}
+        </span>
+      </div>
+
+      {/* Body */}
+      <div className="mt-4 flex-1">
+        <h3 className="line-clamp-1 text-base font-medium text-white">
+          {ticket.title}
+        </h3>
+        <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-gray-400">
+          {ticket.description}
+        </p>
+      </div>
+
+      {/* Footer */}
+      <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/10 pt-4 text-xs text-gray-500">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className={`inline-flex items-center gap-1.5 font-medium ${priority.text}`}>
+            <span className={`h-2 w-2 rounded-full ${priority.bar}`} />
+            {ticket.priority}
+          </span>
+          {ticket.location && (
+            <span className="inline-flex min-w-0 items-center gap-1">
+              <MapPin size={12} className="shrink-0" />
+              <span className="truncate">{ticket.location}</span>
+            </span>
+          )}
+        </div>
+
+        <div className="flex shrink-0 items-center gap-1.5">
+          <Clock size={12} />
+          {formatDate(ticket.createdAt)}
+          <ArrowUpRight
+            size={14}
+            className="ml-1 text-gray-600 transition group-hover:text-accent"
+          />
+        </div>
+      </div>
+    </Link>
+  );
 };
 
 const TicketsPage = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const isAdmin = user?.role === "superAdmin" || user?.role === "admin";
 
   const [tickets, setTickets] = useState([]);
@@ -36,127 +119,145 @@ const TicketsPage = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [search, setSearch] = useState("");
 
-  const fetchTickets = async () => {
-    try {
-      setLoading(true);
-      const params = {};
-      if (statusFilter) params.status = statusFilter;
-      if (search.trim()) params.search = search.trim();
-
-      const { data } = await api.get("/tickets", { params });
-      setTickets(data.tickets || []);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Fetch all tickets (filtered by search only) so status counts stay accurate.
+  // Search is debounced so we don't hit the API on every keystroke.
   useEffect(() => {
-    fetchTickets();
-  }, [statusFilter]);
+    const timer = setTimeout(async () => {
+      try {
+        setLoading(true);
+        const params = {};
+        if (search.trim()) params.search = search.trim();
+        const { data } = await api.get("/tickets", { params });
+        setTickets(data.tickets || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }, 350);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    fetchTickets();
-  };
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  const counts = useMemo(() => {
+    const result = { "": tickets.length };
+    tickets.forEach((t) => {
+      result[t.status] = (result[t.status] || 0) + 1;
+    });
+    return result;
+  }, [tickets]);
+
+  const visibleTickets = useMemo(
+    () => (statusFilter ? tickets.filter((t) => t.status === statusFilter) : tickets),
+    [tickets, statusFilter]
+  );
 
   return (
-    <div className="mx-auto min-h-screen max-w-full md:border-x border-white dark:border-white/10 md:p-6 p-4">
+    <div className="mx-auto min-h-screen max-w-full border-white md:border-x md:p-6 p-4 dark:border-white/10">
       {/* Header */}
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2 text-accent">
-            <span className="text-xs font-semibold uppercase tracking-wider">Support</span>
-          </div>
-          <h1 className="text-xl font-medium tracking-tight text-white">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        {/* <div>
+          <p className="text-xs font-medium uppercase text-accent">Support</p>
+          <h1 className="text-xl font-semibold tracking-tight text-white">
             {isAdmin ? "All Tickets" : "My Tickets"}
           </h1>
-        </div>
+        </div> */}
 
         <Link
           to="/tickets/create"
-          className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-accent/20 transition hover:opacity-90"
         >
           <Plus size={16} />
           Create Ticket
         </Link>
       </div>
 
-      {/* Filter */}
-      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <form onSubmit={handleSearch} className="relative flex-1">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+      {/* Toolbar */}
+      <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 lg:flex-row lg:items-center">
+        {/* Status tabs */}
+        <div className="-mx-1 flex gap-x-2 overflow-x-auto p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {STATUSES.map((s) => {
+            const active = statusFilter === s.value;
+            return (
+              <button
+                key={s.value}
+                type="button"
+                onClick={() => setStatusFilter(s.value)}
+                className={`flex shrink-0 items-center gap-2 rounded-xl px-3.5 py-2 text-sm transition ${
+                  active
+                    ? "bg-white/10 text-white"
+                    : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
+                }`}
+              >
+                {s.label}
+                <span
+                  className={`rounded-md w-[21px] text-[11px] tabular-nums ${
+                    active ? "bg-accent text-white" : "bg-white/5 text-gray-500"
+                  }`}
+                >
+                  {counts[s.value] || 0}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Search */}
+        <div className="relative lg:ml-auto lg:w-72">
+          <Search
+            size={16}
+            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500"
+          />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search title or description..."
-            className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
+            placeholder="Search tickets..."
+            className="w-full rounded-xl border border-transparent bg-white/5 py-2.5 pl-10 pr-9 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
           />
-        </form>
-
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white focus:border-accent focus:outline-none"
-        >
-          <option value="" className="bg-[#0c0c18]">All Status</option>
-          <option value="Baru" className="bg-[#0c0c18]">New</option>
-          <option value="Sedang Dikerjakan" className="bg-[#0c0c18]">In Progress</option>
-          <option value="Menunggu Info" className="bg-[#0c0c18]">Waiting for Info</option>
-          <option value="Selesai" className="bg-[#0c0c18]">Completed</option>
-          <option value="Ditutup" className="bg-[#0c0c18]">Closed</option>
-        </select>
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch("")}
+              aria-label="Clear search"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md p-1 text-gray-500 hover:text-white"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* List */}
+      {/* Content */}
       {loading ? (
-        <div className="flex justify-center py-20">
+        <div className="flex justify-center py-24">
           <Loader2 className="animate-spin text-accent" size={28} />
         </div>
-      ) : tickets.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 py-16 text-center">
-          <Ticket size={40} className="mb-3 text-gray-500" />
+      ) : visibleTickets.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-white/15 bg-white/[0.02] px-6 py-20 text-center">
+          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5">
+            <Ticket size={26} className="text-gray-400" />
+          </div>
           <p className="font-medium text-white">No tickets found</p>
-          <p className="mt-1 text-sm text-gray-500">Create a new ticket if you're experiencing issues</p>
+          <p className="mt-1 max-w-xs text-sm text-gray-500">
+            {search || statusFilter
+              ? "Try a different keyword or status filter."
+              : "Create a new ticket if you're experiencing issues."}
+          </p>
+          {!search && !statusFilter && (
+            <Link
+              to="/tickets/create"
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+            >
+              <Plus size={16} />
+              Create Ticket
+            </Link>
+          )}
         </div>
       ) : (
-        <div className="space-y-3 surface-card rounded-3xl border border-white/10 dark:!bg-white/5 p-5">
-          {tickets.map((ticket) => (
-            <Link
-              key={ticket._id}
-              to={`/tickets/${ticket._id}`}
-              className="block rounded-2xl border border-white/10 bg-white dark:!bg-slate-100/10 dark:!text-white p-4 transition hover:bg-white/80 active:scale-[0.99] duration-100"
-            >
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-medium dark:!text-white">{ticket.title}</h3>
-                    <span className={`rounded-md border px-2 py-0.5 text-xs font-medium ${statusColor[ticket.status]}`}>
-                      {ticket.status}
-                    </span>
-                  </div>
-                  <p className="mt-1 line-clamp-1 text-sm text-gray-400">{ticket.description}</p>
-                  <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-gray-500">
-                    <span>{ticket.category}</span>
-                    <span>•</span>
-                    <span>{ticket.location}</span>
-                    <span>•</span>
-                    <span className={priorityColor[ticket.priority]}>{ticket.priority}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1.5 text-xs text-gray-500 shrink-0">
-                  <Clock size={13} />
-                  {new Date(ticket.createdAt).toLocaleDateString("id-ID", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </div>
-              </div>
-            </Link>
+        <div className="surface-card dark:!bg-white/5 rounded-3xl border border-white/10 p-4 grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
+          {visibleTickets.map((ticket) => (
+            <TicketCard key={ticket._id} ticket={ticket} />
           ))}
         </div>
       )}

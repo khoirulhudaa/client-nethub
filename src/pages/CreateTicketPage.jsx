@@ -95,14 +95,14 @@ const CreateTicketPage = () => {
   return (
     <div className="mx-auto min-h-screen max-w-7xl md:border-x border-white dark:border-white/10 md:p-6 p-4">
         {/* Header */}
-        <div className="mb-6">
+        {/* <div className="mb-6">
             <div className="flex items-center gap-2 text-accent">
             <span className="text-xs font-semibold uppercase tracking-wider">Support</span>
             </div>
             <h1 className="text-xl font-medium tracking-tight text-white">Create Support Ticket</h1>
-        </div>
+        </div> */}
 
-        <div className="surface-card rounded-3xl border border-white/10 dark:!bg-white/5 p-5">
+        <div className="surface-card dark:!bg-white/5 rounded-3xl border border-white/10 p-5">
             <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                     <label className="mb-1.5 block text-sm font-medium">

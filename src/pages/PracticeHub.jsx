@@ -58,7 +58,7 @@ const PracticeHub = () => {
   return (
     <div className="mx-auto max-w-full min-h-screen md:border-x border-white dark:border-white/10 px-0 py-0 md:p-6">
       {/* Header */}
-      <div className="mb-4 md:mb-6">
+      {/* <div className="mb-4 md:mb-6">
         <div className="flex items-center gap-2 text-accent">
           <span className="text-xs font-medium uppercase tracking-wide">
             Practice Lab
@@ -67,7 +67,7 @@ const PracticeHub = () => {
         <h1 className="text-xl font-semibold text-white tracking-tight">
           Choose a practice
         </h1>
-      </div>
+      </div> */}
 
       {/* Practice cards */}
       <div className="mb-6 surface-card bg-white dark:bg-white/5 p-2.5 md:p-4 grid gap-4 sm:grid-cols-2 sm:gap-3">

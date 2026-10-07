@@ -137,7 +137,7 @@ const Trending = () => {
   return (
     <div className="mx-auto max-w-full md:border-x border-white dark:border-white/10 px-0 py-0 md:py-6 md:px-6">
       {/* Header */}
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      {/* <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2 text-accent">
             <span className="text-xs font-semibold uppercase tracking-wide">
@@ -162,7 +162,7 @@ const Trending = () => {
             </button>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Chart + Guides */}
       {loading ? (
@@ -180,10 +180,10 @@ const Trending = () => {
         </div>
       ) : (
         <div>
-          <div className="mb-4 flex items-center gap-2 text-sm text-white dark:text-gray-500">
+          {/* <div className="mb-4 flex items-center gap-2 text-sm text-white dark:text-gray-500">
             <TrendingUp size={16} className="text-accent" />
             <span>Top 3 Guides · Ranked by views & likes</span>
-          </div>
+          </div> */}
 
           <div className="mb-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {posts.map((post, index) => (

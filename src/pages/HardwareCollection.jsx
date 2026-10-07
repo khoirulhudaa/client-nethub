@@ -597,7 +597,7 @@ const HardwareCollections = () => {
   return (
     <div className="relative mx-auto max-w-full md:border-x border-white dark:border-white/10 min-h-screen px-0 py-0 md:p-6">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+        {/* <div>
           <div className="flex items-center gap-2 text-accent">
             <span className="text-xs font-medium uppercase tracking-wide">
               Collection
@@ -606,7 +606,7 @@ const HardwareCollections = () => {
           <h1 className="text-xl font-semibold text-white tracking-tight">
             Hardware Collection
           </h1>
-        </div>
+        </div> */}
 
         {isAdmin && (
           <button
