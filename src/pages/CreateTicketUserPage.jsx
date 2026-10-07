@@ -310,18 +310,18 @@ const CreateTicketUserPage = () => {
   const panel = "rounded-2xl border border-white/10 bg-white/[0.03] p-5";
 
   return (
-    <div className="relative h-max md:min-h-screen bg-[#0a0a12] overflow-auto overflow-x-hidden text-white">
+    <div className="relative h-max md:h-max bg-[#0a0a12] overflow-hidden overflow-x-hidden text-white">
       <style>{ticketCss}</style>
       <img
         draggable={false}
         onContextMenu={(e) => e.preventDefault()}
         onDragStart={(e) => e.preventDefault()}
-        src="/sidebar.png" alt="wallpaper-sidebar" className={`rotate-[14deg] scale-[2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-5 left-0`} 
+        src="/sidebar.png" alt="wallpaper-sidebar" className={`rotate-[14deg] scale-[2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-10 left-0`} 
       />
       
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-blue-950/90 via-transparent to-purple-800/20" />
 
-      <div className="relative mx-auto w-[97vw] md:h-max h-screen flex flex-col md:items-center md:justify-center px-2 md:!px-4 py-4 md:py-6 md:!max-w-7xl">
+      <div className="relative mx-auto w-[97vw] md:h-max overflow-hidden h-screen flex flex-col md:items-center md:justify-center px-2 md:!px-4 py-4 md:py-6 md:!max-w-7xl">
         {/* Tabs */}
         <div className="w-[92vw] md:w-[70vw] mb-6 flex gap-x-1.5 rounded-xl md:rounded-[20px] border border-white/40 bg-white/[0.03] p-2">
           {[
