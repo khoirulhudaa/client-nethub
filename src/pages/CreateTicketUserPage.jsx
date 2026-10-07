@@ -564,7 +564,7 @@ const CreateTicketUserPage = () => {
 
         {/* ==================== TAB: TRACK TICKET ==================== */}
         {activeTab === "track" && (
-          <div className="space-y-5">
+          <div className="w-[92vw] md:w-[70vw] min-h-screen space-y-5">
             <form onSubmit={handleTrack} className={panel}>
               <label className="mb-2 block text-sm font-medium text-gray-300">Ticket Code</label>
               <div className="flex gap-2">
