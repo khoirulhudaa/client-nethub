@@ -416,7 +416,7 @@ const CreateTicketUserPage = () => {
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-medium text-white transition hover:bg-blue-500 border border-white/40 disabled:opacity-60"
+                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-2 text-sm font-medium text-white transition hover:bg-blue-500 border border-white/40 disabled:opacity-60"
                     >
                       {submitting ? (
                         <>
