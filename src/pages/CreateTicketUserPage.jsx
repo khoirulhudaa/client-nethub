@@ -297,9 +297,8 @@ const CreateTicketUserPage = () => {
   const sharePageToWhatsApp = () => {
     openWhatsApp(
       [
-        "*TEXNet - IT Helpdesk*",
-        "Need IT help? Create or track a ticket here:",
-        `${SITE_URL}/user/tickets/create`,
+        "TEXNet - IT Helpdesk:",
+        `${SITE_URL}/ticket`,
         "",
         "Install the TEXNet app:",
         `${SITE_URL}/install`,
@@ -566,7 +565,7 @@ const CreateTicketUserPage = () => {
         {activeTab === "track" && (
           <div className="w-[92vw] md:w-[70vw] min-h-screen space-y-5">
             <form onSubmit={handleTrack} className={panel}>
-              <label className="mb-2 block text-sm font-medium text-gray-300">Ticket Code</label>
+              <label className="mb-2 block text-sm font-medium text-white">Ticket Code</label>
               <div className="flex gap-2">
                 <input
                   type="text"
