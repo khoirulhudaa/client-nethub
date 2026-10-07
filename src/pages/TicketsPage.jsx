@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowUpRight,
+  ChevronDown,
   Clock,
   Loader2,
   MapPin,
@@ -85,7 +86,7 @@ const TicketCard = ({ ticket }) => {
       {/* Footer */}
       <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/10 pt-4 text-xs text-gray-500">
         <div className="flex min-w-0 items-center gap-3">
-          <span className={`inline-flex items-center text-xs uppercase gap-1.5 font-medium ${priority.text}`}>
+          <span className={`inline-flex items-center text-xs gap-1.5 font-medium ${priority.text}`}>
             {ticket.priority}
           </span>
           {ticket.location && (
@@ -152,11 +153,31 @@ const TicketsPage = () => {
   );
 
   return (
-    <div className="mx-auto min-h-screen max-w-full border-white md:border-x md:p-6 p-4 dark:border-white/10">
+    <div className="mx-auto min-h-screen max-w-full border-white md:border-x md:p-6 dark:border-white/10">
       {/* Toolbar */}
-      <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 lg:flex-row lg:items-center">
-        {/* Status tabs */}
-        <div className="-mx-1 flex gap-x-2 overflow-x-auto p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3 md:p-4 lg:flex-row lg:items-center">
+       {/* Status selector (mobile) */}
+        <div className="relative md:hidden">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            aria-label="Filter by status"
+            className="w-full appearance-none rounded-xl border border-transparent bg-white/5 py-2.5 pl-4 pr-10 text-sm text-white focus:border-accent focus:outline-none"
+          >
+            {STATUSES.map((s) => (
+              <option key={s.value} value={s.value} className="bg-[#0c0c18]">
+                {s.label} ({counts[s.value] || 0})
+              </option>
+            ))}
+          </select>
+          <ChevronDown
+            size={16}
+            className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500"
+          />
+        </div>
+
+        {/* Status tabs (tablet & desktop) */}
+        <div className="-mx-1 hidden gap-x-2 overflow-x-auto p-1 [scrollbar-width:none] md:flex [&::-webkit-scrollbar]:hidden">
           {STATUSES.map((s) => {
             const active = statusFilter === s.value;
             return (
@@ -236,7 +257,7 @@ const TicketsPage = () => {
           )}
         </div>
       ) : (
-        <div className="surface-card dark:!bg-white/5 rounded-3xl border border-white/10 p-4 grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
+        <div className="surface-card dark:!bg-white/5 rounded-3xl border border-white/10 p-3 md:p-4 grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
           {visibleTickets.map((ticket) => (
             <TicketCard key={ticket._id} ticket={ticket} />
           ))}
