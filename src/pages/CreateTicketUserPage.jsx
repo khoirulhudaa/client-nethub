@@ -617,7 +617,7 @@ const CreateTicketUserPage = () => {
                       <div>
                         <p className="text-xs font-semibold text-gray-500">Status</p>
                         <span
-                          className={`mt-1.5 inline-flex rounded-lg border px-3 py-1.5 text-sm font-semibold ${
+                          className={`mt-1.5 inline-flex text-sm font-semibold ${
                             statusColor[trackedTicket.status] || statusColor.Baru
                           }`}
                         >
@@ -690,30 +690,6 @@ const CreateTicketUserPage = () => {
                   </div>
                 </TicketShell>
 
-                {/* Status progress */}
-                {trackedTicket.statusHistory?.length > 0 && (
-                  <div className={panel}>
-                    <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold">
-                      <Clock size={16} />
-                      Status Progress
-                    </h3>
-                    <div className="space-y-3">
-                      {[...trackedTicket.statusHistory].reverse().map((item, idx) => (
-                        <div key={idx} className="flex gap-3 text-sm">
-                          <div className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-400" />
-                          <div>
-                            <p className="font-medium">{statusLabel[item.status] || item.status}</p>
-                            {item.note && <p className="text-gray-400">{item.note}</p>}
-                            <p className="text-xs text-gray-500">
-                              {new Date(item.changedAt).toLocaleString(LOCALE)}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
                 {/* Comments */}
                 <div className={panel}>
                   <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold">
@@ -760,7 +736,7 @@ const CreateTicketUserPage = () => {
           <div className="relative max-h-[92vh] flex items-center justify-center overflow-y-auto">
             <TicketShell
               stubWidth="15rem"
-              band="Ticket sent"
+              band="Ticket Sent"
               stub={
                 <>
                   {/* <p className="text-xs font-semibold text-white">Your Ticket Code</p> */}
@@ -814,7 +790,7 @@ const CreateTicketUserPage = () => {
                     onClick={() => shareToWhatsApp({ id: createdTicketId })}
                     className="flex items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-sm text-white hover:bg-emerald-500/60 active:scale-[0.99]"
                   >
-                    <Share2 size={16} /> Share WhatsApp
+                    <Share2 size={16} /> Share WA
                   </button>
                  
                   <button
