@@ -89,7 +89,7 @@ const InstallAppPage = () => {
   const SHARE_MESSAGE = [
     "TEXNet - Helpdesk IT",
     "Butuh bantuan IT? Buat atau lacak tiket di sini:",
-    `${SITE_URL}/user/tickets/create`,
+    `${SITE_URL}/ticket`,
     "",
     "Install aplikasi TEXNet:",
     `${SITE_URL}/install`,

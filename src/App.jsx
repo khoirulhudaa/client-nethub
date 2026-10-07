@@ -56,7 +56,7 @@ function App() {
 
         {/* ===== HALAMAN KHUSUS TANPA SIDEBAR & TOPBAR ===== */}
         <Route
-          path="/user/tickets/create"
+          path="/ticket"
           element={
             <CreateTicketUserPage />
           }
