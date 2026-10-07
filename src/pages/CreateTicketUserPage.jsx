@@ -22,11 +22,11 @@ const LOCALE = "en-US";
 
 // Keys must match the status values stored in the backend; only the labels are translated.
 const statusColor = {
-  Baru: "bg-blue-500/15 text-blue-400 border-blue-500/30",
-  "Sedang Dikerjakan": "bg-amber-500/15 text-amber-400 border-amber-500/30",
-  "Menunggu Info": "bg-purple-500/15 text-purple-400 border-purple-500/30",
-  Selesai: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  Ditutup: "bg-gray-500/15 text-gray-400 border-gray-500/30",
+  Baru: "bg-blue-500/30 text-white border-blue-500/30",
+  "Sedang Dikerjakan": "bg-amber-500/30 text-white border-amber-500/30",
+  "Menunggu Info": "bg-purple-500/30 text-white border-purple-500/30",
+  Selesai: "bg-emerald-500/30 text-white border-emerald-500/30",
+  Ditutup: "bg-gray-500/30 text-white border-gray-500/30",
 };
 
 const statusLabel = {
