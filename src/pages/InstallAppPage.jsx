@@ -1,6 +1,5 @@
 import { CheckCircle2, Download } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useInstallPrompt } from "../hooks/useInstallPrompt.js";
 
 const WindowsIcon = ({ size = 40 }) => (

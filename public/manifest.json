@@ -1,9 +1,9 @@
 {
-  "id": "/user/tickets/create",
+  "id": "/ticket",
   "name": "Ticket",
   "short_name": "TEXNet",
   "description": "Guides, quizzes, and tools for learning networking.",
-  "start_url": "/user/tickets/create",
+  "start_url": "/ticket",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
