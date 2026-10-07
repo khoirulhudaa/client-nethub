@@ -95,14 +95,14 @@ const Barcode = ({ value = "", height = 40 }) => {
 const TicketShell = ({ stubWidth = "16rem", band, children, stub }) => (
   <div className="drop-shadow-2xl w-full mb-6">
     <div
-      className="ticket-cut w-[92vw] md:w-[70vw] flex flex-col overflow-hidden rounded-lg md:rounded-2xl border border-white/40 bg-[#12121a9a] lg:flex-row"
+      className="ticket-cut w-[92vw] md:w-[70vw] flex flex-col overflow-hidden rounded-lg md:rounded-xl border border-white/40 bg-[#12121a9a] lg:flex-row"
       style={{ "--stub": stubWidth }}
     >
       <div className="min-w-0 flex-1">
         {band && (
           <div className="flex items-center justify-between gap-3 bg-blue-500/15 px-2.5 md:px-6 py-3">
-            <span className="text-xs font-mono text-white">IT Helpdesk Ticket</span>
-            <span className="font-mono text-xs text-white">{band}</span>
+            <span className="text-sm font-mono text-white">IT Helpdesk Ticket</span>
+            <span className="font-mono text-sm text-white">{band}</span>
           </div>
         )}
         <div className="p-3 md:p-6">{children}</div>
@@ -359,7 +359,7 @@ const CreateTicketUserPage = () => {
         className="relative mx-auto w-full bg-white/10 h-max overflow-hidden flex flex-col items-center md:justify-center px-2 md:!px-4 py-4 md:py-6 md:!max-w-6xl"
       >
         {/* Tabs */}
-        <div className="w-[92vw] md:w-[70vw] mb-6 flex gap-x-1.5 rounded-xl md:rounded-[20px] border border-white/40 bg-white/[0.03] p-2">
+        <div className="w-[92vw] md:w-[70vw] mb-6 flex gap-x-1.5 rounded-lg md:rounded-xl border border-white/40 bg-white/[0.03] p-2">
           {[
             { key: "create", label: "Create Ticket", icon: TicketPlus },
             { key: "track", label: "Track Ticket", icon: Search },
@@ -368,7 +368,7 @@ const CreateTicketUserPage = () => {
               key={t.key}
               type="button"
               onClick={() => setActiveTab(t.key)}
-              className={`flex-1 flex items-center gap-2 justify-center border border-white/20 rounded-lg md:rounded-[16px] py-2 md:py-3 text-sm font-medium transition ${
+              className={`flex-1 flex items-center gap-2 justify-center border border-white/20 rounded-md md:rounded-lg py-2 text-sm font-medium transition ${
                 activeTab === t.key
                   ? "bg-blue-600 text-white"
                   : "bg-white/5 text-gray-400 hover:text-white"
@@ -382,7 +382,7 @@ const CreateTicketUserPage = () => {
             type="button"
             onClick={sharePageToWhatsApp}
             aria-label="Share this page on WhatsApp"
-            className="flex items-center justify-center gap-2 rounded-lg md:rounded-[16px] border border-white/20 bg-emerald-600 px-4 py-2 md:py-3 text-sm font-medium text-white transition hover:bg-emerald-500 active:scale-[0.99]"
+            className="flex items-center justify-center gap-2 rounded-md md:rounded-lg border border-white/20 bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-500 active:scale-[0.99]"
           >
             <Share2 size={16} />
             <span className="hidden sm:inline">Share</span>
