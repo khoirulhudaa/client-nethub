@@ -1,21 +1,24 @@
 import {
   Check,
-  Clock,
   Copy,
+  Download,
+  File,
   LifeBuoy,
   Loader2,
   MessageSquare,
-  Share2,
   Monitor,
+  Printer,
   RefreshCcw,
   Search,
   Send,
-  TicketPlus,
+  Share2,
+  TicketPlus
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import { downloadTicketPdf, printTicketPdf } from "../utils/ticketPdf.js";
 
 const SITE_URL = "https://texnet-hub.vercel.app";
 const LOCALE = "en-US";
@@ -36,6 +39,8 @@ const statusLabel = {
   Selesai: "Resolved",
   Ditutup: "Closed",
 };
+
+const pdfOptions = { statusLabel, locale: LOCALE, siteUrl: SITE_URL };
 
 // `value` is what gets saved in the backend (unchanged); `label` is what the user sees.
 const sinceOptions = [
@@ -141,6 +146,9 @@ const CreateTicketUserPage = () => {
   const [trackLoading, setTrackLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
+  const [createdTicket, setCreatedTicket] = useState(null);
+  const [pdfBusy, setPdfBusy] = useState(false);
+
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -206,6 +214,8 @@ const CreateTicketUserPage = () => {
       setSubmitting(true);
       const { data } = await api.post("/tickets", form);
 
+      setCreatedTicketId(data.ticket._id);
+      setCreatedTicket({ ...form, ...data.ticket });
       setCreatedTicketId(data.ticket._id);
       setShowSuccessModal(true);
 
@@ -306,6 +316,30 @@ const CreateTicketUserPage = () => {
     );
   };
 
+  const handlePdf = async (ticket, mode) => {
+    if (!ticket || pdfBusy) return;
+    try {
+      setPdfBusy(true);
+      if (mode === "print") await printTicketPdf(ticket, pdfOptions);
+      else await downloadTicketPdf(ticket, pdfOptions);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to generate the PDF");
+    } finally {
+      setPdfBusy(false);
+    }
+  };
+
+  const watermarkSvg = `
+  <svg xmlns='http://www.w3.org/2000/svg' width='200' height='120'>
+    <text x='100' y='60' text-anchor='middle' dominant-baseline='middle'
+          transform='rotate(-35 100 60)'
+          font-family='monospace' font-size='22' font-weight='700'
+          letter-spacing='4' fill='white' fill-opacity='0.07'>TICKET</text>
+  </svg>`;
+
+  const watermarkBg = `url("data:image/svg+xml,${encodeURIComponent(watermarkSvg)}")`;
+
   const panel = "rounded-2xl border border-white/10 bg-white/[0.03] p-5";
 
   return (
@@ -320,7 +354,10 @@ const CreateTicketUserPage = () => {
       
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-blue-950/90 via-transparent to-purple-800/20" />
 
-      <div className="relative mx-auto w-full h-max overflow-hidden flex flex-col items-center md:justify-center px-2 md:!px-4 py-4 md:py-6 md:!max-w-7xl">
+      <div
+        style={{ backgroundImage: watermarkBg, backgroundSize: "200px 120px" }}
+        className="relative mx-auto w-full bg-white/10 h-max overflow-hidden flex flex-col items-center md:justify-center px-2 md:!px-4 py-4 md:py-6 md:!max-w-6xl"
+      >
         {/* Tabs */}
         <div className="w-[92vw] md:w-[70vw] mb-6 flex gap-x-1.5 rounded-xl md:rounded-[20px] border border-white/40 bg-white/[0.03] p-2">
           {[
@@ -636,8 +673,27 @@ const CreateTicketUserPage = () => {
                           }
                           className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-sm font-medium text-white hover:bg-emerald-500 active:scale-[0.99]"
                         >
-                          <Share2 size={16} /> Share on WhatsApp
+                          <Share2 size={16} /> Share WA
                         </button>
+
+                        <div className="mt-2 grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handlePdf(trackedTicket, "pdf")}
+                            disabled={pdfBusy}
+                            className="flex items-center justify-center gap-1.5 rounded-xl border border-white/20 py-2.5 text-sm text-white hover:bg-white/10 disabled:opacity-60"
+                          >
+                            <File size={16} /> PDF
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handlePdf(trackedTicket, "print")}
+                            disabled={pdfBusy}
+                            className="flex items-center justify-center gap-1.5 rounded-xl border border-white/20 py-2.5 text-sm text-white hover:bg-white/10 disabled:opacity-60"
+                          >
+                            <Printer size={16} /> Print
+                          </button>
+                        </div>
                       </div>
                     </>
                   }
@@ -775,22 +831,19 @@ const CreateTicketUserPage = () => {
                   </button>
 
                   <button
-                    onClick={() => {
-                      setTrackCode(createdTicketId);
-                      setActiveTab("track");
-                      setShowSuccessModal(false);
-                      handleTrack(null, createdTicketId);
-                    }}
-                    className="w-full rounded-xl border border-white/10 py-2.5 text-sm text-gray-300 hover:bg-slate-600/10 active:scale-[0.99]"
+                    onClick={() => handlePdf(createdTicket || { _id: createdTicketId }, "pdf")}
+                    disabled={pdfBusy}
+                    className="flex items-center justify-center gap-2 rounded-xl border border-white/10 py-2.5 text-sm text-gray-300 hover:bg-slate-600/10 active:scale-[0.99] disabled:opacity-60"
                   >
-                    Track Now
+                    <Download size={16} /> Download PDF
                   </button>
 
                   <button
-                    onClick={() => shareToWhatsApp({ id: createdTicketId })}
-                    className="flex items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-sm text-white hover:bg-emerald-500/60 active:scale-[0.99]"
+                    onClick={() => handlePdf(createdTicket || { _id: createdTicketId }, "print")}
+                    disabled={pdfBusy}
+                    className="flex items-center justify-center gap-2 rounded-xl border border-white/10 py-2.5 text-sm text-gray-300 hover:bg-slate-600/10 active:scale-[0.99] disabled:opacity-60"
                   >
-                    <Share2 size={16} /> Share WA
+                    <Printer size={16} /> Print
                   </button>
                  
                   <button
