@@ -87,8 +87,7 @@ const InstallAppPage = () => {
   const SITE_URL = "https://texnet-hub.vercel.app";
 
   const SHARE_MESSAGE = [
-    "TEXNet - Helpdesk IT",
-    "Butuh bantuan IT? Buat atau lacak tiket di sini:",
+    "TEXNet - Helpdesk IT:",
     `${SITE_URL}/ticket`,
     "",
     "Install aplikasi TEXNet:",
