@@ -1,4 +1,4 @@
-import { CheckCircle2, Download } from "lucide-react";
+import { ArrowRight, CheckCircle2, Download } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useInstallPrompt } from "../hooks/useInstallPrompt.js";
 import { useNavigate } from "react-router-dom";
@@ -51,6 +51,7 @@ const InstallAppPage = () => {
   const { canInstall, install } = useInstallPrompt();
   const [os] = useState(detectOS);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [openFailed, setOpenFailed] = useState(false);
 
   const navigate = useNavigate();
 
@@ -119,6 +120,32 @@ const InstallAppPage = () => {
     );
   };
 
+  const handleOpenApp = () => {
+    setOpenFailed(false);
+
+    // Android/iOS: link /ticket di luar browser (mis. dari WhatsApp) otomatis dibuka WebAPK.
+    // Dari dalam Chrome tidak bisa dipaksa, jadi cukup arahkan ke /ticket.
+    if (os === "android" || os === "ios") {
+      window.location.href = "/ticket";
+      return;
+    }
+
+    // Desktop: luncurkan lewat protocol handler
+    let launched = false;
+    const markLaunched = () => { launched = true; };
+    window.addEventListener("blur", markLaunched, { once: true });
+    document.addEventListener("visibilitychange", markLaunched, { once: true });
+
+    window.location.href = "web+texnet://open";
+
+    // Kalau tab tidak kehilangan fokus, berarti app tidak terbuka
+    setTimeout(() => {
+      window.removeEventListener("blur", markLaunched);
+      document.removeEventListener("visibilitychange", markLaunched);
+      if (!launched) setOpenFailed(true);
+    }, 1500);
+  };
+
   return (
     <div className="flex h-screen md:max-h-screen md:overflow-hidden items-center justify-center bg-[#0a0a12] px-5 text-white">
       <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-blue-950/50 via-transparent to-indigo-950/30" />
@@ -131,9 +158,26 @@ const InstallAppPage = () => {
             </div>
 
             <h2 className="text-xl font-semibold tracking-tight">TEXNet sudah terinstall</h2>
-            <p className="mt-2 text-sm leading-relaxed text-gray-400">
-              silahkan buka dari layar utama device kamu
-            </p>
+            <button
+              onClick={handleOpenApp}
+              className="mx-auto mt-4 flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-blue-600 p-2 px-3 text-white hover:brightness-90 active:scale-[0.99]"
+            >
+              Buka sekarang <ArrowRight size={16} />
+            </button>
+
+            {openFailed && (
+              <p className="mt-3 text-xs text-gray-400">
+                Tidak terbuka otomatis. Buka TEXNet dari menu Start / layar utama, atau klik ikon
+                "Open in app" di ujung kanan kolom alamat.
+              </p>
+            )}
+
+            {/* <h2 className="text-xl font-semibold tracking-tight">TEXNet sudah terinstall</h2>
+            <button onClick={() => window.location.reload()} className="rounded-xl mx-auto mt-4 bg-blue-600 text-white flex items-center p-2 px-3 justify-center cursor-pointer active:scale-[0.99] hover:brightness-90">
+              <p>
+                Buka sekarang
+              </p>
+            </button> */}
           </div>
         ) : (
           <>

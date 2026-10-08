@@ -8,6 +8,9 @@
   "display": "standalone",
   "orientation": "any",
   "background_color": "#0b0b12",
+  "protocol_handlers": [
+    { "protocol": "web+texnet", "url": "/ticket?src=%s" }
+  ],
   "theme_color": "#0b0b12",
   "categories": ["education", "productivity"],
   "icons": [
