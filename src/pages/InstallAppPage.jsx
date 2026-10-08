@@ -61,6 +61,15 @@ const InstallAppPage = () => {
     }
   }, [navigate]);
 
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.rel = "manifest";
+    link.href = "/manifest.json"; // sesuaikan dengan nama file kamu
+    document.head.appendChild(link);
+
+    return () => link.remove();
+  }, []);
+
   const INSTALLED_KEY = "texnet-installed";
   const [installedBefore, setInstalledBefore] = useState(
     () => localStorage.getItem(INSTALLED_KEY) === "1"
