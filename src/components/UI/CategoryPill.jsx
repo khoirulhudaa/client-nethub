@@ -14,7 +14,7 @@ const CATEGORY_STYLES = {
   Installation: {
     icon: Boxes,
     className:
-      "bg-pink-500 text-white dark:bg-pink-500/10 md:dark:!bg-red-600 md:dark:!text-white dark:!text-white",
+      "bg-pink-500 text-white dark:bg-pink-500/30 border border-white/20 md:dark:!bg-red-600 md:dark:!text-white dark:!text-white",
   },
   Hardware: {
     icon: HardDrive,
@@ -68,7 +68,7 @@ const CATEGORY_STYLES_NON_SOLID = {
   },
   Installation: {
     icon: Boxes,
-    className: "bg-pink-500 text-white dark:bg-pink-500/10 dark:text-slate-300",
+    className: "bg-pink-500 text-white dark:bg-pink-500/30 border border-white/20 dark:text-slate-300",
   },
   Hardware: {
     icon: HardDrive,
