@@ -529,13 +529,13 @@ export default function TopologyCanvas({
             </select>
 
             {/* Desktop: grid tombol */}
-            <div className="hidden md:grid grid-cols-8 items-center gap-2">
+            <div className={`${availableHardware.length < 5 ? 'hidden md:flex' : 'hidden md:grid grid-cols-8'} items-center gap-2`}>
               {availableHardware.map((hw) => (
                 <button
                   key={hw.type}
                   type="button"
                   onClick={() => addHardware(hw)}
-                  className="inline-flex w-full items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium transition hover:border-accent hover:text-accent dark:border-white/10 dark:!bg-[#0c0c18]"
+                  className={`inline-flex ${availableHardware.length < 5 ? 'w-max' : 'w-full'} items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium transition hover:border-accent hover:text-accent dark:border-white/10 dark:!bg-[#0c0c18]`}
                 >
                   <hw.icon size={14} />
                   {hw.type}
