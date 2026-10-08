@@ -270,7 +270,7 @@ const CreatePost = () => {
     }
   };
 
-  if (!loading) {
+  if (loading) {
     return (
       <div className="mt-1 md:mt-7 mx-auto w-[100%] md:w-[96%] h-[40%] flex flex-col surface-card justify-center flex-co items-center text-center py-20">
         <img src="/cloud.png" alt="icon-cloud" className="w-20" />
