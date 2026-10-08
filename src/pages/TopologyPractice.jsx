@@ -84,23 +84,9 @@ export default function TopologyPractice() {
   const edgeCount = topology.edges?.length || 0;
 
   return (
-    <div className="mx-auto max-w-full space-y-6 p-0 md:p-6 pb-16">
+    <div className="mx-auto max-w-full space-y-5 p-0 md:p-6 pb-16">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="relative left-[-2px] mt-1 rounded-lg py-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5"
-          >
-            <ArrowLeft size={18} />
-          </button>
-          <div>
-            <h1 className="text-xl font-semibold tracking-tight">
-              Topology Practice
-            </h1>
-          </div>
-        </div>
-
         <div className="flex items-center gap-2">
           <button
             onClick={resetCanvas}

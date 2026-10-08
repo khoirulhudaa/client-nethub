@@ -41,7 +41,7 @@ const discoverLinks = [
 
 const quizLinks = [
   { label: "Build Exam", icon: HelpCircle, to: "/quiz-builder" },
-  { label: "Go Practice", icon: PencilRuler, to: "/practice" },
+  { label: "Go Practice", icon: PencilRuler, to: "/topology-practice" },
   { label: "Test Knowledge", icon: Brain, to: "/quizzes" },
 ];
 
