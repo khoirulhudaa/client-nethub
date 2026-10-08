@@ -45,8 +45,8 @@ const TYPE_OPTIONS = [
   {
     value: "important",
     label: "Important",
-    color: "bg-rose-500",
-    soft: "bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400",
+    color: "bg-orange-500",
+    soft: "bg-orange-50 text-orange-600 dark:bg-orange-500/10 dark:text-orange-400",
     icon: Megaphone,
   },
 ];
@@ -323,12 +323,12 @@ const AnnouncementsAdmin = () => {
 
         <div className="flex items-center gap-3">
           {/* Search bar */}
-          <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm dark:border-white/10 dark:bg-white/5 sm:w-64">
+          <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm dark:border-white/10 dark:bg-white sm:w-64">
             <Search size={16} className="text-gray-400" />
             <input
               value={localSearch}
               onChange={(e) => setLocalSearch(e.target.value)}
-              placeholder="Cari judul..."
+              placeholder="Search title..."
               className="w-full bg-transparent text-sm outline-none"
             />
             {localSearch && (
@@ -386,8 +386,8 @@ const AnnouncementsAdmin = () => {
               return (
                 <div
                   key={item._id}
-                  className={`group relative flex flex-col overflow-hidden rounded-2xl border border-black/[0.04] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.06),0_8px_24px_rgba(0,0,0,0.04)] dark:border-white/[0.06] dark:bg-[#12121a] dark:shadow-none dark:hover:bg-slate-900 ${
-                    isDimmed ? "opacity-55" : ""
+                  className={`group relative flex flex-col overflow-hidden rounded-2xl border border-black/[0.04] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.06),0_8px_24px_rgba(0,0,0,0.04)] dark:border-white/[0.06] dark:shadow-none dark:hover:bg-slate-900 ${
+                    isDimmed ? "dark:bg-slate-900" : "dark:bg-[#12121a] "
                   }`}
                 >
 
@@ -428,7 +428,7 @@ const AnnouncementsAdmin = () => {
                         )}
                         {isExpired && (
                           <span className="rounded-full bg-rose-50 px-2.5 py-1 text-[11px] font-medium text-rose-500 dark:bg-rose-500/10 dark:text-rose-400">
-                            Kadaluarsa
+                            Expired
                           </span>
                         )}
                       </div>

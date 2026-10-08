@@ -71,14 +71,6 @@ const ActivityLog = () => {
     <div className="mx-auto max-w-7xl px-4 py-6 md:p-6">
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        {/* <div>
-            <div className="flex items-center gap-2 text-accent">
-              <span className="text-xs font-medium uppercase tracking-wide">
-                  SuperAdmin
-              </span>
-            </div>
-            <h1 className="text-xl font-semibold text-white tracking-tight">Activity-log</h1>
-        </div> */}
 
         {/* Filter */}
         <div className="relative">
@@ -111,76 +103,80 @@ const ActivityLog = () => {
       </div>
 
       {/* Content */}
-      {loading ? (
-        <div className="flex flex-col items-center justify-center gap-3 py-24">
-          <Loader2 className="animate-spin text-violet-400" size={32} />
-          <p className="text-sm text-slate-500">Memuat aktivitas…</p>
-        </div>
-      ) : data.activities.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-white/10 bg-white/[0.02] py-20">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5">
-            <Activity size={24} className="text-slate-500" />
+      <div className="relative surface-card px-5 py-2 dark:!bg-white/5">
+        {loading ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-24">
+            <Loader2 className="animate-spin text-violet-400" size={32} />
+            <p className="text-sm text-slate-500">Memuat aktivitas…</p>
           </div>
-          <p className="text-sm font-medium text-slate-400">Belum ada aktivitas</p>
-          <p className="text-xs text-slate-600">Aktivitas akan muncul di sini</p>
-        </div>
-      ) : (
-        <div className="relative space-y-3">
-          {/* Timeline line */}
-          <div className="absolute left-[40px] top-4 bottom-4 w-px bg-white/30" />
+        ) : data.activities.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-white/10 bg-white/[0.02] py-20">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5">
+              <Activity size={24} className="text-slate-500" />
+            </div>
+            <p className="text-sm font-medium text-slate-400">Belum ada aktivitas</p>
+            <p className="text-xs text-slate-600">Aktivitas akan muncul di sini</p>
+          </div>
+        ) : (
+          <div className="relative space-y-3">
+            {/* Timeline line */}
+            <div className="absolute left-[40px] top-4 bottom-4 w-px bg-white/30" />
 
-          {data.activities.map((act, idx) => {
-            const meta = ACTION_LABELS[act.action] || {
-              label: act.action,
-              icon: Activity,
-              color: "text-slate-400",
-              bg: "bg-slate-500/15",
-              ring: "ring-slate-500/30",
-            };
-            const Icon = meta.icon;
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+              {data.activities.map((act, idx) => {
+                const meta = ACTION_LABELS[act.action] || {
+                  label: act.action,
+                  icon: Activity,
+                  color: "text-slate-400",
+                  bg: "bg-slate-500/15",
+                  ring: "ring-slate-500/30",
+                };
+                const Icon = meta.icon;
 
-            return (
-              <div
-                key={act._id}
-                className="group relative flex gap-4 rounded-3xl bg-white/[0.03] p-4 backdrop-blur-sm transition-all duration-200 hover:border-white/10 hover:bg-white/[0.05]"
-              >
-                {/* Icon */}
-                <div
-                  className={`relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${meta.bg} ring-1 ${meta.ring} transition group-hover:scale-105`}
-                >
-                  <Icon size={18} className={meta.color} />
-                </div>
+                return (
+                  <div
+                    key={idx}
+                    className="group relative flex gap-4 rounded-3xl bg-white/[0.03] border border-white/10 dark:!bg-[#12121a] p-4 backdrop-blur-sm transition-all duration-200 hover:border-white/10 hover:bg-white/[0.05]"
+                  >
+                    {/* Icon */}
+                    <div
+                      className={`relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${meta.bg} ring-1 ${meta.ring} transition group-hover:scale-105`}
+                    >
+                      <Icon size={18} className={meta.color} />
+                    </div>
 
-                {/* Content */}
-                <div className="min-w-0 flex-1 pt-0.5">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                    <span className="font-semibold text-white">
-                      {act.user?.name || "Unknown"}
-                    </span>
-                    <span className={`text-sm font-medium ${meta.color}`}>
-                      {meta.label}
-                    </span>
+                    {/* Content */}
+                    <div className="min-w-0 flex-1 pt-0.5">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <span className="font-semibold text-white">
+                          {act.user?.name || "Unknown"}
+                        </span>
+                        <span className={`text-sm font-medium ${meta.color}`}>
+                          {meta.label}
+                        </span>
+                      </div>
+
+                      <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                        <time dateTime={act.createdAt}>
+                          {new Date(act.createdAt).toLocaleString("id-ID", {
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          })}
+                        </time>
+                        {act.user?.role && (
+                          <span className="rounded-md bg-white/5 px-1.5 py-0.5 font-medium text-slate-400 ring-1 ring-white/10">
+                            {act.user.role}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-
-                  <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                    <time dateTime={act.createdAt}>
-                      {new Date(act.createdAt).toLocaleString("id-ID", {
-                        dateStyle: "medium",
-                        timeStyle: "short",
-                      })}
-                    </time>
-                    {act.user?.role && (
-                      <span className="rounded-md bg-white/5 px-1.5 py-0.5 font-medium text-slate-400 ring-1 ring-white/10">
-                        {act.user.role}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Pagination */}
       {data.pages > 1 && (
