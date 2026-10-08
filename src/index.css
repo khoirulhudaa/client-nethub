@@ -14,7 +14,7 @@
   }
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(100, 100, 100, 0.363) transparent;
+    scrollbar-color: rgba(211, 210, 210, 0.918) transparent;
   }
   ::-webkit-scrollbar {
     width: 8px;

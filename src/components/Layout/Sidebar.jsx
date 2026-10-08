@@ -23,7 +23,7 @@ import {
   X
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
+import { NavLink, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 
 const categoryLinks = [
@@ -104,7 +104,6 @@ const Sidebar = ({ onNavigate }) => {
 
   const isGuest = user?.isGuest || user?.role === "guest";
   const isSuperAdmin = user?.role === "superAdmin";
-  console.log(user)
 
   const [openGroups, setOpenGroups] = useState({
     categories: true,
@@ -114,6 +113,8 @@ const Sidebar = ({ onNavigate }) => {
     support: false,
     admin: false,
   });
+
+  const location = useLocation();
 
   // di dalam komponen Sidebar, setelah state openGroups / collapsed
 
@@ -210,10 +211,10 @@ const Sidebar = ({ onNavigate }) => {
         onDragStart={(e) => e.preventDefault()}
         src="/hero.jpg" alt="wallpaper-sidebar" className={`rotate-[4deg] ${collapsed ? 'dark:rotate-0 duration-0' : ''} scale-[1.2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-15 left-0`} />
       
-      <div className="z-10 relative h-screen">
+      <div className="z-10 relative h-screen flex flex-col">
         {/* Logo + toggle */}
         <div
-          className={`mb-0 z-[22] flex h-[8.6vh] items-center border-b border-white dark:border-white/10 ${
+          className={`mb-0 z-[22] flex h-[8.6vh] min-h-[56px] shrink-0 items-center border-b border-white dark:border-white/10 ${
             collapsed
               ? "justify-center border-x-0 dark:px-0"
               : "justify-between dark:gap-2 border-x border-white/75 dark:border-white/10 dark:px-2"
@@ -242,7 +243,7 @@ const Sidebar = ({ onNavigate }) => {
                 type="button"
                 onClick={() => setCollapsed(true)}
                 className={`md:!flex hidden md:h-10 md:w-10 h-9 w-9 shrink-0 relative border hover:brightness-90 hover:dark:!bg-white/5 active:scale-[0.99] duration-100 items-center justify-center border-white/20 mr-2 rounded-md left-2 md:rounded-lg text-gray-400 transition bg-transparent hover:md:dark!:bg-slate-100 hover:md:!bg-slate-800 hover:text-white`}
-                title="Collapse sidebar"
+                title="Expand sidebar"
               >
                 {
                   !collapsed ? (
@@ -262,7 +263,7 @@ const Sidebar = ({ onNavigate }) => {
 
         {/* Tombol expand saat collapsed */}
         {collapsed && (
-          <div className="border-b border-white/10 my-1 pb-[1.2px]">
+          <div className="shrink-0 border-b border-white/10 my-1 pb-[1.2px]">
             <button
               type="button"
               onClick={() => setCollapsed(false)}
@@ -275,7 +276,7 @@ const Sidebar = ({ onNavigate }) => {
         )}
 
         <nav
-          className={`flex flex-1 flex-col h-[82.4vh] gap-0.5 ${
+          className={`flex flex-1 min-h-0 flex-col gap-0.5 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
             collapsed ? "" : "border-x dark:border-white/10"
           }`}
         >
@@ -495,15 +496,19 @@ const Sidebar = ({ onNavigate }) => {
         </nav>
 
         {/* Profile */}
-        <div className={`h-[9%] mt-auto border-t pt-[1px] dark:bg-transparent rounded-none shadow-none dark:border-white/10 ${collapsed ? "py-3" : ""}`}>
+        <div
+          className={`shrink-0 border-t dark:border-white/10 rounded-none shadow-none dark:bg-transparent ${
+            collapsed ? "flex flex-col items-center gap-2 py-3" : "pt-[1px]"
+          }`}
+        >
           <NavLink
             to={isGuest ? "#" : "/profile"}
             onClick={onNavigate}
             title={collapsed ? user?.name : undefined}
-            className={({ isActive }) =>
+            className={() =>
               collapsed
-                ? `mx-auto flex w-9 md:h-10 h-9 md:w-10 items-center justify-center overflow-hidden rounded-full`
-                : `flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors border-white hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]`
+                ? "flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl"
+                : "flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors border-white hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]"
             }
           >
             <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-200 dark:!bg-gradient-to-br from-blue-400 to-blue-100 text-md font-semibold text-slate-900 dark:text-accent">
@@ -517,7 +522,7 @@ const Sidebar = ({ onNavigate }) => {
                 user?.name?.[0]?.toUpperCase() || "G"
               )}
             </div>
-              {!collapsed && (
+            {!collapsed && (
                 <>
                   <div className="min-w-0 flex-1 overflow-hidden">
                     <p className="truncate text-sm font-medium text-white/80">
@@ -599,7 +604,7 @@ const Sidebar = ({ onNavigate }) => {
           {collapsed && (
             <button
               onClick={handleLogoutClick}
-              className="mx-auto mt-2 flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-white/10 hover:text-red-400"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-400 transition hover:bg-white/10 hover:text-red-400"
               title="Log out"
             >
               <LogOut size={15} />
