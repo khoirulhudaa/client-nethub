@@ -148,7 +148,7 @@ useEffect(() => {
         }}
       />
 
-      <div className="w-[100%] flex justify-between h-full items-center pl-2 pr-4 md:pr-5">
+      <div className="w-[100%] flex justify-between h-full items-center pl-2 pr-2 md:pr-5">
         <button
           onClick={onMenuClick}
           className="border dark:!border-white/30 border-slate-400 rounded-xl h-[39.5px] w-[39.5px] flex items-center justify-center text-gray-500 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10 lg:hidden"

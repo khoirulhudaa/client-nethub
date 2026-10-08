@@ -43,6 +43,7 @@ const CreatePost = () => {
   const [customTables, setCustomTables] = useState([]); // tables
   const [flowchart, setFlowchart] = useState({ nodes: [], edges: [] });
   const [steps, setSteps] = useState([]);
+  const [loading, setLoading] = useState(isEditing);
   // Similar images state
   const [similarImages, setSimilarImages] = useState([]);
   const [searchingSimilar, setSearchingSimilar] = useState(false);
@@ -53,19 +54,22 @@ const CreatePost = () => {
   useEffect(() => {
     if (!isEditing) return;
 
+    let cancelled = false;
+    setLoading(true);
+
     api
       .get(`/posts/id/${id}`)
       .then(({ data }) => {
+        if (cancelled) return;
         const post = data.post;
-        console.log('post', post)
         if (post) {
           setForm({
-            title: post.title,
-            excerpt: post.excerpt,
-            content: post.content,
-            coverImage: post.coverImage,
-            category: post.category,
-            tags: post.tags.join(", "),
+            title: post.title || "",
+            excerpt: post.excerpt || "",
+            content: post.content || "",
+            coverImage: post.coverImage || "",
+            category: post.category || "Topology",
+            tags: (post.tags || []).join(", "),   // aman jika tags undefined
           });
           setTopology(post.topology || { nodes: [], edges: [] });
           setGallery(post.gallery || []);
@@ -77,9 +81,17 @@ const CreatePost = () => {
         }
       })
       .catch((err) => {
+        if (cancelled) return;
         console.error("Gagal fetch post untuk edit:", err);
         setError("Guide tidak ditemukan atau kamu tidak punya akses.");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [id, isEditing]);
 
  // Cari similar images berdasarkan Title / Category / Tags
@@ -257,6 +269,15 @@ const CreatePost = () => {
       setSaving(false);
     }
   };
+
+  if (!loading) {
+    return (
+      <div className="mt-1 md:mt-7 mx-auto w-[100%] md:w-[96%] h-[40%] flex flex-col surface-card justify-center flex-co items-center text-center py-20">
+        <img src="/cloud.png" alt="icon-cloud" className="w-20" />
+        <p className="mt-2">Load content ...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-full md:border-x border-white dark:border-white/10 min-h-screen h-max pb-16 md:p-6">
