@@ -1,6 +1,7 @@
 import { CheckCircle2, Download } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useInstallPrompt } from "../hooks/useInstallPrompt.js";
+import { useNavigate } from "react-router-dom";
 
 const WindowsIcon = ({ size = 40 }) => (
   <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true">
@@ -51,9 +52,13 @@ const InstallAppPage = () => {
   const [os] = useState(detectOS);
   const [isInstalled, setIsInstalled] = useState(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
-    if (window.matchMedia("(display-mode: standalone)").matches) setIsInstalled(true);
-  }, []);
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      navigate("/ticket", { replace: true });
+    }
+  }, [navigate]);
 
   const INSTALLED_KEY = "texnet-installed";
   const [installedBefore, setInstalledBefore] = useState(
@@ -154,9 +159,9 @@ const InstallAppPage = () => {
               {!canInstallNow && (
                 <div
                   role="tooltip"
-                  className="pointer-events-none absolute left-0 top-[-14%] z-10 w-max max-w-[80%] rounded-lg border border-white/10 bg-blue-600 px-3 py-2 text-center text-xs text-gray-200 opacity-0 shadow-xl transition-opacity duration-150 group-hover:opacity-100"
+                  className="pointer-events-none absolute left-0 top-[-14%] z-10 w-max max-w-[80%] rounded-lg border border-white/10 bg-blue-600 px-3 py-2 text-center text-xs text-gray-200 shadow-xl transition-opacity duration-150"
                 >
-                  {installedBefore && "Ticket sudah terinstall di perangkat ini"} 
+                  Sudah anda install
                 </div>
               )}
             </div>
