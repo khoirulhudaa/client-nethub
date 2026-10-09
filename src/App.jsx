@@ -35,6 +35,7 @@ import CreateTicketUserPage from "./pages/CreateTicketUserPage.jsx";
 import InstallAppPage from "./pages/InstallAppPage.jsx";
 import TrackTicketPage from "./pages/TrackTicketPage.jsx";
 import Contacts from "./pages/Contacts.jsx";
+import ContactForm from "./pages/ContactForm.jsx";
 
 function App() {
   return (
@@ -83,6 +84,8 @@ function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="following" element={<Following />} />
           <Route path="tags/:tag" element={<TagPosts />} />
+          <Route path="contacts/create" element={<ContactForm />} />
+          <Route path="contacts/edit/:id" element={<ContactForm />} />
           <Route path="quizzes/:id" element={<TakeQuiz />} />
           <Route path="admin/activities" element={<ActivityLog />} />
           <Route path="practice" element={<PracticeHub />} />
