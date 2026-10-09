@@ -1,4 +1,4 @@
-import { Bookmark, Calendar, CheckCircle2, Circle, Clipboard, Eye, Heart, Highlighter, Link2, Loader2, Pencil, Pin, Plus, Share2, Timer, Trash2, Volume2, VolumeX } from "lucide-react";
+import { Bookmark, Calendar, CheckCircle2, ChevronLeft, ChevronRight, Circle, Clipboard, Eye, Heart, Highlighter, Link2, Loader2, Pencil, Pin, Plus, Share2, Timer, Trash2, Volume2, VolumeX, X, ZoomIn } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -149,6 +149,7 @@ const PostDetail = () => {
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
   const [loading, setLoading] = useState(true);
+  const [previewIndex, setPreviewIndex] = useState(null);
   const [liked, setLiked] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
@@ -207,6 +208,7 @@ const PostDetail = () => {
       setSelectedStep(null);
       setShowHighlightMenu(false);
       setInReadingList(false);
+      setPreviewIndex(null);
       setIsCompleted(false);
       setCommentText("");
       setLoading(true);
@@ -238,7 +240,7 @@ const PostDetail = () => {
   }, [load])
 
   useEffect(() => {
-    if (authLoading || user) return;                    // tunggu cek sesi, jangan timpa user/guest
+    if (authLoading || user) return;                    
     if (searchParams.get("ref") !== "share") return;
     if (guestTried.current) return;
     guestTried.current = true;
@@ -274,6 +276,26 @@ const PostDetail = () => {
 useEffect(() => {
   scrollToTop();
 }, [slug]);
+
+useEffect(() => {
+  if (previewIndex === null) return;
+  const total = post?.referencesImages?.length || 0;
+
+  const onKey = (e) => {
+    if (e.key === "Escape") setPreviewIndex(null);
+    if (e.key === "ArrowRight") setPreviewIndex((i) => (i + 1) % total);
+    if (e.key === "ArrowLeft") setPreviewIndex((i) => (i - 1 + total) % total);
+  };
+
+  window.addEventListener("keydown", onKey);
+  const prevOverflow = document.body.style.overflow;
+  document.body.style.overflow = "hidden"; // kunci scroll background
+
+  return () => {
+    window.removeEventListener("keydown", onKey);
+    document.body.style.overflow = prevOverflow;
+  };
+}, [previewIndex, post?.referencesImages?.length]);
 
 const handleFollow = async () => {
   if (!user) {
@@ -1001,7 +1023,7 @@ const handlePin = async () => {
                         key={c.value}
                         onClick={() => applyHighlight(c.value)}
                         disabled={highlightLoading}
-                        className="h-7 w-7 rounded-full border-2 border-white shadow-sm transition hover:scale-110 disabled:opacity-50"
+                        className="h-7 w-7 rounded-xl border-2 border-white shadow-sm transition hover:scale-110 disabled:opacity-50"
                         style={{ backgroundColor: c.value }}
                         title={c.name}
                       />
@@ -1068,27 +1090,33 @@ const handlePin = async () => {
 
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
                 {post?.referencesImages.map((img, idx) => (
-                  <div
+                  <button
+                    type="button"
                     key={idx}
-                    className="group relative overflow-hidden rounded-3xl bg-slate-300 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/5 transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:-translate-y-1"
+                    onClick={() => setPreviewIndex(idx)}
+                    className="group relative cursor-zoom-in overflow-hidden rounded-2xl bg-slate-300 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/20 p-3 transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:brightness-75"
                   >
                     <div className="overflow-hidden">
                       <img
                         src={img.url}
                         alt={img.name || `Reference ${idx + 1}`}
-                        className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        className="aspect-[4/3] w-full object-cover !rounded-lg transition-transform duration-700 group-hover:scale-105"
                       />
                     </div>
 
-                    {/* Optional subtle label */}
+                    {/* Ikon zoom saat hover */}
+                    <div className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-xl bg-black/50 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      <ZoomIn size={15} />
+                    </div>
+
                     {img.name && (
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-4 py-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <p className="text-xs font-medium text-white truncate">
+                        <p className="text-xs font-medium text-white truncate text-left">
                           {img.name}
                         </p>
                       </div>
                     )}
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
@@ -1239,7 +1267,7 @@ const handlePin = async () => {
                                     </span>
 
                                     {/* Arrow */}
-                                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-300 dark:!bg-[#0c0c18] md:text-slate-900 dark:text-white transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-slate-300 dark:!bg-[#0c0c18] md:text-slate-900 dark:text-white transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         className="h-3.5 w-3.5"
@@ -1536,7 +1564,7 @@ const handlePin = async () => {
             {/* Header */}
             <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-white/15">
               <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-sm font-bold text-white">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent text-sm font-bold text-white">
                   {selectedStep.index + 1}
                 </div>
                 <h3 className="text-base font-semibold">
@@ -1584,7 +1612,7 @@ const handlePin = async () => {
           {/* Modal box */}
           <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/15 dark:bg-gray-900">
             <div className="p-6">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/20">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-100 dark:bg-red-500/20">
                 <Trash2 size={22} className="text-red-600 dark:text-red-400" />
               </div>
 
@@ -1622,6 +1650,69 @@ const handlePin = async () => {
                 )}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== REFERENCE IMAGE PREVIEW (ZOOM) ===== */}
+      {previewIndex !== null && post?.referencesImages?.[previewIndex] && (
+        <div className="absolute right-0 h-[90vh] !mt-[10vh] bottom-0 inset-0 z-[9909] flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/90 backdrop-blur-sm"
+            onClick={() => setPreviewIndex(null)}
+          />
+
+          {/* Tombol tutup */}
+          <button
+            type="button"
+            onClick={() => setPreviewIndex(null)}
+            className="absolute right-0 px-3 gap-x-1.5 active:scale-[0.99] duration-100 !top-12 md:top-24 z-[9999] flex h-10 w-max items-center justify-center rounded-bl-xl rounded-tl-xl bg-red-600 text-white transition hover:bg-red-700"
+            aria-label="Tutup"
+          >
+            Close
+            <X size={17} />
+          </button>
+
+          {/* Navigasi prev/next (hanya jika lebih dari 1 gambar) */}
+          {post.referencesImages.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={() =>
+                  setPreviewIndex((i) => (i - 1 + post.referencesImages.length) % post.referencesImages.length)
+                }
+                className="absolute left-3 z-10 flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-900 shadow-2xl border-2 border-blue-500 transition active:scale-95 md:left-6"
+                aria-label="Sebelumnya"
+              >
+                <ChevronLeft size={22} />
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setPreviewIndex((i) => (i + 1) % post.referencesImages.length)
+                }
+                className="absolute right-3 z-10 flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-900 shadow-2xl border-2 border-blue-500 transition active:scale-95 md:right-6"
+                aria-label="Berikutnya"
+              >
+                <ChevronRight size={22} />
+              </button>
+            </>
+          )}
+
+          {/* Gambar */}
+          <div className="relative z-[1] flex max-h-full max-w-4xl flex-col items-center">
+            <img
+              src={post.referencesImages[previewIndex].url}
+              alt={post.referencesImages[previewIndex].name || `Reference ${previewIndex + 1}`}
+              className="max-h-[85vh] max-w-full rounded-xl object-contain shadow-2xl"
+            />
+            <p className="mt-3 text-center text-xs text-white/80">
+              {post.referencesImages[previewIndex].name
+                ? `${post.referencesImages[previewIndex].name} · `
+                : ""}
+              {previewIndex + 1} / {post.referencesImages.length}
+            </p>
           </div>
         </div>
       )}
