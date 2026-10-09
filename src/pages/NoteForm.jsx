@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
-import { COLORS, COLOR_BG, COLOR_DOT, MOODS, fromInputDate, toInputDate } from "./noteShared.js";
+import { COLORS, COLOR_BG, COLOR_DOT, MOODS, fromInputDate, toInputDate } from "./NoteShared.jsx";
 
 const inputCls = "input-field dark:!bg-slate-100/10 dark:!text-white";
 

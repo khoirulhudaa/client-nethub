@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
-import { PRIORITIES, REPEATS, STATUSES, fromInputDate, toInputDate } from "./taskShared.jsx";
+import { PRIORITIES, REPEATS, STATUSES, fromInputDate, toInputDate } from "./TaskShared.jsx";
 
 const inputCls = "input-field dark:!bg-slate-100/10 dark:!text-white";
 
