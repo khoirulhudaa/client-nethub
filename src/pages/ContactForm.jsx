@@ -168,7 +168,7 @@ const ContactForm = () => {
   };
 
   const addBtn = (label, onClick, disabled) => (
-    <button type="button" onClick={onClick} disabled={disabled} className="btn-secondary !px-3 !py-1 text-xs disabled:opacity-40">
+    <button type="button" onClick={onClick} disabled={disabled} className="btn-secondary !rounded-lg !px-3 !py-1 text-xs disabled:opacity-40">
       <Plus size={12} /> {label}
     </button>
   );
