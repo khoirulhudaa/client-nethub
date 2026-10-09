@@ -34,6 +34,7 @@ import Trending from "./pages/Trending.jsx";
 import CreateTicketUserPage from "./pages/CreateTicketUserPage.jsx";
 import InstallAppPage from "./pages/InstallAppPage.jsx";
 import TrackTicketPage from "./pages/TrackTicketPage.jsx";
+import Contacts from "./pages/Contacts.jsx";
 
 function App() {
   return (
@@ -78,6 +79,7 @@ function App() {
           <Route path="posts/:slug" element={<PostDetail />} />
           <Route path="authors/:id" element={<AuthorProfile />} />
           <Route path="my-posts" element={<MyPosts />} />
+          <Route path="contacts" element={<Contacts />} />
           <Route path="profile" element={<Profile />} />
           <Route path="following" element={<Following />} />
           <Route path="tags/:tag" element={<TagPosts />} />

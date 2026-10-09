@@ -17,6 +17,7 @@ import {
   LogOut,
   Network,
   PencilRuler,
+  Phone,
   Shrink,
   Ticket,
   Wrench,
@@ -367,6 +368,27 @@ const Sidebar = ({ onNavigate }) => {
             collapsed={collapsed}
           >
             <div data-tour="library">
+              {/* Reading List - tampil untuk semua, termasuk guest */}
+              <div className={collapsed ? "" : "px-2 mt-1"}>
+                <NavLink
+                  to="/reading-list"
+                  onClick={onNavigate}
+                  title={collapsed ? "Reading List" : undefined}
+                  className={({ isActive }) =>
+                    collapsed
+                      ? linkClass(isActive)
+                      : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
+                          isActive
+                            ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
+                            : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
+                        }`
+                  }
+                >
+                  <BookOpen size={17} />
+                  {!collapsed && "Reading"}
+                </NavLink>
+              </div>
+
               {/* My Guides - hanya user login */}
               {!isGuest && (
                 <div className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
@@ -385,31 +407,33 @@ const Sidebar = ({ onNavigate }) => {
                     }
                   >
                     <FileText size={17} />
-                    {!collapsed && "My Guide"}
+                    {!collapsed && "My Guides"}
                   </NavLink>
                 </div>
               )}
 
-              {/* Reading List - tampil untuk semua, termasuk guest */}
-              <div className={collapsed ? "" : "px-2 mt-1"}>
-                <NavLink
-                  to="/reading-list"
-                  onClick={onNavigate}
-                  title={collapsed ? "Reading List" : undefined}
-                  className={({ isActive }) =>
-                    collapsed
-                      ? linkClass(isActive)
-                      : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
-                          isActive
-                            ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
-                            : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
-                        }`
-                  }
-                >
-                  <BookOpen size={17} />
-                  {!collapsed && "Reading List"}
-                </NavLink>
-              </div>
+              {/* Phone Book - hanya user login */}
+              {!isGuest && (
+                <div className={collapsed ? "" : "px-2 mt-1"}>
+                  <NavLink
+                    to="/contacts"
+                    onClick={onNavigate}
+                    title={collapsed ? "Phone Book" : undefined}
+                    className={({ isActive }) =>
+                      collapsed
+                        ? linkClass(isActive)
+                        : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
+                            isActive
+                              ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
+                              : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
+                          }`
+                    }
+                  >
+                    <Phone size={17} />
+                    {!collapsed && "Phone Book"}
+                  </NavLink>
+                </div>
+              )}
 
               {/* Collection Card */}
               <div className={collapsed ? "" : "px-2 mt-1"}>
