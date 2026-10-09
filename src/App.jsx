@@ -30,6 +30,10 @@ import TakeQuiz from "./pages/TakeQuiz.jsx";
 import TicketDetailPage from "./pages/TicketDetailPage.jsx";
 import TicketsPage from "./pages/TicketsPage.jsx";
 import TopologyPractice from "./pages/TopologyPractice.jsx";
+import Tasks from "./pages/Tasks.jsx";
+import TaskForm from "./pages/TaskForm.jsx";
+import Notes from "./pages/Notes.jsx";
+import NoteForm from "./pages/NoteForm.jsx";
 import Trending from "./pages/Trending.jsx";
 import CreateTicketUserPage from "./pages/CreateTicketUserPage.jsx";
 import InstallAppPage from "./pages/InstallAppPage.jsx";
@@ -79,6 +83,12 @@ function App() {
           <Route path="edit/:id" element={<CreatePost />} />
           <Route path="posts/:slug" element={<PostDetail />} />
           <Route path="authors/:id" element={<AuthorProfile />} />
+          <Route path="tasks" element={<Tasks />} />
+          <Route path="tasks/create" element={<TaskForm />} />
+          <Route path="tasks/edit/:id" element={<TaskForm />} />
+          <Route path="notes" element={<Notes />} />
+          <Route path="notes/create" element={<NoteForm />} />
+          <Route path="notes/edit/:id" element={<NoteForm />} />
           <Route path="my-posts" element={<MyPosts />} />
           <Route path="contacts" element={<Contacts />} />
           <Route path="profile" element={<Profile />} />
