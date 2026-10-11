@@ -5,6 +5,7 @@ import {
   Boxes,
   Brain,
   Calculator,
+  CheckSquare,
   ChevronDown,
   Expand,
   FileText,
@@ -16,6 +17,7 @@ import {
   Loader2,
   LogOut,
   Network,
+  NotebookPen,
   PencilRuler,
   Phone,
   Shrink,
@@ -412,6 +414,27 @@ const Sidebar = ({ onNavigate }) => {
                 </div>
               )}
 
+              {/* ===== TASKS ===== */}
+              <div className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
+                <NavLink
+                  to="/tasks"
+                  onClick={onNavigate}
+                  title={collapsed ? "Tasks" : undefined}
+                  className={({ isActive }) =>
+                    collapsed
+                      ? linkClass(isActive)
+                      : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
+                          isActive
+                            ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
+                            : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
+                        }`
+                  }
+                >
+                  <CheckSquare size={17} />
+                  {!collapsed && "Task Works"}
+                </NavLink>
+              </div>
+
               {/* Phone Book - hanya user login */}
               {!isGuest && (
                 <div className={collapsed ? "" : "px-2 mt-1"}>
@@ -434,6 +457,27 @@ const Sidebar = ({ onNavigate }) => {
                   </NavLink>
                 </div>
               )}
+
+              {/* ===== NOTES ===== */}
+              <div className={collapsed ? "" : "px-2 mt-1"}>
+                <NavLink
+                  to="/notes"
+                  onClick={onNavigate}
+                  title={collapsed ? "Notes" : undefined}
+                  className={({ isActive }) =>
+                    collapsed
+                      ? linkClass(isActive)
+                      : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
+                          isActive
+                            ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
+                            : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
+                        }`
+                  }
+                >
+                  <NotebookPen size={17} />
+                  {!collapsed && "Vital Records"}
+                </NavLink>
+              </div>
 
               {/* Collection Card */}
               <div className={collapsed ? "" : "px-2 mt-1"}>

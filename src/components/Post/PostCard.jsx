@@ -1,4 +1,4 @@
-import { BookPlus, Check, ChevronRight, Link2, Link2Icon, Loader2, Pin } from "lucide-react";
+import { BookPlus, Check, ChevronRight, Eye, Link2, Link2Icon, Loader2, Pin, PinOffIcon } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -22,7 +22,7 @@ const timeAgo = (date) => {
   return "just now";
 };
 
-const PostCard = ({ slug, post, roundedNormal = false, featured = false, status = true, onPinChange }) => {
+const PostCard = ({ slug, post, roundedNormal = false, featured = false, status = true, onPinChange, hideImage = false }) => {
   const { user } = useAuth();
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
@@ -186,42 +186,56 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
   };
 
   return (
-    <Link to={`/posts/${post.slug}`} className="block">
+    <Link
+      to={`/posts/${post.slug}`}
+      className="
+        block
+        flex-1
+        min-w-0
+        transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]
+        hover:flex-[2.2]
+      "
+    >
       <div
-        className={`group cursor-pointer hover:dark:!border-blue-300/50 relative h-[420px] p-3.5 bg-slate-300 rounded-[24px] dark:!bg-[#0c0c18] border dark:!border-white/20 group duration-100 flex flex-col overflow-hidden ${
-          featured ? "h-full" : ""
+        className={`group cursor-pointer hover:dark:!border-blue-300/50 relative p-3.5 bg-slate-300 rounded-[24px] dark:!bg-[#0c0c18] border dark:!border-white/20 flex flex-col overflow-hidden ${
+          hideImage ? "h-[132px]" : featured ? "h-full" : "h-[420px]"
         }`}
       >
-
-        <div className={`relative bg-white/30
-            dark:bg-slate-900/40  overflow-hidden ${featured ? "h-56" : `${roundedNormal ? 'rounded-[16px]' : 'rounded-[14px]'} h-[100%]`}`}>
-          {post.coverImage ? (
-            <img
-              src={post.coverImage}
-              alt={post.title}
-              className="h-full w-full brightness-[80%] object-cover border-none transition-transform duration-300 ease-fluid scale-[1.03] group-hover:scale-[1.07]"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center text-gray-300 dark:text-white/10">
-              <CategoryPill category={post.category} />
-            </div>
-          )}
-        </div>
+        {/* Cover image — skip kalau hideImage */}
+        {!hideImage && (
+          <div
+            className={`relative bg-white/30 dark:bg-slate-900/40 overflow-hidden ${
+              featured
+                ? "h-56"
+                : `${roundedNormal ? "rounded-[16px]" : "rounded-[14px]"} h-[100%]`
+            }`}
+          >
+            {post.coverImage ? (
+              <img
+                src={post.coverImage}
+                alt={post.title}
+                className="h-full w-full brightness-[80%] object-cover border-none transition-transform ease-fluid scale-[1.03] group-hover:scale-[1.07]"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-gray-300 dark:text-white/10">
+                <CategoryPill category={post.category} />
+              </div>
+            )}
+          </div>
+        )}
 
         <div
-          className={`absolute bottom-0 pt-7 left-0 w-full group-hover:h-[100%] ease-out animation-height duration-500 h-[35%] z-[33] flex flex-1 flex-col gap-3 p-3.5 py-4
-            bg-black/30
-            dark:!bg-black/40
-            backdrop-blur-lg
-            border-white/20 dark:border-white/10
-            shadow-[0_-4px_20px_rgba(0,0,0,0.05)]
-            transition-all
-            group-hover:bg-black/40 
-            group-hover:duration-700
-            group-hover:ease-out
-          `}
+          className={`${
+            hideImage
+              ? "relative flex flex-1 flex-col gap-3 pt-1"
+              : `absolute bottom-0 pt-7 left-0 w-full group-hover:h-[100%] ease-out animation-height duration-500 h-[35%] z-[33] flex flex-1 flex-col gap-3 p-3.5 py-4
+                bg-black/30 dark:!bg-black/40 backdrop-blur-lg
+                border-white/20 dark:border-white/10
+                shadow-[0_-4px_20px_rgba(0,0,0,0.05)]
+                transition-all group-hover:bg-black/40 group-hover:duration-700 group-hover:ease-out`
+          }`}
         >
-          <div className="flex items-center justify-between gap-2">
+          <div className= "group-hover:hidden flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <CategoryPill category={post.category} />
               {!isGuest && (
@@ -250,33 +264,60 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                   )}
                 </button>
               )}
-              {pinned && status && (
+              {/* {pinned && status && (
                 <div className="flex items-center gap-1 rounded-lg bg-accent px-2.5 py-1 text-[11px] font-medium text-white shadow-sm">
                   <Pin size={11} />
                   Pinned
                 </div>
-              )}
+              )} */}
             </div>
           </div>
 
+          {/* Title */}
           <h3
-            className={`font-semibold  text-white truncate max-w-[90%] overflow-x-hidden leading-snug tracking-tight ${
+            className={`group-hover:hidden font-semibold text-white truncate min-w-0 max-w-[90%] leading-snug tracking-tight ${
               featured ? "text-xl" : "text-base"
             }`}
           >
             {post.title}
           </h3>
-          <div className="flex items-center gap-2">
-            
-            <span className="text-xs max-w-[80%] overflow-hidden truncate font-medium text-gray-200">
-              {post.author?.name}
-            </span>
+
+          {/* Tags — satu baris, overflow truncate */}
+          <div className="group-hover:hidden flex items-center gap-1.5 min-w-0 overflow-hidden">
+            {post.tags?.length > 0
+              ? post.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="shrink-0 text-xs font-medium text-gray-200 bg-white/10 px-2 py-0.5 rounded-full whitespace-nowrap"
+                  >
+                    #{tag}
+                  </span>
+                ))
+              : null}
           </div>
 
+          {/* Overlay khusus pinned card — muncul saat hover (bersama 3 tombol) */}
+          {hideImage && (
+            <div
+              className="
+                absolute inset-0 z-20
+                bg-black/0
+                transition-colors ease-out
+                group-hover:bg-white/5 
+                pointer-events-none
+                rounded-2xl
+              "
+            />
+          )}
           <div
-            className={`absolute bottom-[25%] -translate-x-1/2 left-1/2 w-full flex items-center justify-center gap-3 transition-opacity duration-300 ease-in-out opacity-0 group-hover:opacity-100 ${
-              featured ? "mt-3" : "mt-2"
-            }`}
+            className={`
+              absolute bottom-[30%] -translate-x-1/2 left-1/2 w-full
+              flex items-center justify-center gap-3
+              transition-opacity ease-in-out
+              opacity-0 group-hover:opacity-100
+              z-30
+              ${featured ? "mt-3" : "mt-2"}
+            `}
           >
 
             <div className="relative">
@@ -287,12 +328,12 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                   e.stopPropagation();
                   setShowShare((v) => !v);
                 }}
-                className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-2 hover:gap-x-5 active:scale-[0.98] duration-300 items-center px-2 py-1.5 pl-3 rounded-full border dark:!border-white bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
+                className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-2 hover:gap-x-5 active:scale-[0.98] items-center px-2 py-1.5 rounded-full border dark:!border-white bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
                   featured ? "mt-3" : "mt-2"
                 }`}
               >
-                <p>Share</p>
-                <div className="rounded-full active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
+                {/* <p>Share</p> */}
+                <div className="rounded-full active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[32px] w-[30px]">
                   <Link2Icon size={18} />
                 </div>
               </button>
@@ -357,18 +398,15 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                 type="button"
                 onClick={handlePin}
                 disabled={pinning}
-                className={`group/btn flex h-max w-max items-center gap-x-2 rounded-full border px-2 py-1.5 pl-3 text-sm font-medium text-slate-950 transition-all duration-300 ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98] ${
-                  pinned
-                    ? "bg-red-600 border-white text-white"
-                    : "bg-white text-slate-950 border-slate-900 dark:border-white"
-                }`}
+                className={`group/btn flex h-max w-max items-center gap-x-2 rounded-full bg-white border px-2 py-1.5 text-sm font-medium text-slate-950 transition-all ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98]`}
               >
-                <p className={`${pinned ? 'text-white' : 'text-slate-950'}`}>{pinned ? "Unpin" : "Pin"}</p>
-                <div className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-white text-slate-900">
+                <div className="rounded-full active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[32px] w-[30px]">
                   {pinning ? (
                     <Loader2 size={18} className="animate-spin" />
                   ) : (
-                    <Pin size={18} className={pinned ? "fill-white" : ""} />
+                    <>
+                      {pinned ? <PinOffIcon size={18} className={pinned ? "fill-white" : ""} /> : <Pin size={18} className={pinned ? "fill-white" : ""} />}
+                    </>
                   )}
                 </div>
               </button>
@@ -376,13 +414,13 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
 
             <Link
               to={`/posts/${post.slug}`}
-              className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-2 hover:gap-x-5 active:scale-[0.98] duration-300 border dark:!border-white items-center px-2 py-1.5 pl-3 rounded-full bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
+              className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-2 hover:gap-x-5 active:scale-[0.98] border dark:!border-white items-center px-2 py-1.5 rounded-full bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
                 featured ? "mt-3" : "mt-2"
               }`}
             >
-              <p>Read</p>
-              <div className="rounded-full active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[30px] w-[30px]">
-                <ChevronRight size={21} />
+              {/* <p>Read</p> */}
+              <div className="rounded-full active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[32px] w-[30px]">
+                <Eye size={21} />
                 
               </div>
             </Link>

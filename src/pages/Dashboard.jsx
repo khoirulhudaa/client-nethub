@@ -20,53 +20,6 @@ import PinnedHero from "../components/Post/PinnedHero.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import PostCard from "../components/Post/PostCard.jsx";
 
-const GuestJumbotron = ({ onRegister }) => {
-  return (
-    <section className="relative mb-7 overflow-hidden">
-      {/* Background image / pattern */}
-      {/* <div className="absolute inset-0 opacity-10 top-0 left-0">
-        <img
-          src="/hero.jpg"   // ganti dengan gambar kamu, atau hapus kalau tidak ada
-          alt="hero"
-          className="h-full w-full object-cover"
-        />
-      </div> */}
-
-      {/* Decorative blobs */}
-      {/* <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-accent/30 blur-3xl" /> */}
-      {/* <div className="pointer-events-none absolute -bottom-16 -right-16 h-56 w-56 rounded-full bg-blue-500/20 blur-3xl" /> */}
-
-      <div className="relative z-2 flex flex-col items-start gap-6 lg:flex-row lg:items-center lg:justify-between">
-        {/* Text content */}
-        <div className="max-w-xl">
-
-          <h1 className="text-2xl font-bold tracking-tight text-white md:text-3xl">
-            Explore networking guides
-          </h1>
-          <div className="mt-7 flex flex-wrap items-center gap-3">
-            <button
-              onClick={onRegister}
-              className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-accent/25 transition hover:opacity-90"
-            >
-              Sign up as a Guider
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2.5}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
 // --- Welcome / greeting row -------------------------------------------------
 const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
   const hour = new Date().getHours();
@@ -614,6 +567,14 @@ const { remainingPosts } = useMemo(() => {
 
   console.log("pinned:", data.pinned?.length, "posts:", data.posts?.length, "total:", data.total);
 
+  const chunk = (arr, size) => {
+    const result = [];
+    for (let i = 0; i < arr.length; i += size) {
+      result.push(arr.slice(i, i + size));
+    }
+    return result;
+  };
+
   return (
     <div className="mx-auto max-w-full md:border-x border-white dark:border-white/10 pr-0 shadow-none">
       {/* Guest / Welcome tetap sama */}
@@ -778,9 +739,21 @@ const { remainingPosts } = useMemo(() => {
                     </div>
                   ) : (
                     <>
-                      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                        {remainingPosts.map((post) => (
-                          <PostCard slug={post.slug} roundedNormal={true} key={post._id} post={post} status={false} onPinChange={handlePinChange} />
+                      {/* Ganti grid-cols-* jadi flex */}
+                      <div className="flex flex-col gap-5">
+                        {chunk(remainingPosts, 2).map((row, rowIndex) => (
+                          <div key={rowIndex} className="flex gap-5">
+                            {row.map((post) => (
+                              <PostCard
+                                slug={post.slug}
+                                roundedNormal={true}
+                                key={post._id}
+                                post={post}
+                                status={false}
+                                onPinChange={handlePinChange}
+                              />
+                            ))}
+                          </div>
                         ))}
                       </div>
 
