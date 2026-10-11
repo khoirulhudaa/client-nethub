@@ -7,7 +7,7 @@ const PinnedHero = ({ pinned, onPinChange }) => {
   const items = pinned.slice(0, 3);
 
   return (
-    <section className="mb-8">
+    <section className="mb-6 mt-4">
       <h2 className="mb-3 flex items-center text-lg font-semibold tracking-tight text-slate-900 dark:text-white">
         <Pin size={17} />
         <span className="relative top-[-2px] ml-1">Your pinned</span>

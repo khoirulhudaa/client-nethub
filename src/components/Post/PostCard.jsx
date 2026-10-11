@@ -275,7 +275,9 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
 
           {/* Title */}
           <h3
-            className={`group-hover:hidden font-semibold text-white truncate min-w-0 max-w-[90%] leading-snug tracking-tight ${
+            className={`${
+                hideImage ? "group-hover:hidden" : ""
+              } font-semibold text-white bg-blue-900/90 truncate w-max max-w-[90%] leading-snug tracking-tight ${
               featured ? "text-xl" : "text-base"
             }`}
           >
@@ -283,7 +285,9 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
           </h3>
 
           {/* Tags — satu baris, overflow truncate */}
-          <div className="group-hover:hidden flex items-center gap-1.5 min-w-0 overflow-hidden">
+          <div className={`${
+            hideImage ? "group-hover:hidden" : ""
+          } flex items-center gap-1.5 min-w-0 overflow-hidden`}>
             {post.tags?.length > 0
               ? post.tags.map((tag) => (
                   <span

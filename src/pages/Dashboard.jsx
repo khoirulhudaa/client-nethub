@@ -715,15 +715,15 @@ const { remainingPosts } = useMemo(() => {
                   )}
                   
                 {/* Posts Grid — Other guides */}
-                 <section className="mb-8 px-3 md:px-4 border-white/10">
-                  <div className={`mb-4 flex items-center gap-2 ${isGuest ? 'hidden' : ''}`}>
+                 <section className="mb-8 px-3 md:px-4 border-white/10 pt-8 border-t">
+                  {/* <div className={`mb-4 flex items-center gap-2 ${isGuest ? 'hidden' : ''}`}>
                     <h2 className="flex items-center text-lg mt-1 font-medium tracking-tight">
                       <Newspaper size={17} className="relative top-[-1px] mr-2 text-slate-900 dark:text-white" />
                       <span className="relative top-[-1.7px] text-slate-900 dark:text-white">
                         Other guides
                       </span>
                     </h2>
-                  </div>
+                  </div> */}
 
                   {remainingPosts.length === 0 ? (
                     <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
