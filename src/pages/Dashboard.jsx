@@ -742,7 +742,10 @@ const { remainingPosts } = useMemo(() => {
                       {/* Ganti grid-cols-* jadi flex */}
                       <div className="flex flex-col gap-5">
                         {chunk(remainingPosts, 2).map((row, rowIndex) => (
-                          <div key={rowIndex} className="flex gap-5">
+                          <div
+                            key={rowIndex}
+                            className="flex flex-col sm:flex-row gap-5"
+                          >
                             {row.map((post) => (
                               <PostCard
                                 slug={post.slug}
