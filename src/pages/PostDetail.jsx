@@ -160,6 +160,7 @@
     const [isFollowing, setIsFollowing] = useState(false);
     const [followLoading, setFollowLoading] = useState(false);
     const [highlightLoading, setHighlightLoading] = useState(false);
+    const [selectedOccurrence, setSelectedOccurrence] = useState(0);
     const [isSpeaking, setIsSpeaking] = useState(false);
 
     const [showShare, setShowShare] = useState(false);
@@ -548,13 +549,26 @@
     }
   };
 
-  // Deteksi text selection
-  const handleMouseUp = () => {
-    if (isGuest) {
-      // Optional: bisa langsung munculkan toast
-      // toast.error("Login dulu untuk menggunakan stabilo");
-      return;
+  // Hitung ini kemunculan ke berapa dari teks yang diblok (mulai dari 0)
+  const getOccurrence = (range, text) => {
+    const el = articleRef.current;
+    if (!el) return 0;
+    const pre = document.createRange();
+    pre.selectNodeContents(el);
+    pre.setEnd(range.startContainer, range.startOffset);
+    const before = pre.toString();
+
+    let count = 0;
+    let i = before.indexOf(text);
+    while (i !== -1) {
+      count++;
+      i = before.indexOf(text, i + text.length);
     }
+    return count;
+  };
+
+  const handleMouseUp = () => {
+    if (isGuest) return;
 
     const selection = window.getSelection();
     const text = selection?.toString().trim();
@@ -564,6 +578,7 @@
       const rect = range.getBoundingClientRect();
 
       setSelectedText(text);
+      setSelectedOccurrence(getOccurrence(range, text));
       setMenuPosition({
         x: rect.left + rect.width / 2,
         y: rect.top + window.scrollY - 50,
@@ -590,66 +605,80 @@
 
   // ===== APPLY HIGHLIGHT (simpan ke backend) =====
   const applyHighlight = async (color) => {
-    if (!selectedText || !post?._id) return;
+  if (!selectedText || !post?._id) return;
 
-    const newHighlight = { text: selectedText, color };
+  const occurrence = selectedOccurrence;
+  const newHighlight = { text: selectedText, color, occurrence };
+  const same = (h) => h.text === selectedText && (h.occurrence ?? 0) === occurrence;
 
-    // 1. Langsung tampilkan dulu (Optimistic)
-    setHighlights((prev) => {
-      if (prev.some((h) => h.text === selectedText)) return prev;
-      return [...prev, newHighlight];
+  setHighlights((prev) => (prev.some(same) ? prev : [...prev, newHighlight]));
+
+  setShowHighlightMenu(false);
+  window.getSelection()?.removeAllRanges();
+  setHighlightLoading(true);
+
+  try {
+    const { data } = await api.post(`/auth/me/highlights/${post?._id}`, {
+      text: selectedText,
+      color,
+      occurrence,
     });
-
-    setShowHighlightMenu(false);
-    window.getSelection()?.removeAllRanges();
-    setHighlightLoading(true);
-
-    try {
-      const { data } = await api.post(`/auth/me/highlights/${post?._id}`, {
-        text: selectedText,
-        color,
-      });
-      // 2. Sinkronkan dengan data server
-      setHighlights(data.highlights || []);
-      toast.success("Teks distabilo");
-    } catch (err) {
-      // 3. Kalau gagal → rollback
-      setHighlights((prev) => prev.filter((h) => h.text !== selectedText));
-      toast.error("Gagal menyimpan highlight");
-    } finally {
-      setHighlightLoading(false);
-    }
-  };
+    setHighlights(data.highlights || []);
+    toast.success("Teks distabilo");
+  } catch (err) {
+    setHighlights((prev) => prev.filter((h) => !same(h)));
+    toast.error("Gagal menyimpan highlight");
+  } finally {
+    setHighlightLoading(false);
+  }
+};
 
   const normalizeForMatch = (str) =>
     (str || "")
       .replace(/\s+/g, " ")
       .trim();
 
-  // Render content dengan highlight
   const renderHighlightedContent = (html) => {
     if (!html) return "";
 
     let result = html;
 
-    highlights.forEach(({ text, color }) => {
-      const escaped = text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const regex = new RegExp(`(${escaped})`, "gi");
-      result = result.replace(
-        regex,
-        `<mark style="background-color: ${color}; padding: 1px 2px; border-radius: 3px;">$1</mark>`
-      );
+    highlights.forEach(({ text, color, occurrence = 0 }) => {
+      // Pisah tag dan teks, indeks ganjil = tag (jangan disentuh)
+      const parts = result.split(/(<[^>]+>)/);
+      let count = 0;
+
+      for (let p = 0; p < parts.length; p += 2) {
+        const seg = parts[p];
+        if (!seg) continue;
+
+        let out = "";
+        let pos = 0;
+        let idx;
+        while ((idx = seg.indexOf(text, pos)) !== -1) {
+          out += seg.slice(pos, idx);
+          if (count === occurrence) {
+            out += `<mark style="background-color: ${color}; padding: 1px 2px; border-radius: 3px;">${text}</mark>`;
+          } else {
+            out += text;
+          }
+          count++;
+          pos = idx + text.length;
+        }
+        parts[p] = out + seg.slice(pos);
+      }
+
+      result = parts.join("");
     });
 
     return result;
   };
 
-  // Hapus satu highlight
-  const removeHighlight = async (text) => {
+  const removeHighlight = async (text, occurrence = 0) => {
     if (!post?._id) return;
     try {
       const { data } = await api.delete(`/auth/me/highlights/${post?._id}`, {
-        data: { text },
+        data: { text, occurrence },
       });
       setHighlights(data.highlights || []);
       toast.success("Highlight dihapus");
@@ -1107,8 +1136,8 @@
                             {h.text}
                           </span>
                           <button
-                            onClick={() => removeHighlight(h.text)}
-                            className="opacity-0 transition group-hover:opacity-100 text-gray-600 hover:text-red-600"
+                            onClick={() => removeHighlight(h.text, h.occurrence ?? 0)}
+                            className="opacity-100 transition group-hover:opacity-100 text-red-500 hover:text-red-700"
                           >
                             ✕
                           </button>
@@ -1118,34 +1147,6 @@
                   </div>
                 )}
               </>
-            )}
-
-            {highlights.length > 0 && (
-              <div className="mt-4 rounded-2xl border border-gray-100 bg-slate-300 p-3 md:p-5 dark:border-white/5 dark:!bg-[#0c0c18]">
-                <div className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
-                  <Highlighter size={15} />
-                  Stabilo kamu ({highlights.length})
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {highlights.map((h, idx) => (
-                    <div
-                      key={idx}
-                      className="group flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs"
-                      style={{ backgroundColor: h.color }}
-                    >
-                      <span className="max-w-[200px] truncate text-gray-800">
-                        {h.text}
-                      </span>
-                      <button
-                        onClick={() => removeHighlight(h.text)}
-                        className="opacity-0 transition group-hover:opacity-100 text-gray-600 hover:text-red-600"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
             )}
 
             {post?.codeBlocks?.length > 0 && (
