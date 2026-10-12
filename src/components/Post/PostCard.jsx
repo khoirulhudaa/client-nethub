@@ -276,9 +276,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
 
             {/* Title */}
             <h3
-              className={`${
-                hideImage ? "group-hover:hidden" : "md:group-hover:hidden"
-              } font-semibold text-slate-900 dark:text-white md:text-white bg-transparent md:bg-blue-900/90 truncate w-max max-w-[90%] leading-snug tracking-tight ${
+              className={`font-semibold text-slate-900 dark:text-white md:text-white bg-transparent md:bg-blue-900/90 truncate w-max max-w-[90%] leading-snug tracking-tight ${
                 featured ? "text-xl" : "text-base"
               }`}
             >
@@ -288,7 +286,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
             {/* Tags */}
             <div
               className={`${
-                hideImage ? "group-hover:hidden" : "md:group-hover:hidden"
+                hideImage ? "md:group-hover:hidden" : ""
               } flex items-center gap-1.5 min-w-0 overflow-hidden`}
             >
               {post.tags?.length > 0
@@ -310,7 +308,6 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                   absolute inset-0 z-20
                   bg-black/0
                   transition-colors ease-out
-                  group-hover:bg-white/5 
                   pointer-events-none
                   rounded-2xl
                 "
@@ -321,6 +318,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
             <div
               className={`
                 absolute bottom-[4%] left-[2%]
+                ${hideImage ? "!left-[0%]" : ""}
                 hidden md:grid grid-cols-3 items-center justify-center
                 transition-opacity ease-in-out
                 opacity-0 group-hover:opacity-100
@@ -328,7 +326,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                 ${featured ? "mt-3" : "mt-2"}
               `}
             >
-            <div className="relative w-max">
+            <div className="relative w-full">
               <button
                 type="button"
                 onClick={(e) => {
@@ -336,7 +334,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                   e.stopPropagation();
                   setShowShare((v) => !v);
                 }}
-                className={`justify-center w-max flex mt-auto hover:brightness-75 h-max gap-x-2 hover:gap-x-5 active:scale-[0.98] items-center px-2 py-1.5 rounded-tl-3xl rounded-bl-3xl overflow-hidden border dark:!border-white bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
+                className={`justify-center w-full flex mt-auto hover:brightness-75 h-max gap-x-2 hover:gap-x-5 pl-3 active:scale-[0.98] items-center px-2 py-1.5 rounded-tl-2xl rounded-bl-2xl overflow-hidden border dark:!border-white bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
                   featured ? "mt-3" : "mt-2"
                 }`}
               >
@@ -422,14 +420,14 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
 
             <Link
               to={`/posts/${post.slug}`}
-              className={`justify-center w-max pr-4 flex mt-auto hover:brightness-75 h-max gap-x-2 hover:gap-x-5 active:scale-[0.98] border dark:!border-white items-center px-2 py-1.5 rounded-tr-3xl rounded-br-3xl overflow-hidden bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
+              className={`justify-center w-max pr-2 flex mt-auto hover:brightness-75 h-max gap-x-2 hover:gap-x-5 active:scale-[0.98] border dark:!border-white items-center px-2 py-1.5 rounded-tr-2xl rounded-br-2xl overflow-hidden bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
                 featured ? "mt-3" : "mt-2"
               }`}
             >
               {/* <p>Read</p> */}
               <div className="w-max gap-x-2 active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[32px]">
                 <p>
-                  Read Guide
+                  Read
                 </p>
                 <ChevronRight size={21} />
               </div>
