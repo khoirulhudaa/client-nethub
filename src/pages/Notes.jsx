@@ -108,13 +108,8 @@ const Notes = () => {
 
   return (
     <div className="mx-auto max-w-full space-y-4 border-white pb-16 dark:border-white/15 md:border-x md:p-6">
+      
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight text-white md:text-slate-900 dark:text-white">Diary</h1>
-          <p className="text-sm text-gray-300 md:text-gray-500">
-            {stats ? `${stats.total} catatan · ${stats.pinned} disematkan · hanya kamu yang bisa membaca` : "Catatan pribadi"}
-          </p>
-        </div>
         <button onClick={() => navigate("/notes/create")} className="btn-primary">
           <Plus size={16} /> Tulis catatan
         </button>

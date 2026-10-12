@@ -353,7 +353,7 @@ const Contacts = () => {
     }`;
 
   return (
-    <div className="mx-auto max-w-full space-y-4 border-white pb-16 dark:border-white/15 md:border-x md:p-6">
+    <div className="mx-auto max-w-full space-y-3.5 border-white pb-16 dark:border-white/15 md:border-x md:p-6">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <button onClick={() => navigate("/contacts/create")} className="btn-primary mb-3">
