@@ -49,6 +49,9 @@ const CreatePost = () => {
   const [searchingSimilar, setSearchingSimilar] = useState(false);
   const [referencesImages, setReferencesImages] = useState([]); // max 4
   const [codeBlocks, setCodeBlocks] = useState([]);
+  const MAX_PDF_MB = 5;
+  const [contentMode, setContentMode] = useState("manual"); // "manual" | "pdf"
+  const [pdfFile, setPdfFile] = useState(null);
 
   // Load data saat edit
   useEffect(() => {
@@ -73,6 +76,8 @@ const CreatePost = () => {
           });
           setTopology(post.topology || { nodes: [], edges: [] });
           setGallery(post.gallery || []);
+          setPdfFile(post.pdfFile?.url ? post.pdfFile : null);
+          setContentMode(post.pdfFile?.url ? "pdf" : "manual");
           setSteps(post.steps || []);
           setCustomTables(post.customTables || []);
           setCodeBlocks(post.codeBlocks || []);
@@ -110,6 +115,23 @@ const CreatePost = () => {
 
     return () => clearTimeout(timer);
   }, [form.title, form.category, form.tags]);
+
+  const readPdf = (file) => {
+    if (!file) return;
+    if (file.type !== "application/pdf") {
+      setError("File must be a PDF.");
+      return;
+    }
+    if (file.size > MAX_PDF_MB * 1024 * 1024) {
+      setError(`PDF size must not exceed ${MAX_PDF_MB} MB.`);
+      return;
+    }
+    setError("");
+    const reader = new FileReader();
+    reader.onload = () =>
+      setPdfFile({ url: reader.result, name: file.name, size: file.size });
+    reader.readAsDataURL(file);
+  };
 
     const handleReferenceUpload = (e) => {
       const files = Array.from(e.target.files || []);
@@ -236,6 +258,16 @@ const CreatePost = () => {
       return;
     }
 
+    if (contentMode === "manual" && !form.content.trim()) {
+      setError("Content is required.");
+      return;
+    }
+    if (contentMode === "pdf" && !pdfFile) {
+      setError("Please upload a PDF file first.");
+      return;
+    }
+
+
     const tagsArray = form.tags
       .split(",")
       .map((t) => t.trim())
@@ -253,6 +285,8 @@ const CreatePost = () => {
         tags: tagsArray,
         gallery,
         topology,
+        content: contentMode === "manual" ? form.content : "",
+        pdfFile: contentMode === "pdf" ? pdfFile : { url: "", name: "", size: 0 },
         codeBlocks,
         referencesImages,
         steps,
@@ -522,11 +556,80 @@ const CreatePost = () => {
 
         {/* ===== Content ===== */}
         <div className="surface-card dark:!bg-white/5 p-3 md:p-6">
-          <label className="mb-2 block text-sm font-medium">Content</label>
-          <RichTextEditor
-            value={form.content}
-            onChange={(content) => setForm({ ...form, content })}
-          />
+          <div className="mb-3 flex items-center justify-between">
+            <label className="block text-sm font-medium">Content</label>
+            <div className="flex gap-1 rounded-xl bg-slate-200 p-1 dark:bg-white/10">
+              {[
+                { key: "manual", label: "Editor" },
+                { key: "pdf", label: "PDF Upload" },
+              ].map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setContentMode(tab.key)}
+                  className={`rounded-lg px-3 py-1 text-xs font-medium transition ${
+                    contentMode === tab.key
+                      ? "bg-blue-600 text-white"
+                      : "text-slate-600 dark:text-gray-300"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {contentMode === "manual" ? (
+            <RichTextEditor
+              value={form.content}
+              onChange={(content) => setForm({ ...form, content })}
+            />
+          ) : pdfFile ? (
+            <div className="flex items-center justify-between rounded-xl border border-gray-200 p-4 dark:border-white/10">
+              <div className="min-w-0">
+                <p className="truncate text-sm font-medium">{pdfFile.name}</p>
+                <p className="text-xs text-gray-500">
+                  {(pdfFile.size / 1024 / 1024).toFixed(2)} MB
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPdfFile(null)}
+                className="text-xs text-red-500 hover:underline"
+              >
+                Hapus
+              </button>
+            </div>
+          ) : (
+            <label
+              className="surface-card flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-600 text-gray-400 transition hover:border-accent hover:text-accent dark:!bg-slate-100/10"
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.currentTarget.classList.add("border-accent", "text-accent");
+              }}
+              onDragLeave={(e) =>
+                e.currentTarget.classList.remove("border-accent", "text-accent")
+              }
+              onDrop={(e) => {
+                e.preventDefault();
+                e.currentTarget.classList.remove("border-accent", "text-accent");
+                readPdf(e.dataTransfer.files?.[0]);
+              }}
+            >
+              <Upload size={22} className="mb-2 opacity-70" />
+              <p className="text-sm font-medium">Click to upload or drag and drop</p>
+              <p className="mt-1 text-xs opacity-70">PDF (maks. {MAX_PDF_MB} MB)</p>
+              <input
+                type="file"
+                accept="application/pdf"
+                className="hidden"
+                onChange={(e) => {
+                  readPdf(e.target.files?.[0]);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+          )}
         </div>
 
         {/* ===== Topology Canvas ===== */}

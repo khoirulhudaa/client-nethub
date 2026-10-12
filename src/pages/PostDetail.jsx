@@ -1,1723 +1,1803 @@
-import { Bookmark, Calendar, CheckCircle2, ChevronLeft, ChevronRight, Circle, Clipboard, Eye, Heart, Highlighter, Link2, Loader2, Pencil, Pin, Plus, Share2, Timer, Trash2, Volume2, VolumeX, X, ZoomIn } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import api from "../api/axios.js";
-import CommentThread from "../components/Post/CommentThread.jsx";
-import PostCard from "../components/Post/PostCard.jsx";
-import CategoryPill from "../components/UI/CategoryPill.jsx";
-import { useAuth } from "../context/AuthContext.jsx";
-import { formatDate } from "../utils/generateData.js";
-import { timeAgo } from "../utils/timeAgo.js";
-import FlowchartCanvas from "./FlowchartCanvas.jsx";
-import TopologyCanvas from "./TopologyCanvas.jsx";
+  import { Bookmark, Calendar, CheckCircle2, ChevronLeft, ChevronRight, Circle, Clipboard, Eye, Heart, Highlighter, Link2, Loader2, Pencil, Pin, Plus, Share2, Timer, Trash2, Volume2, VolumeX, X, ZoomIn } from "lucide-react";
+  import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+  import toast from "react-hot-toast";
+  import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+  import api from "../api/axios.js";
+  import CommentThread from "../components/Post/CommentThread.jsx";
+  import PostCard from "../components/Post/PostCard.jsx";
+  import CategoryPill from "../components/UI/CategoryPill.jsx";
+  import { useAuth } from "../context/AuthContext.jsx";
+  import { formatDate } from "../utils/generateData.js";
+  import { timeAgo } from "../utils/timeAgo.js";
+  import FlowchartCanvas from "./FlowchartCanvas.jsx";
+  import TopologyCanvas from "./TopologyCanvas.jsx";
 
-const CodeBlockItem = ({ block }) => {
-  const [copied, setCopied] = useState(false);
+  const CodeBlockItem = ({ block }) => {
+    const [copied, setCopied] = useState(false);
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(block.code);
-      setCopied(true);
-      toast.success("Code berhasil disalin");
+    const handleCopy = async () => {
+      try {
+        await navigator.clipboard.writeText(block.code);
+        setCopied(true);
+        toast.success("Code berhasil disalin");
 
-      // Kembali ke "Copy" setelah 2 detik
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      toast.error("Gagal menyalin code");
-    }
-  };
+        // Kembali ke "Copy" setelah 2 detik
+        setTimeout(() => setCopied(false), 2000);
+      } catch {
+        toast.error("Gagal menyalin code");
+      }
+    };
 
-  return (
-    <div className="group relative overflow-hidden rounded-3xl border border-gray-100 bg-slate-300 dark:border-white/15 dark:!bg-[#0c0c18]">
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-gray-100 px-3 md:px-5 py-3 dark:border-white/15">
-        <div className="flex items-center gap-y-3 gap-x-1">
-          <span className="text-[11px] font-medium tracking-widest text-gray-700 dark:text-white">
-            {block.language?.toUpperCase() || "CODE"} /
-          </span>
-          {block.title && (
-            <span className="text-[11px] uppercase font-medium text-gray-800 dark:text-gray-100">
-              {block.title}
+    return (
+      <div className="group relative overflow-hidden rounded-3xl border border-gray-100 bg-slate-300 dark:border-white/15 dark:!bg-[#0c0c18]">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-gray-100 px-3 md:px-5 py-3 dark:border-white/15">
+          <div className="flex items-center gap-y-3 gap-x-1">
+            <span className="text-[11px] font-medium tracking-widest text-gray-700 dark:text-white">
+              {block.language?.toUpperCase() || "CODE"} /
             </span>
-          )}
+            {block.title && (
+              <span className="text-[11px] uppercase font-medium text-gray-800 dark:text-gray-100">
+                {block.title}
+              </span>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={handleCopy}
+            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+              copied
+                ? "bg-blue-600 text-white"
+                : "bg-slate-300 text-gray-600 hover:bg-accent hover:text-white dark:!bg-[#0c0c18] dark:text-gray-300"
+            }`}
+          >
+            {copied ? (
+              <>
+                {/* Check icon */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-3.5 w-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4.5 12.75l6 6 9-13.5"
+                  />
+                </svg>
+                Copied!
+              </>
+            ) : (
+              <>
+                {/* Copy icon */}
+                <Clipboard size={12} className="relative top-[-1px]" />
+                Copy
+              </>
+            )}
+          </button>
         </div>
 
-        <button
-          type="button"
-          onClick={handleCopy}
-          className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${
-            copied
-              ? "bg-blue-600 text-white"
-              : "bg-slate-300 text-gray-600 hover:bg-accent hover:text-white dark:!bg-[#0c0c18] dark:text-gray-300"
-          }`}
-        >
-          {copied ? (
-            <>
-              {/* Check icon */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-3.5 w-3.5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.5 12.75l6 6 9-13.5"
-                />
-              </svg>
-              Copied!
-            </>
-          ) : (
-            <>
-              {/* Copy icon */}
-              <Clipboard size={12} className="relative top-[-1px]" />
-              Copy
-            </>
-          )}
-        </button>
+        {/* Code */}
+        <pre className="overflow-x-auto !p-3 md:!p-5 text-[13px] leading-relaxed text-gray-800 dark:text-gray-200">
+          <code className="font-mono whitespace-pre">{block.code}</code>
+        </pre>
       </div>
+    );
+  };
 
-      {/* Code */}
-      <pre className="overflow-x-auto !p-3 md:!p-5 text-[13px] leading-relaxed text-gray-800 dark:text-gray-200">
-        <code className="font-mono whitespace-pre">{block.code}</code>
-      </pre>
-    </div>
-  );
-};
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    // kalau layout punya container scroll sendiri
+    document.querySelector("main")?.scrollTo?.({ top: 0, left: 0, behavior: "instant" });
+  };
 
-const scrollToTop = () => {
-  window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-  document.documentElement.scrollTop = 0;
-  document.body.scrollTop = 0;
-  // kalau layout punya container scroll sendiri
-  document.querySelector("main")?.scrollTo?.({ top: 0, left: 0, behavior: "instant" });
-};
+  const PostDetailSkeleton = () => (
+    <div className="md:p-6 mx-auto max-w-full md:border-x border-white dark:border-white/15 space-y-3 pb-16">
+      <div className="p-0 md:p-5 md:bg-slate-100 dark:md:bg-white/5 rounded-xl">
+        {/* <div className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-white md:text-slate-900 dark:text-white">
+          <Loader2 size={18} className="animate-spin" />
+          Memuat guide...
+        </div> */}
 
-const PostDetailSkeleton = () => (
-  <div className="md:p-6 mx-auto max-w-full md:border-x border-white dark:border-white/15 space-y-3 pb-16">
-    <div className="p-0 md:p-5 md:bg-slate-100 dark:md:bg-white/5 rounded-xl">
-      {/* <div className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-white md:text-slate-900 dark:text-white">
-        <Loader2 size={18} className="animate-spin" />
-        Memuat guide...
-      </div> */}
+        <div className="animate-pulse">
+          <div className="mb-3 h-8 w-2/3 rounded-xl bg-slate-300 dark:bg-white/10" />
 
-      <div className="animate-pulse">
-        <div className="mb-3 h-8 w-2/3 rounded-xl bg-slate-300 dark:bg-white/10" />
+          <div className="mb-4 flex items-center gap-2">
+            <div className="h-[44px] w-[44px] rounded-lg bg-slate-300 dark:bg-white/10" />
+            <div className="space-y-2">
+              <div className="h-3 w-32 rounded bg-slate-300 dark:bg-white/10" />
+              <div className="h-3 w-20 rounded bg-slate-300 dark:bg-white/10" />
+            </div>
+          </div>
 
-        <div className="mb-4 flex items-center gap-2">
-          <div className="h-[44px] w-[44px] rounded-lg bg-slate-300 dark:bg-white/10" />
-          <div className="space-y-2">
-            <div className="h-3 w-32 rounded bg-slate-300 dark:bg-white/10" />
-            <div className="h-3 w-20 rounded bg-slate-300 dark:bg-white/10" />
+          <div className="h-72 w-full rounded-2xl bg-slate-300 dark:bg-white/10" />
+
+          <div className="my-5 flex gap-2">
+            <div className="h-[28px] w-20 rounded-lg bg-slate-300 dark:bg-white/10" />
+            <div className="h-[28px] w-20 rounded-lg bg-slate-300 dark:bg-white/10" />
+            <div className="h-[28px] w-24 rounded-lg bg-slate-300 dark:bg-white/10" />
+          </div>
+
+          <div className="mb-2 h-4 w-28 rounded bg-slate-300 dark:bg-white/10" />
+          <div className="space-y-3 rounded-2xl bg-slate-300 p-5 dark:bg-white/10">
+            <div className="h-3 w-full rounded bg-slate-200/70 dark:bg-white/10" />
+            <div className="h-3 w-11/12 rounded bg-slate-200/70 dark:bg-white/10" />
+            <div className="h-3 w-4/5 rounded bg-slate-200/70 dark:bg-white/10" />
+            <div className="h-3 w-2/3 rounded bg-slate-200/70 dark:bg-white/10" />
           </div>
         </div>
-
-        <div className="h-72 w-full rounded-2xl bg-slate-300 dark:bg-white/10" />
-
-        <div className="my-5 flex gap-2">
-          <div className="h-[28px] w-20 rounded-lg bg-slate-300 dark:bg-white/10" />
-          <div className="h-[28px] w-20 rounded-lg bg-slate-300 dark:bg-white/10" />
-          <div className="h-[28px] w-24 rounded-lg bg-slate-300 dark:bg-white/10" />
-        </div>
-
-        <div className="mb-2 h-4 w-28 rounded bg-slate-300 dark:bg-white/10" />
-        <div className="space-y-3 rounded-2xl bg-slate-300 p-5 dark:bg-white/10">
-          <div className="h-3 w-full rounded bg-slate-200/70 dark:bg-white/10" />
-          <div className="h-3 w-11/12 rounded bg-slate-200/70 dark:bg-white/10" />
-          <div className="h-3 w-4/5 rounded bg-slate-200/70 dark:bg-white/10" />
-          <div className="h-3 w-2/3 rounded bg-slate-200/70 dark:bg-white/10" />
-        </div>
       </div>
     </div>
-  </div>
-);
+  );
 
-const PostDetail = () => {
-  const { slug } = useParams();
-  const navigate = useNavigate();
+  const PostDetail = () => {
+    const { slug } = useParams();
+    const navigate = useNavigate();
 
-  const { user, loading: authLoading, loginAsGuest } = useAuth();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const guestTried = useRef(false);
+    const { user, loading: authLoading, loginAsGuest } = useAuth();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const guestTried = useRef(false);
 
-  const [post, setPost] = useState(null);
-  const [related, setRelated] = useState([]);
-  const [comments, setComments] = useState([]);
-  const [commentText, setCommentText] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [previewIndex, setPreviewIndex] = useState(null);
-  const [liked, setLiked] = useState(false);
-  const [bookmarked, setBookmarked] = useState(false);
-  const [likesCount, setLikesCount] = useState(0);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [sidebarType, setSidebarType] = useState(null); 
-  const [selectedStep, setSelectedStep] = useState(null);
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [followLoading, setFollowLoading] = useState(false);
-  const [highlightLoading, setHighlightLoading] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
+    const [post, setPost] = useState(null);
+    const [related, setRelated] = useState([]);
+    const [comments, setComments] = useState([]);
+    const [commentText, setCommentText] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [previewIndex, setPreviewIndex] = useState(null);
+    const [liked, setLiked] = useState(false);
+    const [bookmarked, setBookmarked] = useState(false);
+    const [likesCount, setLikesCount] = useState(0);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+    const [sidebarType, setSidebarType] = useState(null); 
+    const [selectedStep, setSelectedStep] = useState(null);
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [followLoading, setFollowLoading] = useState(false);
+    const [highlightLoading, setHighlightLoading] = useState(false);
+    const [isSpeaking, setIsSpeaking] = useState(false);
 
-  const [showShare, setShowShare] = useState(false);
-  // ===== STATE BARU =====
-  const [inReadingList, setInReadingList] = useState(false);
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [readingListLoading, setReadingListLoading] = useState(false);
+    const [showShare, setShowShare] = useState(false);
+    // ===== STATE BARU =====
+    const [inReadingList, setInReadingList] = useState(false);
+    const [isCompleted, setIsCompleted] = useState(false);
+    const [readingListLoading, setReadingListLoading] = useState(false);
 
-  // Highlight
-  const [highlights, setHighlights] = useState([]); // array of { text, color }
-  const [showHighlightMenu, setShowHighlightMenu] = useState(false);
-  const [selectedText, setSelectedText] = useState("");
-  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-  const [ttsHighlight, setTtsHighlight] = useState(""); // teks yang sedang dibaca
+    // Highlight
+    const [highlights, setHighlights] = useState([]); // array of { text, color }
+    const [showHighlightMenu, setShowHighlightMenu] = useState(false);
+    const [selectedText, setSelectedText] = useState("");
+    const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+    const [ttsHighlight, setTtsHighlight] = useState(""); // teks yang sedang dibaca
 
-  const articleRef = useRef(null);
+    const articleRef = useRef(null);
 
-  // Warna stabilo
-  const HIGHLIGHT_COLORS = [
-    { name: "Kuning", value: "#fef08a" },
-    { name: "Hijau", value: "#bbf7d0" },
-    { name: "Biru", value: "#bae6fd" },
-    { name: "Pink", value: "#fbcfe8" },
-    { name: "Orange", value: "#fed7aa" },
-  ];
+    // Warna stabilo
+    const HIGHLIGHT_COLORS = [
+      { name: "Kuning", value: "#fef08a" },
+      { name: "Hijau", value: "#bbf7d0" },
+      { name: "Biru", value: "#bae6fd" },
+      { name: "Pink", value: "#fbcfe8" },
+      { name: "Orange", value: "#fed7aa" },
+    ];
 
-  const isGuest = user?.isGuest || user?.role === "guest";
-  const canPin = !!user && !isGuest; // guest & belum login tidak boleh pin
+    const isGuest = user?.isGuest || user?.role === "guest";
+    const canPin = !!user && !isGuest; // guest & belum login tidak boleh pin
 
-  const lastSlugRef = useRef(null);
-  const reqIdRef = useRef(0);
+    const lastSlugRef = useRef(null);
+    const reqIdRef = useRef(0);
 
-  const load = useCallback(async () => {
-    const reqId = ++reqIdRef.current;
-    const isNewSlug = lastSlugRef.current !== slug;
-    lastSlugRef.current = slug;
+    const load = useCallback(async () => {
+      const reqId = ++reqIdRef.current;
+      const isNewSlug = lastSlugRef.current !== slug;
+      lastSlugRef.current = slug;
 
-    // Pindah ke guide lain: kosongkan tampilan lama & tampilkan loading
-    if (isNewSlug) {
-      setIsSpeaking(false);
-      setPost(null);
-      setRelated([]);
-      setComments([]);
-      setHighlights([]);
-      setSidebarType(null);
-      setSelectedStep(null);
-      setShowHighlightMenu(false);
-      setInReadingList(false);
-      setPreviewIndex(null);
-      setIsCompleted(false);
-      setCommentText("");
-      setLoading(true);
+      // Pindah ke guide lain: kosongkan tampilan lama & tampilkan loading
+      if (isNewSlug) {
+        setIsSpeaking(false);
+        setPost(null);
+        setRelated([]);
+        setComments([]);
+        setHighlights([]);
+        setSidebarType(null);
+        setSelectedStep(null);
+        setShowHighlightMenu(false);
+        setInReadingList(false);
+        setPreviewIndex(null);
+        setIsCompleted(false);
+        setCommentText("");
+        setLoading(true);
+      }
+
+      try {
+        const { data } = await api.get(`/posts/${slug}`);
+        if (reqId !== reqIdRef.current) return; // respons lama diabaikan
+
+        setPost(data.post);
+        setRelated(data.related || []);
+        setLikesCount(data.post?.likes?.length || 0);
+        setLiked(!!data.post?.likes?.some((l) => l === user?.id || l?._id === user?.id));
+        setBookmarked(!!data.post?.savedBy?.some((b) => b === user?.id || b?._id === user?.id));
+
+        const commentsRes = await api.get(`/posts/${data.post?._id}/comments`);
+        if (reqId !== reqIdRef.current) return;
+        setComments(commentsRes.data.comments);
+      } catch (err) {
+        if (reqId !== reqIdRef.current) return;
+        toast.error(err?.response?.data?.message || "Gagal memuat guide");
+      } finally {
+        if (reqId === reqIdRef.current) setLoading(false);
+      }
+    }, [slug, user?.id, user?.isGuest]);
+
+    useEffect(() => {
+      load();
+    }, [load])
+
+    useEffect(() => {
+      if (authLoading || user) return;                    
+      if (searchParams.get("ref") !== "share") return;
+      if (guestTried.current) return;
+      guestTried.current = true;
+
+      loginAsGuest()
+        .catch(() => {})
+        .finally(() => {
+          const next = new URLSearchParams(searchParams);
+          next.delete("ref");
+          setSearchParams(next, { replace: true });
+        });
+    }, [authLoading, user]);
+
+    useEffect(() => {
+      if (user && post?.author?._id) {
+        // Cek apakah user sudah follow author ini
+        // Cara sederhana: cek dari user.following (kalau AuthContext menyimpan data lengkap)
+        // Atau buat request ke /auth/me/following
+        const checkFollow = async () => {
+          try {
+            const { data } = await api.get("/auth/me/following");
+            const followingIds = data.following.map((u) => u._id);
+            setIsFollowing(followingIds.includes(post?.author._id));
+          } catch {
+            // ignore
+          }
+        };
+        if (user) checkFollow();
+      }
+  }, [user, post?.author?._id]);
+
+  // Auto scroll ke atas setiap kali halaman dibuka / slug berubah
+  useEffect(() => {
+    scrollToTop();
+  }, [slug]);
+
+  useEffect(() => {
+    if (previewIndex === null) return;
+    const total = post?.referencesImages?.length || 0;
+
+    const onKey = (e) => {
+      if (e.key === "Escape") setPreviewIndex(null);
+      if (e.key === "ArrowRight") setPreviewIndex((i) => (i + 1) % total);
+      if (e.key === "ArrowLeft") setPreviewIndex((i) => (i - 1 + total) % total);
+    };
+
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden"; // kunci scroll background
+
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [previewIndex, post?.referencesImages?.length]);
+
+  const handleFollow = async () => {
+    if (!user) {
+      toast.error("Login dulu untuk follow author");
+      return;
     }
+    if (user.id === post?.author._id) return;
 
+    setFollowLoading(true);
     try {
-      const { data } = await api.get(`/posts/${slug}`);
-      if (reqId !== reqIdRef.current) return; // respons lama diabaikan
-
-      setPost(data.post);
-      setRelated(data.related || []);
-      setLikesCount(data.post?.likes?.length || 0);
-      setLiked(!!data.post?.likes?.some((l) => l === user?.id || l?._id === user?.id));
-      setBookmarked(!!data.post?.savedBy?.some((b) => b === user?.id || b?._id === user?.id));
-
-      const commentsRes = await api.get(`/posts/${data.post?._id}/comments`);
-      if (reqId !== reqIdRef.current) return;
-      setComments(commentsRes.data.comments);
+      const { data } = await api.post(`/auth/follow/${post?.author._id}`);
+      setIsFollowing(data.following);
+      toast.success(data.following ? "Berhasil follow" : "Unfollow berhasil");
     } catch (err) {
-      if (reqId !== reqIdRef.current) return;
-      toast.error(err?.response?.data?.message || "Gagal memuat guide");
+      toast.error(err?.response?.data?.message || "Gagal follow");
     } finally {
-      if (reqId === reqIdRef.current) setLoading(false);
+      setFollowLoading(false);
     }
-  }, [slug, user?.id, user?.isGuest]);
-
-  useEffect(() => {
-    load();
-  }, [load])
-
-  useEffect(() => {
-    if (authLoading || user) return;                    
-    if (searchParams.get("ref") !== "share") return;
-    if (guestTried.current) return;
-    guestTried.current = true;
-
-    loginAsGuest()
-      .catch(() => {})
-      .finally(() => {
-        const next = new URLSearchParams(searchParams);
-        next.delete("ref");
-        setSearchParams(next, { replace: true });
-      });
-  }, [authLoading, user]);
-
-  useEffect(() => {
-    if (user && post?.author?._id) {
-      // Cek apakah user sudah follow author ini
-      // Cara sederhana: cek dari user.following (kalau AuthContext menyimpan data lengkap)
-      // Atau buat request ke /auth/me/following
-      const checkFollow = async () => {
-        try {
-          const { data } = await api.get("/auth/me/following");
-          const followingIds = data.following.map((u) => u._id);
-          setIsFollowing(followingIds.includes(post?.author._id));
-        } catch {
-          // ignore
-        }
-      };
-      if (user) checkFollow();
-    }
-}, [user, post?.author?._id]);
-
-// Auto scroll ke atas setiap kali halaman dibuka / slug berubah
-useEffect(() => {
-  scrollToTop();
-}, [slug]);
-
-useEffect(() => {
-  if (previewIndex === null) return;
-  const total = post?.referencesImages?.length || 0;
-
-  const onKey = (e) => {
-    if (e.key === "Escape") setPreviewIndex(null);
-    if (e.key === "ArrowRight") setPreviewIndex((i) => (i + 1) % total);
-    if (e.key === "ArrowLeft") setPreviewIndex((i) => (i - 1 + total) % total);
   };
 
-  window.addEventListener("keydown", onKey);
-  const prevOverflow = document.body.style.overflow;
-  document.body.style.overflow = "hidden"; // kunci scroll background
-
-  return () => {
-    window.removeEventListener("keydown", onKey);
-    document.body.style.overflow = prevOverflow;
+  // ===== Text-to-Speech: baca deskripsi =====
+  const getPlainText = (html) => {
+    if (!html) return "";
+    const tmp = document.createElement("div");
+    tmp.innerHTML = html;
+    return (tmp.textContent || tmp.innerText || "").trim();
   };
-}, [previewIndex, post?.referencesImages?.length]);
 
-const handleFollow = async () => {
-  if (!user) {
-    toast.error("Login dulu untuk follow author");
-    return;
-  }
-  if (user.id === post?.author._id) return;
+  const splitIntoSentences = (text) => {
+    if (!text) return [];
+    // Pecah berdasarkan . ! ? diikuti spasi / akhir string
+    return text
+      .match(/[^.!?]+[.!?]+|[^.!?]+$/g)
+      ?.map((s) => s.trim())
+      .filter(Boolean) || [text];
+  };
 
-  setFollowLoading(true);
-  try {
-    const { data } = await api.post(`/auth/follow/${post?.author._id}`);
-    setIsFollowing(data.following);
-    toast.success(data.following ? "Berhasil follow" : "Unfollow berhasil");
-  } catch (err) {
-    toast.error(err?.response?.data?.message || "Gagal follow");
-  } finally {
-    setFollowLoading(false);
-  }
-};
+  const handleSpeakDescription = () => {
+    if (!window.speechSynthesis) {
+      toast.error("Browser tidak mendukung fitur suara");
+      return;
+    }
 
-// ===== Text-to-Speech: baca deskripsi =====
-const getPlainText = (html) => {
-  if (!html) return "";
-  const tmp = document.createElement("div");
-  tmp.innerHTML = html;
-  return (tmp.textContent || tmp.innerText || "").trim();
-};
-
-const splitIntoSentences = (text) => {
-  if (!text) return [];
-  // Pecah berdasarkan . ! ? diikuti spasi / akhir string
-  return text
-    .match(/[^.!?]+[.!?]+|[^.!?]+$/g)
-    ?.map((s) => s.trim())
-    .filter(Boolean) || [text];
-};
-
-const handleSpeakDescription = () => {
-  if (!window.speechSynthesis) {
-    toast.error("Browser tidak mendukung fitur suara");
-    return;
-  }
-
-  // Stop jika sedang berbicara
-  if (isSpeaking) {
-    window.speechSynthesis.cancel();
-    setIsSpeaking(false);
-    setTtsHighlight("");
-    return;
-  }
-
-  const fullText = getPlainText(post?.content);
-  if (!fullText) {
-    toast.error("Tidak ada teks untuk dibaca");
-    return;
-  }
-
-  const sentences = splitIntoSentences(fullText);
-  let index = 0;
-
-  const speakNext = () => {
-    if (index >= sentences.length) {
+    // Stop jika sedang berbicara
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
       setIsSpeaking(false);
       setTtsHighlight("");
       return;
     }
 
-    const sentence = sentences[index];
-    setTtsHighlight(sentence); // highlight kalimat yang sedang dibaca
+    const fullText = getPlainText(post?.content);
+    if (!fullText) {
+      toast.error("Tidak ada teks untuk dibaca");
+      return;
+    }
 
-    const utterance = new SpeechSynthesisUtterance(sentence);
-    utterance.lang = "id-ID";
-    utterance.rate = 0.95;
-    utterance.pitch = 1;
+    const sentences = splitIntoSentences(fullText);
+    let index = 0;
 
-    utterance.onend = () => {
-      index += 1;
-      speakNext();
+    const speakNext = () => {
+      if (index >= sentences.length) {
+        setIsSpeaking(false);
+        setTtsHighlight("");
+        return;
+      }
+
+      const sentence = sentences[index];
+      setTtsHighlight(sentence); // highlight kalimat yang sedang dibaca
+
+      const utterance = new SpeechSynthesisUtterance(sentence);
+      utterance.lang = "id-ID";
+      utterance.rate = 0.95;
+      utterance.pitch = 1;
+
+      utterance.onend = () => {
+        index += 1;
+        speakNext();
+      };
+
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+        setTtsHighlight("");
+        toast.error("Gagal memutar suara");
+      };
+
+      window.speechSynthesis.speak(utterance);
     };
 
-    utterance.onerror = () => {
-      setIsSpeaking(false);
+    setIsSpeaking(true);
+    speakNext();
+  };
+
+  // Cleanup saat unmount / ganti slug
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis?.cancel();
       setTtsHighlight("");
-      toast.error("Gagal memutar suara");
     };
+  }, [slug]);
 
-    window.speechSynthesis.speak(utterance);
-  };
+  useEffect(() => {
+    const el = articleRef.current;
+    if (!el) return;
 
-  setIsSpeaking(true);
-  speakNext();
-};
-
-// Cleanup saat unmount / ganti slug
-useEffect(() => {
-  return () => {
-    window.speechSynthesis?.cancel();
-    setTtsHighlight("");
-  };
-}, [slug]);
-
-useEffect(() => {
-  const el = articleRef.current;
-  if (!el) return;
-
-  // 1. Bersihkan mark TTS sebelumnya
-  el.querySelectorAll("mark.tts-highlight").forEach((mark) => {
-    const parent = mark.parentNode;
-    if (!parent) return;
-    while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
-    parent.removeChild(mark);
-    parent.normalize();
-  });
-
-  if (!ttsHighlight) return;
-
-  const needle = normalizeForMatch(ttsHighlight);
-  if (needle.length < 3) return;
-
-  // 2. Kumpulkan semua text node
-  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-  const parts = [];
-  let full = "";
-
-  let node;
-  while ((node = walker.nextNode())) {
-    const text = node.textContent || "";
-    if (!text) continue;
-    parts.push({ node, start: full.length, end: full.length + text.length });
-    full += text;
-  }
-
-  // 3. Cari posisi kalimat di plain text (spasi dinormalisasi)
-  const fullNorm = full.replace(/\s+/g, " ");
-  const needleNorm = needle;
-  let idx = fullNorm.indexOf(needleNorm);
-
-  // Fallback: coba tanpa case-sensitive / potongan awal kalimat
-  if (idx === -1) {
-    idx = fullNorm.toLowerCase().indexOf(needleNorm.toLowerCase());
-  }
-  if (idx === -1) return;
-
-  // Map index di fullNorm → index di full (dengan spasi asli)
-  // Cara sederhana: pakai full langsung kalau spasi mirip
-  let rawIdx = full.indexOf(ttsHighlight.trim());
-  if (rawIdx === -1) {
-    // cari kata pertama + terakhir
-    const words = needle.split(" ").filter(Boolean);
-    if (words.length === 0) return;
-    const first = words[0];
-    const last = words[words.length - 1];
-    const startGuess = full.indexOf(first);
-    const endGuess = full.indexOf(last, startGuess);
-    if (startGuess === -1 || endGuess === -1) return;
-    rawIdx = startGuess;
-    var rawEnd = endGuess + last.length;
-  } else {
-    var rawEnd = rawIdx + ttsHighlight.trim().length;
-  }
-
-  // 4. Wrap text nodes yang kena range [rawIdx, rawEnd)
-  parts.forEach(({ node, start, end }) => {
-    if (end <= rawIdx || start >= rawEnd) return;
-
-    const text = node.textContent;
-    const sliceStart = Math.max(0, rawIdx - start);
-    const sliceEnd = Math.min(text.length, rawEnd - start);
-
-    if (sliceStart >= sliceEnd) return;
-
-    const before = text.slice(0, sliceStart);
-    const middle = text.slice(sliceStart, sliceEnd);
-    const after = text.slice(sliceEnd);
-
-    const mark = document.createElement("mark");
-    mark.className = "tts-highlight";
-    mark.style.backgroundColor = "#93c5fd";
-    mark.style.padding = "1px 2px";
-    mark.style.borderRadius = "3px";
-    mark.textContent = middle;
-
-    const parent = node.parentNode;
-    if (!parent) return;
-
-    const frag = document.createDocumentFragment();
-    if (before) frag.appendChild(document.createTextNode(before));
-    frag.appendChild(mark);
-    if (after) frag.appendChild(document.createTextNode(after));
-    parent.replaceChild(frag, node);
-  });
-
-  // 5. Scroll ke highlight
-  requestAnimationFrame(() => {
-    el.querySelector("mark.tts-highlight")?.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
+    // 1. Bersihkan mark TTS sebelumnya
+    el.querySelectorAll("mark.tts-highlight").forEach((mark) => {
+      const parent = mark.parentNode;
+      if (!parent) return;
+      while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
+      parent.removeChild(mark);
+      parent.normalize();
     });
-  });
-}, [ttsHighlight]);
 
-// Cek apakah guide ini ada di Reading List user
-const checkReadingListStatus = async () => {
-  if (!user || isGuest || !post?._id) return;
-  try {
-    const { data } = await api.get("/auth/me/reading-list");
-    const item = data.readingList?.find(
-      (i) => String(i.post?._id || i.post) === String(post?._id)
-    );
-    if (item) {
-      setInReadingList(true);
-      setIsCompleted(!!item.completed);
-    } else {
-      setInReadingList(false);
-      setIsCompleted(false);
+    if (!ttsHighlight) return;
+
+    const needle = normalizeForMatch(ttsHighlight);
+    if (needle.length < 3) return;
+
+    // 2. Kumpulkan semua text node
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    const parts = [];
+    let full = "";
+
+    let node;
+    while ((node = walker.nextNode())) {
+      const text = node.textContent || "";
+      if (!text) continue;
+      parts.push({ node, start: full.length, end: full.length + text.length });
+      full += text;
     }
-  } catch (err) {
-    // ignore
-  }
-};
 
-// Panggil setelah post berhasil di-load
-useEffect(() => {
-  if (post?._id) {
-    checkReadingListStatus();
-  }
-}, [post?._id, user]);
+    // 3. Cari posisi kalimat di plain text (spasi dinormalisasi)
+    const fullNorm = full.replace(/\s+/g, " ");
+    const needleNorm = needle;
+    let idx = fullNorm.indexOf(needleNorm);
 
-// Toggle Mark as Read / Completed
-const handleToggleCompleted = async () => {
-  if (!post?._id) return;
-  setReadingListLoading(true);
-  try {
-    if (!inReadingList) {
-      // Kalau belum ada di list, tambahkan dulu lalu tandai completed
-      await api.post("/auth/me/reading-list", { postId: post?._id });
-      await api.patch(`/auth/me/reading-list/${post?._id}/complete`);
-      setInReadingList(true);
-      setIsCompleted(true);
-      toast.success("Ditambahkan & ditandai sudah dibaca");
-    } else {
-      await api.patch(`/auth/me/reading-list/${post?._id}/complete`);
-      setIsCompleted((prev) => !prev);
-      toast.success(isCompleted ? "Ditandai belum dibaca" : "Ditandai sudah dibaca");
+    // Fallback: coba tanpa case-sensitive / potongan awal kalimat
+    if (idx === -1) {
+      idx = fullNorm.toLowerCase().indexOf(needleNorm.toLowerCase());
     }
-  } catch (err) {
-    toast.error(err?.response?.data?.message || "Gagal mengubah status");
-  } finally {
-    setReadingListLoading(false);
-  }
-};
+    if (idx === -1) return;
 
-// Deteksi text selection
-const handleMouseUp = () => {
-  if (isGuest) {
-    // Optional: bisa langsung munculkan toast
-    // toast.error("Login dulu untuk menggunakan stabilo");
-    return;
-  }
+    // Map index di fullNorm → index di full (dengan spasi asli)
+    // Cara sederhana: pakai full langsung kalau spasi mirip
+    let rawIdx = full.indexOf(ttsHighlight.trim());
+    if (rawIdx === -1) {
+      // cari kata pertama + terakhir
+      const words = needle.split(" ").filter(Boolean);
+      if (words.length === 0) return;
+      const first = words[0];
+      const last = words[words.length - 1];
+      const startGuess = full.indexOf(first);
+      const endGuess = full.indexOf(last, startGuess);
+      if (startGuess === -1 || endGuess === -1) return;
+      rawIdx = startGuess;
+      var rawEnd = endGuess + last.length;
+    } else {
+      var rawEnd = rawIdx + ttsHighlight.trim().length;
+    }
 
-  const selection = window.getSelection();
-  const text = selection?.toString().trim();
+    // 4. Wrap text nodes yang kena range [rawIdx, rawEnd)
+    parts.forEach(({ node, start, end }) => {
+      if (end <= rawIdx || start >= rawEnd) return;
 
-  if (text && text.length > 2) {
-    const range = selection.getRangeAt(0);
-    const rect = range.getBoundingClientRect();
+      const text = node.textContent;
+      const sliceStart = Math.max(0, rawIdx - start);
+      const sliceEnd = Math.min(text.length, rawEnd - start);
 
-    setSelectedText(text);
-    setMenuPosition({
-      x: rect.left + rect.width / 2,
-      y: rect.top + window.scrollY - 50,
+      if (sliceStart >= sliceEnd) return;
+
+      const before = text.slice(0, sliceStart);
+      const middle = text.slice(sliceStart, sliceEnd);
+      const after = text.slice(sliceEnd);
+
+      const mark = document.createElement("mark");
+      mark.className = "tts-highlight";
+      mark.style.backgroundColor = "#93c5fd";
+      mark.style.padding = "1px 2px";
+      mark.style.borderRadius = "3px";
+      mark.textContent = middle;
+
+      const parent = node.parentNode;
+      if (!parent) return;
+
+      const frag = document.createDocumentFragment();
+      if (before) frag.appendChild(document.createTextNode(before));
+      frag.appendChild(mark);
+      if (after) frag.appendChild(document.createTextNode(after));
+      parent.replaceChild(frag, node);
     });
-    setShowHighlightMenu(true);
-  } else {
-    setShowHighlightMenu(false);
-  }
-};
 
-// ===== LOAD HIGHLIGHTS saat post siap =====
-useEffect(() => {
-  const loadHighlights = async () => {
+    // 5. Scroll ke highlight
+    requestAnimationFrame(() => {
+      el.querySelector("mark.tts-highlight")?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    });
+  }, [ttsHighlight]);
+
+  // Cek apakah guide ini ada di Reading List user
+  const checkReadingListStatus = async () => {
     if (!user || isGuest || !post?._id) return;
     try {
-      const { data } = await api.get(`/auth/me/highlights/${post?._id}`);
-      setHighlights(data.highlights || []);
+      const { data } = await api.get("/auth/me/reading-list");
+      const item = data.readingList?.find(
+        (i) => String(i.post?._id || i.post) === String(post?._id)
+      );
+      if (item) {
+        setInReadingList(true);
+        setIsCompleted(!!item.completed);
+      } else {
+        setInReadingList(false);
+        setIsCompleted(false);
+      }
     } catch (err) {
       // ignore
     }
   };
-  loadHighlights();
-}, [post?._id, user]);
 
-// ===== APPLY HIGHLIGHT (simpan ke backend) =====
-const applyHighlight = async (color) => {
-  if (!selectedText || !post?._id) return;
+  // Panggil setelah post berhasil di-load
+  useEffect(() => {
+    if (post?._id) {
+      checkReadingListStatus();
+    }
+  }, [post?._id, user]);
 
-  const newHighlight = { text: selectedText, color };
+  // Toggle Mark as Read / Completed
+  const handleToggleCompleted = async () => {
+    if (!post?._id) return;
+    setReadingListLoading(true);
+    try {
+      if (!inReadingList) {
+        // Kalau belum ada di list, tambahkan dulu lalu tandai completed
+        await api.post("/auth/me/reading-list", { postId: post?._id });
+        await api.patch(`/auth/me/reading-list/${post?._id}/complete`);
+        setInReadingList(true);
+        setIsCompleted(true);
+        toast.success("Ditambahkan & ditandai sudah dibaca");
+      } else {
+        await api.patch(`/auth/me/reading-list/${post?._id}/complete`);
+        setIsCompleted((prev) => !prev);
+        toast.success(isCompleted ? "Ditandai belum dibaca" : "Ditandai sudah dibaca");
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Gagal mengubah status");
+    } finally {
+      setReadingListLoading(false);
+    }
+  };
 
-  // 1. Langsung tampilkan dulu (Optimistic)
-  setHighlights((prev) => {
-    if (prev.some((h) => h.text === selectedText)) return prev;
-    return [...prev, newHighlight];
-  });
-
-  setShowHighlightMenu(false);
-  window.getSelection()?.removeAllRanges();
-  setHighlightLoading(true);
-
-  try {
-    const { data } = await api.post(`/auth/me/highlights/${post?._id}`, {
-      text: selectedText,
-      color,
-    });
-    // 2. Sinkronkan dengan data server
-    setHighlights(data.highlights || []);
-    toast.success("Teks distabilo");
-  } catch (err) {
-    // 3. Kalau gagal → rollback
-    setHighlights((prev) => prev.filter((h) => h.text !== selectedText));
-    toast.error("Gagal menyimpan highlight");
-  } finally {
-    setHighlightLoading(false);
-  }
-};
-
-const normalizeForMatch = (str) =>
-  (str || "")
-    .replace(/\s+/g, " ")
-    .trim();
-
-// Render content dengan highlight
-const renderHighlightedContent = (html) => {
-  if (!html) return "";
-
-  let result = html;
-
-  highlights.forEach(({ text, color }) => {
-    const escaped = text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const regex = new RegExp(`(${escaped})`, "gi");
-    result = result.replace(
-      regex,
-      `<mark style="background-color: ${color}; padding: 1px 2px; border-radius: 3px;">$1</mark>`
-    );
-  });
-
-  return result;
-};
-
-// Hapus satu highlight
-const removeHighlight = async (text) => {
-  if (!post?._id) return;
-  try {
-    const { data } = await api.delete(`/auth/me/highlights/${post?._id}`, {
-      data: { text },
-    });
-    setHighlights(data.highlights || []);
-    toast.success("Highlight dihapus");
-  } catch (err) {
-    toast.error("Gagal menghapus highlight");
-  }
-};
-
-const isOwner = user?.id === post?.author?._id;
-
-//   const handlePin = async () => {
-//     if (!post) return;
-
-//     // Simpan state lama untuk rollback
-//     const previousPinned = post?.isPinned;
-
-//     // Langsung ubah tampilan dulu (optimistic)
-//     setPost((prev) => ({
-//       ...prev,
-//       isPinned: !prev.isPinned,
-//     }));
-
-//     try {
-//       const { data } = await api.patch(`/posts/${post?._id}/pin`);
-
-//       // Sinkronkan dengan server, tetap jaga author supaya menu tidak hilang
-//       setPost((prev) => ({
-//         ...prev,
-//         ...data.post,
-//         author: prev.author,
-//         isPinned: data.post?.isPinned,
-//       }));
-
-//       toast.success(data.post?.isPinned ? "Guide dipin" : "Guide di-unpin");
-//     } catch (err) {
-//       // Jika gagal → kembalikan ke state sebelumnya
-//       setPost((prev) => ({
-//         ...prev,
-//         isPinned: previousPinned,
-//       }));
-//       toast.error(err?.response?.data?.message || "Gagal mengubah status pin");
-//     }
-// };
-
-const handlePin = async () => {
-  if (!post) return;
-  if (!user || isGuest) {
-    toast.error("Login dulu untuk pin guide");
-    return;
-  }
-
-  const previousPinned = post.isPinned;
-  setPost((prev) => ({ ...prev, isPinned: !prev.isPinned })); // optimistic
-
-  try {
-    const { data } = await api.patch(`/posts/${post._id}/pin`);
-    setPost((prev) => ({ ...prev, isPinned: data.isPinned }));
-    toast.success(data.isPinned ? "Guide dipin" : "Guide di-unpin");
-  } catch (err) {
-    setPost((prev) => ({ ...prev, isPinned: previousPinned }));
-    toast.error(err?.response?.data?.message || "Gagal mengubah status pin");
-  }
-};
-  
-  const postUrl = `${window.location.origin}/posts/${post?.slug || slug}?ref=share`;
-
-  const createShareText = () => {
-    const title = post?.title || "Guide";
-    const category = post?.category || "";
-    const author = post?.author?.name || "";
-    const tags = post?.tags?.length
-      ? post?.tags.map((t) => `#${t}`).join(" ")
-      : "";
-
-    // Ambil excerpt singkat (buang HTML)
-    let excerpt = "";
-    if (post?.content) {
-      const plain = post?.content
-        .replace(/<[^>]+>/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-      excerpt = plain.length > 140 ? plain.slice(0, 140).trim() + "..." : plain;
+  // Deteksi text selection
+  const handleMouseUp = () => {
+    if (isGuest) {
+      // Optional: bisa langsung munculkan toast
+      // toast.error("Login dulu untuk menggunakan stabilo");
+      return;
     }
 
-    // Format yang lebih bersih & stabil di WhatsApp
-    let text = `*${title}*\n`;
+    const selection = window.getSelection();
+    const text = selection?.toString().trim();
 
-    if (category) text += `Kategori: ${category}\n`;
-    if (author) text += `Oleh: ${author}\n`;
-    if (excerpt) text += `\n${excerpt}\n`;
-    if (tags) text += `\n${tags}\n`;
+    if (text && text.length > 2) {
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
 
-    text += `\n${postUrl}`;
-
-    return text;
+      setSelectedText(text);
+      setMenuPosition({
+        x: rect.left + rect.width / 2,
+        y: rect.top + window.scrollY - 50,
+      });
+      setShowHighlightMenu(true);
+    } else {
+      setShowHighlightMenu(false);
+    }
   };
 
-  const shareText = encodeURIComponent(createShareText());
+  // ===== LOAD HIGHLIGHTS saat post siap =====
+  useEffect(() => {
+    const loadHighlights = async () => {
+      if (!user || isGuest || !post?._id) return;
+      try {
+        const { data } = await api.get(`/auth/me/highlights/${post?._id}`);
+        setHighlights(data.highlights || []);
+      } catch (err) {
+        // ignore
+      }
+    };
+    loadHighlights();
+  }, [post?._id, user]);
 
-  const shareLinks = {
-    whatsapp: `https://wa.me/?text=${shareText}`,
-  };
+  // ===== APPLY HIGHLIGHT (simpan ke backend) =====
+  const applyHighlight = async (color) => {
+    if (!selectedText || !post?._id) return;
 
-  const copyLink = async () => {
+    const newHighlight = { text: selectedText, color };
+
+    // 1. Langsung tampilkan dulu (Optimistic)
+    setHighlights((prev) => {
+      if (prev.some((h) => h.text === selectedText)) return prev;
+      return [...prev, newHighlight];
+    });
+
+    setShowHighlightMenu(false);
+    window.getSelection()?.removeAllRanges();
+    setHighlightLoading(true);
+
     try {
-      await navigator.clipboard.writeText(postUrl);
-      toast.success("Link berhasil disalin");
-      setShowShare(false);
+      const { data } = await api.post(`/auth/me/highlights/${post?._id}`, {
+        text: selectedText,
+        color,
+      });
+      // 2. Sinkronkan dengan data server
+      setHighlights(data.highlights || []);
+      toast.success("Teks distabilo");
+    } catch (err) {
+      // 3. Kalau gagal → rollback
+      setHighlights((prev) => prev.filter((h) => h.text !== selectedText));
+      toast.error("Gagal menyimpan highlight");
+    } finally {
+      setHighlightLoading(false);
+    }
+  };
+
+  const normalizeForMatch = (str) =>
+    (str || "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  // Render content dengan highlight
+  const renderHighlightedContent = (html) => {
+    if (!html) return "";
+
+    let result = html;
+
+    highlights.forEach(({ text, color }) => {
+      const escaped = text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const regex = new RegExp(`(${escaped})`, "gi");
+      result = result.replace(
+        regex,
+        `<mark style="background-color: ${color}; padding: 1px 2px; border-radius: 3px;">$1</mark>`
+      );
+    });
+
+    return result;
+  };
+
+  // Hapus satu highlight
+  const removeHighlight = async (text) => {
+    if (!post?._id) return;
+    try {
+      const { data } = await api.delete(`/auth/me/highlights/${post?._id}`, {
+        data: { text },
+      });
+      setHighlights(data.highlights || []);
+      toast.success("Highlight dihapus");
+    } catch (err) {
+      toast.error("Gagal menghapus highlight");
+    }
+  };
+
+  const isOwner = user?.id === post?.author?._id;
+
+  const pdfBlobUrl = useMemo(() => {
+    if (!post?.pdfFile?.url) return "";
+    try {
+      const b64 = post.pdfFile.url.split(",")[1];
+      const bin = atob(b64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
     } catch {
-      toast.error("Gagal menyalin link");
+      return "";
     }
-  };
+  }, [post?.pdfFile?.url]);
 
-  const handleBookmark = async () => {
-    const prev = bookmarked;
-    setBookmarked(!prev); // optimistic
+  useEffect(() => {
+    return () => {
+      if (pdfBlobUrl) URL.revokeObjectURL(pdfBlobUrl);
+    };
+  }, [pdfBlobUrl]);
+
+  //   const handlePin = async () => {
+  //     if (!post) return;
+
+  //     // Simpan state lama untuk rollback
+  //     const previousPinned = post?.isPinned;
+
+  //     // Langsung ubah tampilan dulu (optimistic)
+  //     setPost((prev) => ({
+  //       ...prev,
+  //       isPinned: !prev.isPinned,
+  //     }));
+
+  //     try {
+  //       const { data } = await api.patch(`/posts/${post?._id}/pin`);
+
+  //       // Sinkronkan dengan server, tetap jaga author supaya menu tidak hilang
+  //       setPost((prev) => ({
+  //         ...prev,
+  //         ...data.post,
+  //         author: prev.author,
+  //         isPinned: data.post?.isPinned,
+  //       }));
+
+  //       toast.success(data.post?.isPinned ? "Guide dipin" : "Guide di-unpin");
+  //     } catch (err) {
+  //       // Jika gagal → kembalikan ke state sebelumnya
+  //       setPost((prev) => ({
+  //         ...prev,
+  //         isPinned: previousPinned,
+  //       }));
+  //       toast.error(err?.response?.data?.message || "Gagal mengubah status pin");
+  //     }
+  // };
+
+  const handlePin = async () => {
+    if (!post) return;
+    if (!user || isGuest) {
+      toast.error("Login dulu untuk pin guide");
+      return;
+    }
+
+    const previousPinned = post.isPinned;
+    setPost((prev) => ({ ...prev, isPinned: !prev.isPinned })); // optimistic
+
     try {
-      const { data } = await api.post(`/posts/${post?._id}/bookmark`);
-      setBookmarked(data.bookmarked);
-      toast.success(data.bookmarked ? "Guide disimpan" : "Guide dihapus dari saved");
+      const { data } = await api.patch(`/posts/${post._id}/pin`);
+      setPost((prev) => ({ ...prev, isPinned: data.isPinned }));
+      toast.success(data.isPinned ? "Guide dipin" : "Guide di-unpin");
     } catch (err) {
-      setBookmarked(prev);
-      toast.error(err?.response?.data?.message || "Gagal menyimpan guide");
+      setPost((prev) => ({ ...prev, isPinned: previousPinned }));
+      toast.error(err?.response?.data?.message || "Gagal mengubah status pin");
     }
   };
+    
+    const postUrl = `${window.location.origin}/posts/${post?.slug || slug}?ref=share`;
 
- const handleLike = async () => {
-    if (!canPin) return toast.error("Login dulu untuk menyukai guide");
-    // Simpan state lama untuk rollback jika gagal
-    const previousLiked = liked;
-    const previousCount = likesCount;
+    const createShareText = () => {
+      const title = post?.title || "Guide";
+      const category = post?.category || "";
+      const author = post?.author?.name || "";
+      const tags = post?.tags?.length
+        ? post?.tags.map((t) => `#${t}`).join(" ")
+        : "";
 
-    // Langsung ubah tampilan dulu (optimistic)
-    const nextLiked = !liked;
-    setLiked(nextLiked);
-    setLikesCount((prev) => (nextLiked ? prev + 1 : prev - 1));
+      // Ambil excerpt singkat (buang HTML)
+      let excerpt = "";
+      if (post?.content) {
+        const plain = post?.content
+          .replace(/<[^>]+>/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+        excerpt = plain.length > 140 ? plain.slice(0, 140).trim() + "..." : plain;
+      }
 
-    try {
-      const { data } = await api.patch(`/posts/${post?._id}/like`);
-      // Sinkronkan dengan response server (lebih akurat)
-      setLiked(data.liked);
-      setLikesCount(data.likesCount);
-    } catch (err) {
-      // Jika gagal → kembalikan ke state sebelumnya
-      setLiked(previousLiked);
-      setLikesCount(previousCount);
-      toast.error(err?.response?.data?.message || "Gagal menyukai guide");
+      // Format yang lebih bersih & stabil di WhatsApp
+      let text = `*${title}*\n`;
+
+      if (category) text += `Kategori: ${category}\n`;
+      if (author) text += `Oleh: ${author}\n`;
+      if (excerpt) text += `\n${excerpt}\n`;
+      if (tags) text += `\n${tags}\n`;
+
+      text += `\n${postUrl}`;
+
+      return text;
+    };
+
+    const shareText = encodeURIComponent(createShareText());
+
+    const shareLinks = {
+      whatsapp: `https://wa.me/?text=${shareText}`,
+    };
+
+    const copyLink = async () => {
+      try {
+        await navigator.clipboard.writeText(postUrl);
+        toast.success("Link berhasil disalin");
+        setShowShare(false);
+      } catch {
+        toast.error("Gagal menyalin link");
+      }
+    };
+
+    const handleBookmark = async () => {
+      const prev = bookmarked;
+      setBookmarked(!prev); // optimistic
+      try {
+        const { data } = await api.post(`/posts/${post?._id}/bookmark`);
+        setBookmarked(data.bookmarked);
+        toast.success(data.bookmarked ? "Guide disimpan" : "Guide dihapus dari saved");
+      } catch (err) {
+        setBookmarked(prev);
+        toast.error(err?.response?.data?.message || "Gagal menyimpan guide");
+      }
+    };
+
+  const handleLike = async () => {
+      if (!canPin) return toast.error("Login dulu untuk menyukai guide");
+      // Simpan state lama untuk rollback jika gagal
+      const previousLiked = liked;
+      const previousCount = likesCount;
+
+      // Langsung ubah tampilan dulu (optimistic)
+      const nextLiked = !liked;
+      setLiked(nextLiked);
+      setLikesCount((prev) => (nextLiked ? prev + 1 : prev - 1));
+
+      try {
+        const { data } = await api.patch(`/posts/${post?._id}/like`);
+        // Sinkronkan dengan response server (lebih akurat)
+        setLiked(data.liked);
+        setLikesCount(data.likesCount);
+      } catch (err) {
+        // Jika gagal → kembalikan ke state sebelumnya
+        setLiked(previousLiked);
+        setLikesCount(previousCount);
+        toast.error(err?.response?.data?.message || "Gagal menyukai guide");
+      }
+    };
+
+    const handleDelete = async () => {
+      if (!confirm("Delete this guide? This cannot be undone.")) return;
+      try {
+        await api.delete(`/posts/${post?._id}`);
+        toast.success("Guide berhasil dihapus");
+        navigate("/");
+      } catch (err) {
+        toast.error(err?.response?.data?.message || "Gagal menghapus guide");
+      }
+    };
+
+    const postTopLevelComment = async () => {
+      if (!commentText.trim()) return;
+      try {
+        const { data } = await api.post(`/posts/${post?._id}/comments`, { content: commentText.trim() });
+        setComments((c) => [...c, { ...data.comment, replies: [] }]);
+        setCommentText("");
+      } catch (err) {
+        toast.error(err?.response?.data?.message || "Gagal mengirim komentar");
+      }
+    };
+
+    const handleReply = async (parentId, content) => {
+      try {
+        const { data } = await api.post(`/posts/${post?._id}/comments`, { content, parent: parentId });
+        const addReply = (list) =>
+          list.map((c) =>
+            c._id === parentId
+              ? { ...c, replies: [...(c.replies || []), { ...data.comment, replies: [] }] }
+              : { ...c, replies: addReply(c.replies || []) }
+          );
+        setComments((c) => addReply(c));
+      } catch (err) {
+        toast.error(err?.response?.data?.message || "Gagal membalas komentar");
+      }
+    };
+
+    const handleDeleteComment = async (commentId) => {
+      try {
+        await api.delete(`/comments/${commentId}`);
+        const remove = (list) =>
+          list.filter((c) => c._id !== commentId).map((c) => ({ ...c, replies: remove(c.replies || []) }));
+        setComments((c) => remove(c));
+        toast.success("Komentar dihapus");
+      } catch (err) {
+        toast.error(err?.response?.data?.message || "Gagal menghapus komentar");
+      }
+    };
+
+    if (loading) return <PostDetailSkeleton />;
+
+    if (!post) {
+      return (
+        <div className="mx-auto flex max-w-full flex-col items-center gap-3 py-24 text-center text-white md:text-slate-900 dark:text-white">
+          <p className="font-medium">Guide tidak ditemukan</p>
+          <Link to="/" className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
+            Kembali ke beranda
+          </Link>
+        </div>
+      );
     }
-  };
 
-  const handleDelete = async () => {
-    if (!confirm("Delete this guide? This cannot be undone.")) return;
-    try {
-      await api.delete(`/posts/${post?._id}`);
-      toast.success("Guide berhasil dihapus");
-      navigate("/");
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Gagal menghapus guide");
-    }
-  };
-
-  const postTopLevelComment = async () => {
-    if (!commentText.trim()) return;
-    try {
-      const { data } = await api.post(`/posts/${post?._id}/comments`, { content: commentText.trim() });
-      setComments((c) => [...c, { ...data.comment, replies: [] }]);
-      setCommentText("");
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Gagal mengirim komentar");
-    }
-  };
-
-  const handleReply = async (parentId, content) => {
-    try {
-      const { data } = await api.post(`/posts/${post?._id}/comments`, { content, parent: parentId });
-      const addReply = (list) =>
-        list.map((c) =>
-          c._id === parentId
-            ? { ...c, replies: [...(c.replies || []), { ...data.comment, replies: [] }] }
-            : { ...c, replies: addReply(c.replies || []) }
-        );
-      setComments((c) => addReply(c));
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Gagal membalas komentar");
-    }
-  };
-
-  const handleDeleteComment = async (commentId) => {
-    try {
-      await api.delete(`/comments/${commentId}`);
-      const remove = (list) =>
-        list.filter((c) => c._id !== commentId).map((c) => ({ ...c, replies: remove(c.replies || []) }));
-      setComments((c) => remove(c));
-      toast.success("Komentar dihapus");
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Gagal menghapus komentar");
-    }
-  };
-
-  if (loading) return <PostDetailSkeleton />;
-
-  if (!post) {
     return (
-      <div className="mx-auto flex max-w-full flex-col items-center gap-3 py-24 text-center text-white md:text-slate-900 dark:text-white">
-        <p className="font-medium">Guide tidak ditemukan</p>
-        <Link to="/" className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
-          Kembali ke beranda
-        </Link>
-      </div>
-    );
-  }
+      <div className="md:p-6 mx-auto max-w-full md:border-x border-white dark:border-white/15 space-y-3 pb-16">
 
-  return (
-    <div className="md:p-6 mx-auto max-w-full md:border-x border-white dark:border-white/15 space-y-3 pb-16">
+        <div className="p-0 md:p-5 md:bg-slate-100 dark:md:bg-white/5 rounded-xl">
 
-      <div className="p-0 md:p-5 md:bg-slate-100 dark:md:bg-white/5 rounded-xl">
+            <h1 className="mb-3 max-w-full w-max truncate dark:rounded-xl dark:!px-3 dark:md:!px-4 dark:py-2 text-xl sm:text-2xl font-semibold tracking-tight bg-transparent md:!text-slate-900 !text-white dark:!text-white dark:!bg-[#111122] dark:border border-slate-200 dark:border-white/20">
+              {post?.title} 
+            </h1>
 
-          <h1 className="mb-3 max-w-full w-max truncate dark:rounded-xl dark:!px-3 dark:md:!px-4 dark:py-2 text-xl sm:text-2xl font-semibold tracking-tight bg-transparent md:!text-slate-900 !text-white dark:!text-white dark:!bg-[#111122] dark:border border-slate-200 dark:border-white/20">
-            {post?.title} 
-          </h1>
-
-          <div className="mb-4 flex items-center justify-between">
-            <Link to={`/authors/detail/${post?.author._id}`} className="flex w-fit active:scale-[0.98] hover:brightness-75 items-center gap-2">
-              <div className="flex h-[44px] w-[44px] items-center justify-center rounded-lg bg-blue-500 dark:!bg-[#111122] border border-white/20 text-sm font-semibold text-white dark:text-accent">
-                {post?.author.name?.[0]?.toUpperCase()}
-              </div>
-              <div className="leading-tight">
-                <p className="text-md text-white md:text-slate-900 dark:text-white font-medium">{post?.author.name}</p>
-                <p className="text-xs text-white md:text-slate-900 dark:text-white">{post?.author.title}</p>
-              </div>
-            </Link>
-
-            <div className='w-max flex items-center gap-2'>
-              {/* Tombol Follow */}
-              {!isGuest && user && user.id !== post?.author._id && (
-                <button
-                  onClick={handleFollow}
-                  disabled={followLoading || isGuest}
-                  className={`${isGuest ? '!active:scale-[1] cursor-not-allowed hover:!bg-slate-300 bg-slate-300 !text-gray-400' : ''} w-max rounded-md md:rounded-xl hidden md:flex items-center gap-1.5 pl-2.5 pr-3 py-1.5 h-[36px] text-xs font-medium transition ${
-                    isFollowing
-                      ? "border border-gray-300 text-white bg-red-600 hover:bg-red-700 dark:border-white/40 active:scale-[0.99] duration-100"
-                      : "bg-blue-600 border dark:border-white/40 hover:!bg-blue-800 text-white hover:opacity-90 active:scale-[0.99] duration-100"
-                  }`}
-                >
-                  <Plus size={13} />
-                  {followLoading ? (
-                    <Loader2 size={14} className="animate-spin" />
-                  ) : isFollowing ? (
-                    "Following"
-                  ) : (
-                    "Subscribe"
-                  )}
-                </button>
-              )}
-            </div>
-          </div>
-          
-          <div className="w-full h-72 overflow-hidden rounded-2xl border !border-white/20 dark:p-5">
-            <div className="h-full w-full relative overflow-hidden rounded-xl">
-                {post?.coverImage && (
-                  <img src={post?.coverImage} alt="cover-image" className="mb-6 h-full brightness-[80%] w-full transition-transform duration-700 hover:scale-[1.1] rounded-xl object-cover" />
-                )}
-            </div>
-          </div>
-
-          <div className="my-5 w-full md:w-max md:flex justify-between items-center gap-2.5">
-              <div className="flex-wrap flex items-center w-full gap-2 md:gap-2.5 z-[999]">
-              {canPin && (
-                <button
-                  onClick={handlePin}
-                  className="rounded-lg btn-secondary hover:!bg-blue-700 hover:dark:!bg-blue-700 hover:!text-white !text-white dark:!bg-blue-500/15 !bg-blue-500/30 md:!bg-blue-500 border !border-white/20 px-4 py-1.5 h-[28px] text-xs"
-                >
-                  <Pin size={13} className={post?.isPinned ? "fill-accent text-accent" : ""} />
-                  {post?.isPinned ? "Pinned" : "Pin"}
-                </button>
-              )}
-              {isOwner && (
-                <>
-                  <div className="h-[18px] w-[1.3px] md:flex hidden bg-slate-400 dark:bg-white/20 mx-1" />
-                  <Link to={`/edit/${post?._id}`} className="rounded-lg btn-secondary hover:!bg-yellow-700 hover:dark:!bg-yellow-700 hover:!text-white !text-white dark:!bg-yellow-500/10 md:!bg-yellow-500 !bg-yellow-500/30 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
-                    <Pencil size={13} />
-                    Edit
-                  </Link>
-                  <button
-                    onClick={() => setShowDeleteModal(true)}
-                    className="rounded-lg btn-secondary hover:!bg-red-700 hover:dark:!bg-red-700 !bg-red-500/15 md:!bg-red-500 md:dark:!bg-red-500/20 border !border-white/20 !text-white hover:!text-white px-4 py-1.5 h-[28px] text-xs text-red-500"
-                    >
-                    <Trash2 size={13} />
-                    Delete
-                  </button>
-                </>
-              )}
-                <button 
-                    onClick={handleSpeakDescription}
-                    title={isSpeaking ? "Stop reading" : "Read description aloud"}
-                    className={`${
-                      isSpeaking
-                        ? "border-red-300 bg-red-50 text-pink-600 dark:border-pink-500/40 dark:bg-pink-500/10 dark:text-pink-400"
-                        : "border-gray-200 bg-white text-gray-600 hover:border-pink-500 hover:!bg-pink-600 hover:dark:!bg-pink-600 dark:border-white/15 dark:bg-blue-900/20 dark:text-gray-300"
-                    } active:scale-[0.99] duration-100 cursor-pointer hover:brightness-95 inline-flex border border-white/20 items-center gap-1.5 rounded-lg !bg-pink-500/20 md:!bg-pink-500 px-2 py-1.5 h-[28px] text-xs font-medium text-white dark:!bg-red-500/25 dark:text-white`}>
-                      {isSpeaking ? (
-                        <>
-                          <VolumeX size={14} />
-                          Stop
-                        </>
-                      ) : (
-                        <>
-                          <Volume2 size={14} />
-                          Listen
-                        </>
-                      )}
-                </button>
-              </div>
-
-            <div className="h-[18px] w-[1.3px] md:flex hidden bg-slate-400 dark:bg-white/20 mr-1 ml-[2px]" />
-
-            <div className="w-max flex md:mt-0 mt-2 gap-2 md:gap-2.5">
-              <div className="md:flex hidden">
-                <CategoryPill solid={false} border={true} category={post?.category} />
-              </div>
-              {isCompleted && (
-                <div className="w-max inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-100 px-3 py-1.5 h-[28px] text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
-                  <CheckCircle2 size={13} />
-                  Sudah dibaca
+            <div className="mb-4 flex items-center justify-between">
+              <Link to={`/authors/detail/${post?.author._id}`} className="flex w-fit active:scale-[0.98] hover:brightness-75 items-center gap-2">
+                <div className="flex h-[44px] w-[44px] items-center justify-center rounded-lg bg-blue-500 dark:!bg-[#111122] border border-white/20 text-sm font-semibold text-white dark:text-accent">
+                  {post?.author.name?.[0]?.toUpperCase()}
                 </div>
-              )}
-              <div className="w-max inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-500 px-2 py-1.5 h-[28px] text-xs font-medium text-white dark:bg-emerald-500/20 dark:text-slate-300">
-                <Calendar size={13} />
-                {formatDate(post?.createdAt)}
-              </div>
-              <div className="w-max inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-orange-500 px-2 py-1.5 h-[28px] text-xs font-medium text-white dark:bg-slate-300/10 dark:text-slate-300">
-                <Timer size={13} />
-                {timeAgo(post?.createdAt)}
+                <div className="leading-tight">
+                  <p className="text-md text-white md:text-slate-900 dark:text-white font-medium">{post?.author.name}</p>
+                  <p className="text-xs text-white md:text-slate-900 dark:text-white">{post?.author.title}</p>
+                </div>
+              </Link>
+
+              <div className='w-max flex items-center gap-2'>
+                {/* Tombol Follow */}
+                {!isGuest && user && user.id !== post?.author._id && (
+                  <button
+                    onClick={handleFollow}
+                    disabled={followLoading || isGuest}
+                    className={`${isGuest ? '!active:scale-[1] cursor-not-allowed hover:!bg-slate-300 bg-slate-300 !text-gray-400' : ''} w-max rounded-md md:rounded-xl hidden md:flex items-center gap-1.5 pl-2.5 pr-3 py-1.5 h-[36px] text-xs font-medium transition ${
+                      isFollowing
+                        ? "border border-gray-300 text-white bg-red-600 hover:bg-red-700 dark:border-white/40 active:scale-[0.99] duration-100"
+                        : "bg-blue-600 border dark:border-white/40 hover:!bg-blue-800 text-white hover:opacity-90 active:scale-[0.99] duration-100"
+                    }`}
+                  >
+                    <Plus size={13} />
+                    {followLoading ? (
+                      <Loader2 size={14} className="animate-spin" />
+                    ) : isFollowing ? (
+                      "Following"
+                    ) : (
+                      "Subscribe"
+                    )}
+                  </button>
+                )}
               </div>
             </div>
-          </div>
+            
+            <div className="w-full h-72 overflow-hidden rounded-2xl border !border-white/20 dark:p-5">
+              <div className="h-full w-full relative overflow-hidden rounded-xl">
+                  {post?.coverImage && (
+                    <img src={post?.coverImage} alt="cover-image" className="mb-6 h-full brightness-[80%] w-full transition-transform duration-700 hover:scale-[1.1] rounded-xl object-cover" />
+                  )}
+              </div>
+            </div>
 
-          <h2 className="mt-4 md:mt-6 mb-2 text-sm font-medium tracking-widest text-white md:text-slate-900 dark:text-white uppercase">
-            Description
-          </h2>
-
-          {/* Description dengan support highlight */}
-          <div className="relative" onMouseUp={handleMouseUp}>
-            <article
-              ref={articleRef}
-              className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light !py-3 md:!py-5 dark:border-white/15 prose prose-sm !text-sm md:!text-sm max-w-none break-words dark:prose-invert prose-headings:font-semibold md:text-slate-900 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
-              dangerouslySetInnerHTML={{
-                __html: renderHighlightedContent(post?.content),
-              }}
-            />
-
-            {/* Floating Highlight Menu */}
-            {showHighlightMenu && (
-              <div
-                className="fixed z-50 flex items-center gap-1.5 rounded-2xl border border-gray-200 bg-white p-1.5 shadow-xl dark:border-white/15 dark:bg-gray-900"
-                style={{
-                  left: menuPosition.x,
-                  top: menuPosition.y,
-                  transform: "translateX(-50%)",
-                }}
-              >
-                {highlightLoading ? (
-                  <div className="flex items-center gap-2 px-3 py-1.5 text-xs text-gray-500">
-                    <Loader2 size={14} className="animate-spin" />
-                    Saving...
-                  </div>
-                ) : (
+            <div className="my-5 w-full md:w-max md:flex justify-between items-center gap-2.5">
+                <div className="flex-wrap flex items-center w-full gap-2 md:gap-2.5 z-[999]">
+                {canPin && (
+                  <button
+                    onClick={handlePin}
+                    className="rounded-lg btn-secondary hover:!bg-blue-700 hover:dark:!bg-blue-700 hover:!text-white !text-white dark:!bg-blue-500/15 !bg-blue-500/30 md:!bg-blue-500 border !border-white/20 px-4 py-1.5 h-[28px] text-xs"
+                  >
+                    <Pin size={13} className={post?.isPinned ? "fill-accent text-accent" : ""} />
+                    {post?.isPinned ? "Pinned" : "Pin"}
+                  </button>
+                )}
+                {isOwner && (
                   <>
-                    {HIGHLIGHT_COLORS.map((c) => (
-                      <button
-                        key={c.value}
-                        onClick={() => applyHighlight(c.value)}
-                        disabled={highlightLoading}
-                        className="h-7 w-7 rounded-xl border-2 border-white shadow-sm transition hover:scale-110 disabled:opacity-50"
-                        style={{ backgroundColor: c.value }}
-                        title={c.name}
-                      />
-                    ))}
+                    <div className="h-[18px] w-[1.3px] md:flex hidden bg-slate-400 dark:bg-white/20 mx-1" />
+                    <Link to={`/edit/${post?._id}`} className="rounded-lg btn-secondary hover:!bg-yellow-700 hover:dark:!bg-yellow-700 hover:!text-white !text-white dark:!bg-yellow-500/10 md:!bg-yellow-500 !bg-yellow-500/30 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
+                      <Pencil size={13} />
+                      Edit
+                    </Link>
                     <button
-                      onClick={() => setShowHighlightMenu(false)}
-                      className="ml-1 rounded-lg px-2 py-1 text-xs text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10"
-                    >
-                      ✕
+                      onClick={() => setShowDeleteModal(true)}
+                      className="rounded-lg btn-secondary hover:!bg-red-700 hover:dark:!bg-red-700 !bg-red-500/15 md:!bg-red-500 md:dark:!bg-red-500/20 border !border-white/20 !text-white hover:!text-white px-4 py-1.5 h-[28px] text-xs text-red-500"
+                      >
+                      <Trash2 size={13} />
+                      Delete
                     </button>
                   </>
                 )}
+                  <button 
+                      onClick={handleSpeakDescription}
+                      title={isSpeaking ? "Stop reading" : "Read description aloud"}
+                      className={`${
+                        isSpeaking
+                          ? "border-red-300 bg-red-50 text-pink-600 dark:border-pink-500/40 dark:bg-pink-500/10 dark:text-pink-400"
+                          : "border-gray-200 bg-white text-gray-600 hover:border-pink-500 hover:!bg-pink-600 hover:dark:!bg-pink-600 dark:border-white/15 dark:bg-blue-900/20 dark:text-gray-300"
+                      } active:scale-[0.99] duration-100 cursor-pointer hover:brightness-95 inline-flex border border-white/20 items-center gap-1.5 rounded-lg !bg-pink-500/20 md:!bg-pink-500 px-2 py-1.5 h-[28px] text-xs font-medium text-white dark:!bg-red-500/25 dark:text-white`}>
+                        {isSpeaking ? (
+                          <>
+                            <VolumeX size={14} />
+                            Stop
+                          </>
+                        ) : (
+                          <>
+                            <Volume2 size={14} />
+                            Listen
+                          </>
+                        )}
+                  </button>
+                </div>
+
+              <div className="h-[18px] w-[1.3px] md:flex hidden bg-slate-400 dark:bg-white/20 mr-1 ml-[2px]" />
+
+              <div className="w-max flex md:mt-0 mt-2 gap-2 md:gap-2.5">
+                <div className="md:flex hidden">
+                  <CategoryPill solid={false} border={true} category={post?.category} />
+                </div>
+                {isCompleted && (
+                  <div className="w-max inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-100 px-3 py-1.5 h-[28px] text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
+                    <CheckCircle2 size={13} />
+                    Sudah dibaca
+                  </div>
+                )}
+                <div className="w-max inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-500 px-2 py-1.5 h-[28px] text-xs font-medium text-white dark:bg-emerald-500/20 dark:text-slate-300">
+                  <Calendar size={13} />
+                  {formatDate(post?.createdAt)}
+                </div>
+                <div className="w-max inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-orange-500 px-2 py-1.5 h-[28px] text-xs font-medium text-white dark:bg-slate-300/10 dark:text-slate-300">
+                  <Timer size={13} />
+                  {timeAgo(post?.createdAt)}
+                </div>
+              </div>
+            </div>
+
+            <h2 className="mt-4 md:mt-6 mb-2 text-sm font-medium tracking-widest text-white md:text-slate-900 dark:text-white uppercase">
+              Description
+            </h2>
+
+            {post?.pdfFile?.url ? (
+              <div className="rounded-2xl border border-gray-100 bg-slate-300 p-3 dark:border-white/15 dark:!bg-[#0c0c18] md:p-5">
+                <div className="mb-3 flex items-center justify-between gap-2">
+                  <p className="truncate text-sm font-medium text-slate-900 dark:text-white">
+                    {post.pdfFile.name}
+                  </p>
+                  <a
+                    href={pdfBlobUrl}
+                    download={post.pdfFile.name || "guide.pdf"}
+                    className="shrink-0 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700"
+                  >
+                    Download
+                  </a>
+                </div>
+                <iframe
+                  src={pdfBlobUrl}
+                  title={post.pdfFile.name}
+                  className="h-[80vh] w-full rounded-xl border border-gray-200 bg-white dark:border-white/15"
+                />
+                {/* HP sering tidak bisa render PDF di iframe, jadi sediakan link cadangan */}
+                <a
+                  href={pdfBlobUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 block text-center text-xs text-accent underline md:hidden"
+                >
+                  PDF tidak tampil? Buka di tab baru
+                </a>
+              </div>
+            ) : (
+              <>
+                {/* Description dengan support highlight */}
+                <div className="relative" onMouseUp={handleMouseUp}>
+                  <article
+                    ref={articleRef}
+                    className="rounded-2xl md:text-justify border border-gray-100 bg-slate-300 dark:!bg-[#0c0c18] px-3 md:px-5 border-y border-border-light !py-3 md:!py-5 dark:border-white/15 prose prose-sm !text-sm md:!text-sm max-w-none break-words dark:prose-invert prose-headings:font-semibold md:text-slate-900 dark:text-white/70 prose-a:text-accent prose-pre:overflow-x-auto prose-pre:whitespace-pre-wrap prose-code:break-words"
+                    dangerouslySetInnerHTML={{
+                      __html: renderHighlightedContent(post?.content),
+                    }}
+                  />
+
+                  {/* Floating Highlight Menu */}
+                  {showHighlightMenu && (
+                    <div
+                      className="fixed z-50 flex items-center gap-1.5 rounded-2xl border border-gray-200 bg-white p-1.5 shadow-xl dark:border-white/15 dark:bg-gray-900"
+                      style={{
+                        left: menuPosition.x,
+                        top: menuPosition.y,
+                        transform: "translateX(-50%)",
+                      }}
+                    >
+                      {highlightLoading ? (
+                        <div className="flex items-center gap-2 px-3 py-1.5 text-xs text-gray-500">
+                          <Loader2 size={14} className="animate-spin" />
+                          Saving...
+                        </div>
+                      ) : (
+                        <>
+                          {HIGHLIGHT_COLORS.map((c) => (
+                            <button
+                              key={c.value}
+                              onClick={() => applyHighlight(c.value)}
+                              disabled={highlightLoading}
+                              className="h-7 w-7 rounded-xl border-2 border-white shadow-sm transition hover:scale-110 disabled:opacity-50"
+                              style={{ backgroundColor: c.value }}
+                              title={c.name}
+                            />
+                          ))}
+                          <button
+                            onClick={() => setShowHighlightMenu(false)}
+                            className="ml-1 rounded-lg px-2 py-1 text-xs text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10"
+                          >
+                            ✕
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {highlights.length > 0 && (
+                  <div className="mt-4 rounded-2xl border border-gray-100 bg-slate-300 p-3 md:p-5 dark:border-white/5 dark:!bg-[#0c0c18]">
+                    <div className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
+                      <Highlighter size={15} />
+                      Stabilo kamu ({highlights.length})
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {highlights.map((h, idx) => (
+                        <div
+                          key={idx}
+                          className="group flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs"
+                          style={{ backgroundColor: h.color }}
+                        >
+                          <span className="max-w-[200px] truncate text-gray-800">
+                            {h.text}
+                          </span>
+                          <button
+                            onClick={() => removeHighlight(h.text)}
+                            className="opacity-0 transition group-hover:opacity-100 text-gray-600 hover:text-red-600"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            {highlights.length > 0 && (
+              <div className="mt-4 rounded-2xl border border-gray-100 bg-slate-300 p-3 md:p-5 dark:border-white/5 dark:!bg-[#0c0c18]">
+                <div className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
+                  <Highlighter size={15} />
+                  Stabilo kamu ({highlights.length})
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {highlights.map((h, idx) => (
+                    <div
+                      key={idx}
+                      className="group flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs"
+                      style={{ backgroundColor: h.color }}
+                    >
+                      <span className="max-w-[200px] truncate text-gray-800">
+                        {h.text}
+                      </span>
+                      <button
+                        onClick={() => removeHighlight(h.text)}
+                        className="opacity-0 transition group-hover:opacity-100 text-gray-600 hover:text-red-600"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
-          </div>
 
-          {highlights.length > 0 && (
-            <div className="mt-4 rounded-2xl border border-gray-100 bg-slate-300 p-3 md:p-5 dark:border-white/5 dark:!bg-[#0c0c18]">
-              <div className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
-                <Highlighter size={15} />
-                Stabilo kamu ({highlights.length})
+            {post?.codeBlocks?.length > 0 && (
+              <div className="mt-4">
+                <h2 className="mb-2 text-sm font-medium tracking-widest text-white md:text-slate-900 dark:text-white uppercase">
+                  Commands & Code
+                </h2>
+
+                <div className="space-y-5">
+                  {post?.codeBlocks.map((block, idx) => (
+                    <CodeBlockItem key={idx} block={block} />
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {highlights.map((h, idx) => (
-                  <div
-                    key={idx}
-                    className="group flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs"
-                    style={{ backgroundColor: h.color }}
-                  >
-                    <span className="max-w-[200px] truncate text-gray-800">
-                      {h.text}
-                    </span>
+            )}
+
+            {post?.referencesImages?.length > 0 && (
+              <div className="mt-4">
+                <h2 className="mb-5 text-sm font-medium tracking-widest md:text-slate-900 dark:text-white uppercase">
+                  Reference by Upload
+                </h2>
+
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                  {post?.referencesImages.map((img, idx) => (
                     <button
-                      onClick={() => removeHighlight(h.text)}
-                      className="opacity-0 transition group-hover:opacity-100 text-gray-600 hover:text-red-600"
+                      type="button"
+                      key={idx}
+                      onClick={() => setPreviewIndex(idx)}
+                      className="group relative cursor-zoom-in overflow-hidden rounded-2xl bg-slate-300 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/20 p-3 transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:brightness-75"
                     >
-                      ✕
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+                      <div className="overflow-hidden">
+                        <img
+                          src={img.url}
+                          alt={img.name || `Reference ${idx + 1}`}
+                          className="aspect-[4/3] w-full object-cover !rounded-lg transition-transform duration-700 group-hover:scale-105"
+                        />
+                      </div>
 
-          {post?.codeBlocks?.length > 0 && (
+                      {/* Ikon zoom saat hover */}
+                      <div className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-xl bg-black/50 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                        <ZoomIn size={15} />
+                      </div>
+
+                      {img.name && (
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-4 py-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                          <p className="text-xs font-medium text-white truncate text-left">
+                            {img.name}
+                          </p>
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ===== Topology & Flowchart Cards ===== */}
             <div className="mt-4">
               <h2 className="mb-2 text-sm font-medium tracking-widest text-white md:text-slate-900 dark:text-white uppercase">
-                Commands & Code
+                Flow System
               </h2>
-
-              <div className="space-y-5">
-                {post?.codeBlocks.map((block, idx) => (
-                  <CodeBlockItem key={idx} block={block} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {post?.referencesImages?.length > 0 && (
-            <div className="mt-4">
-              <h2 className="mb-5 text-sm font-medium tracking-widest md:text-slate-900 dark:text-white uppercase">
-                Reference by Upload
-              </h2>
-
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                {post?.referencesImages.map((img, idx) => (
+              {/* {(post?.topology?.nodes?.length > 0 || post?.flowchart?.nodes?.length > 0) && (
+              )} */}
+              <div className="mt-0 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {/* Topology Card */}
+                {post?.topology?.nodes?.length > 0 ? (
                   <button
                     type="button"
-                    key={idx}
-                    onClick={() => setPreviewIndex(idx)}
-                    className="group relative cursor-zoom-in overflow-hidden rounded-2xl bg-slate-300 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/20 p-3 transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:brightness-75"
+                    onClick={() => setSidebarType("topology")}
+                    className="group flex items-center active:scale-[0.99] duration-100 gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/15 dark:!bg-[#0c0c18] dark:hover:border-accent"
                   >
-                    <div className="overflow-hidden">
-                      <img
-                        src={img.url}
-                        alt={img.name || `Reference ${idx + 1}`}
-                        className="aspect-[4/3] w-full object-cover !rounded-lg transition-transform duration-700 group-hover:scale-105"
-                      />
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                      </svg>
                     </div>
-
-                    {/* Ikon zoom saat hover */}
-                    <div className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-xl bg-black/50 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      <ZoomIn size={15} />
+                    <div>
+                      <p className="font-semibold text-gray-800 dark:text-gray-100">Network Topology</p>
+                      <p className="text-xs text-gray-500">
+                        {post?.topology.nodes.length} devices · Klik untuk melihat
+                      </p>
                     </div>
+                    <span className="ml-auto md:text-slate-900 dark:text-white transition group-hover:text-accent">→</span>
+                  </button>
+                ): (
+                  <button
+                    type="button"
+                    onClick={() => setSidebarType("flowchart")}
+                    disabled
+                    className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition dark:border-white/15 dark:!bg-[#0c0c18]"
+                  >
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-800 dark:text-slate-600">Network Topology</p>
+                      <p className="text-xs text-gray-600">
+                        {post?.flowchart.nodes.length} steps · Klik untuk melihat
+                      </p>
+                    </div>
+                    <span className="ml-auto text-gray-600 transition">→</span>
+                  </button>
+                )}
 
-                    {img.name && (
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-4 py-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <p className="text-xs font-medium text-white truncate text-left">
-                          {img.name}
-                        </p>
+                {/* Flowchart Card */}
+                {post?.flowchart?.nodes?.length > 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => setSidebarType("flowchart")}
+                    className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/15 dark:!bg-[#0c0c18] dark:hover:border-accent"
+                  >
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-800 dark:text-gray-100">Flowchart</p>
+                      <p className="text-xs text-gray-500">
+                        {post?.flowchart.nodes.length} steps · Klik untuk melihat
+                      </p>
+                    </div>
+                    <span className="ml-auto md:text-slate-900 dark:text-white transition group-hover:text-accent">→</span>
+                  </button>
+                ): (
+                  <button
+                    type="button"
+                    onClick={() => setSidebarType("flowchart")}
+                    disabled
+                    className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition dark:border-white/15 dark:!bg-[#0c0c18]"
+                  >
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-800 dark:text-slate-600">Flowchart</p>
+                      <p className="text-xs text-gray-600">
+                        {post?.flowchart.nodes.length} steps · Klik untuk melihat
+                      </p>
+                    </div>
+                    <span className="ml-auto text-gray-600 transition">→</span>
+                  </button>
+                )}
+              </div>
+            </div>
+            
+            {/* ===== Step-by-step Wizard (Zigzag + Clickable) ===== */}
+            {post?.steps?.length > 0 && (
+              <div className="mt-4">
+                <h2 className="mb-5 text-sm font-medium tracking-widest md:text-slate-900 dark:text-white uppercase">
+                  Step-by-step Guide
+                </h2>
+
+                {(() => {
+                  const perRow = 4;
+                  const rows = [];
+                  for (let i = 0; i < post?.steps.length; i += perRow) {
+                    rows.push(post?.steps.slice(i, i + perRow));
+                  }
+
+                  return (
+                    <div className="space-y-6">
+                      {rows.map((row, rowIdx) => {
+                        const isEvenRow = rowIdx % 2 === 1;
+                        const stepsInRow = isEvenRow ? [...row].reverse() : row;
+                        const isFullRow = row.length === perRow;
+
+                        return (
+                          <div key={rowIdx}>
+                            <div
+                              className={`grid gap-4 ${
+                                isFullRow
+                                  ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+                                  : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+                              }`}
+                            >
+                              {stepsInRow.map((step, idx) => {
+                                const realIndex = isEvenRow
+                                  ? rowIdx * perRow + (row.length - 1 - idx)
+                                  : rowIdx * perRow + idx;
+
+                                return (
+                                  <button
+                                    key={realIndex}
+                                    type="button"
+                                    onClick={() =>
+                                      setSelectedStep({ ...step, index: realIndex })
+                                    }
+                                    className="group relative flex flex-col overflow-hidden rounded-3xl bg-slate-300 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/5 p-5 text-left transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:-translate-y-1"
+                                  >
+                                    {/* Header */}
+                                    <div className="mb-4 flex items-center justify-between">
+                                      <span className="text-[11px] font-medium tracking-widest md:text-slate-900 dark:text-white">
+                                        STEP {String(realIndex + 1).padStart(2, "0")}
+                                      </span>
+
+                                      {/* Arrow */}
+                                      <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-slate-300 dark:!bg-[#0c0c18] md:text-slate-900 dark:text-white transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="h-3.5 w-3.5"
+                                          fill="none"
+                                          viewBox="0 0 24 24"
+                                          stroke="currentColor"
+                                          strokeWidth={2.5}
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                                          />
+                                        </svg>
+                                      </div>
+                                    </div>
+
+                                    {/* Image */}
+                                    {step.image && (
+                                      <div className="mb-4 overflow-hidden rounded-2xl">
+                                        <img
+                                          src={step.image}
+                                          alt={step.title}
+                                          className="h-40 w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                        />
+                                      </div>
+                                    )}
+
+                                    {/* Title */}
+                                    <h3 className="mb-2 text-[15px] font-semibold text-gray-900 dark:text-white line-clamp-2">
+                                      {step.title || `Step ${realIndex + 1}`}
+                                    </h3>
+
+                                    {/* Description */}
+                                    {step.description && (
+                                      <p className="text-[13px] leading-relaxed text-gray-500 dark:text-white line-clamp-2">
+                                        {step.description}
+                                      </p>
+                                    )}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+
+            {/* ===== Custom Tables ===== */}
+            {post?.customTables?.length > 0 && (
+              <div className="mt-5">
+                <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-white md:text-slate-900 dark:text-white">
+                  GRADIENTS
+                </h2>
+                <div className="space-y-6">
+                  {post?.customTables.map((table, tIdx) => (
+                    <div key={tIdx}>
+                      {table.title && (
+                        <h3 className="mb-2 text-sm font-medium text-white md:text-gray-700 dark:text-gray-200">
+                          {table.title}
+                        </h3>
+                      )}
+                      <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-white/5">
+                        <table className="w-full border-collapse text-sm">
+                          <tbody>
+                            {table.data?.map((row, rIdx) => (
+                              <tr key={rIdx}>
+                                {row.map((cell, cIdx) => (
+                                  <td
+                                    key={cIdx}
+                                    className="border dark:text-white border-gray-300 px-4 py-2.5 dark:border-white/15"
+                                  >
+                                    {cell || "—"}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="mt-6 md:flex items-center gap-4 border-y border-border-light py-4 dark:border-border-dark">
+              <div className="w-max pl-1 flex items-center gap-3">
+                <button
+                  onClick={handleLike}
+                  className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
+                    liked ? "text-red-500" : "md:text-slate-900 text-white dark:text-white hover:text-red-500"
+                  }`}
+                >
+                  <Heart size={16} className={liked ? "fill-red-500" : "text-white md:text-slate-900 dark:text-white"} />
+                  {likesCount}
+                </button>
+
+                <button onClick={handleBookmark} className="flex items-center gap-1.5 text-white md:text-slate-900 dark:text-white text-sm">
+                  <Bookmark size={16} className={bookmarked ? "fill-accent text-accent" : "text-white md:text-slate-900 dark:text-white"} />
+                  {bookmarked ? "Saved" : "Save"}
+                </button>
+
+                {/* Mark as Read */}
+                {!isGuest && (
+                  <button
+                    onClick={() => {
+                      if (isGuest) {
+                        toast.error("Login dulu untuk menandai sudah dibaca");
+                        // atau navigate("/login");
+                        return;
+                      }
+                      handleToggleCompleted();
+                    }}
+                    disabled={readingListLoading}
+                    className={`flex w-max items-center gap-1.5 text-sm transition ${
+                      isCompleted
+                        ? "text-emerald-600"
+                        : "text-white md:text-slate-900 dark:text-gray-500 hover:text-emerald-600"
+                    }`}
+                  >
+                    {readingListLoading ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : isCompleted ? (
+                      <>
+                        <CheckCircle2 size={16} className="text-slate-900 dark:fill-emerald-100" />
+                        Sudah dibaca
+                      </>
+                    ) : (
+                      <div className="w-max flex items-center gap-1.5">
+                        <Circle size={16} className="md:text-slate-900 dark:text-white" />
+                        <span className="w-max md:text-slate-900 dark:text-white flex items-center">
+                          Tandai dibaca
+                        </span>
                       </div>
                     )}
                   </button>
-                ))}
-              </div>
-            </div>
-          )}
+                )}
 
-          {/* ===== Topology & Flowchart Cards ===== */}
-          <div className="mt-4">
-            <h2 className="mb-2 text-sm font-medium tracking-widest text-white md:text-slate-900 dark:text-white uppercase">
-              Flow System
-            </h2>
-            {/* {(post?.topology?.nodes?.length > 0 || post?.flowchart?.nodes?.length > 0) && (
-            )} */}
-            <div className="mt-0 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {/* Topology Card */}
-              {post?.topology?.nodes?.length > 0 ? (
-                <button
-                  type="button"
-                  onClick={() => setSidebarType("topology")}
-                  className="group flex items-center active:scale-[0.99] duration-100 gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/15 dark:!bg-[#0c0c18] dark:hover:border-accent"
-                >
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-800 dark:text-gray-100">Network Topology</p>
-                    <p className="text-xs text-gray-500">
-                      {post?.topology.nodes.length} devices · Klik untuk melihat
-                    </p>
-                  </div>
-                  <span className="ml-auto md:text-slate-900 dark:text-white transition group-hover:text-accent">→</span>
-                </button>
-              ): (
-                <button
-                  type="button"
-                  onClick={() => setSidebarType("flowchart")}
-                  disabled
-                  className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition dark:border-white/15 dark:!bg-[#0c0c18]"
-                >
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-800 dark:text-slate-600">Network Topology</p>
-                    <p className="text-xs text-gray-600">
-                      {post?.flowchart.nodes.length} steps · Klik untuk melihat
-                    </p>
-                  </div>
-                  <span className="ml-auto text-gray-600 transition">→</span>
-                </button>
-              )}
+                {/* ===== SHARE BUTTON ===== */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowShare((v) => !v)}
+                    className="flex items-center gap-1.5 text-sm text-white md:text-slate-900 dark:text-white transition hover:text-accent"
+                  >
+                    <Share2 size={16} className="md:text-slate-900 dark:text-white" />
+                    Share
+                  </button>
 
-              {/* Flowchart Card */}
-              {post?.flowchart?.nodes?.length > 0 ? (
-                <button
-                  type="button"
-                  onClick={() => setSidebarType("flowchart")}
-                  className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/15 dark:!bg-[#0c0c18] dark:hover:border-accent"
-                >
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-800 dark:text-gray-100">Flowchart</p>
-                    <p className="text-xs text-gray-500">
-                      {post?.flowchart.nodes.length} steps · Klik untuk melihat
-                    </p>
-                  </div>
-                  <span className="ml-auto md:text-slate-900 dark:text-white transition group-hover:text-accent">→</span>
-                </button>
-              ): (
-                <button
-                  type="button"
-                  onClick={() => setSidebarType("flowchart")}
-                  disabled
-                  className="group flex cursor-not-allowed items-center gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition dark:border-white/15 dark:!bg-[#0c0c18]"
-                >
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-emerald-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-800 dark:text-slate-600">Flowchart</p>
-                    <p className="text-xs text-gray-600">
-                      {post?.flowchart.nodes.length} steps · Klik untuk melihat
-                    </p>
-                  </div>
-                  <span className="ml-auto text-gray-600 transition">→</span>
-                </button>
-              )}
-            </div>
-          </div>
-          
-          {/* ===== Step-by-step Wizard (Zigzag + Clickable) ===== */}
-          {post?.steps?.length > 0 && (
-            <div className="mt-4">
-              <h2 className="mb-5 text-sm font-medium tracking-widest md:text-slate-900 dark:text-white uppercase">
-                Step-by-step Guide
-              </h2>
-
-              {(() => {
-                const perRow = 4;
-                const rows = [];
-                for (let i = 0; i < post?.steps.length; i += perRow) {
-                  rows.push(post?.steps.slice(i, i + perRow));
-                }
-
-                return (
-                  <div className="space-y-6">
-                    {rows.map((row, rowIdx) => {
-                      const isEvenRow = rowIdx % 2 === 1;
-                      const stepsInRow = isEvenRow ? [...row].reverse() : row;
-                      const isFullRow = row.length === perRow;
-
-                      return (
-                        <div key={rowIdx}>
-                          <div
-                            className={`grid gap-4 ${
-                              isFullRow
-                                ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-                                : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-                            }`}
-                          >
-                            {stepsInRow.map((step, idx) => {
-                              const realIndex = isEvenRow
-                                ? rowIdx * perRow + (row.length - 1 - idx)
-                                : rowIdx * perRow + idx;
-
-                              return (
-                                <button
-                                  key={realIndex}
-                                  type="button"
-                                  onClick={() =>
-                                    setSelectedStep({ ...step, index: realIndex })
-                                  }
-                                  className="group relative flex flex-col overflow-hidden rounded-3xl bg-slate-300 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/5 p-5 text-left transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:-translate-y-1"
-                                >
-                                  {/* Header */}
-                                  <div className="mb-4 flex items-center justify-between">
-                                    <span className="text-[11px] font-medium tracking-widest md:text-slate-900 dark:text-white">
-                                      STEP {String(realIndex + 1).padStart(2, "0")}
-                                    </span>
-
-                                    {/* Arrow */}
-                                    <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-slate-300 dark:!bg-[#0c0c18] md:text-slate-900 dark:text-white transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-3.5 w-3.5"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                        strokeWidth={2.5}
-                                      >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                                        />
-                                      </svg>
-                                    </div>
-                                  </div>
-
-                                  {/* Image */}
-                                  {step.image && (
-                                    <div className="mb-4 overflow-hidden rounded-2xl">
-                                      <img
-                                        src={step.image}
-                                        alt={step.title}
-                                        className="h-40 w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                      />
-                                    </div>
-                                  )}
-
-                                  {/* Title */}
-                                  <h3 className="mb-2 text-[15px] font-semibold text-gray-900 dark:text-white line-clamp-2">
-                                    {step.title || `Step ${realIndex + 1}`}
-                                  </h3>
-
-                                  {/* Description */}
-                                  {step.description && (
-                                    <p className="text-[13px] leading-relaxed text-gray-500 dark:text-white line-clamp-2">
-                                      {step.description}
-                                    </p>
-                                  )}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                );
-              })()}
-            </div>
-          )}
-
-          {/* ===== Custom Tables ===== */}
-          {post?.customTables?.length > 0 && (
-            <div className="mt-5">
-              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-white md:text-slate-900 dark:text-white">
-                GRADIENTS
-              </h2>
-              <div className="space-y-6">
-                {post?.customTables.map((table, tIdx) => (
-                  <div key={tIdx}>
-                    {table.title && (
-                      <h3 className="mb-2 text-sm font-medium text-white md:text-gray-700 dark:text-gray-200">
-                        {table.title}
-                      </h3>
-                    )}
-                    <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-white/5">
-                      <table className="w-full border-collapse text-sm">
-                        <tbody>
-                          {table.data?.map((row, rIdx) => (
-                            <tr key={rIdx}>
-                              {row.map((cell, cIdx) => (
-                                <td
-                                  key={cIdx}
-                                  className="border dark:text-white border-gray-300 px-4 py-2.5 dark:border-white/15"
-                                >
-                                  {cell || "—"}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="mt-6 md:flex items-center gap-4 border-y border-border-light py-4 dark:border-border-dark">
-            <div className="w-max pl-1 flex items-center gap-3">
-              <button
-                onClick={handleLike}
-                className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
-                  liked ? "text-red-500" : "md:text-slate-900 text-white dark:text-white hover:text-red-500"
-                }`}
-              >
-                <Heart size={16} className={liked ? "fill-red-500" : "text-white md:text-slate-900 dark:text-white"} />
-                {likesCount}
-              </button>
-
-              <button onClick={handleBookmark} className="flex items-center gap-1.5 text-white md:text-slate-900 dark:text-white text-sm">
-                <Bookmark size={16} className={bookmarked ? "fill-accent text-accent" : "text-white md:text-slate-900 dark:text-white"} />
-                {bookmarked ? "Saved" : "Save"}
-              </button>
-
-              {/* Mark as Read */}
-              {!isGuest && (
-                <button
-                  onClick={() => {
-                    if (isGuest) {
-                      toast.error("Login dulu untuk menandai sudah dibaca");
-                      // atau navigate("/login");
-                      return;
-                    }
-                    handleToggleCompleted();
-                  }}
-                  disabled={readingListLoading}
-                  className={`flex w-max items-center gap-1.5 text-sm transition ${
-                    isCompleted
-                      ? "text-emerald-600"
-                      : "text-white md:text-slate-900 dark:text-gray-500 hover:text-emerald-600"
-                  }`}
-                >
-                  {readingListLoading ? (
-                    <Loader2 size={16} className="animate-spin" />
-                  ) : isCompleted ? (
+                  {showShare && (
                     <>
-                      <CheckCircle2 size={16} className="text-slate-900 dark:fill-emerald-100" />
-                      Sudah dibaca
+                      {/* Backdrop untuk menutup dropdown */}
+                      <div
+                        className="fixed inset-0 z-10"
+                        onClick={() => setShowShare(false)}
+                      />
+
+                      <div className="absolute left-[-265%] md:left-0 top-full z-20 mt-2 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/15 dark:bg-gray-900">
+                        <button
+                          onClick={copyLink}
+                          className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 hover:dark:bg-slate-800 dark:text-gray-200"
+                        >
+                          <Link2 size={16} />
+                          Salin Link
+                        </button>
+
+                        <a
+                          href={shareLinks.whatsapp}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setShowShare(false)}
+                          className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 hover:dark:bg-slate-800"
+                        >
+                          <span className="flex h-4 w-4 items-center justify-center text-[13px] font-bold text-green-600">
+                            WA
+                          </span>
+                          WhatsApp
+                        </a>
+                      </div>
                     </>
+                  )}
+                </div>
+                <span className="flex items-center gap-1.5 text-sm text-white md:text-slate-500 dark:text-white"><Eye size={16} />{post?.views}</span>
+              </div>
+
+              <div className="w-max flex flex-wrap items-center gap-3 md:mt-0 mt-2.5">
+                {post?.tags?.map((t) => (
+                  <Link
+                    key={t}
+                    to={`/tags/${encodeURIComponent(t)}`}
+                    className="pill w-max hover:brightness-75 bg-gray-100 text-gray-500 dark:!bg-[#0c0c18] dark:text-white hover:bg-accent hover:text-white transition-colors"
+                  >
+                    #{t}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <h2 className="mb-3  text-sm font-semibold uppercase tracking-wide text-white md:text-slate-900 dark:text-white">Comments</h2>
+              <div className="surface-card shadow-none bg-slate-300 dark:!bg-[#0c0c18] p-3 md:p-5">
+                <div className="mb-4 flex gap-2">
+                  <input
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && postTopLevelComment()}
+                    placeholder="Add a comment…"
+                    className="input-field flex-1"
+                  />
+                  <button onClick={postTopLevelComment} className="btn-primary px-4">
+                    Post
+                  </button>
+                </div>
+                <CommentThread comments={comments} onReply={handleReply} onDelete={handleDeleteComment} />
+              </div>
+            </div>
+            
+            {related?.length > 0 && (
+              <div className="mt-4">
+                <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-white md:text-slate-900 dark:text-white">
+                  Related Guides
+                </h2>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  {related.map((p) => (
+                    <PostCard key={p._id} post={p} />
+                  ))}
+                </div>
+              </div>
+            )}
+        </div>
+
+        {/* ===== RIGHT SIDEBAR (Topology / Flowchart) ===== */}
+        {sidebarType && (
+          <>
+            {/* Backdrop */}
+            <div
+              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+              onClick={() => setSidebarType(null)}
+            />
+
+            {/* Sidebar - full height */}
+            <div className="fixed right-0 bottom-0 z-[9999] h-[90vh] flex w-full max-w-6xl flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-white/15 dark:bg-[#12121b]">
+              {/* Header */}
+              <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-white/15">
+                <h3 className="text-base font-semibold">
+                  {sidebarType === "topology" ? "Network Topology" : "Flowchart"}
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setSidebarType(null)}
+                  className="flex h-8 w-8 active:scale-[0.99] duration-100 bg-red-500/70 items-center justify-center rounded-lg text-white transition hover:bg-red-500/80 hover:text-white"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Canvas area - ambil sisa tinggi */}
+              <div className="flex-1 overflow-hidden p-4">
+                {sidebarType === "topology" && (
+                  <TopologyCanvas
+                    value={post?.topology}
+                    readOnly
+                    height={window.innerHeight - 100}   // ≈ full screen - header
+                    showToolbar={false}
+                  />
+                )}
+                {sidebarType === "flowchart" && (
+                  <FlowchartCanvas
+                    value={post?.flowchart}
+                    readOnly
+                    height={window.innerHeight - 100}
+                  />
+                )}
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* ===== STEP DETAIL SIDEBAR ===== */}
+        {selectedStep && (
+          <>
+            {/* Backdrop */}
+            <div
+              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+              onClick={() => setSelectedStep(null)}
+            />
+
+            {/* Sidebar */}
+            <div className="fixed right-0 top-0 z-50 flex h-full w-full max-w-7xl flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-white/15 dark:bg-[#12121b]">
+              {/* Header */}
+              <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-white/15">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent text-sm font-bold text-white">
+                    {selectedStep.index + 1}
+                  </div>
+                  <h3 className="text-base font-semibold">
+                    {selectedStep.title || `Step ${selectedStep.index + 1}`}
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedStep(null)}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-white/10"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 overflow-y-auto p-5">
+                {selectedStep.image && (
+                  <img
+                    src={selectedStep.image}
+                    alt={selectedStep.title}
+                    className="mb-5 w-full rounded-2xl object-cover max-h-[420px] border border-gray-100 dark:border-white/15"
+                  />
+                )}
+
+                {selectedStep.description && (
+                  <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-300 whitespace-pre-line">
+                    {selectedStep.description}
+                  </p>
+                )}
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* ===== DELETE CONFIRMATION MODAL ===== */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 z-[9999999999999] flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+              onClick={() => !deleting && setShowDeleteModal(false)}
+            />
+
+            {/* Modal box */}
+            <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/15 dark:bg-gray-900">
+              <div className="p-6">
+                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-100 dark:bg-red-500/20">
+                  <Trash2 size={22} className="text-red-600 dark:text-red-400" />
+                </div>
+
+                <h3 className="text-center text-lg font-semibold">
+                  Delete Guide?
+                </h3>
+                <p className="mt-2 text-center text-sm text-gray-500 dark:text-white">
+                  The guide <span className="font-medium text-gray-700 dark:text-gray-200">"{post?.title}"</span> will be
+                  permanently deleted. This action cannot be undone.
+                </p>
+              </div>
+
+              <div className="flex gap-3 border-t border-gray-100 bg-slate-300 px-6 py-4 dark:border-white/5 dark:!bg-[#0c0c18]">
+                <button
+                  type="button"
+                  disabled={deleting}
+                  onClick={() => setShowDeleteModal(false)}
+                  className="flex-1 rounded-xl border border-gray-200 bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-slate-300 disabled:opacity-50 dark:border-white/15 dark:bg-gray-800 dark:text-gray-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={deleting}
+                  onClick={handleDelete}
+                  className="flex-1 rounded-xl bg-red-600 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
+                >
+                  {deleting ? (
+                    <span className="inline-flex items-center gap-2">
+                      <Loader2 size={15} className="animate-spin" />
+                      Menghapus...
+                    </span>
                   ) : (
-                    <div className="w-max flex items-center gap-1.5">
-                      <Circle size={16} className="md:text-slate-900 dark:text-white" />
-                      <span className="w-max md:text-slate-900 dark:text-white flex items-center">
-                        Tandai dibaca
-                      </span>
-                    </div>
+                    "Ya, Hapus"
                   )}
                 </button>
-              )}
+              </div>
+            </div>
+          </div>
+        )}
 
-              {/* ===== SHARE BUTTON ===== */}
-              <div className="relative">
+        {/* ===== REFERENCE IMAGE PREVIEW (ZOOM) ===== */}
+        {previewIndex !== null && post?.referencesImages?.[previewIndex] && (
+          <div className="absolute right-0 h-[92vh] !mt-[8.5vh] bottom-0 inset-0 z-[9909] flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/90 backdrop-blur-sm"
+              onClick={() => setPreviewIndex(null)}
+            />
+
+            {/* Tombol tutup */}
+            <button
+              type="button"
+              onClick={() => setPreviewIndex(null)}
+              className="absolute right-0 px-3 gap-x-1.5 active:scale-[0.99] duration-100 !top-12 md:top-24 z-[9999] flex h-10 w-max items-center justify-center rounded-bl-xl rounded-tl-xl bg-red-600 text-white transition hover:bg-red-700"
+              aria-label="Tutup"
+            >
+              Close
+              <X size={17} />
+            </button>
+
+            {/* Navigasi prev/next (hanya jika lebih dari 1 gambar) */}
+            {post.referencesImages.length > 1 && (
+              <>
                 <button
-                  onClick={() => setShowShare((v) => !v)}
-                  className="flex items-center gap-1.5 text-sm text-white md:text-slate-900 dark:text-white transition hover:text-accent"
+                  type="button"
+                  onClick={() =>
+                    setPreviewIndex((i) => (i - 1 + post.referencesImages.length) % post.referencesImages.length)
+                  }
+                  className="absolute left-3 z-10 flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-900 shadow-2xl border-2 border-blue-500 transition active:scale-95 md:left-6"
+                  aria-label="Sebelumnya"
                 >
-                  <Share2 size={16} className="md:text-slate-900 dark:text-white" />
-                  Share
+                  <ChevronLeft size={22} />
                 </button>
-
-                {showShare && (
-                  <>
-                    {/* Backdrop untuk menutup dropdown */}
-                    <div
-                      className="fixed inset-0 z-10"
-                      onClick={() => setShowShare(false)}
-                    />
-
-                    <div className="absolute left-[-265%] md:left-0 top-full z-20 mt-2 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/15 dark:bg-gray-900">
-                      <button
-                        onClick={copyLink}
-                        className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 hover:dark:bg-slate-800 dark:text-gray-200"
-                      >
-                        <Link2 size={16} />
-                        Salin Link
-                      </button>
-
-                      <a
-                        href={shareLinks.whatsapp}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => setShowShare(false)}
-                        className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-300 dark:text-gray-200 hover:dark:bg-slate-800"
-                      >
-                        <span className="flex h-4 w-4 items-center justify-center text-[13px] font-bold text-green-600">
-                          WA
-                        </span>
-                        WhatsApp
-                      </a>
-                    </div>
-                  </>
-                )}
-              </div>
-              <span className="flex items-center gap-1.5 text-sm text-white md:text-slate-500 dark:text-white"><Eye size={16} />{post?.views}</span>
-            </div>
-
-            <div className="w-max flex flex-wrap items-center gap-3 md:mt-0 mt-2.5">
-              {post?.tags?.map((t) => (
-                <Link
-                  key={t}
-                  to={`/tags/${encodeURIComponent(t)}`}
-                  className="pill w-max hover:brightness-75 bg-gray-100 text-gray-500 dark:!bg-[#0c0c18] dark:text-white hover:bg-accent hover:text-white transition-colors"
+                <button
+                  type="button"
+                  onClick={() =>
+                    setPreviewIndex((i) => (i + 1) % post.referencesImages.length)
+                  }
+                  className="absolute right-3 z-10 flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-900 shadow-2xl border-2 border-blue-500 transition active:scale-95 md:right-6"
+                  aria-label="Berikutnya"
                 >
-                  #{t}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <h2 className="mb-3  text-sm font-semibold uppercase tracking-wide text-white md:text-slate-900 dark:text-white">Comments</h2>
-            <div className="surface-card shadow-none bg-slate-300 dark:!bg-[#0c0c18] p-3 md:p-5">
-              <div className="mb-4 flex gap-2">
-                <input
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && postTopLevelComment()}
-                  placeholder="Add a comment…"
-                  className="input-field flex-1"
-                />
-                <button onClick={postTopLevelComment} className="btn-primary px-4">
-                  Post
+                  <ChevronRight size={22} />
                 </button>
-              </div>
-              <CommentThread comments={comments} onReply={handleReply} onDelete={handleDeleteComment} />
-            </div>
-          </div>
-          
-          {related?.length > 0 && (
-            <div className="mt-4">
-              <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-white md:text-slate-900 dark:text-white">
-                Related Guides
-              </h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                {related.map((p) => (
-                  <PostCard key={p._id} post={p} />
-                ))}
-              </div>
-            </div>
-          )}
-      </div>
+              </>
+            )}
 
-      {/* ===== RIGHT SIDEBAR (Topology / Flowchart) ===== */}
-      {sidebarType && (
-        <>
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
-            onClick={() => setSidebarType(null)}
-          />
-
-          {/* Sidebar - full height */}
-          <div className="fixed right-0 bottom-0 z-[9999] h-[90vh] flex w-full max-w-6xl flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-white/15 dark:bg-[#12121b]">
-            {/* Header */}
-            <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-white/15">
-              <h3 className="text-base font-semibold">
-                {sidebarType === "topology" ? "Network Topology" : "Flowchart"}
-              </h3>
-              <button
-                type="button"
-                onClick={() => setSidebarType(null)}
-                className="flex h-8 w-8 active:scale-[0.99] duration-100 bg-red-500/70 items-center justify-center rounded-lg text-white transition hover:bg-red-500/80 hover:text-white"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Canvas area - ambil sisa tinggi */}
-            <div className="flex-1 overflow-hidden p-4">
-              {sidebarType === "topology" && (
-                <TopologyCanvas
-                  value={post?.topology}
-                  readOnly
-                  height={window.innerHeight - 100}   // ≈ full screen - header
-                  showToolbar={false}
-                />
-              )}
-              {sidebarType === "flowchart" && (
-                <FlowchartCanvas
-                  value={post?.flowchart}
-                  readOnly
-                  height={window.innerHeight - 100}
-                />
-              )}
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* ===== STEP DETAIL SIDEBAR ===== */}
-      {selectedStep && (
-        <>
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
-            onClick={() => setSelectedStep(null)}
-          />
-
-          {/* Sidebar */}
-          <div className="fixed right-0 top-0 z-50 flex h-full w-full max-w-7xl flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-white/15 dark:bg-[#12121b]">
-            {/* Header */}
-            <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-white/15">
-              <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent text-sm font-bold text-white">
-                  {selectedStep.index + 1}
-                </div>
-                <h3 className="text-base font-semibold">
-                  {selectedStep.title || `Step ${selectedStep.index + 1}`}
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setSelectedStep(null)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-white/10"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Content */}
-            <div className="flex-1 overflow-y-auto p-5">
-              {selectedStep.image && (
-                <img
-                  src={selectedStep.image}
-                  alt={selectedStep.title}
-                  className="mb-5 w-full rounded-2xl object-cover max-h-[420px] border border-gray-100 dark:border-white/15"
-                />
-              )}
-
-              {selectedStep.description && (
-                <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-300 whitespace-pre-line">
-                  {selectedStep.description}
-                </p>
-              )}
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* ===== DELETE CONFIRMATION MODAL ===== */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 z-[9999999999999] flex items-center justify-center p-4">
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-            onClick={() => !deleting && setShowDeleteModal(false)}
-          />
-
-          {/* Modal box */}
-          <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/15 dark:bg-gray-900">
-            <div className="p-6">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-100 dark:bg-red-500/20">
-                <Trash2 size={22} className="text-red-600 dark:text-red-400" />
-              </div>
-
-              <h3 className="text-center text-lg font-semibold">
-                Delete Guide?
-              </h3>
-              <p className="mt-2 text-center text-sm text-gray-500 dark:text-white">
-                The guide <span className="font-medium text-gray-700 dark:text-gray-200">"{post?.title}"</span> will be
-                permanently deleted. This action cannot be undone.
+            {/* Gambar */}
+            <div className="relative z-[1] flex max-h-full max-w-4xl flex-col items-center">
+              <img
+                src={post.referencesImages[previewIndex].url}
+                alt={post.referencesImages[previewIndex].name || `Reference ${previewIndex + 1}`}
+                className="max-h-[85vh] max-w-full rounded-xl object-contain shadow-2xl"
+              />
+              <p className="mt-3 text-center text-xs text-white/80">
+                {post.referencesImages[previewIndex].name
+                  ? `${post.referencesImages[previewIndex].name} · `
+                  : ""}
+                {previewIndex + 1} / {post.referencesImages.length}
               </p>
             </div>
-
-            <div className="flex gap-3 border-t border-gray-100 bg-slate-300 px-6 py-4 dark:border-white/5 dark:!bg-[#0c0c18]">
-              <button
-                type="button"
-                disabled={deleting}
-                onClick={() => setShowDeleteModal(false)}
-                className="flex-1 rounded-xl border border-gray-200 bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-slate-300 disabled:opacity-50 dark:border-white/15 dark:bg-gray-800 dark:text-gray-200"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                disabled={deleting}
-                onClick={handleDelete}
-                className="flex-1 rounded-xl bg-red-600 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
-              >
-                {deleting ? (
-                  <span className="inline-flex items-center gap-2">
-                    <Loader2 size={15} className="animate-spin" />
-                    Menghapus...
-                  </span>
-                ) : (
-                  "Ya, Hapus"
-                )}
-              </button>
-            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
+    );
+  };
 
-      {/* ===== REFERENCE IMAGE PREVIEW (ZOOM) ===== */}
-      {previewIndex !== null && post?.referencesImages?.[previewIndex] && (
-        <div className="absolute right-0 h-[90vh] !mt-[10vh] bottom-0 inset-0 z-[9909] flex items-center justify-center p-4">
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-black/90 backdrop-blur-sm"
-            onClick={() => setPreviewIndex(null)}
-          />
-
-          {/* Tombol tutup */}
-          <button
-            type="button"
-            onClick={() => setPreviewIndex(null)}
-            className="absolute right-0 px-3 gap-x-1.5 active:scale-[0.99] duration-100 !top-12 md:top-24 z-[9999] flex h-10 w-max items-center justify-center rounded-bl-xl rounded-tl-xl bg-red-600 text-white transition hover:bg-red-700"
-            aria-label="Tutup"
-          >
-            Close
-            <X size={17} />
-          </button>
-
-          {/* Navigasi prev/next (hanya jika lebih dari 1 gambar) */}
-          {post.referencesImages.length > 1 && (
-            <>
-              <button
-                type="button"
-                onClick={() =>
-                  setPreviewIndex((i) => (i - 1 + post.referencesImages.length) % post.referencesImages.length)
-                }
-                className="absolute left-3 z-10 flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-900 shadow-2xl border-2 border-blue-500 transition active:scale-95 md:left-6"
-                aria-label="Sebelumnya"
-              >
-                <ChevronLeft size={22} />
-              </button>
-              <button
-                type="button"
-                onClick={() =>
-                  setPreviewIndex((i) => (i + 1) % post.referencesImages.length)
-                }
-                className="absolute right-3 z-10 flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-900 shadow-2xl border-2 border-blue-500 transition active:scale-95 md:right-6"
-                aria-label="Berikutnya"
-              >
-                <ChevronRight size={22} />
-              </button>
-            </>
-          )}
-
-          {/* Gambar */}
-          <div className="relative z-[1] flex max-h-full max-w-4xl flex-col items-center">
-            <img
-              src={post.referencesImages[previewIndex].url}
-              alt={post.referencesImages[previewIndex].name || `Reference ${previewIndex + 1}`}
-              className="max-h-[85vh] max-w-full rounded-xl object-contain shadow-2xl"
-            />
-            <p className="mt-3 text-center text-xs text-white/80">
-              {post.referencesImages[previewIndex].name
-                ? `${post.referencesImages[previewIndex].name} · `
-                : ""}
-              {previewIndex + 1} / {post.referencesImages.length}
-            </p>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default PostDetail;
+  export default PostDetail;

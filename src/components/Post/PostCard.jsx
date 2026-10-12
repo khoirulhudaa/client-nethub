@@ -1,4 +1,4 @@
-import { BookPlus, Check, ChevronRight, Eye, Link2, Link2Icon, Loader2, Pin, PinOffIcon } from "lucide-react";
+import { ArrowRight, BookPlus, Check, ChevronRight, Eye, Link2, Link2Icon, Loader2, Pin, PinOffIcon } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -315,8 +315,8 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
           )}
           <div
             className={`
-              absolute bottom-[30%] -translate-x-1/2 left-1/2 w-full
-              flex items-center justify-center gap-3
+              absolute bottom-[4%] left-[2%] w-max
+              grid grid-cols-3 items-center justify-center
               transition-opacity ease-in-out
               opacity-0 group-hover:opacity-100
               z-30
@@ -332,11 +332,11 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                   e.stopPropagation();
                   setShowShare((v) => !v);
                 }}
-                className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-2 hover:gap-x-5 active:scale-[0.98] items-center px-2 py-1.5 rounded-full border dark:!border-white bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
+                className={`justify-center w-max flex mt-auto hover:brightness-75 h-max gap-x-2 hover:gap-x-5 active:scale-[0.98] items-center px-2 py-1.5 rounded-tl-3xl rounded-bl-3xl overflow-hidden border dark:!border-white bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
                   featured ? "mt-3" : "mt-2"
                 }`}
               >
-                {/* <p>Share</p> */}
+                <p>Share</p>
                 <div className="rounded-full active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[32px] w-[30px]">
                   <Link2Icon size={18} />
                 </div>
@@ -360,7 +360,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                       className={`flex w-full items-center gap-3 px-4 py-2.5 text-sm transition ${
                         copied
                           ? "bg-emerald-500 text-white"
-                          : "text-gray-700 hover:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-800"
+                          : "text-gray-700 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800"
                       }`}
                     >
                       {copied ? (
@@ -402,9 +402,9 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                 type="button"
                 onClick={handlePin}
                 disabled={pinning}
-                className={`group/btn flex h-max w-max items-center gap-x-2 rounded-full bg-white border px-2 py-1.5 text-sm font-medium text-slate-950 transition-all ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98]`}
+                className={`group/btn flex h-max justify-center w-full items-center gap-x-2 bg-white border px-2 py-1.5 text-sm font-medium text-slate-950 transition-all ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98]`}
               >
-                <div className="rounded-full active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[32px] w-[30px]">
+                <div className="active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[32px] w-[30px]">
                   {pinning ? (
                     <Loader2 size={18} className="animate-spin" />
                   ) : (
@@ -418,14 +418,16 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
 
             <Link
               to={`/posts/${post.slug}`}
-              className={`flex mt-auto hover:brightness-75 h-max w-max gap-x-2 hover:gap-x-5 active:scale-[0.98] border dark:!border-white items-center px-2 py-1.5 rounded-full bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
+              className={`justify-center w-max pr-4 flex mt-auto hover:brightness-75 h-max gap-x-2 hover:gap-x-5 active:scale-[0.98] border dark:!border-white items-center px-2 py-1.5 rounded-tr-3xl rounded-br-3xl overflow-hidden bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
                 featured ? "mt-3" : "mt-2"
               }`}
             >
               {/* <p>Read</p> */}
-              <div className="rounded-full active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[32px] w-[30px]">
-                <Eye size={21} />
-                
+              <div className="w-max gap-x-2 active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[32px]">
+                <p>
+                  Read Guide
+                </p>
+                <ChevronRight size={21} />
               </div>
             </Link>
           </div>
