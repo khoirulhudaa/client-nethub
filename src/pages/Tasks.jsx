@@ -228,7 +228,7 @@ const Tasks = () => {
       {/* Tambah cepat */}
       <form
         onSubmit={handleQuickAdd}
-        className="flex flex-col gap-2 rounded-2xl border border-gray-100 bg-slate-300 p-3 dark:border-white/5 dark:!bg-[#0c0c18] md:flex-row"
+        className="flex flex-col gap-2 rounded-2xl md:flex-row"
       >
         <input
           value={quick.title}
@@ -262,7 +262,7 @@ const Tasks = () => {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari tugas, deskripsi, tags…"
+            placeholder="Search task now..."
             className="input-field !pl-9 dark:!bg-slate-100/10 dark:!text-white"
           />
         </div>
