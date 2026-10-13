@@ -154,9 +154,6 @@ const TaskForm = () => {
 
   return (
     <div className="mx-auto h-max min-h-screen max-w-full border-white pb-16 dark:border-white/10 md:border-x md:p-6">
-      <button type="button" onClick={() => navigate("/tasks")} className="mb-3 flex items-center gap-1.5 text-sm text-white hover:brightness-75 md:text-slate-700 dark:text-gray-300">
-        <ArrowLeft size={15} /> To-do List
-      </button>
       <h1 className="mb-4 text-xl font-semibold tracking-tight text-white">{isEditing ? "Edit tugas" : "Tambah tugas"}</h1>
 
       {error && (
@@ -213,7 +210,7 @@ const TaskForm = () => {
           title="Sub-tugas"
           hint="Maksimal 30"
           action={
-            <button type="button" disabled={form.checklist.length >= 30} onClick={() => set("checklist", [...form.checklist, { text: "", done: false }])} className="btn-secondary !px-3 !py-1 text-xs disabled:opacity-40">
+            <button type="button" disabled={form.checklist.length >= 30} onClick={() => set("checklist", [...form.checklist, { text: "", done: false }])} className="btn-secondary rounded-lg !px-3 !py-1 text-xs disabled:opacity-40">
               <Plus size={12} /> Sub-tugas
             </button>
           }
