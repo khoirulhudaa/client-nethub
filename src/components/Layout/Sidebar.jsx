@@ -111,8 +111,9 @@ const Sidebar = ({ onNavigate }) => {
   const [openGroups, setOpenGroups] = useState({
     categories: true,
     discover: false,
+    workspace: false,
     quiz: false,
-    library: true,
+    library: false,
     support: false,
     admin: false,
   });
@@ -154,7 +155,7 @@ const Sidebar = ({ onNavigate }) => {
       if (isOpen) return { ...prev, [key]: false };
 
       const openKeys = Object.keys(prev).filter((k) => prev[k]);
-      if (openKeys.length >= 2) {
+      if (openKeys.length >= 1) {
         const closeKey = openKeys[0];
         return { ...prev, [closeKey]: false, [key]: true };
       }
@@ -200,6 +201,21 @@ const Sidebar = ({ onNavigate }) => {
             ? "bg-slate-200 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
             : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
         }`;
+
+  const renderLink = ({ to, icon: Icon, label, end }) => (
+    <div key={to} className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
+      <NavLink
+        to={to}
+        end={end}
+        onClick={onNavigate}
+        title={collapsed ? label : undefined}
+        className={({ isActive }) => linkClass(isActive)}
+      >
+        <Icon size={17} />
+        {!collapsed && label}
+      </NavLink>
+    </div>
+  );
 
   return (
     <aside
@@ -314,6 +330,21 @@ const Sidebar = ({ onNavigate }) => {
             </div>
           </NavGroup>
 
+          {/* Workspace */}
+          <NavGroup
+            title="Workspace"
+            open={openGroups.workspace}
+            onToggle={() => toggleGroup("workspace")}
+            collapsed={collapsed}
+          >
+            <div data-tour="workspace">
+              {renderLink({ to: "/tasks", icon: CheckSquare, label: "Task Works" })}
+              {!isGuest &&
+                renderLink({ to: "/contacts", icon: Phone, label: "Phone Book" })}
+              {renderLink({ to: "/notes", icon: NotebookPen, label: "Vital Records" })}
+            </div>
+          </NavGroup>
+
           {/* Discover */}
           <NavGroup
             title="Discover"
@@ -370,135 +401,10 @@ const Sidebar = ({ onNavigate }) => {
             collapsed={collapsed}
           >
             <div data-tour="library">
-              {/* Reading List - tampil untuk semua, termasuk guest */}
-              <div className={collapsed ? "" : "px-2 mt-1"}>
-                <NavLink
-                  to="/reading-list"
-                  onClick={onNavigate}
-                  title={collapsed ? "Reading List" : undefined}
-                  className={({ isActive }) =>
-                    collapsed
-                      ? linkClass(isActive)
-                      : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
-                          isActive
-                            ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
-                            : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
-                        }`
-                  }
-                >
-                  <BookOpen size={17} />
-                  {!collapsed && "Reading"}
-                </NavLink>
-              </div>
-
-              {/* My Guides - hanya user login */}
-              {!isGuest && (
-                <div className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
-                  <NavLink
-                    to="/my-posts"
-                    onClick={onNavigate}
-                    title={collapsed ? "My Guides" : undefined}
-                    className={({ isActive }) =>
-                      collapsed
-                        ? linkClass(isActive)
-                        : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
-                            isActive
-                              ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
-                              : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
-                          }`
-                    }
-                  >
-                    <FileText size={17} />
-                    {!collapsed && "My Guides"}
-                  </NavLink>
-                </div>
-              )}
-
-              {/* ===== TASKS ===== */}
-              <div className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
-                <NavLink
-                  to="/tasks"
-                  onClick={onNavigate}
-                  title={collapsed ? "Tasks" : undefined}
-                  className={({ isActive }) =>
-                    collapsed
-                      ? linkClass(isActive)
-                      : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
-                          isActive
-                            ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
-                            : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
-                        }`
-                  }
-                >
-                  <CheckSquare size={17} />
-                  {!collapsed && "Task Works"}
-                </NavLink>
-              </div>
-
-              {/* Phone Book - hanya user login */}
-              {!isGuest && (
-                <div className={collapsed ? "" : "px-2 mt-1"}>
-                  <NavLink
-                    to="/contacts"
-                    onClick={onNavigate}
-                    title={collapsed ? "Phone Book" : undefined}
-                    className={({ isActive }) =>
-                      collapsed
-                        ? linkClass(isActive)
-                        : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
-                            isActive
-                              ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
-                              : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
-                          }`
-                    }
-                  >
-                    <Phone size={17} />
-                    {!collapsed && "Phone Book"}
-                  </NavLink>
-                </div>
-              )}
-
-              {/* ===== NOTES ===== */}
-              <div className={collapsed ? "" : "px-2 mt-1"}>
-                <NavLink
-                  to="/notes"
-                  onClick={onNavigate}
-                  title={collapsed ? "Notes" : undefined}
-                  className={({ isActive }) =>
-                    collapsed
-                      ? linkClass(isActive)
-                      : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
-                          isActive
-                            ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
-                            : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
-                        }`
-                  }
-                >
-                  <NotebookPen size={17} />
-                  {!collapsed && "Vital Records"}
-                </NavLink>
-              </div>
-
-              {/* Collection Card */}
-              <div className={collapsed ? "" : "px-2 mt-1"}>
-                <NavLink
-                  to="/hardware"
-                  onClick={onNavigate}
-                  title={collapsed ? "Hardware" : undefined}
-                  className={({ isActive }) =>
-                    collapsed
-                      ? linkClass(isActive)
-                      : `flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all ${
-                          isActive
-                            ? "bg-white dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
-                            : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
-                        }`
-                  }
-                >
-                  <Box size={17} />
-                  {!collapsed && "Collection Card"}
-                </NavLink>
-              </div>
+              {renderLink({ to: "/reading-list", icon: BookOpen, label: "Reading" })}
+              {!isGuest &&
+                renderLink({ to: "/my-posts", icon: FileText, label: "My Guides" })}
+              {renderLink({ to: "/hardware", icon: Box, label: "Collection Card" })}
             </div>
           </NavGroup>
 

@@ -293,7 +293,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                 ? post.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="shrink-0 text-xs font-medium text-slate-600 dark:text-gray-200 md:text-gray-200 bg-slate-200/70 dark:bg-white/10 md:bg-white/10 px-2 py-0.5 rounded-full whitespace-nowrap"
+                      className="shrink-0 text-xs font-medium !text-slate-600 dark:text-gray-200 md:text-gray-200 !bg-white dark:bg-white/10 md:bg-white/10 px-2 py-0.5 rounded-full whitespace-nowrap"
                     >
                       #{tag}
                     </span>
@@ -334,7 +334,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                   e.stopPropagation();
                   setShowShare((v) => !v);
                 }}
-                className={`justify-center w-full flex mt-auto hover:brightness-75 h-max gap-x-2 hover:gap-x-5 pl-3 active:scale-[0.98] items-center px-2 py-1.5 rounded-tl-2xl rounded-bl-2xl overflow-hidden border dark:!border-white bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
+                className={`justify-center w-full flex mt-auto hover:brightness-75 h-max gap-x-2 hover:gap-x-5 pl-3 active:scale-[0.98] items-center px-2 py-1 rounded-tl-2xl rounded-bl-2xl overflow-hidden border dark:!border-white bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
                   featured ? "mt-3" : "mt-2"
                 }`}
               >
@@ -404,7 +404,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                 type="button"
                 onClick={handlePin}
                 disabled={pinning}
-                className={`flex h-max justify-center w-full items-center gap-x-2 bg-white border px-2 py-1.5 text-sm font-medium text-slate-950 transition-all ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98]`}
+                className={`flex h-max justify-center w-full items-center gap-x-2 bg-white border px-2 py-1 text-sm font-medium text-slate-950 transition-all ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98]`}
               >
                 <div className="active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[32px] w-[30px]">
                   {pinning ? (
@@ -420,7 +420,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
 
             <Link
               to={`/posts/${post.slug}`}
-              className={`justify-center w-max pr-2 flex mt-auto hover:brightness-75 h-max gap-x-2 hover:gap-x-5 active:scale-[0.98] border dark:!border-white items-center px-2 py-1.5 rounded-tr-2xl rounded-br-2xl overflow-hidden bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
+              className={`justify-center w-max pr-2 flex mt-auto hover:brightness-75 h-max gap-x-2 hover:gap-x-5 active:scale-[0.98] border dark:!border-white items-center px-2 py-1 rounded-tr-2xl rounded-br-2xl overflow-hidden bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
                 featured ? "mt-3" : "mt-2"
               }`}
             >
