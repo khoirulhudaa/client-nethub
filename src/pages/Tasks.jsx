@@ -198,13 +198,7 @@ const Tasks = () => {
   return (
     <div className="mx-auto max-w-full space-y-4 border-white pb-16 dark:border-white/15 md:border-x md:p-6">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight text-white md:text-slate-900 dark:text-white">To-do List</h1>
-          <p className="text-sm text-gray-300 md:text-gray-500">
-            {stats ? `${stats.active} aktif · ${stats.done} selesai` : "Daftar tugas pribadi"}
-          </p>
-        </div>
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <button onClick={() => navigate("/tasks/create")} className="btn-primary">
           <Plus size={16} /> Tugas detail
         </button>
