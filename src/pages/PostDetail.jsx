@@ -318,8 +318,7 @@
     }
   };
 
-  
-  const handleDownloadPdf = async () => {
+    const handleDownloadPdf = async () => {
     if (!post || pdfLoading) return;
 
     // Guide berupa upload PDF: unduh file aslinya langsung
@@ -346,6 +345,8 @@
         `${window.location.origin}/posts/${post.slug || slug}`
       );
       document.body.appendChild(host);
+
+      await fitImages(host); // ← rasio gambar dijaga
 
       const fileName =
         (post.title || "guide")
@@ -383,6 +384,38 @@
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
 
+  const waitForImage = (img) =>
+    new Promise((resolve) => {
+      if (img.complete && img.naturalWidth) return resolve();
+      img.onload = img.onerror = () => resolve();
+    });
+
+  // Beri tiap gambar ukuran piksel eksplisit dengan rasio asli (tidak gepeng)
+  const fitImages = async (root) => {
+    const imgs = Array.from(root.querySelectorAll("img"));
+    await Promise.all(imgs.map(waitForImage));
+
+    imgs.forEach((img) => {
+      const nw = img.naturalWidth;
+      const nh = img.naturalHeight;
+      if (!nw || !nh) {
+        img.remove(); // gagal dimuat, buang agar tidak jadi kotak kosong
+        return;
+      }
+
+      const maxW = img.parentElement?.clientWidth || 700;
+      const maxH = Number(img.dataset.maxh) || 700;
+      const scale = Math.min(1, maxW / nw, maxH / nh);
+
+      img.removeAttribute("width");
+      img.removeAttribute("height");
+      img.style.maxWidth = "none";
+      img.style.maxHeight = "none";
+      img.style.width = `${Math.round(nw * scale)}px`;
+      img.style.height = `${Math.round(nh * scale)}px`;
+    });
+  };
+
   const buildPdfHtml = (post, contentHtml, url) => {
     const date = post.createdAt
       ? new Date(post.createdAt).toLocaleDateString("id-ID", {
@@ -407,7 +440,7 @@
         (s, i) => `
         <div class="step avoid">
           <div class="step-title">Step ${String(i + 1).padStart(2, "0")}${s.title ? " — " + escapeHtml(s.title) : ""}</div>
-          ${s.image ? `<img src="${s.image}" class="step-img" />` : ""}
+          ${s.image ? `<img src="${s.image}" class="step-img" data-maxh="260" crossorigin="anonymous" />` : ""}
           ${s.description ? `<p class="pre-line">${escapeHtml(s.description)}</p>` : ""}
         </div>`
       )
@@ -431,7 +464,7 @@
       .map(
         (img) => `
         <div class="ref avoid">
-          <img src="${img.url}" />
+          <img src="${img.url}" data-maxh="240" crossorigin="anonymous" />
           ${img.name ? `<span>${escapeHtml(img.name)}</span>` : ""}
         </div>`
       )
@@ -447,20 +480,24 @@
         border-bottom: 1px solid #d1d5db; padding-bottom: 4px; margin: 26px 0 12px; }
       #pdf-root h3, #pdf-root h4 { margin: 12px 0 6px; }
       #pdf-root .meta { color: #6b7280; font-size: 12px; margin-bottom: 16px; }
-      #pdf-root .cover { width: 100%; max-height: 320px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
-      #pdf-root .content img { max-width: 100%; height: auto; }
-      #pdf-root .content table, #pdf-root table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+
+      
+      #pdf-root table { width: 100%; border-collapse: collapse; margin: 8px 0; }
       #pdf-root td, #pdf-root th { border: 1px solid #d1d5db; padding: 6px 10px; text-align: left; vertical-align: top; }
       #pdf-root pre { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px 12px;
-        font-family: Consolas, "Courier New", monospace; font-size: 11.5px; white-space: pre-wrap; word-break: break-word; margin: 0 0 12px; }
+      font-family: Consolas, "Courier New", monospace; font-size: 11.5px; white-space: pre-wrap; word-break: break-word; margin: 0 0 12px; }
       #pdf-root .content pre { margin: 8px 0; }
       #pdf-root .label { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: #6b7280; margin-bottom: 4px; }
       #pdf-root .step { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
       #pdf-root .step-title { font-weight: bold; margin-bottom: 6px; }
-      #pdf-root .step-img { max-width: 100%; max-height: 260px; border-radius: 6px; margin-bottom: 6px; }
+
+      #pdf-root .cover { display: block; margin: 0 0 8px 0; border-radius: 8px; }
+      #pdf-root .content img { display: block; margin: 8px 0 !important; }
+      #pdf-root .step-img { display: block; margin: 0 0 6px 0; border-radius: 6px; }
+      #pdf-root .ref { display: inline-block; width: 48%; margin: 0 1% 12px 0; vertical-align: top; text-align: left; }
+      #pdf-root .ref img { display: block; margin: 0; border-radius: 6px; }
+
       #pdf-root .pre-line { white-space: pre-line; margin: 0; }
-      #pdf-root .ref { display: inline-block; width: 48%; margin: 0 1% 12px; vertical-align: top; }
-      #pdf-root .ref img { width: 100%; border-radius: 6px; }
       #pdf-root .ref span { display: block; font-size: 11px; color: #6b7280; margin-top: 2px; }
       #pdf-root .tags { margin-top: 20px; color: #2563eb; font-size: 12px; }
       #pdf-root .footer { margin-top: 28px; padding-top: 10px; border-top: 1px solid #d1d5db; font-size: 11px; color: #6b7280; }
@@ -474,7 +511,7 @@
         ${date ? ` · ${date}` : ""}
       </div>
 
-      ${post.coverImage ? `<img class="cover" src="${post.coverImage}" />` : ""}
+      ${post.coverImage ? `<img class="cover" data-maxh="320" crossorigin="anonymous" src="${post.coverImage}" />` : ""}
 
       <h2>Description</h2>
       <div class="content">${contentHtml || ""}</div>

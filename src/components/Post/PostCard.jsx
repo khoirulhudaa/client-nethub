@@ -1,10 +1,11 @@
-import { BookPlus, Check, ChevronRight, Link2, Link2Icon, Loader2, Pin, PinOffIcon } from "lucide-react";
+import { BookPlus, Check, ChevronRight, Download, Link2, Link2Icon, Loader2, Pin, PinOffIcon } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import api from "../../api/axios.js";
 import { useAuth } from "../../context/AuthContext.jsx";
 import CategoryPill from "../UI/CategoryPill.jsx";
+import { downloadPostPdf } from "../../utils/pdfExport.js";
 
 const timeAgo = (date) => {
   const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
@@ -23,11 +24,9 @@ const timeAgo = (date) => {
 };
 
 const PostCard = ({
-  slug,
   post,
   roundedNormal = false,
   featured = false,
-  status = true,
   onPinChange,
   hideImage = false,
 }) => {
@@ -36,6 +35,7 @@ const PostCard = ({
   const [added, setAdded] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   const isGuest = user?.isGuest || user?.role === "guest";
   const canPin = !!user && !isGuest;
@@ -111,6 +111,60 @@ const PostCard = ({
       }
     } finally {
       setPinning(false);
+    }
+  };
+
+  const renderHighlightedContent = (html) => {
+    if (!html) return "";
+
+    let result = html;
+
+    highlights.forEach(({ text, color, occurrence = 0 }) => {
+      // Pisah tag dan teks, indeks ganjil = tag (jangan disentuh)
+      const parts = result.split(/(<[^>]+>)/);
+      let count = 0;
+
+      for (let p = 0; p < parts.length; p += 2) {
+        const seg = parts[p];
+        if (!seg) continue;
+
+        let out = "";
+        let pos = 0;
+        let idx;
+        while ((idx = seg.indexOf(text, pos)) !== -1) {
+          out += seg.slice(pos, idx);
+          if (count === occurrence) {
+            out += `<mark style="background-color: ${color}; padding: 1px 2px; border-radius: 3px;">${text}</mark>`;
+          } else {
+            out += text;
+          }
+          count++;
+          pos = idx + text.length;
+        }
+        parts[p] = out + seg.slice(pos);
+      }
+
+      result = parts.join("");
+    });
+
+    return result;
+  };
+
+  const handleDownloadPdf = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!post || pdfLoading) return;
+
+    setPdfLoading(true);
+    const toastId = toast.loading("Menyiapkan PDF...");
+    try {
+      await downloadPostPdf(post); // tanpa stabilo, pakai post.content apa adanya
+      toast.success("PDF berhasil diunduh", { id: toastId });
+    } catch (err) {
+      console.error(err);
+      toast.error("Gagal membuat PDF", { id: toastId });
+    } finally {
+      setPdfLoading(false);
     }
   };
 
@@ -257,8 +311,8 @@ const PostCard = ({
   );
 
 return (
-    <Link
-      to={`/posts/${post.slug}`}
+    <div
+      // to={`/posts/${post.slug}`}
       className="
         block
         flex-1
@@ -294,11 +348,6 @@ return (
             ) : (
               <div className="flex h-full w-full items-center justify-center text-gray-300 dark:text-white/10" />
             )}
-
-            {/* CategoryPill di pojok kiri atas cover (desktop saja) */}
-            {/* <div className="absolute top-2.5 left-2.5 z-20">
-              <CategoryPill category={post.category} />
-            </div> */}
           </div>
         )}
 
@@ -315,10 +364,7 @@ return (
                 transition-all md:group-hover:bg-black/40 md:group-hover:duration-700 md:group-hover:ease-out`
           }`}
         >
-          {/* ===== Category + Add di atas ===== */}
-          {/* - hideImage=true → selalu tampil */}
-          {/* - hideImage=false → hanya di mobile (md:hidden), karena di desktop sudah di cover */}
-          <div
+        <div
             className={`${
               hideImage
                 ? "group-hover:md:hidden"
@@ -387,7 +433,7 @@ return (
             className={`
               absolute ${hideImage ? "bottom-[4%]" : "bottom-[5.1%]"} left-[2%]
               ${hideImage ? "!left-[0%]" : ""}
-              hidden md:grid grid-cols-3 items-center justify-center
+              hidden md:grid grid-flow-col items-center justify-center
               transition-opacity ease-in-out
               opacity-0 group-hover:opacity-100
               z-30
@@ -484,6 +530,22 @@ return (
               </button>
             )}
 
+            <button
+              type="button"
+              onClick={handleDownloadPdf}
+              disabled={pdfLoading}
+              title="Download PDF"
+              className="flex h-max justify-center w-full items-center gap-x-2 bg-white border px-2 py-1 text-sm font-medium text-slate-950 transition-all ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98] disabled:opacity-60"
+            >
+              <div className="text-slate-900 flex items-center justify-center bg-white h-[32px] w-[30px]">
+                {pdfLoading ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : (
+                  <Download size={18} />
+                )}
+              </div>
+            </button>
+
             <Link
               to={`/posts/${post.slug}`}
               className={`justify-center w-max pr-2 flex mt-auto hover:brightness-75 h-max gap-x-2 hover:gap-x-5 active:scale-[0.98] border dark:!border-white items-center px-2 py-1 rounded-tr-2xl rounded-br-2xl overflow-hidden bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
@@ -498,7 +560,7 @@ return (
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 
