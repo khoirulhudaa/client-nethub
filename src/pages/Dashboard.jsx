@@ -668,7 +668,7 @@ const { remainingPosts } = useMemo(() => {
                 <div className="hidden sm:flex flex-wrap items-center mt-3 gap-2.5">
                   <button
                     onClick={() => updateParam("category", "")}
-                    className={`flex items-center border border-slate-400 hover:brightness-[85%] gap-1.5 rounded-xl font-medium active:scale-[0.99] px-3 md:px-3 py-2 text-sm transition ${
+                    className={`flex items-center border border-slate-400 hover:brightness-[85%] gap-1.5 rounded-xl font-medium active:scale-[0.99] px-3 md:px-3 py-1.5 text-sm transition ${
                       !category
                         ? "bg-slate-950 dark:bg-gradient-to-br from-blue-400 to-blue-100 dark:text-slate-900 text-white"
                         : "bg-slate-200 text-gray-600 hover:border-accent/50 hover:bg-slate-200"
@@ -683,7 +683,7 @@ const { remainingPosts } = useMemo(() => {
                     <button
                       key={item}
                       onClick={() => updateParam("category", item)}
-                      className={`flex active:scale-[0.99] border border-slate-400 font-medium duration-100 hover:brightness-[85%] items-center gap-1.5 rounded-xl px-3 md:px-3 py-2 text-sm transition ${
+                      className={`flex active:scale-[0.99] border border-slate-400 font-medium duration-100 hover:brightness-[85%] items-center gap-1.5 rounded-xl px-3 md:px-3 py-1.5 text-sm transition ${
                         category === item
                           ? "bg-slate-950 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900"
                           : "bg-slate-200 text-gray-600 hover:border-accent/50 hover:bg-slate-200"
