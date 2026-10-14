@@ -223,7 +223,9 @@ const PostCard = ({
   const CategoryAndAdd = (
     <div className="group-hover:md:hidden flex items-center justify-between gap-2">
       <div className="flex items-center gap-2">
-        <CategoryPill category={post.category} />
+        <div className="md:flex hidden">
+          <CategoryPill category={post.category} />
+        </div>
         {!isGuest && (
           <button
             onClick={handleAddToReadingList}
@@ -341,7 +343,6 @@ return (
               hideImage ? "md:group-hover:hidden" : ""
             } flex items-center gap-1.5 min-w-0 overflow-hidden`}
           >
-
             <div className="relative z-20">
               <CategoryPill category={post.category} />
             </div>
