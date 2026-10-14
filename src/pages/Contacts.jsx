@@ -52,8 +52,8 @@ const ContactDetail = ({ contact, onClose, onEdit, onDelete, onFavorite, onConta
 
   return (
     <>
-      <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="fixed right-0 top-0 z-50 flex h-full w-full max-w-xl flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-white/15 dark:bg-[#12121b]">
+      <div className="fixed inset-0 z-[9999] h-[91.5vh] bg-black/60 backdrop-blur-sm top-[7%] bottom-0 mt-auto" onClick={onClose} />
+      <div className="fixed right-0 z-[99999] flex h-[91.5vh] bottom-0 w-full max-w-xl flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-white/15 dark:bg-[#12121b]">
         <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-white/15">
           <h3 className="text-base font-semibold text-gray-900 dark:text-white">Detail kontak</h3>
           <button type="button" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10">
@@ -184,14 +184,14 @@ const ContactDetail = ({ contact, onClose, onEdit, onDelete, onFavorite, onConta
             </div>
           )}
 
-          <p className="text-[11px] text-gray-500">
+          {/* <p className="text-[11px] text-gray-500">
             Dibuat oleh {contact.createdBy?.name || "—"} · {formatDate(contact.createdAt)}
             {contact.updatedBy?.name && ` · diubah oleh ${contact.updatedBy.name} ${timeAgo(contact.updatedAt)}`}
-          </p>
+          </p> */}
         </div>
 
         {contact.canEdit && (
-          <div className="flex shrink-0 gap-3 border-t border-gray-100 px-5 py-4 dark:border-white/15">
+          <div className="flex shrink-0 gap-3 pb-4 border-t border-gray-100 px-5 py-4 dark:border-white/15">
             <button onClick={() => onEdit(contact)} className="btn-secondary flex-1"><Pencil size={14} /> Edit</button>
             <button onClick={() => onDelete(contact)} className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-red-600 py-2 text-sm font-medium text-white hover:bg-red-700">
               <Trash2 size={14} /> Hapus
