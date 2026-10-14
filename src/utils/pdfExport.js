@@ -214,3 +214,127 @@ export const downloadPostPdf = async (post, { contentHtml } = {}) => {
     host?.remove();
   }
 };
+
+// --- Ticket PDF --------------------------------------------------------------
+const buildTicketHtml = (ticket, { statusLabel = {}, includeInternal = false } = {}) => {
+  const fmt = (d) =>
+    d
+      ? new Date(d).toLocaleString("id-ID", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : "-";
+
+  const shortCode = String(ticket._id).slice(-8).toUpperCase();
+  const reporter = ticket.requesterName || ticket.createdBy?.name || "-";
+  const status = statusLabel[ticket.status] || ticket.status || "-";
+
+  const field = (label, value) => `
+    <div class="field avoid">
+      <div class="f-label">${escapeHtml(label)}</div>
+      <div class="f-value">${escapeHtml(value || "-")}</div>
+    </div>`;
+
+  const comments = (ticket.comments || [])
+    .filter((c) => includeInternal || !c.isInternal)
+    .map(
+      (c) => `
+      <div class="comment avoid">
+        <div class="c-head">
+          <b>${escapeHtml(c.user?.name || "User")}</b>
+          <span>${escapeHtml(fmt(c.createdAt))}</span>
+          ${c.isInternal ? `<em>Internal</em>` : ""}
+        </div>
+        <div class="c-body">${escapeHtml(c.content)}</div>
+      </div>`
+    )
+    .join("");
+
+  return `
+  <style>
+    #pdf-root { width: 794px; padding: 40px 44px; background: #fff; color: #111827;
+      font-family: Arial, Helvetica, sans-serif; font-size: 13px; line-height: 1.6; box-sizing: border-box; }
+    #pdf-root * { box-sizing: border-box; }
+    #pdf-root .ribbon { display: flex; justify-content: space-between; align-items: center;
+      background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px 14px; margin-bottom: 18px; }
+    #pdf-root .ribbon b { font-size: 15px; }
+    #pdf-root .ribbon span { font-family: Consolas, "Courier New", monospace; color: #6b7280; font-size: 12px; }
+    #pdf-root h1 { font-size: 24px; margin: 0 0 4px; }
+    #pdf-root h2 { font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
+      border-bottom: 1px solid #d1d5db; padding-bottom: 4px; margin: 24px 0 12px; }
+    #pdf-root .grid { display: flex; flex-wrap: wrap; }
+    #pdf-root .field { width: 33.33%; padding: 0 12px 12px 0; vertical-align: top; }
+    #pdf-root .f-label { font-size: 11px; font-weight: bold; color: #6b7280; }
+    #pdf-root .f-value { font-size: 13px; word-break: break-word; }
+    #pdf-root .desc { white-space: pre-wrap; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; background: #f9fafb; }
+    #pdf-root .comment { border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
+    #pdf-root .c-head { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+    #pdf-root .c-head b { color: #111827; margin-right: 8px; }
+    #pdf-root .c-head em { margin-left: 8px; color: #b45309; font-style: normal; font-size: 11px; }
+    #pdf-root .c-body { white-space: pre-wrap; }
+    #pdf-root .footer { margin-top: 26px; padding-top: 10px; border-top: 1px solid #d1d5db; font-size: 11px; color: #6b7280; }
+  </style>
+
+  <div id="pdf-root">
+    <div class="ribbon"><b>IT Helpdesk Ticket</b><span>#${escapeHtml(shortCode)}</span></div>
+
+    <h1>${escapeHtml(ticket.category || "Ticket")}</h1>
+
+    <h2>Ringkasan</h2>
+    <div class="grid">
+      ${field("Status", status)}
+      ${field("Priority", ticket.priority)}
+      ${field("Reported at", fmt(ticket.createdAt))}
+      ${field("Reporter", reporter)}
+      ${field("Location", ticket.location)}
+      ${field("Since when", ticket.sinceWhen)}
+      ${field("PC owner", ticket.pcOwner)}
+      ${field("Computer name / IP", ticket.computerName)}
+      ${ticket.anydeskNumber ? field("AnyDesk number", ticket.anydeskNumber) : ""}
+      ${field("Reported by", ticket.createdBy?.name)}
+    </div>
+
+    <h2>Problem description</h2>
+    <div class="desc">${escapeHtml(ticket.description || "-")}</div>
+
+    ${comments ? `<h2>Discussion</h2>${comments}` : ""}
+
+    <div class="footer">Ticket ID: ${escapeHtml(String(ticket._id))} · Dicetak ${escapeHtml(fmt(new Date()))}</div>
+  </div>`;
+};
+
+/**
+ * Unduh tiket sebagai PDF.
+ * @param {object} ticket
+ * @param {{ statusLabel?: object, includeInternal?: boolean }} [opts]
+ */
+export const downloadTicketPdf = async (ticket, opts = {}) => {
+  const html2pdf = (await import("html2pdf.js")).default;
+  let host;
+
+  try {
+    host = document.createElement("div");
+    host.style.cssText = "position:fixed;left:-10000px;top:0;z-index:-1;";
+    host.innerHTML = buildTicketHtml(ticket, opts);
+    document.body.appendChild(host);
+
+    const code = String(ticket._id).slice(-8).toLowerCase();
+
+    await html2pdf()
+      .set({
+        margin: [10, 0, 10, 0],
+        filename: `ticket-${slugifyName(ticket.category)}-${code}.pdf`,
+        image: { type: "jpeg", quality: 0.95 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        pagebreak: { mode: ["css", "legacy"], avoid: [".avoid", "h2"] },
+      })
+      .from(host.querySelector("#pdf-root"))
+      .save();
+  } finally {
+    host?.remove();
+  }
+};

@@ -4,24 +4,8 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import api from "../../api/axios.js";
 import { useAuth } from "../../context/AuthContext.jsx";
-import CategoryPill from "../UI/CategoryPill.jsx";
 import { downloadPostPdf } from "../../utils/pdfExport.js";
-
-const timeAgo = (date) => {
-  const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
-  const units = [
-    ["y", 31536000],
-    ["mo", 2592000],
-    ["d", 86400],
-    ["h", 3600],
-    ["m", 60],
-  ];
-  for (const [label, secs] of units) {
-    const val = Math.floor(seconds / secs);
-    if (val >= 1) return `${val}${label} ago`;
-  }
-  return "just now";
-};
+import CategoryPill from "../UI/CategoryPill.jsx";
 
 const PostCard = ({
   post,

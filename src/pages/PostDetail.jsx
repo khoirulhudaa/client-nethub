@@ -1802,7 +1802,7 @@
                 <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-white md:text-slate-900 dark:text-white">
                   Related Guides
                 </h2>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {related.map((p) => (
                     <PostCard key={p._id} post={p} />
                   ))}

@@ -1,9 +1,10 @@
-import { BookOpen, CheckCircle2, Loader2, MessageSquare, Monitor, Send, User } from "lucide-react";
+import { BookOpen, CheckCircle2, Download, Loader2, MessageSquare, Monitor, Send, User } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast"; // <- adjust to the toast library you use
 import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import { downloadTicketPdf } from "../utils/pdfExport.js";
 
 const statusColor = {
   Baru: "bg-blue-500/15 text-blue-400 border-blue-500/30",
@@ -87,6 +88,7 @@ const TicketDetailPage = () => {
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [newStatus, setNewStatus] = useState("Baru");
   const [statusNote, setStatusNote] = useState("");
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   const fetchTicket = async (silent = false) => {
     try {
@@ -152,6 +154,21 @@ const TicketDetailPage = () => {
     }
   };
 
+  const handleDownloadPdf = async () => {
+    if (!ticket || pdfLoading) return;
+    setPdfLoading(true);
+    const toastId = toast.loading("Menyiapkan PDF...");
+    try {
+      await downloadTicketPdf(ticket, { statusLabel, includeInternal: isAdmin });
+      toast.success("PDF berhasil diunduh", { id: toastId });
+    } catch (err) {
+      console.error(err);
+      toast.error("Gagal membuat PDF", { id: toastId });
+    } finally {
+      setPdfLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -174,23 +191,35 @@ const TicketDetailPage = () => {
   });
   const shortCode = String(ticket._id).slice(-8).toUpperCase();
 
-  const card = "rounded-2xl border border-white/10 bg-white dark:bg-[#0c0c18] p-5";
+  const card = "rounded-2xl border border-white/20 bg-white dark:bg-[#0c0c18] p-5";
 
   return (
-    <div className="mx-auto min-h-screen max-w-7xl md:border-x border-white dark:border-white/10 md:p-6">
+    <div className="mx-auto min-h-screen max-w-7xl md:border-x border-white dark:border-white/20 md:p-6">
       <style>{ticketCss}</style>
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-3 rounded-3xl">
         {/* Left */}
         <div className="lg:col-span-2 space-y-3">
           {/* ===== TICKET ===== */}
           <div className="drop-shadow-xl">
-            <div className="ticket-mask flex flex-col lg:flex-row overflow-hidden rounded-3xl border border-white/10 bg-white dark:bg-[#0c0c18]">
+            <div className="ticket-mask flex flex-col lg:flex-row overflow-hidden rounded-3xl border border-white/20 bg-white dark:bg-[#0c0c18]">
               {/* Ticket body */}
               <div className="flex-1 min-w-0">
                 {/* Top ribbon */}
                 <div className="flex items-center justify-between gap-3 bg-accent/20 px-5 py-3">
                   <span className="text-sm font-semibold text-white">IT Helpdesk Ticket</span>
-                  <span className="font-mono text-xs text-slate-500 dark:text-gray-400">#{shortCode}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-xs text-slate-500 dark:text-gray-400">#{shortCode}</span>
+                    <button
+                      type="button"
+                      onClick={handleDownloadPdf}
+                      disabled={pdfLoading}
+                      title="Download ticket as PDF"
+                      className="inline-flex h-[28px] items-center gap-1.5 rounded-lg border border-white/20 bg-transparent hover:bg-white/10 px-2.5 text-xs font-medium text-white transition hover:brightness-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {pdfLoading ? <Loader2 size={14} className="animate-spin" /> : <Download size={13} />}
+                      PDF
+                    </button>
+                  </div>
                 </div>
 
                 <div className="p-5 space-y-5">
@@ -334,7 +363,7 @@ const TicketDetailPage = () => {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Write a comment..."
-                className="flex-1 rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
+                className="flex-1 rounded-xl border border-white/20 bg-black/20 px-4 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-accent focus:outline-none"
               />
               <button
                 type="submit"
@@ -396,7 +425,7 @@ const TicketDetailPage = () => {
               <select
                 value={newStatus}
                 onChange={(e) => setNewStatus(e.target.value)}
-                className="mb-3 w-full cursor-pointer rounded-xl border border-white/10 bg-slate-200 px-3 py-2.5 text-sm hover:brightness-90 dark:bg-[#0c0c18] dark:text-white"
+                className="mb-3 w-full cursor-pointer rounded-xl border border-white/20 bg-slate-200 px-3 py-2.5 text-sm hover:brightness-90 dark:bg-[#0c0c18] dark:text-white"
               >
                 {Object.keys(statusColor).map((s) => (
                   <option key={s} value={s} className="bg-[#0c0c18] text-white">
@@ -410,7 +439,7 @@ const TicketDetailPage = () => {
                 onChange={(e) => setStatusNote(e.target.value)}
                 rows={2}
                 placeholder="Progress note (optional)..."
-                className="mb-3 w-full resize-none rounded-xl border border-white/10 bg-slate-200 px-3 py-2.5 text-sm text-slate-900 placeholder:text-gray-500 dark:bg-[#0c0c18] dark:text-white"
+                className="mb-3 w-full resize-none rounded-xl border border-white/20 bg-slate-200 px-3 py-2.5 text-sm text-slate-900 placeholder:text-gray-500 dark:bg-[#0c0c18] dark:text-white"
               />
 
               <button

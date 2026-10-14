@@ -58,13 +58,6 @@ const TrackTicketPage = () => {
       <div className="fixed inset-0 bg-gradient-to-br from-blue-950/90 via-transparent to-purple-800/20 pointer-events-none" />
 
       <div className="relative mx-auto max-w-7xl px-6 py-7">
-        {/* <Link
-          to="/user/tickets/create"
-          className="mb-6 inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition"
-        >
-          <ArrowLeft size={16} />
-          Buat Tiket Baru
-        </Link> */}
 
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-400">
