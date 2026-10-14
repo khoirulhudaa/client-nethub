@@ -202,7 +202,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
               ? "h-[130px]"
               : featured
                 ? "h-full"
-                : "h-auto md:h-[420px]"          
+                : "h-auto md:h-[300px]"          
           }`}
         >
           {/* Cover image — hanya tampil di md ke atas */}
@@ -232,7 +232,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
             className={`${
               hideImage
                 ? "relative flex flex-1 flex-col gap-3 pt-1"
-                : `relative md:absolute md:bottom-0 pt-1 md:pt-7 left-0 w-full 
+                : `relative md:absolute md:bottom-0 pt-1 md:pt-6 left-0 w-full 
                   md:group-hover:h-[100%] ease-out animation-height duration-500 
                   h-auto md:h-[35%] z-[33] flex flex-1 flex-col gap-3 md:p-3.5 pb-1 md:py-4
                   bg-transparent md:bg-black/30 dark:md:!bg-black/40 md:backdrop-blur-lg
@@ -241,38 +241,6 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                   transition-all md:group-hover:bg-black/40 md:group-hover:duration-700 md:group-hover:ease-out`
             }`}
           >
-            {/* Category + Add to Reading List */}
-            <div className="group-hover:md:hidden flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <CategoryPill category={post.category} />
-                {!isGuest && (
-                  <button
-                    onClick={handleAddToReadingList}
-                    disabled={adding || added}
-                    className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${
-                      added
-                        ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-600 dark:text-white"
-                        : "bg-gray-100 text-gray-600 hover:bg-accent hover:text-white dark:bg-white dark:text-slate-900 dark:hover:text-white dark:hover:bg-accent"
-                    }`}
-                    title={added ? "Sudah di Reading List" : "Tambah ke Reading List"}
-                  >
-                    {adding ? (
-                      <Loader2 size={11} className="animate-spin" />
-                    ) : added ? (
-                      <>
-                        <Check size={11} />
-                        Added
-                      </>
-                    ) : (
-                      <>
-                        <BookPlus size={11} />
-                        Add
-                      </>
-                    )}
-                  </button>
-                )}
-              </div>
-            </div>
 
             {/* Title */}
             <h3
@@ -289,11 +257,43 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                 hideImage ? "md:group-hover:hidden" : ""
               } flex items-center gap-1.5 min-w-0 overflow-hidden`}
             >
+              {/* Category + Add to Reading List */}
+              <div className="group-hover:md:hidden flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <CategoryPill category={post.category} />
+                  {!isGuest && (
+                    <button
+                      onClick={handleAddToReadingList}
+                      disabled={adding || added}
+                      className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${
+                        added
+                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-600 dark:text-white"
+                          : "bg-gray-100 text-gray-600 hover:bg-accent hover:text-white dark:bg-white dark:text-slate-900 dark:hover:text-white dark:hover:bg-accent"
+                      }`}
+                      title={added ? "Sudah di Reading List" : "Tambah ke Reading List"}
+                    >
+                      {adding ? (
+                        <Loader2 size={11} className="animate-spin" />
+                      ) : added ? (
+                        <>
+                          <Check size={11} />
+                          Added
+                        </>
+                      ) : (
+                        <>
+                          <BookPlus size={11} />
+                          Add
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+              </div>
               {post.tags?.length > 0
                 ? post.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="shrink-0 text-xs font-medium !text-slate-600 dark:text-gray-200 md:text-gray-200 !bg-white dark:bg-white/10 md:bg-white/10 px-2 py-0.5 rounded-lg whitespace-nowrap"
+                      className="shrink-0 text-xs font-medium !text-slate-600 dark:text-gray-200 md:text-gray-200 !bg-white dark:bg-white/10 md:bg-white/10 px-2 py-1 rounded-lg whitespace-nowrap"
                     >
                       #{tag}
                     </span>
