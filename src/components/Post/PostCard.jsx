@@ -343,7 +343,7 @@ return (
               hideImage ? "md:group-hover:hidden" : ""
             } flex items-center gap-1.5 min-w-0 overflow-hidden`}
           >
-            <div className="relative z-20">
+            <div className={`relative z-20 ${pinned ? 'md:hidden flex' : ''}`}>
               <CategoryPill category={post.category} />
             </div>
             {/* Add button di desktop saat !hideImage (category sudah di cover) */}
