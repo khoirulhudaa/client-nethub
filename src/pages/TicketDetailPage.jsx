@@ -23,6 +23,38 @@ const statusLabel = {
   Ditutup: "Closed",
 };
 
+// Nilai form yang berarti "baru terjadi" (sesuaikan dengan opsi di form kamu)
+const JUST_NOW_VALUES = ["baru saja", "just now", "recently"];
+
+const timeAgoEn = (from, now) => {
+  const MIN = 60 * 1000;
+  const minutes = Math.max(0, Math.floor((now - from) / MIN));
+  const plural = (n, unit) => `${n} ${unit}${n > 1 ? "s" : ""} ago`;
+
+  if (minutes < 60) return plural(minutes, "minute");
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return plural(hours, "hour");
+  const days = Math.floor(hours / 24);
+  if (days < 30) return plural(days, "day");
+  const months = Math.floor(days / 30);
+  if (months < 12) return plural(months, "month");
+  return plural(Math.floor(days / 365), "year");
+};
+
+// "Since when": "Baru saja" < 30 menit => "Recently", lebih dari itu => waktu relatif
+const formatSince = (sinceWhen, createdAt, now = Date.now()) => {
+  if (!sinceWhen) return "-";
+
+  const isJustNow = JUST_NOW_VALUES.includes(String(sinceWhen).trim().toLowerCase());
+  if (!isJustNow) return sinceWhen; // opsi lain: tampilkan apa adanya
+
+  const created = new Date(createdAt).getTime();
+  if (Number.isNaN(created)) return "Recently";
+
+  if (now - created < 30 * 60 * 1000) return "Recently";
+  return timeAgoEn(created, now);
+};
+
 // Ticket notch at the boundary between the ticket body and the stub.
 // Uses a mask so the cut-out is truly transparent, whatever the page background is.
 const ticketCss = `
@@ -67,7 +99,7 @@ const Barcode = ({ value = "" }) => {
 const Field = ({ label, children, mono = false }) => (
   <div>
     <p className="text-xs font-semibold text-slate-500 dark:text-gray-500">{label}</p>
-    <p className={`mt-0.5 text-sm dark:text-white ${mono ? "font-mono" : ""}`}>{children}</p>
+    <p className={`mt-0.5 ml-[0.3px] text-sm dark:text-white ${mono ? "font-mono" : ""}`}>{children}</p>
   </div>
 );
 
@@ -89,6 +121,12 @@ const TicketDetailPage = () => {
   const [newStatus, setNewStatus] = useState("Baru");
   const [statusNote, setStatusNote] = useState("");
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 60 * 1000);
+    return () => clearInterval(t);
+  }, []);
 
   const fetchTicket = async (silent = false) => {
     try {
@@ -261,7 +299,7 @@ const TicketDetailPage = () => {
                 <div className="p-5 space-y-5">
                   <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                     <Field label="Reported at">{createdAt}</Field>
-                    <Field label="Since when">{ticket.sinceWhen}</Field>
+                    <Field label="Since when">{formatSince(ticket.sinceWhen, ticket.createdAt, now)}</Field>
                     <Field label="PC owner">{ticket.pcOwner}</Field>
                     <Field label="Computer name / IP">{ticket.computerName || "-"}</Field>
                     {ticket.anydeskNumber && (

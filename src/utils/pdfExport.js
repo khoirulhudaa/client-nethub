@@ -258,10 +258,9 @@ const buildTicketHtml = (ticket, { statusLabel = {}, includeInternal = false } =
     #pdf-root { width: 794px; padding: 40px 44px; background: #fff; color: #111827;
       font-family: Arial, Helvetica, sans-serif; font-size: 13px; line-height: 1.6; box-sizing: border-box; }
     #pdf-root * { box-sizing: border-box; }
-    #pdf-root .ribbon { display: flex; justify-content: space-between; align-items: center;
-      background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px 14px; margin-bottom: 18px; }
-    #pdf-root .ribbon b { font-size: 15px; }
-    #pdf-root .ribbon span { font-family: Consolas, "Courier New", monospace; color: #6b7280; font-size: 12px; }
+    #pdf-root .kicker { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #6b7280; margin-bottom: 4px; }
+    #pdf-root h1 { font-size: 24px; margin: 0 0 4px; line-height: 1.25; }
+    #pdf-root .code { font-family: Consolas, "Courier New", monospace; font-size: 12px; color: #6b7280; margin-bottom: 6px; }
     #pdf-root h1 { font-size: 24px; margin: 0 0 4px; }
     #pdf-root h2 { font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
       border-bottom: 1px solid #d1d5db; padding-bottom: 4px; margin: 24px 0 12px; }
@@ -279,9 +278,9 @@ const buildTicketHtml = (ticket, { statusLabel = {}, includeInternal = false } =
   </style>
 
   <div id="pdf-root">
-    <div class="ribbon"><b>IT Helpdesk Ticket</b><span>#${escapeHtml(shortCode)}</span></div>
-
+    <div class="kicker">IT Helpdesk Ticket</div>
     <h1>${escapeHtml(ticket.category || "Ticket")}</h1>
+    <div class="code">#${escapeHtml(shortCode)}</div>
 
     <h2>Ringkasan</h2>
     <div class="grid">

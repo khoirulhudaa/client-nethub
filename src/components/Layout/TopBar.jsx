@@ -259,32 +259,34 @@ useEffect(() => {
                     <ul className="divide-y divide-gray-100 dark:divide-white/5">
                       {notifications.map((item) => (
                         <li key={item._id}>
-                          <button
-                            type="button"
-                            onClick={async () => {
-                              // Tandai sudah dibaca
-                              if (!item.isRead) {
-                                try {
-                                  await api.patch(`/notifications/${item._id}/read`);
-                                  setNotifications((prev) =>
-                                    prev.map((n) =>
-                                      n._id === item._id ? { ...n, isRead: true } : n
-                                    )
-                                  );
-                                  setUnreadCountNotification((prev) => Math.max(0, prev - 1));
-                                } catch (err) {
-                                  console.error(err);
-                                }
-                              }
-                              setOpenNotif(false);
-                              if (item.link) {
-                                navigate(item.link);
-                              }
-                            }}
-                            className={`w-full px-4 py-3 text-left transition hover:bg-black/[0.02] dark:hover:bg-white/[0.03] ${
-                              !item.isRead ? "bg-blue-50/50 dark:bg-blue-500/5" : ""
-                            }`}
-                          >
+                         <button
+                          type="button"
+                          onClick={() => {
+                            // 1. Tutup dropdown & redirect langsung, tanpa menunggu API
+                            setOpenNotifTicket(false);
+                            if (item.link) navigate(item.link);
+
+                            // 2. Tandai dibaca di background
+                            if (!item.isRead) {
+                              setNotifications((prev) =>
+                                prev.map((n) => (n._id === item._id ? { ...n, isRead: true } : n))
+                              );
+                              setUnreadCountNotification((prev) => Math.max(0, prev - 1));
+
+                              api.patch(`/notifications/${item._id}/read`).catch((err) => {
+                                console.error(err);
+                                // rollback kalau gagal
+                                setNotifications((prev) =>
+                                  prev.map((n) => (n._id === item._id ? { ...n, isRead: false } : n))
+                                );
+                                setUnreadCountNotification((prev) => prev + 1);
+                              });
+                            }
+                          }}
+                          className={`w-full px-4 py-3 text-left transition hover:bg-black/[0.02] dark:hover:bg-white/[0.03] ${
+                            !item.isRead ? "bg-blue-50/50 dark:bg-blue-500/5" : ""
+                          }`}
+                        >
                             <div className="flex gap-3">
                               <div
                                 className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
