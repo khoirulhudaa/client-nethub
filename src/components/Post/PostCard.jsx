@@ -293,7 +293,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                 ? post.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="shrink-0 text-xs font-medium !text-slate-600 dark:text-gray-200 md:text-gray-200 !bg-white dark:bg-white/10 md:bg-white/10 px-2 py-0.5 rounded-full whitespace-nowrap"
+                      className="shrink-0 text-xs font-medium !text-slate-600 dark:text-gray-200 md:text-gray-200 !bg-white dark:bg-white/10 md:bg-white/10 px-2 py-0.5 rounded-lg whitespace-nowrap"
                     >
                       #{tag}
                     </span>
