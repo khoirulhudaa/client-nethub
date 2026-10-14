@@ -191,6 +191,34 @@ const PostCard = ({
     }
   };
 
+  // Tombol Add saja
+  const AddButton = !isGuest && (
+    <button
+      onClick={handleAddToReadingList}
+      disabled={adding || added}
+      className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${
+        added
+          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-600 dark:text-white"
+          : "bg-gray-100 text-gray-600 hover:bg-accent hover:text-white dark:bg-white dark:text-slate-900 dark:hover:text-white dark:hover:bg-accent"
+      }`}
+      title={added ? "Sudah di Reading List" : "Tambah ke Reading List"}
+    >
+      {adding ? (
+        <Loader2 size={11} className="animate-spin" />
+      ) : added ? (
+        <>
+          <Check size={11} />
+          Added
+        </>
+      ) : (
+        <>
+          <BookPlus size={11} />
+          Add
+        </>
+      )}
+    </button>
+  );
+
   // Category + Add button (dipakai di 2 tempat berbeda tergantung hideImage)
   const CategoryAndAdd = (
     <div className="group-hover:md:hidden flex items-center justify-between gap-2">
@@ -226,7 +254,7 @@ const PostCard = ({
     </div>
   );
 
-  return (
+return (
     <Link
       to={`/posts/${post.slug}`}
       className="
@@ -262,10 +290,13 @@ const PostCard = ({
                 className="h-full w-full brightness-[80%] object-cover border-none transition-transform ease-fluid scale-[1.03] group-hover:scale-[1.07]"
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center text-gray-300 dark:text-white/10">
-                <CategoryPill category={post.category} />
-              </div>
+              <div className="flex h-full w-full items-center justify-center text-gray-300 dark:text-white/10" />
             )}
+
+            {/* CategoryPill di pojok kiri atas cover (desktop saja) */}
+            {/* <div className="absolute top-2.5 left-2.5 z-20">
+              <CategoryPill category={post.category} />
+            </div> */}
           </div>
         )}
 
@@ -282,8 +313,18 @@ const PostCard = ({
                 transition-all md:group-hover:bg-black/40 md:group-hover:duration-700 md:group-hover:ease-out`
           }`}
         >
-          {/* ===== hideImage=true → Category + Add di atas ===== */}
-          {hideImage && CategoryAndAdd}
+          {/* ===== Category + Add di atas ===== */}
+          {/* - hideImage=true → selalu tampil */}
+          {/* - hideImage=false → hanya di mobile (md:hidden), karena di desktop sudah di cover */}
+          <div
+            className={`${
+              hideImage
+                ? "group-hover:md:hidden"
+                : "md:hidden" // mobile only saat ada cover
+            } flex items-center justify-between gap-2`}
+          >
+            {CategoryAndAdd}
+          </div>
 
           {/* Title */}
           <h3
@@ -294,14 +335,22 @@ const PostCard = ({
             {post.title}
           </h3>
 
-          {/* Tags */}
+          {/* Tags + Add (desktop, hideImage=false) */}
           <div
             className={`${
               hideImage ? "md:group-hover:hidden" : ""
             } flex items-center gap-1.5 min-w-0 overflow-hidden`}
           >
-            {/* ===== hideImage=false → Category + Add di dalam area tags ===== */}
-            {!hideImage && CategoryAndAdd}
+
+            <div className="relative z-20">
+              <CategoryPill category={post.category} />
+            </div>
+            {/* Add button di desktop saat !hideImage (category sudah di cover) */}
+            {!hideImage && (
+              <div className="hidden md:flex group-hover:md:hidden items-center gap-2">
+                {AddButton}
+              </div>
+            )}
 
             {post.tags?.length > 0
               ? post.tags.map((tag) => (
