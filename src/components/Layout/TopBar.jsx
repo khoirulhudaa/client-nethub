@@ -130,6 +130,7 @@ useEffect(() => {
   const confirmLogout = async () => {
     setLoggingOut(true);
     try {
+      localStorage.removeItem("nethub_quote_seen"); // ← tambah
       logout?.();
       navigate("/login");
     } finally {
