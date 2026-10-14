@@ -6,7 +6,6 @@ import {
   ChevronDown,
   ChevronRight,
   Eye,
-  Newspaper,
   Plus,
   Search,
   Sparkles,
@@ -17,8 +16,30 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../api/axios.js";
 import PinnedHero from "../components/Post/PinnedHero.jsx";
-import { useAuth } from "../context/AuthContext.jsx";
 import PostCard from "../components/Post/PostCard.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
+
+// --- Search helpers ---------------------------------------------------------
+const STOP_WORDS = new Set([
+  "cara", "yang", "di", "ke", "dari", "dan", "atau", "untuk", "pada", "dengan",
+  "saat", "ketika", "akan", "itu", "ini", "ada", "adalah", "agar", "jika",
+  "kalau", "bisa", "apa", "bagaimana", "kenapa", "mengapa", "the", "a", "of", "to",
+]);
+
+// Normalisasi ringan bahasa Indonesia: isinya -> isi, errornya -> error
+const normalizeToken = (t) => t.replace(/(nya|lah|kah|ku|mu)$/i, "");
+
+const tokenize = (query) => {
+  const all = query
+    .toLowerCase()
+    .split(/[^\p{L}\p{N}]+/u)
+    .map(normalizeToken)
+    .filter((t) => t.length >= 2);
+
+  const meaningful = all.filter((t) => !STOP_WORDS.has(t));
+  // kalau semua kata ternyata stop word, tetap pakai semuanya
+  return Array.from(new Set(meaningful.length ? meaningful : all));
+};
 
 // --- Welcome / greeting row -------------------------------------------------
 const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
@@ -421,27 +442,58 @@ const Dashboard = () => {
 
   const isGuest = user?.isGuest || user?.role === "guest";
 
-  // Fuse + filteredPosts remain the same
-  const fuse = useMemo(() => {
-    const source = search.trim() ? allPostsForSearch : data.posts;
-    if (!source || source.length === 0) return null;
+  // Sumber data search: semua post + pinned (backend menyembunyikan pinned dari list biasa)
+  const searchSource = useMemo(() => {
+    if (!search.trim()) return data.posts || [];
+    const map = new Map();
+    [...allPostsForSearch, ...(data.pinned || [])].forEach((p) => {
+      if (p?._id) map.set(String(p._id), p);
+    });
+    return Array.from(map.values());
+  }, [search, allPostsForSearch, data.posts, data.pinned]);
 
-    return new Fuse(source, {
+  const fuse = useMemo(() => {
+    if (!searchSource.length) return null;
+    return new Fuse(searchSource, {
       keys: [
-        { name: "title", weight: 0.7 },
+        { name: "title", weight: 0.6 },
         { name: "excerpt", weight: 0.2 },
         { name: "tags", weight: 0.1 },
+        { name: "category", weight: 0.1 },
       ],
-      threshold: 0.35,
+      threshold: 0.3,
       ignoreLocation: true,
+      includeScore: true,
       minMatchCharLength: 2,
     });
-  }, [data.posts, allPostsForSearch, search]);
+  }, [searchSource]);
 
- const filteredPosts = useMemo(() => {
+  const filteredPosts = useMemo(() => {
     if (!search.trim()) return data.posts || [];
     if (!fuse) return [];
-    return fuse.search(search.trim()).map((result) => result.item);
+
+    const tokens = tokenize(search);
+    if (!tokens.length) return [];
+
+    // cari tiap kata, kumpulkan skor per post
+    const board = new Map(); // id -> { item, matched, score }
+    tokens.forEach((token) => {
+      fuse.search(token).forEach(({ item, score }) => {
+        const id = String(item._id);
+        const entry = board.get(id) || { item, matched: 0, score: 0 };
+        entry.matched += 1;
+        entry.score += 1 - (score ?? 0); // makin besar makin relevan
+        board.set(id, entry);
+      });
+    });
+
+    // minimal separuh kata harus cocok (3 kata -> minimal 2)
+    const minMatch = Math.max(1, Math.ceil(tokens.length / 2));
+
+    return Array.from(board.values())
+      .filter((e) => e.matched >= minMatch)
+      .sort((a, b) => b.matched - a.matched || b.score - a.score)
+      .map((e) => e.item);
   }, [fuse, search, data.posts]);
 
   // Sumber post untuk overview (guest)
