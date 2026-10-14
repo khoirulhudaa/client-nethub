@@ -113,7 +113,7 @@ const Login = () => {
             className="flex w-full items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 py-2.5 text-sm font-medium text-blue-700 transition hover:bg-blue-100 active:scale-[0.99]"
           >
             <Network size={16} />
-            Butuh Bantuan IT? Buat Tiket
+            Need IT Help? Create a Ticket
           </Link>
           <Link
               to="/install"

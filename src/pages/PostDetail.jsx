@@ -1,4 +1,4 @@
-  import { Bookmark, Calendar, CheckCircle2, ChevronLeft, ChevronRight, Circle, Clipboard, Eye, Heart, Highlighter, Link2, Loader2, Pencil, Pin, Plus, Share2, Timer, Trash2, Volume2, VolumeX, X, ZoomIn } from "lucide-react";
+  import { Bookmark, Calendar, CheckCircle2, ChevronLeft, ChevronRight, Circle, Clipboard, Download, Eye, Heart, Highlighter, Link2, Loader2, Pencil, Pin, Plus, Share2, Timer, Trash2, Volume2, VolumeX, X, ZoomIn } from "lucide-react";
   import { useCallback, useEffect, useMemo, useRef, useState } from "react";
   import toast from "react-hot-toast";
   import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -143,6 +143,7 @@
     const { user, loading: authLoading, loginAsGuest } = useAuth();
     const [searchParams, setSearchParams] = useSearchParams();
     const guestTried = useRef(false);
+    const [pdfLoading, setPdfLoading] = useState(false);
 
     const [post, setPost] = useState(null);
     const [related, setRelated] = useState([]);
@@ -315,6 +316,181 @@
     } finally {
       setFollowLoading(false);
     }
+  };
+
+  
+  const handleDownloadPdf = async () => {
+    if (!post || pdfLoading) return;
+
+    // Guide berupa upload PDF: unduh file aslinya langsung
+    if (post.pdfFile?.url && pdfBlobUrl) {
+      const a = document.createElement("a");
+      a.href = pdfBlobUrl;
+      a.download = post.pdfFile.name || "guide.pdf";
+      a.click();
+      return;
+    }
+
+    setPdfLoading(true);
+    const toastId = toast.loading("Menyiapkan PDF...");
+    let host;
+
+    try {
+      const html2pdf = (await import("html2pdf.js")).default;
+
+      host = document.createElement("div");
+      host.style.cssText = "position:fixed;left:-10000px;top:0;z-index:-1;";
+      host.innerHTML = buildPdfHtml(
+        post,
+        renderHighlightedContent(post.content), // stabilo milikmu ikut tercetak
+        `${window.location.origin}/posts/${post.slug || slug}`
+      );
+      document.body.appendChild(host);
+
+      const fileName =
+        (post.title || "guide")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/(^-|-$)/g, "") || "guide";
+
+      await html2pdf()
+        .set({
+          margin: [10, 0, 10, 0], // mm: atas, kiri, bawah, kanan
+          filename: `${fileName}.pdf`,
+          image: { type: "jpeg", quality: 0.95 },
+          html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          pagebreak: { mode: ["css", "legacy"], avoid: [".avoid", "img", "pre", "tr", "h2"] },
+        })
+        .from(host.querySelector("#pdf-root"))
+        .save();
+
+      toast.success("PDF berhasil diunduh", { id: toastId });
+    } catch (err) {
+      console.error(err);
+      toast.error("Gagal membuat PDF", { id: toastId });
+    } finally {
+      host?.remove();
+      setPdfLoading(false);
+    }
+  };
+
+  // --- PDF export helpers ------------------------------------------------------
+  const escapeHtml = (s = "") =>
+    String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+
+  const buildPdfHtml = (post, contentHtml, url) => {
+    const date = post.createdAt
+      ? new Date(post.createdAt).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : "";
+
+    const codeBlocks = (post.codeBlocks || [])
+      .map(
+        (b) => `
+        <div class="avoid">
+          <div class="label">${escapeHtml(b.language || "code")}${b.title ? " / " + escapeHtml(b.title) : ""}</div>
+          <pre>${escapeHtml(b.code)}</pre>
+        </div>`
+      )
+      .join("");
+
+    const steps = (post.steps || [])
+      .map(
+        (s, i) => `
+        <div class="step avoid">
+          <div class="step-title">Step ${String(i + 1).padStart(2, "0")}${s.title ? " — " + escapeHtml(s.title) : ""}</div>
+          ${s.image ? `<img src="${s.image}" class="step-img" />` : ""}
+          ${s.description ? `<p class="pre-line">${escapeHtml(s.description)}</p>` : ""}
+        </div>`
+      )
+      .join("");
+
+    const tables = (post.customTables || [])
+      .map(
+        (t) => `
+        <div class="avoid">
+          ${t.title ? `<h4>${escapeHtml(t.title)}</h4>` : ""}
+          <table>
+            ${(t.data || [])
+              .map((row) => `<tr>${row.map((c) => `<td>${escapeHtml(c || "—")}</td>`).join("")}</tr>`)
+              .join("")}
+          </table>
+        </div>`
+      )
+      .join("");
+
+    const refs = (post.referencesImages || [])
+      .map(
+        (img) => `
+        <div class="ref avoid">
+          <img src="${img.url}" />
+          ${img.name ? `<span>${escapeHtml(img.name)}</span>` : ""}
+        </div>`
+      )
+      .join("");
+
+    return `
+    <style>
+      #pdf-root { width: 794px; padding: 40px 44px; background: #fff; color: #111827;
+        font-family: Arial, Helvetica, sans-serif; font-size: 13px; line-height: 1.6; box-sizing: border-box; }
+      #pdf-root * { box-sizing: border-box; }
+      #pdf-root h1 { font-size: 26px; margin: 0 0 6px; line-height: 1.25; }
+      #pdf-root h2 { font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
+        border-bottom: 1px solid #d1d5db; padding-bottom: 4px; margin: 26px 0 12px; }
+      #pdf-root h3, #pdf-root h4 { margin: 12px 0 6px; }
+      #pdf-root .meta { color: #6b7280; font-size: 12px; margin-bottom: 16px; }
+      #pdf-root .cover { width: 100%; max-height: 320px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
+      #pdf-root .content img { max-width: 100%; height: auto; }
+      #pdf-root .content table, #pdf-root table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+      #pdf-root td, #pdf-root th { border: 1px solid #d1d5db; padding: 6px 10px; text-align: left; vertical-align: top; }
+      #pdf-root pre { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px 12px;
+        font-family: Consolas, "Courier New", monospace; font-size: 11.5px; white-space: pre-wrap; word-break: break-word; margin: 0 0 12px; }
+      #pdf-root .content pre { margin: 8px 0; }
+      #pdf-root .label { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: #6b7280; margin-bottom: 4px; }
+      #pdf-root .step { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+      #pdf-root .step-title { font-weight: bold; margin-bottom: 6px; }
+      #pdf-root .step-img { max-width: 100%; max-height: 260px; border-radius: 6px; margin-bottom: 6px; }
+      #pdf-root .pre-line { white-space: pre-line; margin: 0; }
+      #pdf-root .ref { display: inline-block; width: 48%; margin: 0 1% 12px; vertical-align: top; }
+      #pdf-root .ref img { width: 100%; border-radius: 6px; }
+      #pdf-root .ref span { display: block; font-size: 11px; color: #6b7280; margin-top: 2px; }
+      #pdf-root .tags { margin-top: 20px; color: #2563eb; font-size: 12px; }
+      #pdf-root .footer { margin-top: 28px; padding-top: 10px; border-top: 1px solid #d1d5db; font-size: 11px; color: #6b7280; }
+    </style>
+
+    <div id="pdf-root">
+      <h1>${escapeHtml(post.title)}</h1>
+      <div class="meta">
+        ${post.author?.name ? `Oleh ${escapeHtml(post.author.name)}` : ""}
+        ${post.category ? ` · ${escapeHtml(post.category)}` : ""}
+        ${date ? ` · ${date}` : ""}
+      </div>
+
+      ${post.coverImage ? `<img class="cover" src="${post.coverImage}" />` : ""}
+
+      <h2>Description</h2>
+      <div class="content">${contentHtml || ""}</div>
+
+      ${codeBlocks ? `<h2>Commands &amp; Code</h2>${codeBlocks}` : ""}
+      ${steps ? `<h2>Step-by-step Guide</h2>${steps}` : ""}
+      ${tables ? `<h2>Tables</h2>${tables}` : ""}
+      ${refs ? `<h2>Reference Images</h2>${refs}` : ""}
+
+      ${
+        post.tags?.length
+          ? `<div class="tags">${post.tags.map((t) => "#" + escapeHtml(t)).join("  ")}</div>`
+          : ""
+      }
+      <div class="footer">Sumber: ${escapeHtml(url)}</div>
+    </div>`;
   };
 
   // ===== Text-to-Speech: baca deskripsi =====
@@ -965,6 +1141,20 @@
 
             <div className="my-5 w-full md:w-max md:flex justify-between items-center gap-2.5">
                 <div className="flex-wrap flex items-center w-full gap-2 md:gap-2.5 z-[999]">
+                <button
+                  onClick={handleDownloadPdf}
+                  disabled={pdfLoading}
+                  title="Download guide as PDF"
+                  className="active:scale-[0.99] duration-100 inline-flex items-center gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 px-2 py-1.5 h-[28px] text-xs font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-red-500/25 dark:hover:!bg-red-500/90"
+                >
+                  {pdfLoading ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    <Download size={13} className="relative top-[-1px]" />
+                  )}
+                  Download
+                </button>
+                <div className="h-[18px] w-[1.3px] md:flex hidden bg-slate-400 dark:bg-white/20 mx-1" />
                 {canPin && (
                   <button
                     onClick={handlePin}
@@ -1015,9 +1205,9 @@
               <div className="h-[18px] w-[1.3px] md:flex hidden bg-slate-400 dark:bg-white/20 mr-1 ml-[2px]" />
 
               <div className="w-max flex md:mt-0 mt-2 gap-2 md:gap-2.5">
-                <div className="md:flex hidden">
+                {/* <div className="md:flex hidden">
                   <CategoryPill solid={false} border={true} category={post?.category} />
-                </div>
+                </div> */}
                 {isCompleted && (
                   <div className="w-max inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-100 px-3 py-1.5 h-[28px] text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
                     <CheckCircle2 size={13} />
