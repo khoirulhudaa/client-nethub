@@ -22,7 +22,15 @@ const timeAgo = (date) => {
   return "just now";
 };
 
-const PostCard = ({ slug, post, roundedNormal = false, featured = false, status = true, onPinChange, hideImage = false }) => {
+const PostCard = ({
+  slug,
+  post,
+  roundedNormal = false,
+  featured = false,
+  status = true,
+  onPinChange,
+  hideImage = false,
+}) => {
   const { user } = useAuth();
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
@@ -34,7 +42,6 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
 
   const [pinned, setPinned] = useState(!!post.isPinned);
   const [pinning, setPinning] = useState(false);
-
 
   const postUrl = `${window.location.origin}/posts/${post?.slug}?ref=share`;
 
@@ -72,23 +79,22 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
     whatsapp: `https://wa.me/?text=${shareText}`,
   };
 
- const copyLink = async (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  try {
-    await navigator.clipboard.writeText(postUrl);
-    setCopied(true);
-    toast.success("Link berhasil disalin");
+  const copyLink = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(postUrl);
+      setCopied(true);
+      toast.success("Link berhasil disalin");
 
-    // Kembali normal setelah 2 detik
-    setTimeout(() => {
-      setCopied(false);
-      setShowShare(false); // optional: otomatis tutup dropdown juga
-    }, 2000);
-  } catch {
-    toast.error("Gagal menyalin link");
-  }
-};
+      setTimeout(() => {
+        setCopied(false);
+        setShowShare(false);
+      }, 2000);
+    } catch {
+      toast.error("Gagal menyalin link");
+    }
+  };
 
   const requestPin = async (replace = false) => {
     setPinning(true);
@@ -108,7 +114,7 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
     }
   };
 
- const confirmReplace = (oldest) => {
+  const confirmReplace = (oldest) => {
     toast(
       (t) => (
         <div className="flex w-full flex-col rounded-2xl gap-3 text-sm">
@@ -141,8 +147,8 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
         duration: 10000,
         icon: "📌",
         style: {
-          maxWidth: "none",            // buang batas 350px bawaan
-          width: "min(480px, 92vw)",   // lebar modal; di mobile maksimal 92% layar
+          maxWidth: "none",
+          width: "min(480px, 92vw)",
           padding: "16px 18px",
           marginRight: "30px",
           borderRadius: "20px",
@@ -185,147 +191,159 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
     }
   };
 
-  return (
-      <Link
-        to={`/posts/${post.slug}`}
-        className="
-          block
-          flex-1
-          min-w-0
-          transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]
-          hover:flex-[2.2]
-        "
-      >
-        <div
-          className={`group cursor-pointer hover:dark:!border-blue-300/50 relative p-3.5 bg-slate-300 rounded-[24px] dark:!bg-[#0c0c18] border dark:!border-white/20 flex flex-col overflow-hidden ${
-            hideImage
-              ? "h-[130px]"
-              : featured
-                ? "h-full"
-                : "h-auto md:h-[300px]"          
-          }`}
-        >
-          {/* Cover image — hanya tampil di md ke atas */}
-          {!hideImage && (
-            <div
-              className={`relative hidden md:flex bg-white/30 dark:bg-slate-900/40 overflow-hidden ${
-                featured
-                  ? "h-56"
-                  : `${roundedNormal ? "rounded-[16px]" : "rounded-[14px]"} h-[100%]`
-              }`}
-            >
-              {post.coverImage ? (
-                <img
-                  src={post.coverImage}
-                  alt={post.title}
-                  className="h-full w-full brightness-[80%] object-cover border-none transition-transform ease-fluid scale-[1.03] group-hover:scale-[1.07]"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-gray-300 dark:text-white/10">
-                  <CategoryPill category={post.category} />
-                </div>
-              )}
-            </div>
-          )}
+  // Category + Add button (dipakai di 2 tempat berbeda tergantung hideImage)
+  const CategoryAndAdd = (
+    <div className="group-hover:md:hidden flex items-center justify-between gap-2">
+      <div className="flex items-center gap-2">
+        <CategoryPill category={post.category} />
+        {!isGuest && (
+          <button
+            onClick={handleAddToReadingList}
+            disabled={adding || added}
+            className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${
+              added
+                ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-600 dark:text-white"
+                : "bg-gray-100 text-gray-600 hover:bg-accent hover:text-white dark:bg-white dark:text-slate-900 dark:hover:text-white dark:hover:bg-accent"
+            }`}
+            title={added ? "Sudah di Reading List" : "Tambah ke Reading List"}
+          >
+            {adding ? (
+              <Loader2 size={11} className="animate-spin" />
+            ) : added ? (
+              <>
+                <Check size={11} />
+                Added
+              </>
+            ) : (
+              <>
+                <BookPlus size={11} />
+                Add
+              </>
+            )}
+          </button>
+        )}
+      </div>
+    </div>
+  );
 
+  return (
+    <Link
+      to={`/posts/${post.slug}`}
+      className="
+        block
+        flex-1
+        min-w-0
+        transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]
+        hover:flex-[2.2]
+      "
+    >
+      <div
+        className={`group cursor-pointer hover:dark:!border-blue-300/50 relative p-3.5 bg-slate-300 rounded-[24px] dark:!bg-[#0c0c18] border dark:!border-white/20 flex flex-col overflow-hidden ${
+          hideImage
+            ? "h-[130px]"
+            : featured
+              ? "h-full"
+              : "h-auto md:h-[300px]"
+        }`}
+      >
+        {/* Cover image — hanya tampil di md ke atas & saat !hideImage */}
+        {!hideImage && (
           <div
-            className={`${
-              hideImage
-                ? "relative flex flex-1 flex-col gap-3 pt-1"
-                : `relative md:absolute md:bottom-0 pt-1 md:pt-6 left-0 w-full 
-                  md:group-hover:h-[100%] ease-out animation-height duration-500 
-                  h-auto md:h-[35%] z-[33] flex flex-1 flex-col gap-3 md:p-3.5 pb-1 md:py-4
-                  bg-transparent md:bg-black/30 dark:md:!bg-black/40 md:backdrop-blur-lg
-                  border-white/20 dark:border-white/10
-                  shadow-none md:shadow-[0_-4px_20px_rgba(0,0,0,0.05)]
-                  transition-all md:group-hover:bg-black/40 md:group-hover:duration-700 md:group-hover:ease-out`
+            className={`relative hidden md:flex bg-white/30 dark:bg-slate-900/40 overflow-hidden ${
+              featured
+                ? "h-56"
+                : `${roundedNormal ? "rounded-[16px]" : "rounded-[14px]"} h-[100%]`
             }`}
           >
-
-            {/* Title */}
-            <h3
-              className={`font-semibold text-slate-900 dark:text-white md:text-white bg-transparent md:bg-blue-900/90 truncate w-max max-w-[90%] leading-snug tracking-tight ${
-                featured ? "text-xl" : "text-base"
-              }`}
-            >
-              {post.title}
-            </h3>
-
-            {/* Tags */}
-            <div
-              className={`${
-                hideImage ? "md:group-hover:hidden" : ""
-              } flex items-center gap-1.5 min-w-0 overflow-hidden`}
-            >
-              {/* Category + Add to Reading List */}
-              <div className="group-hover:md:hidden flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <CategoryPill category={post.category} />
-                  {!isGuest && (
-                    <button
-                      onClick={handleAddToReadingList}
-                      disabled={adding || added}
-                      className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${
-                        added
-                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-600 dark:text-white"
-                          : "bg-gray-100 text-gray-600 hover:bg-accent hover:text-white dark:bg-white dark:text-slate-900 dark:hover:text-white dark:hover:bg-accent"
-                      }`}
-                      title={added ? "Sudah di Reading List" : "Tambah ke Reading List"}
-                    >
-                      {adding ? (
-                        <Loader2 size={11} className="animate-spin" />
-                      ) : added ? (
-                        <>
-                          <Check size={11} />
-                          Added
-                        </>
-                      ) : (
-                        <>
-                          <BookPlus size={11} />
-                          Add
-                        </>
-                      )}
-                    </button>
-                  )}
-                </div>
-              </div>
-              {post.tags?.length > 0
-                ? post.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="shrink-0 text-xs font-medium !text-slate-600 dark:text-gray-200 md:text-gray-200 !bg-white dark:bg-white/10 md:bg-white/10 px-2 py-1 rounded-lg whitespace-nowrap"
-                    >
-                      #{tag}
-                    </span>
-                  ))
-                : null}
-            </div>
-
-            {/* Overlay khusus pinned card */}
-            {hideImage && (
-              <div
-                className="
-                  absolute inset-0 z-20
-                  bg-black/0
-                  transition-colors ease-out
-                  pointer-events-none
-                  rounded-2xl
-                "
+            {post.coverImage ? (
+              <img
+                src={post.coverImage}
+                alt={post.title}
+                className="h-full w-full brightness-[80%] object-cover border-none transition-transform ease-fluid scale-[1.03] group-hover:scale-[1.07]"
               />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-gray-300 dark:text-white/10">
+                <CategoryPill category={post.category} />
+              </div>
             )}
+          </div>
+        )}
 
-            {/* Action buttons (Share / Pin / Read) — hanya muncul di desktop saat hover */}
+        <div
+          className={`${
+            hideImage
+              ? "relative flex flex-1 flex-col gap-3 pt-1"
+              : `relative md:absolute md:bottom-0 pt-1 md:pt-6 left-0 w-full 
+                md:group-hover:h-[100%] ease-out animation-height duration-500 
+                h-auto md:h-[35%] z-[33] flex flex-1 flex-col gap-3 md:p-3.5 pb-1 md:py-4
+                bg-transparent md:bg-black/30 dark:md:!bg-black/40 md:backdrop-blur-lg
+                border-white/20 dark:border-white/10
+                shadow-none md:shadow-[0_-4px_20px_rgba(0,0,0,0.05)]
+                transition-all md:group-hover:bg-black/40 md:group-hover:duration-700 md:group-hover:ease-out`
+          }`}
+        >
+          {/* ===== hideImage=true → Category + Add di atas ===== */}
+          {hideImage && CategoryAndAdd}
+
+          {/* Title */}
+          <h3
+            className={`font-semibold text-slate-900 dark:text-white md:text-white bg-transparent md:bg-blue-900/90 truncate w-max max-w-[90%] leading-snug tracking-tight ${
+              featured ? "text-xl" : "text-base"
+            }`}
+          >
+            {post.title}
+          </h3>
+
+          {/* Tags */}
+          <div
+            className={`${
+              hideImage ? "md:group-hover:hidden" : ""
+            } flex items-center gap-1.5 min-w-0 overflow-hidden`}
+          >
+            {/* ===== hideImage=false → Category + Add di dalam area tags ===== */}
+            {!hideImage && CategoryAndAdd}
+
+            {post.tags?.length > 0
+              ? post.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className={`shrink-0 text-xs font-medium !text-slate-600 dark:text-gray-200 md:text-gray-200 !bg-white dark:bg-white/10 md:bg-white/10 whitespace-nowrap ${
+                      hideImage
+                        ? "px-2 py-0.5 rounded-full"
+                        : "px-2 py-1 rounded-lg"
+                    }`}
+                  >
+                    #{tag}
+                  </span>
+                ))
+              : null}
+          </div>
+
+          {/* Overlay khusus pinned card */}
+          {hideImage && (
             <div
-              className={`
-                absolute bottom-[4%] left-[2%]
-                ${hideImage ? "!left-[0%]" : ""}
-                hidden md:grid grid-cols-3 items-center justify-center
-                transition-opacity ease-in-out
-                opacity-0 group-hover:opacity-100
-                z-30
-                ${featured ? "mt-3" : "mt-2"}
-              `}
-            >
+              className="
+                absolute inset-0 z-20
+                bg-black/0
+                transition-colors ease-out
+                pointer-events-none
+                rounded-2xl
+              "
+            />
+          )}
+
+          {/* Action buttons (Share / Pin / Read) — hanya muncul di desktop saat hover */}
+          <div
+            className={`
+              absolute ${hideImage ? "bottom-[4%]" : "bottom-[5.1%]"} left-[2%]
+              ${hideImage ? "!left-[0%]" : ""}
+              hidden md:grid grid-cols-3 items-center justify-center
+              transition-opacity ease-in-out
+              opacity-0 group-hover:opacity-100
+              z-30
+              ${featured ? "mt-3" : "mt-2"}
+            `}
+          >
             <div className="relative w-full">
               <button
                 type="button"
@@ -346,7 +364,6 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
 
               {showShare && (
                 <>
-                  {/* Backdrop */}
                   <div
                     className="fixed inset-0 z-40"
                     onClick={(e) => {
@@ -397,22 +414,21 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                 </>
               )}
             </div>
-            
-            {/* ===== SHARE BUTTON (dengan dropdown seperti PostDetail) ===== */}
+
             {canPin && (
               <button
                 type="button"
                 onClick={handlePin}
                 disabled={pinning}
-                className={`flex h-max justify-center w-full items-center gap-x-2 bg-white border px-2 py-1 text-sm font-medium text-slate-950 transition-all ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98]`}
+                className="flex h-max justify-center w-full items-center gap-x-2 bg-white border px-2 py-1 text-sm font-medium text-slate-950 transition-all ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98]"
               >
                 <div className="active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[32px] w-[30px]">
                   {pinning ? (
                     <Loader2 size={18} className="animate-spin" />
+                  ) : pinned ? (
+                    <PinOffIcon size={18} className="fill-white" />
                   ) : (
-                    <>
-                      {pinned ? <PinOffIcon size={18} className={pinned ? "fill-white" : ""} /> : <Pin size={18} className={pinned ? "fill-white" : ""} />}
-                    </>
+                    <Pin size={18} />
                   )}
                 </div>
               </button>
@@ -424,11 +440,8 @@ const PostCard = ({ slug, post, roundedNormal = false, featured = false, status 
                 featured ? "mt-3" : "mt-2"
               }`}
             >
-              {/* <p>Read</p> */}
               <div className="w-max gap-x-2 active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[32px]">
-                <p>
-                  Read
-                </p>
+                <p>Read</p>
                 <ChevronRight size={21} />
               </div>
             </Link>
