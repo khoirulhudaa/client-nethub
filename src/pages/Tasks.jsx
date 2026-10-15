@@ -86,7 +86,7 @@ const Tasks = () => {
       setTotal(data.total);
     } catch (err) {
       if (id !== reqRef.current) return;
-      toast.error(err?.response?.data?.message || "Gagal memuat tugas");
+      toast.error(err?.response?.data?.message || "Failed to load tasks");
     } finally {
       if (id === reqRef.current) setLoading(false);
     }
@@ -108,7 +108,7 @@ const Tasks = () => {
   const patchLocal = (id, patch) =>
     setTasks((l) => l.map((t) => (t._id === id ? { ...t, ...patch } : t)));
 
-  // ===== Aksi =====
+  // ===== Actions =====
   const handleQuickAdd = async (e) => {
     e.preventDefault();
     if (!quick.title.trim()) return;
@@ -122,7 +122,7 @@ const Tasks = () => {
       setQuick((s) => ({ ...s, title: "", dueDate: "" }));
       refresh();
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Gagal menambah tugas");
+      toast.error(err?.response?.data?.message || "Failed to add task");
     } finally {
       setAdding(false);
     }
@@ -132,11 +132,11 @@ const Tasks = () => {
     patchLocal(task._id, { status: task.status === "done" ? "todo" : "done" }); // optimistic
     try {
       const { data } = await api.patch(`/tasks/${task._id}/toggle`, null, { params: { tzOffset: tzOffset() } });
-      if (data.recurred) toast.success("Selesai. Jadwal dimajukan ke periode berikutnya");
+      if (data.recurred) toast.success("Done. Schedule moved to the next period");
       refresh();
     } catch (err) {
       patchLocal(task._id, { status: task.status });
-      toast.error(err?.response?.data?.message || "Gagal mengubah status");
+      toast.error(err?.response?.data?.message || "Failed to update status");
     }
   };
 
@@ -145,7 +145,7 @@ const Tasks = () => {
       const { data } = await api.patch(`/tasks/${task._id}/checklist/${idx}`);
       patchLocal(task._id, { checklist: data.task.checklist });
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Gagal mengubah sub-tugas");
+      toast.error(err?.response?.data?.message || "Failed to update subtask");
     }
   };
 
@@ -154,11 +154,11 @@ const Tasks = () => {
     setDeleting(true);
     try {
       await api.delete(`/tasks/${deleteTarget._id}`);
-      toast.success("Tugas dihapus");
+      toast.success("Task deleted");
       setDeleteTarget(null);
       refresh();
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Gagal menghapus tugas");
+      toast.error(err?.response?.data?.message || "Failed to delete task");
     } finally {
       setDeleting(false);
     }
@@ -168,11 +168,11 @@ const Tasks = () => {
     setDeleting(true);
     try {
       const { data } = await api.delete("/tasks/completed");
-      toast.success(`${data.deleted} tugas selesai dihapus`);
+      toast.success(`${data.deleted} completed tasks deleted`);
       setConfirmClear(false);
       refresh();
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Gagal membersihkan");
+      toast.error(err?.response?.data?.message || "Failed to clear tasks");
     } finally {
       setDeleting(false);
     }
@@ -181,7 +181,7 @@ const Tasks = () => {
   if (isGuest) {
     return (
       <div className="mx-auto max-w-full py-24 text-center text-white md:text-slate-900 dark:text-white">
-        To-do list hanya untuk user yang sudah login.
+        The to-do list is only available to logged-in users.
       </div>
     );
   }
@@ -200,18 +200,18 @@ const Tasks = () => {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <button onClick={() => navigate("/tasks/create")} className="btn-primary">
-          <Plus size={16} /> Tugas detail
+          <Plus size={16} /> Detailed task
         </button>
       </div>
 
-      {/* Ringkasan */}
-      {stats && (
+      {/* Summary */}
+      {/* {stats && (
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {[
-            { label: "Aktif", value: stats.active, on: () => { setStatus("active"); setDue(""); } },
-            { label: "Hari ini", value: stats.today, on: () => { setStatus("active"); setDue("today"); } },
-            { label: "Terlambat", value: stats.overdue, on: () => { setStatus("active"); setDue("overdue"); }, warn: stats.overdue > 0 },
-            { label: "Selesai", value: stats.done, on: () => { setStatus("done"); setDue(""); } },
+            { label: "Active", value: stats.active, on: () => { setStatus("active"); setDue(""); } },
+            { label: "Today", value: stats.today, on: () => { setStatus("active"); setDue("today"); } },
+            { label: "Overdue", value: stats.overdue, on: () => { setStatus("active"); setDue("overdue"); }, warn: stats.overdue > 0 },
+            { label: "Done", value: stats.done, on: () => { setStatus("done"); setDue(""); } },
           ].map((s) => (
             <button
               key={s.label}
@@ -223,9 +223,9 @@ const Tasks = () => {
             </button>
           ))}
         </div>
-      )}
+      )} */}
 
-      {/* Tambah cepat */}
+      {/* Quick add */}
       <form
         onSubmit={handleQuickAdd}
         className="flex flex-col gap-2 rounded-2xl md:flex-row"
@@ -234,7 +234,7 @@ const Tasks = () => {
           value={quick.title}
           onChange={(e) => setQuick((s) => ({ ...s, title: e.target.value }))}
           maxLength={200}
-          placeholder="Tulis tugas baru lalu tekan Enter…"
+          placeholder="Write a new task and press Enter…"
           className="input-field flex-1 dark:!bg-slate-100/10 dark:!text-white"
         />
         <select
@@ -251,38 +251,38 @@ const Tasks = () => {
           className="input-field md:w-44 dark:!bg-slate-100/10 dark:!text-white"
         />
         <button type="submit" disabled={adding || !quick.title.trim()} className="btn-primary disabled:opacity-50">
-          {adding ? <Loader2 size={15} className="animate-spin" /> : <Plus size={15} />} Tambah
+          {adding ? <Loader2 size={15} className="animate-spin" /> : <Plus size={15} />} Add
         </button>
       </form>
 
-      {/* Filter */}
+      {/* Filters */}
       <div className="flex flex-col gap-2 sm:flex-row">
         <div className="relative flex-1">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search task now..."
+            placeholder="Search tasks…"
             className="input-field !pl-9 dark:!bg-slate-100/10 dark:!text-white"
           />
         </div>
         <select value={sort} onChange={(e) => setSort(e.target.value)} className="input-field sm:w-48 dark:!bg-slate-100/10 dark:!text-white">
-          <option value="smart" className="!text-black">Urutan cerdas</option>
-          <option value="due" className="!text-black">Tenggat terdekat</option>
-          <option value="priority" className="!text-black">Prioritas tertinggi</option>
-          <option value="newest" className="!text-black">Terbaru dibuat</option>
-          <option value="completed" className="!text-black">Terakhir selesai</option>
+          <option value="smart" className="!text-black">Smart order</option>
+          <option value="due" className="!text-black">Nearest due date</option>
+          <option value="priority" className="!text-black">Highest priority</option>
+          <option value="newest" className="!text-black">Newest created</option>
+          <option value="completed" className="!text-black">Recently completed</option>
         </select>
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <button className={chip(status === "active")} onClick={() => setStatus("active")}>Aktif</button>
-        <button className={chip(status === "done")} onClick={() => setStatus("done")}>Selesai</button>
-        <button className={chip(status === "all")} onClick={() => setStatus("all")}>Semua</button>
+        <button className={chip(status === "active")} onClick={() => setStatus("active")}>Active</button>
+        <button className={chip(status === "done")} onClick={() => setStatus("done")}>Done</button>
+        <button className={chip(status === "all")} onClick={() => setStatus("all")}>All</button>
         <span className="mx-1 hidden h-7 w-px bg-white/20 md:block" />
-        <button className={chip(due === "today")} onClick={() => setDue(due === "today" ? "" : "today")}>Hari ini</button>
-        <button className={chip(due === "week")} onClick={() => setDue(due === "week" ? "" : "week")}>7 hari</button>
-        <button className={chip(due === "overdue")} onClick={() => setDue(due === "overdue" ? "" : "overdue")}>Terlambat</button>
+        <button className={chip(due === "today")} onClick={() => setDue(due === "today" ? "" : "today")}>Today</button>
+        <button className={chip(due === "week")} onClick={() => setDue(due === "week" ? "" : "week")}>7 days</button>
+        <button className={chip(due === "overdue")} onClick={() => setDue(due === "overdue" ? "" : "overdue")}>Overdue</button>
         <span className="mx-1 hidden h-7 w-px bg-white/20 md:block" />
         {PRIORITIES.map((p) => (
           <button key={p.value} className={chip(priority === p.value)} onClick={() => setPriority(priority === p.value ? "" : p.value)}>
@@ -291,18 +291,18 @@ const Tasks = () => {
         ))}
         {stats?.lists?.length > 1 && (
           <select value={list} onChange={(e) => setList(e.target.value)} className="input-field !h-auto !w-auto !py-1.5 text-xs dark:!bg-slate-100/10 dark:!text-white">
-            <option value="" className="!text-black">Semua list</option>
+            <option value="" className="!text-black">All lists</option>
             {stats.lists.map((l) => <option key={l} value={l} className="!text-black">{l}</option>)}
           </select>
         )}
         {status === "done" && stats?.done > 0 && (
           <button onClick={() => setConfirmClear(true)} className="ml-auto rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700">
-            Hapus semua yang selesai
+            Delete all completed
           </button>
         )}
       </div>
 
-      {/* Daftar */}
+      {/* List */}
       {loading ? (
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -313,10 +313,10 @@ const Tasks = () => {
         <div className="rounded-2xl bg-slate-300 py-16 text-center dark:!bg-[#0c0c18]">
           <ListChecks size={28} className="mx-auto mb-2 text-gray-500" />
           <p className="font-medium text-gray-800 dark:text-white">
-            {hasFilter ? "Tidak ada tugas yang cocok" : status === "done" ? "Belum ada tugas selesai" : "Tidak ada tugas aktif"}
+            {hasFilter ? "No matching tasks" : status === "done" ? "No completed tasks yet" : "No active tasks"}
           </p>
           <p className="mt-1 text-sm text-gray-500">
-            {hasFilter ? "Ubah kata kunci atau reset filter." : "Tulis tugas pertamamu di kolom di atas."}
+            {hasFilter ? "Change your keywords or reset the filters." : "Write your first task in the field above."}
           </p>
         </div>
       ) : (
@@ -337,7 +337,7 @@ const Tasks = () => {
                   <button
                     onClick={() => handleToggle(t)}
                     className="mt-0.5 shrink-0 text-gray-500 transition hover:text-emerald-500 active:scale-90"
-                    title={done ? "Tandai belum selesai" : "Tandai selesai"}
+                    title={done ? "Mark as not done" : "Mark as done"}
                   >
                     {done ? <CheckCircle2 size={22} className="text-emerald-500" /> : <Circle size={22} />}
                   </button>
@@ -347,7 +347,7 @@ const Tasks = () => {
                       {t.pinned && <Pin size={12} className="fill-accent text-accent" />}
                       <p className={`break-words font-medium text-gray-900 dark:text-white ${done ? "line-through" : ""}`}>{t.title}</p>
                       {t.status === "in_progress" && (
-                        <span className="rounded-md bg-yellow-500/20 px-2 py-0.5 text-[11px] font-medium text-yellow-700 dark:text-yellow-300">Dikerjakan</span>
+                        <span className="rounded-md bg-yellow-500/20 px-2 py-0.5 text-[11px] font-medium text-yellow-700 dark:text-yellow-300">In progress</span>
                       )}
                     </div>
 
@@ -364,12 +364,13 @@ const Tasks = () => {
                           }`}
                         >
                           <CalendarDays size={11} />
-                          {ds === "today" ? "Hari ini" : ds === "overdue" ? `Terlambat · ${formatShort(t.dueDate)}` : formatShort(t.dueDate)}
+                          {ds === "today" ? "Today" : ds === "overdue" ? `Overdue · ${formatShort(t.dueDate)}` : formatShort(t.dueDate)}
                         </span>
                       )}
                       {t.repeat !== "none" && (
-                        <span className="inline-flex items-center gap-1 text-gray-500"><Repeat size={11} />{t.repeat === "daily" ? "Harian" : t.repeat === "weekly" ? "Mingguan" : "Bulanan"}</span>
+                        <span className="inline-flex items-center gap-1 text-gray-500"><Repeat size={11} />{t.repeat === "daily" ? "Daily" : t.repeat === "weekly" ? "Weekly" : "Monthly"}</span>
                       )}
+                      {/* "Umum" is the default list name stored by the backend, so the comparison value stays the same */}
                       {t.listName && t.listName !== "Umum" && <span className="text-gray-500">{t.listName}</span>}
                       {t.checklist?.length > 0 && (
                         <span className="inline-flex items-center gap-1 text-gray-500"><Check size={11} />{doneCount}/{t.checklist.length}</span>
@@ -392,14 +393,14 @@ const Tasks = () => {
 
                   <div className="flex shrink-0 items-center gap-1">
                     {hasDetail && (
-                      <button onClick={() => setExpanded((s) => ({ ...s, [t._id]: !s[t._id] }))} className="rounded-lg p-1.5 text-gray-500 hover:bg-black/5 dark:hover:bg-white/10" title="Detail">
+                      <button onClick={() => setExpanded((s) => ({ ...s, [t._id]: !s[t._id] }))} className="rounded-lg p-1.5 text-gray-500 hover:bg-black/5 dark:hover:bg-white/10" title="Details">
                         <ChevronDown size={16} className={`transition-transform ${isOpen ? "rotate-180" : ""}`} />
                       </button>
                     )}
                     <button onClick={() => navigate(`/tasks/edit/${t._id}`)} className="rounded-lg p-1.5 text-gray-500 hover:bg-black/5 dark:hover:bg-white/10" title="Edit">
                       <Pencil size={15} />
                     </button>
-                    <button onClick={() => setDeleteTarget(t)} className="rounded-lg p-1.5 text-red-500 hover:bg-red-500/10" title="Hapus">
+                    <button onClick={() => setDeleteTarget(t)} className="rounded-lg p-1.5 text-red-500 hover:bg-red-500/10" title="Delete">
                       <Trash2 size={15} />
                     </button>
                   </div>
@@ -412,13 +413,13 @@ const Tasks = () => {
 
       {pages > 1 && (
         <div className="flex items-center justify-center gap-3 pt-2 text-sm text-white md:text-slate-900 dark:text-white">
-          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="btn-secondary disabled:opacity-40">Sebelumnya</button>
-          <span>Hal. {page} / {pages} · {total} tugas</span>
-          <button disabled={page >= pages} onClick={() => setPage((p) => p + 1)} className="btn-secondary disabled:opacity-40">Berikutnya</button>
+          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="btn-secondary disabled:opacity-40">Previous</button>
+          <span>Page {page} / {pages} · {total} tasks</span>
+          <button disabled={page >= pages} onClick={() => setPage((p) => p + 1)} className="btn-secondary disabled:opacity-40">Next</button>
         </div>
       )}
 
-      {/* Modal konfirmasi (hapus satu / bersihkan selesai) */}
+      {/* Confirmation modal (delete one / clear completed) */}
       {(deleteTarget || confirmClear) && (
         <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => !deleting && (setDeleteTarget(null), setConfirmClear(false))} />
@@ -427,21 +428,21 @@ const Tasks = () => {
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/20">
                 <Trash2 size={22} className="text-red-600 dark:text-red-400" />
               </div>
-              <h3 className="text-center text-lg font-semibold">{confirmClear ? "Hapus semua tugas selesai?" : "Hapus tugas?"}</h3>
+              <h3 className="text-center text-lg font-semibold">{confirmClear ? "Delete all completed tasks?" : "Delete task?"}</h3>
               <p className="mt-2 text-center text-sm text-gray-500 dark:text-white">
                 {confirmClear ? (
-                  `${stats?.done || 0} tugas selesai akan dihapus permanen.`
+                  `${stats?.done || 0} completed tasks will be permanently deleted.`
                 ) : (
-                  <><span className="font-medium text-gray-700 dark:text-gray-200">{deleteTarget.title}</span> akan dihapus permanen.</>
+                  <><span className="font-medium text-gray-700 dark:text-gray-200">{deleteTarget.title}</span> will be permanently deleted.</>
                 )}
               </p>
             </div>
             <div className="flex gap-3 border-t border-gray-100 bg-slate-300 px-6 py-4 dark:border-white/5 dark:!bg-[#0c0c18]">
               <button disabled={deleting} onClick={() => { setDeleteTarget(null); setConfirmClear(false); }} className="flex-1 rounded-xl border border-gray-200 bg-white py-2.5 text-sm font-medium text-gray-700 hover:bg-slate-300 disabled:opacity-50 dark:border-white/15 dark:bg-gray-800 dark:text-gray-200">
-                Batal
+                Cancel
               </button>
               <button disabled={deleting} onClick={confirmClear ? handleClearCompleted : confirmDelete} className="flex-1 rounded-xl bg-red-600 py-2.5 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50">
-                {deleting ? <span className="inline-flex items-center gap-2"><Loader2 size={15} className="animate-spin" /> Menghapus…</span> : "Ya, hapus"}
+                {deleting ? <span className="inline-flex items-center gap-2"><Loader2 size={15} className="animate-spin" /> Deleting…</span> : "Yes, delete"}
               </button>
             </div>
           </div>

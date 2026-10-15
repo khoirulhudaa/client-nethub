@@ -86,7 +86,7 @@ export default function TopologyPractice() {
   return (
     <div className="mx-auto max-w-full space-y-5 p-0 md:p-6 pb-16">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col !mb-6 gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           <button
             onClick={resetCanvas}
