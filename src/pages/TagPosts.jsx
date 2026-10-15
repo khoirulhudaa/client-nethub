@@ -85,7 +85,7 @@ const TagPosts = () => {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 p-2.5 md:px-4 w-full md:py-4 relative bg-white/5 rounded-3xl">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-2 p-2.5 md:px-4 w-full md:py-4 relative bg-white/5 rounded-3xl">
           {posts.map((post) => (
             <PostCard key={post._id} post={post} />
           ))}

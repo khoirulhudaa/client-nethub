@@ -1,16 +1,17 @@
-  import { Bookmark, Calendar, CheckCircle2, ChevronLeft, ChevronRight, Circle, Clipboard, Download, Eye, Heart, Highlighter, Link2, Loader2, Pencil, Pin, Plus, Share2, Timer, Trash2, Volume2, VolumeX, X, ZoomIn } from "lucide-react";
-  import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-  import toast from "react-hot-toast";
-  import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-  import api from "../api/axios.js";
-  import CommentThread from "../components/Post/CommentThread.jsx";
-  import PostCard from "../components/Post/PostCard.jsx";
-  import CategoryPill from "../components/UI/CategoryPill.jsx";
-  import { useAuth } from "../context/AuthContext.jsx";
-  import { formatDate } from "../utils/generateData.js";
-  import { timeAgo } from "../utils/timeAgo.js";
-  import FlowchartCanvas from "./FlowchartCanvas.jsx";
-  import TopologyCanvas from "./TopologyCanvas.jsx";
+  import { Bookmark, Calendar, CheckCircle2, ChevronLeft, ChevronRight, Search, Circle, Clipboard, Download, Eye, Heart, Highlighter, Link2, Loader2, Pencil, Pin, Plus, Share2, Timer, Trash2, Volume2, VolumeX, X, ZoomIn, Filter } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import api from "../api/axios.js";
+import CommentThread from "../components/Post/CommentThread.jsx";
+import PostCard from "../components/Post/PostCard.jsx";
+import StickySearch from "../components/Post/StickySearch.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
+import { formatDate } from "../utils/generateData.js";
+import { timeAgo } from "../utils/timeAgo.js";
+import FlowchartCanvas from "./FlowchartCanvas.jsx";
+import TopologyCanvas from "./TopologyCanvas.jsx";
+import BrowseGuidesSidebar from "../components/Post/BrowseGuidesSidebar.jsx";
 
   const CodeBlockItem = ({ block }) => {
     const [copied, setCopied] = useState(false);
@@ -145,6 +146,8 @@
     const guestTried = useRef(false);
     const [pdfLoading, setPdfLoading] = useState(false);
 
+    const [showBrowse, setShowBrowse] = useState(false);
+    const [browseQuery, setBrowseQuery] = useState("");
     const [post, setPost] = useState(null);
     const [related, setRelated] = useState([]);
     const [comments, setComments] = useState([]);
@@ -1132,7 +1135,7 @@
               {post?.title} 
             </h1>
 
-            <div className="mb-4 flex items-center justify-between">
+            <div className="mb-3 flex items-center justify-between">
               <Link to={`/authors/detail/${post?.author._id}`} className="flex w-fit active:scale-[0.98] hover:brightness-75 items-center gap-2">
                 <div className="flex h-[44px] w-[44px] items-center justify-center rounded-lg bg-blue-500 dark:!bg-[#111122] border border-white/20 text-sm font-semibold text-white dark:text-accent">
                   {post?.author.name?.[0]?.toUpperCase()}
@@ -1167,8 +1170,42 @@
                 )}
               </div>
             </div>
+
+            <BrowseGuidesSidebar
+              open={showBrowse}
+              onClose={() => setShowBrowse(false)}
+              currentSlug={post?.slug || slug}
+              initialQuery={browseQuery}
+            />
+
+            <div className="relative z-20 mb-3">
+              <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-slate-300 dark:border-white/15 dark:!bg-[#0c0c18] px-4 py-2 shadow-sm">
+                <Search size={16} className="shrink-0 text-gray-500 dark:text-gray-400" />
+                <input
+                  value={browseQuery}
+                  onChange={(e) => setBrowseQuery(e.target.value)}
+                  onFocus={() => setShowBrowse(true)}   // optional: focus juga buka sidebar
+                  placeholder="Cari guide lain..."
+                  className="w-full bg-transparent text-sm py-1 outline-none text-slate-900 dark:text-white placeholder:text-gray-500"
+                />
+
+                {/* TOMBOL FILTER → buka sidebar kanan */}
+                <button
+                  type="button"
+                  onClick={() => setShowBrowse(true)}
+                  className={`flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+                    showBrowse
+                      ? "bg-blue-600 text-white"
+                      : "bg-slate-200 text-gray-600 hover:bg-slate-300 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/15"
+                  }`}
+                >
+                  <Filter size={13} />
+                  Filter
+                </button>
+              </div>
+            </div>
             
-            <div className="w-full h-72 overflow-hidden rounded-2xl border !border-white/20 dark:p-5">
+            <div className="w-full h-72 overflow-hidden rounded-2xl border !border-white/20">
               <div className="h-full w-full relative overflow-hidden rounded-xl">
                   {post?.coverImage && (
                     <img src={post?.coverImage} alt="cover-image" className="mb-6 h-full brightness-[80%] w-full transition-transform duration-700 hover:scale-[1.1] rounded-xl object-cover" />
@@ -1798,10 +1835,26 @@
             </div>
             
             {related?.length > 0 && (
-              <div className="mt-4">
-                <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-white md:text-slate-900 dark:text-white">
-                  Related Guides
-                </h2>
+              <div className="mt-8">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <h2 className="text-sm font-medium uppercase tracking-wide text-white md:text-slate-900 dark:text-white">
+                    Related Guides
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // Focus ke sticky search
+                      document
+                        .querySelector('input[placeholder*="Cari guide"]')
+                        ?.focus();
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="text-xs font-medium text-accent hover:underline"
+                  >
+                    Cari guide lain →
+                  </button>
+                </div>
+
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {related.map((p) => (
                     <PostCard key={p._id} post={p} />
