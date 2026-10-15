@@ -198,12 +198,17 @@ const ActivityLog = () => {
                       </div>
 
                       <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                        <time dateTime={act.createdAt}>
-                          {new Date(act.createdAt).toLocaleString("id-ID", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })}
-                        </time>
+                         <span
+                          className="inline-flex items-center gap-1 rounded-md bg-white/5 px-1.5 py-0.5 text-slate-400 font-mono ring-1 ring-white/10"
+                          title="IP address"
+                        >
+                          <time dateTime={act.createdAt}>
+                            {new Date(act.createdAt).toLocaleString("id-ID", {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })}
+                          </time>
+                        </span>
                         {act.user?.role && (
                           <span className="rounded-md bg-white/5 px-1.5 py-0.5 font-medium text-slate-400 ring-1 ring-white/10">
                             {act.user.role}
