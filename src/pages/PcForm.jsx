@@ -122,7 +122,7 @@ const PcForm = () => {
         else await api.post("/pcs", payload);
         setDirty(false);
         toast.success(isEditing ? "PC saved" : "PC added");
-        navigate("/pcs");
+        navigate("/remote");
       } catch (err) {
         setError(err?.response?.data?.message || "Failed to save PC.");
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -139,7 +139,7 @@ const PcForm = () => {
       await api.delete(`/pcs/${id}`);
       setDirty(false);
       toast.success("PC deleted");
-      navigate("/pcs");
+      navigate("/remote");
     } catch (err) {
       toast.error(err?.response?.data?.message || "Failed to delete PC");
     }
@@ -147,7 +147,7 @@ const PcForm = () => {
 
   const goBack = () => {
     if (dirty && !confirm("You have unsaved changes. Leave anyway?")) return;
-    navigate("/pcs");
+    navigate("/remote");
   };
 
   if (isGuest) {
