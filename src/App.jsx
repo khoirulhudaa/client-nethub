@@ -40,6 +40,8 @@ import InstallAppPage from "./pages/InstallAppPage.jsx";
 import TrackTicketPage from "./pages/TrackTicketPage.jsx";
 import Contacts from "./pages/Contacts.jsx";
 import ContactForm from "./pages/ContactForm.jsx";
+import Pcs from "./pages/Pcs.jsx";
+import PcForm from "./pages/PcForm.jsx";
 
 function App() {
   return (
@@ -86,9 +88,9 @@ function App() {
           <Route path="tasks" element={<Tasks />} />
           <Route path="tasks/create" element={<TaskForm />} />
           <Route path="tasks/edit/:id" element={<TaskForm />} />
-          <Route path="notes" element={<Notes />} />
-          <Route path="notes/create" element={<NoteForm />} />
-          <Route path="notes/edit/:id" element={<NoteForm />} />
+          <Route path="remote" element={<Pcs />} />
+          <Route path="remote/create" element={<PcForm />} />
+          <Route path="remote/edit/:id" element={<PcForm />} />
           <Route path="my-posts" element={<MyPosts />} />
           <Route path="contacts" element={<Contacts />} />
           <Route path="profile" element={<Profile />} />

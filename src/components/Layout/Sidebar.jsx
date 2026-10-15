@@ -342,7 +342,7 @@ const Sidebar = ({ onNavigate }) => {
               {renderLink({ to: "/tasks", icon: CheckSquare, label: "Task Works" })}
               {!isGuest &&
                 renderLink({ to: "/contacts", icon: Phone, label: "Phone Book" })}
-              {renderLink({ to: "/notes", icon: NotebookPen, label: "Vital Records" })}
+              {renderLink({ to: "/remote", icon: NotebookPen, label: "Remote Client" })}
             </div>
           </NavGroup>
 
