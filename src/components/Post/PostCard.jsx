@@ -306,7 +306,7 @@ return (
       "
     >
       <div
-        className={`group cursor-pointer hover:dark:!border-blue-300/50 relative p-3.5 bg-slate-300 rounded-[24px] dark:!bg-[#0c0c18] border dark:!border-white/20 flex flex-col overflow-hidden ${
+        className={`group hover:dark:!border-blue-300/50 relative p-3.5 bg-slate-300 rounded-[24px] dark:!bg-[#0c0c18] border dark:!border-white/20 flex flex-col overflow-hidden ${
           hideImage
             ? "h-[130px]"
             : featured
