@@ -317,7 +317,7 @@ return (
         {/* Cover image — hanya tampil di md ke atas & saat !hideImage */}
         {!hideImage && (
           <div
-            className={`relative hidden md:flex bg-white/30 dark:bg-slate-900/40 overflow-hidden ${
+            className={`relative md:mb-0 mb-3 flex md:flex bg-white/30 dark:bg-slate-900/40 overflow-hidden ${
               featured
                 ? "h-56"
                 : `${roundedNormal ? "rounded-[16px]" : "rounded-[14px]"} h-[100%]`
@@ -327,7 +327,7 @@ return (
               <img
                 src={post.coverImage}
                 alt={post.title}
-                className="h-full w-full brightness-[80%] object-cover border-none transition-transform ease-fluid scale-[1.03] group-hover:scale-[1.07]"
+                className="!h-[200px] md:mb-0 md:!h-full w-full brightness-[80%] object-cover border-none transition-transform ease-fluid scale-[1.03] group-hover:scale-[1.07]"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-gray-300 dark:text-white/10" />
@@ -373,7 +373,7 @@ return (
               hideImage ? "md:group-hover:hidden" : ""
             } flex items-center gap-1.5 min-w-0 overflow-hidden`}
           >
-            <div className={`relative z-20 ${pinned ? 'md:hidden flex' : ''}`}>
+            <div className={`relative z-20 ${!pinned ? 'md:flex hidden' : 'hidden'}`}>
               <CategoryPill category={post.category} />
             </div>
             {/* Add button di desktop saat !hideImage (category sudah di cover) */}
