@@ -234,7 +234,7 @@ const Pcs = () => {
                 key={pc._id}
                 onClick={() => navigate(`/remote/edit/${pc._id}`)}
                 // z-30 saat menu terbuka agar dropdown tidak tertutup kartu di bawahnya
-                className={`group flex min-h-[11rem] cursor-pointer flex-col gap-2 rounded-2xl border border-gray-100 bg-slate-300 p-4 text-gray-900 transition hover:!border-blue-500/30 hover:shadow-lg dark:border-white/5 dark:!bg-[#0c0c18] dark:text-white ${
+                className={`active:scale-[0.99] duration-100 group flex min-h-[11rem] cursor-pointer flex-col gap-2 rounded-2xl border border-gray-100 bg-slate-300 p-4 text-gray-900 transition hover:!border-blue-500/30 hover:shadow-lg dark:border-white/5 dark:!bg-[#0c0c18] dark:text-white ${
                   shareOpen ? "relative z-30" : ""
                 }`}
               >
