@@ -39,12 +39,6 @@ const TagPosts = () => {
       {/* Header */}
       <div className="mb-6 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Link
-            to="/"
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/20 bg-white/5 text-white transition hover:bg-white/10"
-          >
-            <ArrowLeft size={16} />
-          </Link>
           <div>
             <div className="flex items-center gap-2 text-accent">
               <Hash size={14} />
