@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
-import { COLOR_BG, MOODS, formatLong, moodOf } from "./noteShared.jsx";
+import { COLOR_BG, MOODS, formatLong, moodOf } from "./NoteShared.jsx";
 
 const Notes = () => {
   const { user } = useAuth();
