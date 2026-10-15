@@ -270,10 +270,10 @@ const MetricCardSkeleton = () => (
 
 const PostCardSkeleton = () => (
   <div className="rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-slate-950 p-3 md:p-4">
-    <SkeletonBlock className="h-40 w-full rounded-lg" />
-    <div className="mt-4 flex gap-2">
-      <SkeletonBlock className="h-5 w-16 rounded-full" />
-      <SkeletonBlock className="h-5 w-20 rounded-full" />
+    <SkeletonBlock className="h-40 md:flex hidden w-full rounded-lg" />
+    <div className="md:mt-4 flex gap-2">
+      <SkeletonBlock className="h-6 md:h-5 w-12 md:w-16 rounded-full" />
+      <SkeletonBlock className="h-5  md:flex hidden w-20 rounded-full" />
     </div>
     <SkeletonBlock className="mt-3 h-5 w-4/5" />
     <SkeletonBlock className="mt-2 h-4 w-full" />
@@ -298,8 +298,8 @@ const DashboardSkeleton = ({ showPinned = false }) => (
         <SkeletonBlock className="h-5 w-5" />
         <SkeletonBlock className="h-5 w-32" />
       </div>
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, i) => (
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-2">
+        {Array.from({ length: 4 }).map((_, i) => (
           <PostCardSkeleton key={i} />
         ))}
       </div>
@@ -333,7 +333,7 @@ const Dashboard = () => {
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  const LIMIT = 6;
+  const LIMIT = 4;
 
   // Fetch stats sekali
   useEffect(() => {
@@ -440,7 +440,7 @@ const Dashboard = () => {
       .finally(() => setSearchLoading(false));
   }, [search, category]);
 
-  const isGuest = user?.isGuest || user?.role === "guest";
+  const isGuest = user?.isGuest || user?.role === "gues+t";
 
   // Sumber data search: semua post + pinned (backend menyembunyikan pinned dari list biasa)
   const searchSource = useMemo(() => {
@@ -814,8 +814,8 @@ const { remainingPosts } = useMemo(() => {
 
                       {/* Skeleton saat load more */}
                       {loadingMore && (
-                        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                          {Array.from({ length: 3 }).map((_, i) => (
+                        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-2">
+                          {Array.from({ length: 4 }).map((_, i) => (
                             <PostCardSkeleton key={i} />
                           ))}
                         </div>
