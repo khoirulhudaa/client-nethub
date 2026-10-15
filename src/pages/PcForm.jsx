@@ -16,7 +16,7 @@ const emptyForm = () => ({
 
 const Field = ({ label, children, className = "" }) => (
   <div className={className}>
-    <label className="mb-1 block text-xs font-medium">{label}</label>
+    <label className="mb-1 block text-sm font-medium">{label}</label>
     {children}
   </div>
 );
@@ -26,7 +26,7 @@ const PwToggle = ({ shown, onToggle }) => (
     type="button"
     onClick={onToggle}
     className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-gray-500 hover:bg-black/10"
-    title={shown ? "Sembunyikan" : "Tampilkan"}
+    title={shown ? "Hide" : "Show"}
   >
     {shown ? <EyeOff size={15} /> : <Eye size={15} />}
   </button>
@@ -64,7 +64,7 @@ const PcForm = () => {
         if (cancelled) return;
         setForm({ ...emptyForm(), ...data.pc });
       })
-      .catch((err) => !cancelled && setError(err?.response?.data?.message || "PC tidak ditemukan."))
+      .catch((err) => !cancelled && setError(err?.response?.data?.message || "PC not found."))
       .finally(() => !cancelled && setLoading(false));
 
     return () => {
@@ -72,7 +72,7 @@ const PcForm = () => {
     };
   }, [id, isEditing, isGuest]);
 
-  // Peringatan jika menutup tab dengan perubahan belum tersimpan
+  // Warn when closing the tab with unsaved changes
   useEffect(() => {
     if (!dirty) return;
     const warn = (e) => {
@@ -83,7 +83,7 @@ const PcForm = () => {
     return () => window.removeEventListener("beforeunload", warn);
   }, [dirty]);
 
-  // Ctrl/Cmd + S untuk menyimpan
+  // Ctrl/Cmd + S to save
   useEffect(() => {
     const onKey = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
@@ -100,8 +100,8 @@ const PcForm = () => {
       e.preventDefault();
       setError("");
 
-      if (!form.name.trim()) return setError("Nama PC wajib diisi.");
-      if (!form.anydeskId.trim() && !form.vncAddress.trim()) return setError("Isi minimal satu: ID AnyDesk atau alamat VNC.");
+      if (!form.name.trim()) return setError("PC name is required.");
+      if (!form.anydeskId.trim() && !form.vncAddress.trim()) return setError("Fill in at least one: AnyDesk ID or VNC address.");
 
       const payload = {
         name: form.name,
@@ -121,10 +121,10 @@ const PcForm = () => {
         if (isEditing) await api.put(`/pcs/${id}`, payload);
         else await api.post("/pcs", payload);
         setDirty(false);
-        toast.success(isEditing ? "PC disimpan" : "PC ditambahkan");
+        toast.success(isEditing ? "PC saved" : "PC added");
         navigate("/pcs");
       } catch (err) {
-        setError(err?.response?.data?.message || "Gagal menyimpan PC.");
+        setError(err?.response?.data?.message || "Failed to save PC.");
         window.scrollTo({ top: 0, behavior: "smooth" });
       } finally {
         setSaving(false);
@@ -134,30 +134,30 @@ const PcForm = () => {
   );
 
   const handleDelete = async () => {
-    if (!confirm(`Hapus ${form.name || "PC ini"}? Tindakan ini tidak bisa dibatalkan.`)) return;
+    if (!confirm(`Delete ${form.name || "this PC"}? This action cannot be undone.`)) return;
     try {
       await api.delete(`/pcs/${id}`);
       setDirty(false);
-      toast.success("PC dihapus");
+      toast.success("PC deleted");
       navigate("/pcs");
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Gagal menghapus PC");
+      toast.error(err?.response?.data?.message || "Failed to delete PC");
     }
   };
 
   const goBack = () => {
-    if (dirty && !confirm("Perubahan belum disimpan. Tetap keluar?")) return;
+    if (dirty && !confirm("You have unsaved changes. Leave anyway?")) return;
     navigate("/pcs");
   };
 
   if (isGuest) {
-    return <div className="mx-auto max-w-full py-24 text-center text-white md:text-slate-900 dark:text-white">Guest tidak bisa memakai fitur ini.</div>;
+    return <div className="mx-auto max-w-full py-24 text-center text-white md:text-slate-900 dark:text-white">Guests can't use this feature.</div>;
   }
 
   if (loading) {
     return (
       <div className="mx-auto flex max-w-full items-center justify-center gap-2 py-24 text-white md:text-slate-900 dark:text-white">
-        <Loader2 size={18} className="animate-spin" /> Memuat data PC…
+        <Loader2 size={18} className="animate-spin" /> Loading PC data…
       </div>
     );
   }
@@ -166,39 +166,42 @@ const PcForm = () => {
     return (
       <div className="mx-auto flex max-w-full flex-col items-center gap-3 py-24 text-center text-white md:text-slate-900 dark:text-white">
         <p className="font-medium">{error}</p>
-        <button onClick={() => navigate("/pcs")} className="btn-primary">Kembali ke daftar PC</button>
+        <button onClick={() => navigate("/pcs")} className="btn-primary">Back to PC list</button>
       </div>
     );
   }
 
   return (
     <div className="mx-auto h-max min-h-screen max-w-full border-white pb-16 dark:border-white/10 md:border-x md:p-6">
-      <button type="button" onClick={goBack} className="mb-3 flex items-center gap-1.5 text-sm text-white hover:brightness-75 md:text-slate-700 dark:text-gray-300">
-        <ArrowLeft size={15} /> Daftar PC
-      </button>
+      <h1 className="text-xl md:mb-0 mb-4 text-white font-semibold tracking-tight">
+        {isEditing ? "Edit Remote" : "Add a New Remote"}
+      </h1>
+      <p className="mb-4 text-sm md:flex hidden text-gray-400 dark:text-gray-500">
+        Store anydesk ids, VNC addresses, and remote access notes for every PC
+      </p>
 
       {error && (
         <div className="mb-4 rounded-control bg-red-50 px-3 py-2 text-sm text-red-600 dark:bg-red-500/10 dark:text-red-400">{error}</div>
       )}
 
-      <form ref={formRef} onSubmit={handleSubmit} className="space-y-4 !mt-4">
-        {/* Identitas PC */}
+      <form ref={formRef} onSubmit={handleSubmit} className="space-y-4 mt-4 md:!mt-6">
+        {/* PC identity */}
         <div className="surface-card rounded-lg p-3 dark:!bg-white/5 md:rounded-3xl md:p-5">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
-            <Field label="Nama PC *" className="md:col-span-4">
+            <Field label="PC name *" className="md:col-span-4">
               <input
                 className={inputCls}
                 value={form.name}
                 maxLength={80}
                 onChange={(e) => set("name", e.target.value)}
-                placeholder="PC-01 Kasir"
+                placeholder="PC-01 Cashier"
                 autoFocus={!isEditing}
               />
             </Field>
-            <Field label="Lokasi" className="md:col-span-3">
+            <Field label="Location" className="md:col-span-3">
               <input className={inputCls} value={form.location} maxLength={80} onChange={(e) => set("location", e.target.value)} placeholder="Lab 1" />
             </Field>
-            <Field label="IP lokal" className="md:col-span-3">
+            <Field label="Local IP" className="md:col-span-3">
               <input className={inputCls} value={form.ipAddress} maxLength={60} onChange={(e) => set("ipAddress", e.target.value)} placeholder="192.168.1.10" />
             </Field>
             <Field label="OS" className="md:col-span-2">
@@ -215,7 +218,7 @@ const PcForm = () => {
         {/* AnyDesk & VNC */}
         <div className="surface-card rounded-lg p-3 dark:!bg-white/5 md:rounded-3xl md:p-5">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <Field label="ID AnyDesk">
+            <Field label="AnyDesk ID">
               <input
                 className={`${inputCls} font-mono`}
                 value={form.anydeskId}
@@ -223,7 +226,7 @@ const PcForm = () => {
                 placeholder="123 456 789"
               />
             </Field>
-            <Field label="Password AnyDesk (unattended)">
+            <Field label="AnyDesk password (unattended)">
               <div className="relative">
                 <input
                   type={showAd ? "text" : "password"}
@@ -237,7 +240,7 @@ const PcForm = () => {
               </div>
             </Field>
 
-            <Field label="Alamat VNC (host:port)">
+            <Field label="VNC address (host:port)">
               <input
                 className={`${inputCls} font-mono`}
                 value={form.vncAddress}
@@ -246,7 +249,7 @@ const PcForm = () => {
                 placeholder="192.168.1.10:5900"
               />
             </Field>
-            <Field label="Password VNC">
+            <Field label="VNC password">
               <div className="relative">
                 <input
                   type={showVnc ? "text" : "password"}
@@ -260,14 +263,14 @@ const PcForm = () => {
               </div>
             </Field>
           </div>
-          <p className="mt-3 text-[11px] text-gray-500">Isi minimal satu: ID AnyDesk atau alamat VNC.</p>
+          <p className="mt-3 text-[11px] text-gray-500">Fill in at least one: AnyDesk ID or VNC address.</p>
         </div>
 
-        {/* Catatan & sematkan */}
+        {/* Notes & pin */}
         <div className="surface-card rounded-lg p-3 dark:!bg-white/5 md:rounded-3xl md:p-5">
           <div className="grid grid-cols-1 items-end gap-3 sm:grid-cols-2">
-            <Field label="Catatan">
-              <input className={inputCls} value={form.notes} maxLength={2000} onChange={(e) => set("notes", e.target.value)} placeholder="Server cetak, jangan dimatikan" />
+            <Field label="Notes">
+              <input className={inputCls} value={form.notes} maxLength={2000} onChange={(e) => set("notes", e.target.value)} placeholder="Print server, keep powered on" />
             </Field>
             <button
               type="button"
@@ -277,7 +280,7 @@ const PcForm = () => {
               }`}
             >
               <Pin size={14} className={form.pinned ? "fill-accent text-accent" : ""} />
-              {form.pinned ? "Disematkan" : "Sematkan di atas"}
+              {form.pinned ? "Pinned" : "Pin to top"}
             </button>
           </div>
         </div>
@@ -285,14 +288,14 @@ const PcForm = () => {
         <div className="flex items-center justify-between gap-3">
           {isEditing ? (
             <button type="button" onClick={handleDelete} className="flex items-center gap-1.5 rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">
-              <Trash2 size={14} /> Hapus
+              <Trash2 size={14} /> Delete
             </button>
           ) : <span />}
           <div className="flex gap-3">
-            <button type="button" onClick={goBack} disabled={saving} className="btn-secondary">Batal</button>
+            <button type="button" onClick={goBack} disabled={saving} className="btn-secondary">Cancel</button>
             <button type="submit" disabled={saving} className="btn-primary">
               {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-              {isEditing ? "Simpan perubahan" : "Simpan PC"}
+              {isEditing ? "Save changes" : "Save PC"}
             </button>
           </div>
         </div>

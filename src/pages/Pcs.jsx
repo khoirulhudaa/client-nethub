@@ -128,7 +128,7 @@ const Pcs = () => {
   return (
     <div className="mx-auto max-w-full space-y-4 border-white pb-16 dark:border-white/15 md:border-x md:p-6">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <button onClick={() => navigate("/pcs/create")} className="btn-primary">
+        <button onClick={() => navigate("/remote/create")} className="btn-primary">
           <Plus size={16} /> Tambah PC
         </button>
       </div>
@@ -193,7 +193,7 @@ const Pcs = () => {
             return (
               <div
                 key={pc._id}
-                onClick={() => navigate(`/pcs/edit/${pc._id}`)}
+                onClick={() => navigate(`/remote/edit/${pc._id}`)}
                 className="group flex min-h-[11rem] cursor-pointer flex-col gap-2 rounded-2xl border border-gray-100 bg-slate-300 p-4 text-gray-900 transition hover:-translate-y-0.5 hover:shadow-lg dark:border-white/5 dark:!bg-[#0c0c18] dark:text-white"
               >
                 <div className="flex items-start justify-between gap-2">
