@@ -5,12 +5,16 @@ import {
   ChevronLeft,
   ChevronRight,
   Filter,
+  Globe,
   Loader2,
   LogIn,
   LogOut,
   MessageSquare,
+  Monitor,
   Pencil,
   Plus,
+  Smartphone,
+  Tablet,
   ThumbsUp,
   Trash2,
   User,
@@ -29,6 +33,41 @@ const ACTION_LABELS = {
   comment: { label: "Comment", icon: MessageSquare, color: "text-indigo-400", bg: "bg-indigo-500/15", ring: "ring-indigo-500/30" },
   delete_comment: { label: "Delete Comment", icon: Trash2, color: "text-red-400", bg: "bg-red-500/15", ring: "ring-red-500/30" },
 };
+
+// Lightweight User-Agent parser (no dependency). Order matters: Edge/Opera contain "Chrome".
+const parseUA = (ua = "") => {
+  if (!ua) return null;
+
+  const browser =
+    /Edg(e|A|iOS)?\//.test(ua) ? "Edge"
+    : /OPR\/|Opera/.test(ua) ? "Opera"
+    : /SamsungBrowser/.test(ua) ? "Samsung Browser"
+    : /Firefox|FxiOS/.test(ua) ? "Firefox"
+    : /Chrome|CriOS/.test(ua) ? "Chrome"
+    : /Safari/.test(ua) ? "Safari"
+    : /PostmanRuntime/.test(ua) ? "Postman"
+    : /curl/i.test(ua) ? "curl"
+    : "Unknown browser";
+
+  const os =
+    /Windows NT 10|Windows NT 11/.test(ua) ? "Windows"
+    : /Windows/.test(ua) ? "Windows"
+    : /Android/.test(ua) ? "Android"
+    : /iPhone|iPad|iPod/.test(ua) ? "iOS"
+    : /Mac OS X|Macintosh/.test(ua) ? "macOS"
+    : /CrOS/.test(ua) ? "ChromeOS"
+    : /Linux/.test(ua) ? "Linux"
+    : "Unknown OS";
+
+  const type =
+    /iPad|Tablet/.test(ua) || (/Android/.test(ua) && !/Mobile/.test(ua)) ? "tablet"
+    : /Mobi|iPhone|Android/.test(ua) ? "mobile"
+    : "desktop";
+
+  return { browser, os, type };
+};
+
+const DEVICE_ICON = { mobile: Smartphone, tablet: Tablet, desktop: Monitor };
 
 const ActivityLog = () => {
   const { user } = useAuth();
@@ -132,11 +171,13 @@ const ActivityLog = () => {
                   ring: "ring-slate-500/30",
                 };
                 const Icon = meta.icon;
+                const device = parseUA(act.userAgent);
+                const DeviceIcon = device ? DEVICE_ICON[device.type] : Monitor;
 
                 return (
                   <div
-                    key={idx}
-                    className="group relative flex gap-4 rounded-3xl bg-white/[0.03] border border-white/10 dark:!bg-[#12121a] p-4 backdrop-blur-sm transition-all duration-200 hover:border-white/10 hover:bg-white/[0.05]"
+                    key={act._id || idx}
+                    className="group items-center relative flex gap-4 rounded-3xl bg-white/[0.03] border border-white/10 dark:!bg-[#12121a] p-4 backdrop-blur-sm transition-all duration-200 hover:border-white/10 hover:bg-white/[0.05]"
                   >
                     {/* Icon */}
                     <div
@@ -169,6 +210,24 @@ const ActivityLog = () => {
                           </span>
                         )}
                       </div>
+
+                      {/* IP address & device */}
+                      <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-400">
+                        <span
+                          className="inline-flex items-center gap-1 rounded-md bg-white/5 px-1.5 py-0.5 font-mono ring-1 ring-white/10"
+                          title="IP address"
+                        >
+                          <Globe size={11} />
+                          {act.ip || "IP unknown"}
+                        </span>
+                        <span
+                          className="inline-flex items-center gap-1 rounded-md bg-white/5 px-1.5 py-0.5 ring-1 ring-white/10"
+                          title={act.userAgent || "No user-agent recorded"}
+                        >
+                          <DeviceIcon size={11} />
+                          {device ? `${device.browser} · ${device.os}` : "Device unknown"}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 );
@@ -180,7 +239,7 @@ const ActivityLog = () => {
 
       {/* Pagination */}
       {data.pages > 1 && (
-        <div className="mt-10 flex items-center justify-center gap-2">
+        <div className="mt-6 flex items-center justify-start gap-2">
           <button
             disabled={page <= 1}
             onClick={() => setPage((p) => p - 1)}
@@ -188,7 +247,7 @@ const ActivityLog = () => {
           >
             <ChevronLeft size={16} />
           </button>
-          <span className="min-w-[4.5rem] text-center text-sm tabular-nums text-slate-400">
+          <span className="min-w-[3rem] text-center text-sm tabular-nums text-slate-400">
             {page} <span className="text-slate-600">/</span> {data.pages}
           </span>
           <button
