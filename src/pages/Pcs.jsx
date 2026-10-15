@@ -1,4 +1,4 @@
-import { Copy, Monitor, Pin, Plus, Search } from "lucide-react";
+import { Copy, Monitor, Pin, Plus, Search, Share2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -11,8 +11,8 @@ const CopyRow = ({ label, value, display }) =>
   value ? (
     <div className="flex items-center justify-between gap-2 rounded-lg bg-black/5 px-2.5 py-1.5 dark:bg-white/5">
       <div className="min-w-0">
-        <p className="text-[10px] text-gray-500">{label}</p>
-        <p className="truncate font-mono text-sm font-semibold">{display || value}</p>
+        <p className="text-[10px] text-white">{label}</p>
+        <p className="truncate font-mono mt-1 text-sm font-semibold">{display || value}</p>
       </div>
       <button
         onClick={(e) => copyText(e, value, label)}
@@ -23,6 +23,23 @@ const CopyRow = ({ label, value, display }) =>
       </button>
     </div>
   ) : null;
+
+// Teks yang dibagikan. Password SENGAJA tidak disertakan (daftar PC pun tidak memuatnya).
+const buildShareText = (pc) => {
+  const o = osOf(pc.os);
+  const lines = [`*${pc.name}*`];
+  const where = [pc.location, o?.label].filter(Boolean).join(" · ");
+  if (where) lines.push(where);
+  lines.push("");
+  if (pc.anydeskId) lines.push(`AnyDesk: ${formatAnydesk(pc.anydeskId)}`);
+  if (pc.vncAddress) lines.push(`VNC: ${pc.vncAddress}`);
+  if (pc.ipAddress) lines.push(`IP: ${pc.ipAddress}`);
+  if (pc.notes) lines.push("", `Catatan: ${pc.notes}`);
+  return lines.join("\n");
+};
+
+const menuItem =
+  "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800";
 
 const Pcs = () => {
   const { user } = useAuth();
@@ -42,6 +59,7 @@ const Pcs = () => {
   const [location, setLocation] = useState("");
   const [onlyPinned, setOnlyPinned] = useState(false);
   const [sort, setSort] = useState("name");
+  const [shareId, setShareId] = useState(null); // id PC yang menu bagikannya sedang terbuka
 
   const reqRef = useRef(0);
 
@@ -53,6 +71,14 @@ const Pcs = () => {
   useEffect(() => {
     setPage(1);
   }, [q, os, location, onlyPinned, sort]);
+
+  // Tutup menu bagikan dengan tombol Esc
+  useEffect(() => {
+    if (!shareId) return;
+    const onKey = (e) => e.key === "Escape" && setShareId(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [shareId]);
 
   const fetchStats = useCallback(async () => {
     try {
@@ -107,6 +133,17 @@ const Pcs = () => {
     }
   };
 
+  // Bagikan lewat share sheet bawaan perangkat (umumnya HP)
+  const handleNativeShare = async (e, pc) => {
+    e.stopPropagation();
+    setShareId(null);
+    try {
+      await navigator.share({ title: pc.name, text: buildShareText(pc).replace(/\*/g, "") });
+    } catch (err) {
+      if (err?.name !== "AbortError") toast.error("Gagal membagikan");
+    }
+  };
+
   if (isGuest) {
     return (
       <div className="mx-auto max-w-full py-24 text-center text-white md:text-slate-900 dark:text-white">
@@ -124,6 +161,7 @@ const Pcs = () => {
 
   const hasFilter = q || os || location || onlyPinned;
   const locations = Object.keys(stats?.byLocation || {});
+  const canNativeShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
 
   return (
     <div className="mx-auto max-w-full space-y-4 border-white pb-16 dark:border-white/15 md:border-x md:p-6">
@@ -190,11 +228,15 @@ const Pcs = () => {
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
           {pcs.map((pc) => {
             const o = osOf(pc.os);
+            const shareOpen = shareId === pc._id;
             return (
               <div
                 key={pc._id}
                 onClick={() => navigate(`/remote/edit/${pc._id}`)}
-                className="group flex min-h-[11rem] cursor-pointer flex-col gap-2 rounded-2xl border border-gray-100 bg-slate-300 p-4 text-gray-900 transition hover:-translate-y-0.5 hover:shadow-lg dark:border-white/5 dark:!bg-[#0c0c18] dark:text-white"
+                // z-30 saat menu terbuka agar dropdown tidak tertutup kartu di bawahnya
+                className={`group flex min-h-[11rem] cursor-pointer flex-col gap-2 rounded-2xl border border-gray-100 bg-slate-300 p-4 text-gray-900 transition hover:-translate-y-0.5 hover:shadow-lg dark:border-white/5 dark:!bg-[#0c0c18] dark:text-white ${
+                  shareOpen ? "relative z-30" : ""
+                }`}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
@@ -203,20 +245,62 @@ const Pcs = () => {
                       {[pc.location, o?.label].filter(Boolean).join(" · ") || "Tanpa lokasi"}
                     </p>
                   </div>
-                  <button onClick={(e) => handlePin(e, pc)} className="rounded-md p-0.5 hover:bg-black/10 dark:hover:bg-white/10" title="Sematkan">
-                    <Pin size={14} className={pc.pinned ? "fill-accent text-accent" : "text-gray-500"} />
-                  </button>
+
+                  <div className="flex shrink-0 items-center gap-1">
+                    {/* Sematkan */}
+                    <button onClick={(e) => handlePin(e, pc)} className="rounded-md p-0.5 hover:bg-black/10 dark:hover:bg-white/10" title="Sematkan">
+                      <Pin size={14} className={pc.pinned ? "fill-accent text-accent" : "text-gray-500"} />
+                    </button>
+                  </div>
                 </div>
 
-                <CopyRow label="AnyDesk" value={pc.anydeskId} display={formatAnydesk(pc.anydeskId)} />
+                <CopyRow label="ANYDESK" value={pc.anydeskId} display={formatAnydesk(pc.anydeskId)} />
                 <CopyRow label="VNC" value={pc.vncAddress} />
 
+                {/* ===== 3 BUTTON SHARE LANGSUNG ===== */}
+                <div className="mt-1 flex gap-1.5">
+                {/* 1. Salin Info */}
+                <button
+                    onClick={(e) => {
+                    e.stopPropagation();
+                    copyText(e, buildShareText(pc), "Info PC");
+                    }}
+                    className="active:scale-[0.98] flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white/50 px-2 py-2 text-xs font-medium text-gray-700 transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-gray-200 dark:hover:bg-white/10"
+                >
+                    <Copy size={13} />
+                    Salin
+                </button>
+
+                {/* 2. WhatsApp */}
+                <a
+                    href={`https://wa.me/?text=${encodeURIComponent(buildShareText(pc))}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="active:scale-[0.98] flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white/50 px-2 py-2 text-xs font-medium text-gray-700 transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-gray-200 dark:hover:bg-white/10"
+                >
+                    <span className="text-[12px] font-bold text-green-600">WA</span>
+                    WhatsApp
+                </a>
+
+                {/* 3. Native Share (hanya muncul kalau browser support) */}
+                {canNativeShare && (
+                    <button
+                    onClick={(e) => handleNativeShare(e, pc)}
+                    className="active:scale-[0.98] flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white/50 px-2 py-2 text-xs font-medium text-gray-700 transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-gray-200 dark:hover:bg-white/10"
+                    >
+                    <Share2 size={13} />
+                    Lainnya
+                    </button>
+                )}
+                </div>
+
                 {(pc.ipAddress || pc.notes) && (
-                  <p className="mt-auto line-clamp-2 text-[11px] text-gray-500">
+                <p className="mt-auto line-clamp-2 text-[11px] text-gray-500">
                     {pc.ipAddress && <span className="font-mono">{pc.ipAddress}</span>}
                     {pc.ipAddress && pc.notes && " — "}
                     {pc.notes}
-                  </p>
+                </p>
                 )}
               </div>
             );
