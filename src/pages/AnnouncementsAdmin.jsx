@@ -410,24 +410,24 @@ const AnnouncementsAdmin = () => {
                     )}
                   </div>
 
-                  <div className="flex flex-1 flex-col p-5">
+                  <div className="flex flex-1 flex-col p-3 py-3.5">
                     {/* Top: type + actions */}
                     <div className="mb-3 flex items-start justify-between gap-3">
                       <div className="flex flex-wrap items-center gap-2">
                         <span
-                          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium tracking-wide ${typeInfo.soft}`}
+                          className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[11px] font-medium tracking-wide ${typeInfo.soft}`}
                         >
                           <TypeIcon size={12} strokeWidth={2.5} />
                           {typeInfo.label}
                         </span>
 
                         {!item.isActive && (
-                          <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-500 dark:bg-white/10 dark:text-gray-400">
+                          <span className="rounded-md bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-500 dark:bg-white/10 dark:text-gray-400">
                             Nonaktif
                           </span>
                         )}
                         {isExpired && (
-                          <span className="rounded-full bg-rose-50 px-2.5 py-1 text-[11px] font-medium text-rose-500 dark:bg-rose-500/10 dark:text-rose-400">
+                          <span className="rounded-md bg-rose-50 px-2.5 py-1 text-[11px] font-medium text-rose-500 dark:bg-rose-500/10 dark:text-rose-400">
                             Expired
                           </span>
                         )}
@@ -490,7 +490,7 @@ const AnnouncementsAdmin = () => {
                     {/* Footer meta */}
                     <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-black/[0.04] pt-3 text-[11px] text-gray-400 dark:border-white/[0.06]">
                       <span className="font-medium text-gray-500 dark:text-gray-400">
-                        {item.createdBy?.name || "Unknown"}
+                        {"STAFF IT"}
                       </span>
                       <span className="text-gray-300 dark:text-gray-600">·</span>
                       <span>
@@ -566,7 +566,7 @@ const AnnouncementsAdmin = () => {
                   <button
                     type="button"
                     onClick={removeThumbnail}
-                    className="absolute right-2 top-2 rounded-full bg-black/60 p-1.5 text-white backdrop-blur-sm transition hover:bg-black/80"
+                    className="absolute right-2 top-2 rounded-md bg-black/60 p-1.5 text-white backdrop-blur-sm transition hover:bg-black/80"
                   >
                     <X size={14} />
                   </button>
@@ -687,7 +687,7 @@ const AnnouncementsAdmin = () => {
                       <button
                         type="button"
                         onClick={() => removeHashtag(tag)}
-                        className="ml-0.5 rounded-full p-0.5 hover:bg-black/10 dark:hover:bg-white/20"
+                        className="ml-0.5 rounded-md p-0.5 hover:bg-black/10 dark:hover:bg-white/20"
                       >
                         <X size={12} />
                       </button>
@@ -761,7 +761,7 @@ const AnnouncementsAdmin = () => {
           {/* Modal box */}
           <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-white bg-white shadow-2xl dark:border-white/10 dark:bg-gray-900">
             <div className="p-6">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/20">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-red-100 dark:bg-red-500/20">
                 <Trash2 size={22} className="text-red-600 dark:text-red-400" />
               </div>
 
