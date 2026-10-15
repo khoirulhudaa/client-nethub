@@ -1,4 +1,4 @@
-import { Copy, Monitor, Pin, Plus, Search, Share2 } from "lucide-react";
+import { Copy, Monitor, Pin, Plus, Search, Share2, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -119,6 +119,27 @@ const Pcs = () => {
   useEffect(() => {
     if (!isGuest) fetchStats();
   }, [fetchStats, isGuest]);
+
+  const handleDelete = async (e, pc) => {
+    e.stopPropagation();
+    if (!confirm(`Hapus "${pc.name}"? Tindakan ini tidak bisa dibatalkan.`)) return;
+
+    // optimistic remove
+    setPcs((list) => list.filter((x) => x._id !== pc._id));
+    setTotal((t) => Math.max(0, t - 1));
+
+    try {
+        await api.delete(`/pcs/${pc._id}`);
+        toast.success("PC dihapus");
+        fetchStats();
+        // kalau halaman jadi kosong, mundur 1 halaman
+        if (pcs.length === 1 && page > 1) setPage((p) => p - 1);
+        else fetchPcs();
+    } catch (err) {
+        toast.error(err?.response?.data?.message || "Gagal menghapus PC");
+        fetchPcs(); // rollback
+    }
+    };
 
   const handlePin = async (e, pc) => {
     e.stopPropagation();
@@ -247,8 +268,18 @@ const Pcs = () => {
                   </div>
 
                   <div className="flex shrink-0 items-center gap-1">
+                    <div className="flex shrink-0 items-center gap-1">
+                        {/* Hapus */}
+                        <button
+                            onClick={(e) => handleDelete(e, pc)}
+                            className="rounded-md p-0.5 text-gray-500 hover:bg-red-500/15 hover:text-red-500"
+                            title="Hapus PC"
+                        >
+                            <Trash2 size={14} />
+                        </button>
+                    </div>
                     {/* Sematkan */}
-                    <button onClick={(e) => handlePin(e, pc)} className="rounded-md p-0.5 hover:bg-black/10 dark:hover:bg-white/10" title="Sematkan">
+                    <button onClick={(e) => handlePin(e, pc)} className="relative top-[1.5px] rounded-md p-0.5 hover:bg-black/10 dark:hover:bg-white/10" title="Sematkan">
                       <Pin size={14} className={pc.pinned ? "fill-accent text-accent" : "text-gray-500"} />
                     </button>
                   </div>

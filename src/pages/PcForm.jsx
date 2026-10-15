@@ -1,4 +1,4 @@
-import { ArrowLeft, Eye, EyeOff, Loader2, Pin, Save, Trash2 } from "lucide-react";
+import { Eye, EyeOff, Loader2, Pin, Save } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -132,18 +132,6 @@ const PcForm = () => {
     },
     [form, id, isEditing, navigate]
   );
-
-  const handleDelete = async () => {
-    if (!confirm(`Delete ${form.name || "this PC"}? This action cannot be undone.`)) return;
-    try {
-      await api.delete(`/pcs/${id}`);
-      setDirty(false);
-      toast.success("PC deleted");
-      navigate("/remote");
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Failed to delete PC");
-    }
-  };
 
   const goBack = () => {
     if (dirty && !confirm("You have unsaved changes. Leave anyway?")) return;
@@ -286,11 +274,6 @@ const PcForm = () => {
         </div>
 
         <div className="flex items-center justify-between gap-3">
-          {isEditing ? (
-            <button type="button" onClick={handleDelete} className="flex items-center gap-1.5 rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">
-              <Trash2 size={14} /> Delete
-            </button>
-          ) : <span />}
           <div className="flex gap-3">
             <button type="button" onClick={goBack} disabled={saving} className="btn-secondary">Cancel</button>
             <button type="submit" disabled={saving} className="btn-primary">
