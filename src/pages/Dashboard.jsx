@@ -664,92 +664,57 @@ const { remainingPosts } = useMemo(() => {
               </h2>
             </div>
           </header>
-
-          {/* Search + Categories */}
-          <div className="w-full px-3 py-2 md:p-4 items-center gap-2">
-            <form
-              className="flex w-full mb-0 items-center gap-2 rounded-xl border border-gray-200 bg-slate-950 dark:bg-slate-200 px-3 py-1.5 shadow-sm md:w-72"
-              onSubmit={(e) => {
-                e.preventDefault();
-                updateParam("search", localSearch.trim());
-              }}
-            >
-              <Search size={16} className="text-gray-400" />
-              <input
-                value={localSearch}
-                onChange={(e) => setLocalSearch(e.target.value)}
-                placeholder="Search by title..."
-                className="w-full bg-transparent px-3 md:px-0 py-2 h-[22px] font-medium text-black text-sm outline-none"
-              />
-              {localSearch && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setLocalSearch("");
-                    updateParam("search", "");
-                  }}
-                  className="text-gray-400 hover:text-gray-600 text-xs"
-                >
-                  ✕
-                </button>
-              )}
-            </form>
-
-            {loading && !data.categories?.length && <CategoryBarSkeleton />}
-
-            {/* Categories bar — responsive: pills di desktop, dropdown di mobile */}
-            {data.categories?.length > 0 && (
-              <>
-                {/* Mobile: dropdown selector */}
-                <div className="md:mt-0 mt-2 w-full sm:hidden">
-                  <select
-                    value={category || ""}
-                    onChange={(e) => updateParam("category", e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 bg-slate-200 px-3 py-2 text-sm text-gray-600 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700"
-                  >
-                    <option value="">All guides</option>
-                    {data.categories.map((item) => (
-                      <option key={item} value={item}>
-                        {item}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Desktop: pill buttons */}
-                <div className="hidden sm:flex flex-wrap items-center mt-3 gap-2.5">
+          
+          {/* Search + Category — bersebelahan */}
+          <div className="w-full px-3 py-2 md:p-4">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              {/* Search */}
+              <form
+                className="flex w-full items-center gap-2 rounded-xl border border-gray-200 bg-slate-950 dark:bg-slate-200 px-3 py-1.5 shadow-sm sm:flex-1"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  updateParam("search", localSearch.trim());
+                }}
+              >
+                <Search size={16} className="shrink-0 text-gray-400" />
+                <input
+                  value={localSearch}
+                  onChange={(e) => setLocalSearch(e.target.value)}
+                  placeholder="Search by title..."
+                  className="w-full bg-transparent px-1 py-2 h-[24.5px] font-medium text-black text-sm outline-none"
+                />
+                {localSearch && (
                   <button
-                    onClick={() => updateParam("category", "")}
-                    className={`flex items-center border border-slate-400 hover:brightness-[85%] gap-1.5 rounded-xl font-medium active:scale-[0.99] px-3 md:px-3 py-1.5 text-sm transition ${
-                      !category
-                        ? "bg-slate-950 dark:bg-gradient-to-br from-blue-400 to-blue-100 dark:text-slate-900 text-white"
-                        : "bg-slate-200 text-gray-600 hover:border-accent/50 hover:bg-slate-200"
-                    }`}
+                    type="button"
+                    onClick={() => {
+                      setLocalSearch("");
+                      updateParam("search", "");
+                    }}
+                    className="text-gray-400 hover:text-gray-600 text-xs"
                   >
-                    <Box size={14} />
-                    <span className="relative top-[-1px]">
-                      All guides
-                    </span>
+                    ✕
                   </button>
+                )}
+              </form>
+
+              {/* Category — select */}
+              {loading && !data.categories?.length ? (
+                <div className="h-10 w-full sm:w-48 animate-pulse rounded-xl bg-slate-300" />
+              ) : data.categories?.length > 0 ? (
+                <select
+                  value={category || ""}
+                  onChange={(e) => updateParam("category", e.target.value)}
+                  className="w-full sm:w-48 rounded-xl border border-gray-200 bg-slate-200 px-3 py-2.5 text-sm text-gray-600 dark:border-slate-700"
+                >
+                  <option value="">All guides</option>
                   {data.categories.map((item) => (
-                    <button
-                      key={item}
-                      onClick={() => updateParam("category", item)}
-                      className={`flex active:scale-[0.99] border border-slate-400 font-medium duration-100 hover:brightness-[85%] items-center gap-1.5 rounded-xl px-3 md:px-3 py-1.5 text-sm transition ${
-                        category === item
-                          ? "bg-slate-950 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-white dark:text-slate-900"
-                          : "bg-slate-200 text-gray-600 hover:border-accent/50 hover:bg-slate-200"
-                      }`}
-                    >
-                      <Box size={14} />
-                      <span className="relative top-[-1.2px]">
-                        {item}
-                      </span>
-                    </button>
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
                   ))}
-                </div>
-              </>
-            )}
+                </select>
+              ) : null}
+            </div>
           </div>
 
           {/* Content */}
