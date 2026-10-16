@@ -10,9 +10,10 @@ import {
   Search,
   Sparkles,
   Tag,
-  Wifi
+  Wifi,
+  X
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../api/axios.js";
 import PinnedHero from "../components/Post/PinnedHero.jsx";
@@ -343,17 +344,17 @@ const TagFilter = ({ tags, selected, onToggle, onClear, loading }) => {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-2 w-full min-w-[230px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-100">
-          <div className="border-b border-gray-200 p-2">
+        <div className="absolute right-0 h-max z-50 mt-2 w-full min-w-[50vw] p-2 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-200">
+          <div className="border-b border-gray-200 pr-2 pl-1 mb-1">
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Find tag..."
-              className="w-full rounded-lg bg-gray-100 px-2.5 py-1.5 text-sm text-black outline-none"
+              className="w-full rounded-lg bg-white px-2.5 py-1.5 text-sm text-black outline-none"
             />
           </div>
 
-          <ul className="max-h-56 overflow-y-auto p-1">
+          <ul className="max-h-[40vh] grid grid-cols-6 gap-1.5 overflow-y-auto p-1">
             {visible.length === 0 && (
               <li className="px-3 py-2 text-sm text-gray-500">No tag found</li>
             )}
@@ -361,7 +362,7 @@ const TagFilter = ({ tags, selected, onToggle, onClear, loading }) => {
               const checked = selected.includes(tag);
               return (
                 <li key={tag}>
-                  <label className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-800 hover:bg-gray-100">
+                  <label className="flex cursor-pointer items-center gap-2 rounded-lg px-1 border border-slate-400 py-1 text-sm text-slate-800 hover:bg-gray-100">
                     <input
                       type="checkbox"
                       checked={checked}
@@ -518,14 +519,22 @@ const Dashboard = () => {
       return;
     }
 
+    let cancelled = false;
     setSearchLoading(true);
+
     api
-      .get("/posts", { params: { tags: tagsKey | undefined, limit: 1000 } }) // limit besar biar dapet semua
+      .get("/posts", { params: { tags: tagsKey || undefined, limit: 1000 } })
       .then(({ data: res }) => {
-        setAllPostsForSearch(res.posts || []);
+        if (!cancelled) setAllPostsForSearch(res.posts || []);
       })
       .catch((err) => console.error("Error fetching search data:", err))
-      .finally(() => setSearchLoading(false));
+      .finally(() => {
+        if (!cancelled) setSearchLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [search, tagsKey]);
 
   const isGuest = user?.isGuest || user?.role === "gues+t";
@@ -719,7 +728,7 @@ const { remainingPosts } = useMemo(() => {
     );
   };
 
-  const showOverviewSections = !search && !category;
+  const showOverviewSections = !search && !hasTagFilter;
 
   // heading
   const headingText = useMemo(() => {
