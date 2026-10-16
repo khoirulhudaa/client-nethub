@@ -1140,7 +1140,7 @@ import BrowseGuidesSidebar from "../components/Post/BrowseGuidesSidebar.jsx";
                 <div className="flex h-[44px] w-[44px] items-center justify-center rounded-xl bg-blue-500 dark:!bg-[#111122] border border-white/20 text-sm font-semibold text-white dark:text-accent">
                   {post?.author.name?.[0]?.toUpperCase()}
                 </div>
-                <div className="leading-tight">
+                <div className="leading-tight relative top-[-1.5px]">
                   <p className="text-md text-white md:text-slate-900 dark:text-white font-medium">{post?.author.name}</p>
                   <p className="text-xs text-white md:text-slate-900 dark:text-white">{post?.author.title}</p>
                 </div>
@@ -1177,33 +1177,6 @@ import BrowseGuidesSidebar from "../components/Post/BrowseGuidesSidebar.jsx";
               currentSlug={post?.slug || slug}
               initialQuery={browseQuery}
             />
-
-            <div className="relative flex items-center gap-x-2 w-full z-20 mb-3">
-              <div className="flex w-full items-center gap-2 rounded-xl border border-gray-200 bg-slate-300 dark:border-white/15 dark:!bg-slate-100/10 pl-4 pr-2 h-[37px] shadow-sm">
-                <Search size={16} className="shrink-0 text-gray-500 dark:text-gray-400" />
-                <input
-                  value={browseQuery}
-                  onChange={(e) => setBrowseQuery(e.target.value)}
-                  onFocus={() => setShowBrowse(true)}   // optional: focus juga buka sidebar
-                  placeholder="Search another guide..."
-                  className="w-full bg-transparent text-sm py-1 outline-none text-slate-900 dark:text-white placeholder:text-gray-500"
-                />
-
-              </div>
-              {/* TOMBOL FILTER → buka sidebar kanan */}
-              <button
-                type="button"
-                onClick={() => setShowBrowse(true)}
-                className={`flex items-center gap-1 rounded-xl border border-gray-200 bg-slate-300 dark:border-white/15 px-2.5 py-2 h-[37px] text-xs font-medium transition ${
-                  showBrowse
-                    ? "bg-blue-600 text-white"
-                    : "bg-slate-200 text-gray-600 hover:bg-slate-300 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/15"
-                }`}
-              >
-                <Filter size={13} />
-                Filter
-              </button>
-            </div>
             
             <div className="w-full h-72 overflow-hidden rounded-2xl border !border-white/20">
               <div className="h-full w-full relative overflow-hidden rounded-xl">
@@ -1833,28 +1806,36 @@ import BrowseGuidesSidebar from "../components/Post/BrowseGuidesSidebar.jsx";
                 <CommentThread comments={comments} onReply={handleReply} onDelete={handleDeleteComment} />
               </div>
             </div>
+
+            <div className="relative flex items-center gap-x-2 w-full z-20 mt-8">
+              <div className="flex w-full items-center gap-2 rounded-xl border border-gray-200 bg-slate-300 dark:border-white/15 dark:!bg-slate-100/10 pl-4 pr-2 h-[37px] shadow-sm">
+                <Search size={16} className="shrink-0 text-gray-500 dark:text-gray-400" />
+                <input
+                  value={browseQuery}
+                  onChange={(e) => setBrowseQuery(e.target.value)}
+                  onFocus={() => setShowBrowse(true)}   // optional: focus juga buka sidebar
+                  placeholder="Search another guide..."
+                  className="w-full bg-transparent text-sm py-1 outline-none text-slate-900 dark:text-white placeholder:text-gray-500"
+                />
+
+              </div>
+              {/* TOMBOL FILTER → buka sidebar kanan */}
+              <button
+                type="button"
+                onClick={() => setShowBrowse(true)}
+                className={`flex items-center gap-1 rounded-xl border border-gray-200 bg-slate-300 dark:border-white/15 px-2.5 py-2 h-[37px] text-xs font-medium transition ${
+                  showBrowse
+                    ? "bg-blue-600 text-white"
+                    : "bg-slate-200 text-gray-600 hover:bg-slate-300 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/15"
+                }`}
+              >
+                <Filter size={13} />
+                Filter
+              </button>
+            </div>
             
             {related?.length > 0 && (
-              <div className="mt-8">
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <h2 className="text-sm font-medium uppercase tracking-wide text-white md:text-slate-900 dark:text-white">
-                    Related Guides
-                  </h2>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      // Focus ke sticky search
-                      document
-                        .querySelector('input[placeholder*="Cari guide"]')
-                        ?.focus();
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                    }}
-                    className="text-xs font-medium text-accent hover:underline"
-                  >
-                    Cari guide lain →
-                  </button>
-                </div>
-
+              <div className="mt-5">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {related.map((p) => (
                     <PostCard key={p._id} post={p} />

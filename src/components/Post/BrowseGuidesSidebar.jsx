@@ -76,12 +76,12 @@ const BrowseGuidesSidebar = ({ open, onClose, currentSlug, initialQuery }) => {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+        className="fixed inset-0 z-[999999] bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Sidebar */}
-      <div className="fixed right-0 bottom-0 z-[9999] flex h-[92vh] w-full max-w-lg flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-white/15 dark:bg-[#12121b]">
+      <div className="fixed right-0 bottom-0 z-[999999999] flex h-[91.5vh] w-full max-w-lg flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-white/15 dark:bg-[#0a0a18]">
         {/* Header */}
         <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-4 py-3.5 dark:border-white/15">
           <h3 className="text-base font-semibold text-slate-900 dark:text-white">
