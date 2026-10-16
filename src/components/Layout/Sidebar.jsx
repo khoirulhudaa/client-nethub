@@ -2,7 +2,6 @@ import {
   Bell,
   BookOpen,
   Box,
-  Boxes,
   Brain,
   Calculator,
   CheckSquare,
@@ -10,19 +9,16 @@ import {
   Expand,
   FileText,
   Flame,
-  HardDrive,
   HelpCircle,
   LayoutGrid,
   LifeBuoy,
   Loader2,
   LogOut,
-  Network,
   NotebookPen,
   PencilRuler,
   Phone,
   Shrink,
   Ticket,
-  Wrench,
   X
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -30,22 +26,15 @@ import { NavLink, useLocation, useNavigate, useSearchParams } from "react-router
 import { useAuth } from "../../context/AuthContext.jsx";
 
 const categoryLinks = [
-  { label: "Dashboard", icon: LayoutGrid, to: "/", category: null },
-  { label: "Topology", icon: Network, to: "/?category=Topology", category: "Topology" },
-  { label: "Installation", icon: Boxes, to: "/?category=Installation", category: "Installation" },
-  { label: "Maintenance", icon: Wrench, to: "/?category=Maintenance", category: "Maintenance" },
-  { label: "Soft & Hardware", icon: HardDrive, to: "/?category=Hardware", category: "Hardware" },
+  { label: "All Guide", icon: LayoutGrid, to: "/", category: null },
 ];
 
 const discoverLinks = [
   { label: "Subneting", icon: Calculator, to: "/tools/subnet" },
-  { label: "Trending Guide", icon: Flame, to: "/trending" },
 ];
 
 const quizLinks = [
-  { label: "Build Exam", icon: HelpCircle, to: "/quiz-builder" },
   { label: "Go Practice", icon: PencilRuler, to: "/topology-practice" },
-  { label: "Test Knowledge", icon: Brain, to: "/quizzes" },
 ];
 
 const supportLinks = [
@@ -53,14 +42,25 @@ const supportLinks = [
   { label: "Create Ticket", icon: LifeBuoy, to: "/tickets/create" },
 ];
 
-const NavGroup = ({ title, open, onToggle, collapsed, children }) => {
+const NavGroup = ({ title, open, onToggle, collapsed, single = false, children }) => {
+  const divider = "border-b border-white/20 dark:border-white/10 last:border-b-0";
+
+  // Mode icon-only
   if (collapsed) {
-    // Mode icon-only: tampilkan children langsung tanpa header group
-    return <div className="flex flex-col items-center gap-1 py-2">{children}</div>;
+    return (
+      <div className={`flex flex-col items-center gap-1 py-2 ${divider}`}>
+        {children}
+      </div>
+    );
+  }
+
+  // Cuma 1 menu → tanpa header & dropdown
+  if (single) {
+    return <div className={`pt-[2px] pb-[0px] px-[4px] ${divider}`}>{children}</div>;
   }
 
   return (
-    <div className="pt-2 px-[4px]">
+    <div className={`pt-2 pb-1 px-[4px] ${divider}`}>
       <button
         type="button"
         onClick={onToggle}
@@ -69,12 +69,10 @@ const NavGroup = ({ title, open, onToggle, collapsed, children }) => {
         <span>{title}</span>
         <ChevronDown
           size={14}
-          className={`shrink-0 transition-transform duration-200 ${
-            open ? "rotate-0" : "-rotate-90"
-          }`}
+          className={`shrink-0 transition-transform duration-200 ${open ? "rotate-0" : "-rotate-90"}`}
         />
       </button>
-      
+
       <div
         className={`overflow-hidden transition-all duration-300 ease-in-out ${
           open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
@@ -194,13 +192,13 @@ const Sidebar = ({ onNavigate }) => {
     collapsed
       ? `flex h-10 active:scale-[0.99] w-10 items-center justify-center rounded-xl transition ${
           active
-            ? "bg-slate-200 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
-            : "text-white dark:text-gray-400 hover:bg-white/[0.06] hover:text-white"
+            ? "text-blue-950"
+            : "text-white hover:dark:!text-slate-400 dark:text-gray-400 hover:text-white"
         }`
       : `active:scale-[0.99] flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
           active
-            ? "bg-slate-200 dark:bg-gradient-to-br from-blue-400 to-blue-100 text-blue-950"
-            : "text-white hover:bg-black/[0.04] dark:text-gray-300 dark:hover:bg-white/[0.06]"
+            ? "text-blue-400"
+            : "text-white hover:dark:!text-slate-400 dark:text-gray-300"
         }`;
 
   const renderLink = ({ to, icon: Icon, label, end }) => (
@@ -302,8 +300,9 @@ const Sidebar = ({ onNavigate }) => {
         >
           {/* Categories */}
           <NavGroup
-            title="Categories"
+            title="Dashboard"
             open={openGroups.categories}
+            single={categoryLinks.length <= 1}
             onToggle={() => toggleGroup("categories")}
             collapsed={collapsed}
           >
@@ -335,11 +334,11 @@ const Sidebar = ({ onNavigate }) => {
           <NavGroup
             title="Workspace"
             open={openGroups.workspace}
+            single={isGuest}
             onToggle={() => toggleGroup("workspace")}
             collapsed={collapsed}
           >
             <div data-tour="workspace">
-              {renderLink({ to: "/tasks", icon: CheckSquare, label: "Task Works" })}
               {!isGuest &&
                 renderLink({ to: "/contacts", icon: Phone, label: "Phone Book" })}
               {renderLink({ to: "/remote", icon: NotebookPen, label: "Remote Client" })}
@@ -350,6 +349,7 @@ const Sidebar = ({ onNavigate }) => {
           <NavGroup
             title="Discover"
             open={openGroups.discover}
+            single={discoverLinks.length <= 1}
             onToggle={() => toggleGroup("discover")}
             collapsed={collapsed}
           >
@@ -375,6 +375,7 @@ const Sidebar = ({ onNavigate }) => {
             title="Practice"
             open={openGroups.quiz}
             onToggle={() => toggleGroup("quiz")}
+            single={filteredQuizLinks.length <= 1}
             collapsed={collapsed}
           >
             <div data-tour="practice">
@@ -399,13 +400,11 @@ const Sidebar = ({ onNavigate }) => {
             title="Library"
             open={openGroups.library}
             onToggle={() => toggleGroup("library")}
+            single
             collapsed={collapsed}
           >
             <div data-tour="library">
               {renderLink({ to: "/reading-list", icon: BookOpen, label: "Reading" })}
-              {!isGuest &&
-                renderLink({ to: "/my-posts", icon: FileText, label: "My Guides" })}
-              {renderLink({ to: "/hardware", icon: Box, label: "Collection Card" })}
             </div>
           </NavGroup>
 
