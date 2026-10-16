@@ -1412,7 +1412,7 @@ import BrowseGuidesSidebar from "../components/Post/BrowseGuidesSidebar.jsx";
                       type="button"
                       key={idx}
                       onClick={() => setPreviewIndex(idx)}
-                      className="group relative cursor-zoom-in overflow-hidden rounded-2xl bg-slate-300 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/20 p-3 transition-all duration-500 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:brightness-75"
+                      className="active:scale-[0.98] group relative cursor-zoom-in overflow-hidden rounded-2xl bg-slate-300 dark:!bg-[#0c0c18] border border-gray-100 dark:border-white/20 p-3 transition-all duration-200 hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.4)] hover:brightness-75"
                     >
                       <div className="overflow-hidden">
                         <img
