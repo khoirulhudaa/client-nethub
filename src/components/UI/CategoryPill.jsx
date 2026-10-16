@@ -34,7 +34,7 @@ const CATEGORY_STYLES = {
   EHRD: {
     icon: Users,
     className:
-      "bg-indigo-500 text-white dark:!bg-indigo-500/10 md:dark:!bg-indigo-950 md:dark:!text-white dark:!text-white",
+      "bg-cyan-500 text-white dark:!bg-cyan-500/10 md:dark:!bg-cyan-600 md:dark:!text-white dark:!text-white",
   },
   General: {
     icon: LayoutGrid,
@@ -44,7 +44,7 @@ const CATEGORY_STYLES = {
   Pemrograman: {
     icon: Code2,
     className:
-      "bg-cyan-500 text-white dark:!bg-cyan-500/10 md:dark:!bg-cyan-950 md:dark:!text-white dark:!text-white",
+      "bg-cyan-500 text-white dark:!bg-cyan-500/10 md:dark:!bg-cyan-600 md:dark:!text-white dark:!text-white",
   },
   Security: {
     icon: Shield,
@@ -84,7 +84,7 @@ const CATEGORY_STYLES_NON_SOLID = {
   },
   EHRD: {
     icon: Users,
-    className: "bg-indigo-500 text-white dark:bg-indigo-500/10 dark:text-slate-300",
+    className: "bg-cyan-500 text-white dark:bg-cyan-500/10 dark:text-slate-300",
   },
   General: {
     icon: LayoutGrid,
