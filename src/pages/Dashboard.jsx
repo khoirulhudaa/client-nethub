@@ -307,13 +307,104 @@ const DashboardSkeleton = ({ showPinned = false }) => (
   </div>
 );
 
+const TagFilter = ({ tags, selected, onToggle, onClear, loading }) => {
+  const [open, setOpen] = useState(false);
+  const [q, setQ] = useState("");
+  const ref = useRef(null);
+
+  // Tutup dropdown saat klik di luar
+  useEffect(() => {
+    const handler = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  if (loading && !tags.length) {
+    return <div className="h-10 w-full sm:w-56 animate-pulse rounded-xl bg-slate-300" />;
+  }
+  if (!tags.length) return null;
+
+  const visible = tags.filter((t) => t.toLowerCase().includes(q.trim().toLowerCase()));
+
+  return (
+    <div ref={ref} className="relative w-full sm:w-56">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center justify-between gap-2 rounded-xl border border-gray-200 bg-white dark:bg-slate-200 px-3 py-2.5 text-sm text-gray-600 dark:border-slate-700"
+      >
+        <span className="flex items-center gap-2 truncate">
+          <Tag size={14} />
+          {selected.length ? `${selected.length} tags selected` : "All tags"}
+        </span>
+        <ChevronDown size={14} className={`shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="absolute right-0 z-50 mt-2 w-full min-w-[230px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-100">
+          <div className="border-b border-gray-200 p-2">
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Find tag..."
+              className="w-full rounded-lg bg-gray-100 px-2.5 py-1.5 text-sm text-black outline-none"
+            />
+          </div>
+
+          <ul className="max-h-56 overflow-y-auto p-1">
+            {visible.length === 0 && (
+              <li className="px-3 py-2 text-sm text-gray-500">No tag found</li>
+            )}
+            {visible.map((tag) => {
+              const checked = selected.includes(tag);
+              return (
+                <li key={tag}>
+                  <label className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-800 hover:bg-gray-100">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => onToggle(tag)}
+                      className="h-4 w-4 accent-blue-600"
+                    />
+                    <span className="truncate">{tag}</span>
+                  </label>
+                </li>
+              );
+            })}
+          </ul>
+
+          {selected.length > 0 && (
+            <div className="border-t border-gray-200 p-2">
+              <button
+                type="button"
+                onClick={onClear}
+                className="w-full rounded-lg py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
+              >
+                Clear all
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
 // --- Dashboard Component -----------------------------------------------------
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const category = searchParams.get("category") || "";
+  const tagsParam = searchParams.get("tags") || "";
+  const selectedTags = useMemo(
+    () => (tagsParam ? tagsParam.split(",").filter(Boolean) : []),
+    [tagsParam]
+  );
+  const tagsKey = selectedTags.join(",");
+  const hasTagFilter = selectedTags.length > 0;
   const search = searchParams.get("search") || "";
 
   const [data, setData] = useState({ pinned: [], posts: [], categories: [], total: 0 });
@@ -351,6 +442,8 @@ const Dashboard = () => {
       .finally(() => setStatsLoading(false));
   }, []);
 
+  useEffect(() => { setPage(1); }, [tagsKey]);
+
   // ✅ useEffect KEDUA — ini yang benar, biarkan
   useEffect(() => {
     let cancelled = false;
@@ -363,7 +456,7 @@ const Dashboard = () => {
     }
 
     api
-      .get("/posts", { params: { category, page, limit: LIMIT } })
+      .get("/posts", { params: { tags: tagsKey || undefined, page, limit: LIMIT } })
       .then(({ data: res }) => {
         if (cancelled) return;
 
@@ -385,7 +478,7 @@ const Dashboard = () => {
     return () => {
       cancelled = true;
     };
-  }, [category, page]);
+  }, [tagsKey, page]);
 
   // Sync localSearch dari URL
   useEffect(() => {
@@ -418,11 +511,6 @@ const Dashboard = () => {
     return () => conn.removeEventListener("change", update);
   }, []);
 
-  // Reset page ke 1 setiap kali category berubah
-  useEffect(() => {
-    setPage(1);
-  }, [category]);
-
   // Saat search aktif, fetch SEMUA post (bukan cuma yang sudah ke-load via pagination)
   useEffect(() => {
     if (!search.trim()) {
@@ -432,13 +520,13 @@ const Dashboard = () => {
 
     setSearchLoading(true);
     api
-      .get("/posts", { params: { category, limit: 1000 } }) // limit besar biar dapet semua
+      .get("/posts", { params: { tags: tagsKey | undefined, limit: 1000 } }) // limit besar biar dapet semua
       .then(({ data: res }) => {
         setAllPostsForSearch(res.posts || []);
       })
       .catch((err) => console.error("Error fetching search data:", err))
       .finally(() => setSearchLoading(false));
-  }, [search, category]);
+  }, [search, tagsKey]);
 
   const isGuest = user?.isGuest || user?.role === "gues+t";
 
@@ -499,7 +587,7 @@ const Dashboard = () => {
   // Sumber post untuk overview (guest)
 const overviewPosts = useMemo(() => {
   // Guest + tidak ada search/category → gabungkan pinned + posts
-  if (isGuest && !search.trim() && !category) {
+  if (isGuest && !search.trim() && !hasTagFilter) {
     const map = new Map();
     [...(data.pinned || []), ...(data.posts || [])].forEach((p) => {
       if (p?._id) map.set(String(p._id), p);
@@ -510,10 +598,10 @@ const overviewPosts = useMemo(() => {
   }
   // Selain itu pakai filteredPosts biasa
   return filteredPosts;
-}, [isGuest, search, category, data.pinned, data.posts, filteredPosts]);
+}, [isGuest, search, hasTagFilter, data.pinned, data.posts, filteredPosts]);
 
 const { remainingPosts } = useMemo(() => {
-  if (search.trim() || category) {
+  if (search.trim() || hasTagFilter) {
     return { newestThree: [], remainingPosts: overviewPosts };
   }
 
@@ -523,7 +611,7 @@ const { remainingPosts } = useMemo(() => {
     newestThree: sorted.slice(0, 3),
     remainingPosts: filteredPosts,
   };
-}, [overviewPosts, search, category]);
+}, [overviewPosts, search, hasTagFilter]);
 
   // const { newestThree, remainingPosts } = useMemo(() => {
   //   // When searching or filtering by category, just show everything in the normal grid
@@ -554,6 +642,28 @@ const { remainingPosts } = useMemo(() => {
     else next.delete(key);
     setSearchParams(next);
   };
+
+  const toggleTag = (tag) => {
+  const next = selectedTags.includes(tag)
+      ? selectedTags.filter((t) => t !== tag)
+      : [...selectedTags, tag];
+    updateParam("tags", next.join(","));
+  };
+
+  const clearTags = () => updateParam("tags", "");
+
+  // Daftar tag untuk dropdown (selected tag selalu ikut tampil)
+  const availableTags = useMemo(() => {
+    const set = new Set(selectedTags);
+    if (data.tags?.length) {
+      data.tags.forEach((t) => set.add(t));
+    } else {
+      [...(data.pinned || []), ...(data.posts || [])].forEach((p) =>
+        (p.tags || []).forEach((t) => t && set.add(t))
+      );
+    }
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [data.tags, data.pinned, data.posts, selectedTags]);
 
   const handlePinChange = (post, isPinned, unpinnedIds = []) => {
     const removedIds = new Set(unpinnedIds.map(String));
@@ -611,11 +721,12 @@ const { remainingPosts } = useMemo(() => {
 
   const showOverviewSections = !search && !category;
 
+  // heading
   const headingText = useMemo(() => {
     if (search) return `Results for "${search}"`;
-    if (category) return `${category} Guides`;
+    if (selectedTags.length) return `Guides tagged ${selectedTags.join(", ")}`;
     return "Continue learning";
-  }, [search, category]);
+  }, [search, selectedTags]);
 
   console.log("pinned:", data.pinned?.length, "posts:", data.posts?.length, "total:", data.total);
 
@@ -697,24 +808,36 @@ const { remainingPosts } = useMemo(() => {
                 )}
               </form>
 
-              {/* Category — select */}
-              {loading && !data.categories?.length ? (
-                <div className="h-10 w-full sm:w-48 animate-pulse rounded-xl bg-slate-300" />
-              ) : data.categories?.length > 0 ? (
-                <select
-                  value={category || ""}
-                  onChange={(e) => updateParam("category", e.target.value)}
-                  className="w-full sm:w-48 rounded-xl border border-gray-200 bg-white dark:bg-slate-200 px-3 py-2.5 text-sm text-gray-600 dark:border-slate-700"
-                >
-                  <option value="">All guides</option>
-                  {data.categories.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))}
-                </select>
-              ) : null}
+             <TagFilter
+                tags={availableTags}
+                selected={selectedTags}
+                onToggle={toggleTag}
+                onClear={clearTags}
+                loading={loading}
+              />
             </div>
+            {hasTagFilter && (
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                {selectedTags.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => toggleTag(tag)}
+                    className="inline-flex items-center gap-1 rounded-full bg-blue-600 px-3 py-1 text-xs font-medium text-white active:scale-[0.97] duration-100 hover:bg-blue-700"
+                  >
+                    {tag}
+                    <X size={12} />
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={clearTags}
+                  className="text-xs text-slate-600 underline dark:text-gray-400"
+                >
+                  Clear all
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Content */}
