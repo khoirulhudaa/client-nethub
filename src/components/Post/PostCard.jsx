@@ -453,27 +453,31 @@ return (
                     }}
                   />
 
-                  <div className="absolute bottom-full left-[105%] md:left-[90%] -translate-x-1/2 mb-3 z-50 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/15 dark:bg-gray-900">
-                    <button
-                      onClick={copyLink}
-                      className={`flex w-full items-center gap-3 px-4 py-2.5 text-sm transition ${
-                        copied
-                          ? "bg-emerald-500 text-white"
-                          : "text-gray-700 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800"
-                      }`}
-                    >
-                      {copied ? (
-                        <>
-                          <Check size={16} />
-                          Disalin!
-                        </>
-                      ) : (
-                        <>
-                          <Link2 size={16} />
-                          Salin Link
-                        </>
-                      )}
-                    </button>
+                  <div className={`absolute bottom-full left-[105%] ${pinned ? 'md:left-[108%]' : 'md:left-[110%]'} -translate-x-1/2 mb-3 z-50 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/15 dark:bg-gray-900`}>
+                    {
+                      !pinned && (
+                        <button
+                          onClick={copyLink}
+                          className={`flex w-full items-center gap-3 px-4 py-2.5 text-sm transition ${
+                            copied
+                              ? "bg-emerald-500 text-white"
+                              : "text-gray-700 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800"
+                          }`}
+                        >
+                          {copied ? (
+                            <>
+                              <Check size={16} />
+                              Disalin!
+                            </>
+                          ) : (
+                            <>
+                              <Link2 size={16} />
+                              Salin Link
+                            </>
+                          )}
+                        </button>
+                      )
+                    }
 
                     <a
                       href={shareLinks.whatsapp}

@@ -670,7 +670,7 @@ const { remainingPosts } = useMemo(() => {
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
               {/* Search */}
               <form
-                className="flex w-full items-center gap-2 rounded-xl border border-gray-200 bg-slate-950 dark:bg-slate-200 px-3 py-1.5 shadow-sm sm:flex-1"
+                className="flex w-full items-center gap-2 rounded-xl border border-gray-200 bg-white dark:bg-slate-200 px-3 py-1.5 shadow-sm sm:flex-1"
                 onSubmit={(e) => {
                   e.preventDefault();
                   updateParam("search", localSearch.trim());
@@ -681,7 +681,7 @@ const { remainingPosts } = useMemo(() => {
                   value={localSearch}
                   onChange={(e) => setLocalSearch(e.target.value)}
                   placeholder="Search by title..."
-                  className="w-full bg-transparent px-1 py-2 h-[24.5px] font-medium text-black text-sm outline-none"
+                  className="w-full dark:bg-transparent px-1 py-2 h-[24.5px] font-medium text-black text-sm outline-none"
                 />
                 {localSearch && (
                   <button
@@ -704,7 +704,7 @@ const { remainingPosts } = useMemo(() => {
                 <select
                   value={category || ""}
                   onChange={(e) => updateParam("category", e.target.value)}
-                  className="w-full sm:w-48 rounded-xl border border-gray-200 bg-slate-200 px-3 py-2.5 text-sm text-gray-600 dark:border-slate-700"
+                  className="w-full sm:w-48 rounded-xl border border-gray-200 bg-white dark:bg-slate-200 px-3 py-2.5 text-sm text-gray-600 dark:border-slate-700"
                 >
                   <option value="">All guides</option>
                   {data.categories.map((item) => (
