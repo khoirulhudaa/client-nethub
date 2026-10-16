@@ -354,7 +354,7 @@ const TagFilter = ({ tags, selected, onToggle, onClear, loading }) => {
             />
           </div>
 
-          <ul className="max-h-[40vh] grid grid-cols-6 gap-1.5 overflow-y-auto p-1">
+          <ul className="max-h-[40vh] grid grid-cols-4 md:grid-cols-6 gap-1.5 overflow-y-auto p-1">
             {visible.length === 0 && (
               <li className="px-3 py-2 text-sm text-gray-500">No tag found</li>
             )}
