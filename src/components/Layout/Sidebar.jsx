@@ -30,11 +30,11 @@ const categoryLinks = [
 ];
 
 const discoverLinks = [
-  { label: "Subneting", icon: Calculator, to: "/tools/subnet" },
+  { label: "Go-Subneting", icon: Calculator, to: "/tools/subnet" },
 ];
 
 const quizLinks = [
-  { label: "Go Practice", icon: PencilRuler, to: "/topology-practice" },
+  { label: "Topology Practice", icon: PencilRuler, to: "/topology-practice" },
 ];
 
 const supportLinks = [
@@ -345,6 +345,19 @@ const Sidebar = ({ onNavigate }) => {
             </div>
           </NavGroup>
 
+          {/* Library */}
+          <NavGroup
+            title="Library"
+            open={openGroups.library}
+            onToggle={() => toggleGroup("library")}
+            single
+            collapsed={collapsed}
+          >
+            <div data-tour="library">
+              {renderLink({ to: "/reading-list", icon: BookOpen, label: "Reading" })}
+            </div>
+          </NavGroup>
+
           {/* Discover */}
           <NavGroup
             title="Discover"
@@ -392,19 +405,6 @@ const Sidebar = ({ onNavigate }) => {
                   </NavLink>
                 </div>
               ))}
-            </div>
-          </NavGroup>
-
-          {/* Library */}
-          <NavGroup
-            title="Library"
-            open={openGroups.library}
-            onToggle={() => toggleGroup("library")}
-            single
-            collapsed={collapsed}
-          >
-            <div data-tour="library">
-              {renderLink({ to: "/reading-list", icon: BookOpen, label: "Reading" })}
             </div>
           </NavGroup>
 
