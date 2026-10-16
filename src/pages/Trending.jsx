@@ -87,8 +87,8 @@ const Trending = () => {
   useEffect(() => {
     setLoading(true);
     api
-      .get("/posts/trending", { params: { limit: 3, period } })
-      .then(({ data }) => setPosts((data.posts || []).slice(0, 3)))
+      .get("/posts/trending", { params: { limit: 2, period } })
+      .then(({ data }) => setPosts((data.posts || []).slice(0, 2)))
       .catch(() => setPosts([]))
       .finally(() => setLoading(false));
   }, [period]);
@@ -185,7 +185,7 @@ const Trending = () => {
             <span>Top 3 Guides · Ranked by views & likes</span>
           </div> */}
 
-          <div className="mb-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mb-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
             {posts.map((post, index) => (
               <div key={post._id} className="relative">
                 <span
