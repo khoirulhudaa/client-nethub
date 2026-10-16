@@ -8,11 +8,11 @@ import { OS_LIST, copyText, formatAnydesk, osOf } from "./PcShared.jsx";
 
 // Baris ID / alamat dengan tombol salin
 const CopyRow = ({ label, value, display }) =>
-  value ? (
+  (
     <div className="flex items-center justify-between gap-2 rounded-lg bg-black/5 px-2.5 py-1.5 dark:bg-white/5">
       <div className="min-w-0">
-        <p className="text-[10px] text-white">{label}</p>
-        <p className="truncate font-mono mt-1 text-sm font-semibold">{display || value}</p>
+        <p className="text-[10px] text-white">{label || '-'}</p>
+        <p className="truncate font-mono mt-1 text-sm font-semibold">{display || value || '-'}</p>
       </div>
       <button
         onClick={(e) => copyText(e, value, label)}
@@ -22,7 +22,7 @@ const CopyRow = ({ label, value, display }) =>
         <Copy size={14} />
       </button>
     </div>
-  ) : null;
+  )
 
 // Teks yang dibagikan. Password SENGAJA tidak disertakan (daftar PC pun tidak memuatnya).
 const buildShareText = (pc) => {
@@ -326,13 +326,11 @@ const Pcs = () => {
                 )}
                 </div>
 
-                {(pc.ipAddress || pc.notes) && (
                 <p className="mt-auto line-clamp-2 text-[11px] text-gray-500">
-                    {pc.ipAddress && <span className="font-mono">{pc.ipAddress}</span>}
-                    {pc.ipAddress && pc.notes && " — "}
+                    <span className="font-mono">{pc.ipAddress || 'ip belum tersedia'}</span>
+                    {pc.notes && " — "}
                     {pc.notes}
                 </p>
-                )}
               </div>
             );
           })}
