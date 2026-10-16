@@ -327,7 +327,7 @@ const Pcs = () => {
                 </div>
 
                 <p className="mt-auto line-clamp-2 text-[11px] text-gray-500">
-                    <span className="font-mono">{pc.ipAddress || 'ip belum tersedia'}</span>
+                    <span className="font-mono">[{pc.ipAddress || '0.0.0.0'}]</span>
                     {pc.notes && " — "}
                     {pc.notes}
                 </p>
