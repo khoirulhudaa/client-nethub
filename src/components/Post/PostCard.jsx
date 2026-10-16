@@ -376,7 +376,7 @@ return (
             <div className={`relative z-20 ${!pinned ? 'md:flex hidden' : 'hidden'}`}>
               <CategoryPill category={post.category} />
             </div>
-            {/* Add button di desktop saat !hideImage (category sudah di cover) */}
+
             {!hideImage && (
               <div className="hidden md:flex group-hover:md:hidden items-center gap-2">
                 {AddButton}
