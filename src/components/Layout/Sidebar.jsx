@@ -294,7 +294,7 @@ const Sidebar = ({ onNavigate }) => {
         )}
 
         <nav
-          className={`flex flex-1 min-h-0 flex-col gap-0.5 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
+          className={`flex flex-1 pt-1 min-h-0 flex-col gap-0.5 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
             collapsed ? "" : "border-x dark:border-white/10"
           }`}
         >
