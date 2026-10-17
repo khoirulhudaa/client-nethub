@@ -1653,17 +1653,7 @@ import BrowseGuidesSidebar from "../components/Post/BrowseGuidesSidebar.jsx";
             )}
 
             <div className="mt-6 md:flex items-center gap-4 border-y border-border-light py-4 dark:border-border-dark">
-              <div className="w-max pl-1 flex items-center gap-3">
-                <button
-                  onClick={handleLike}
-                  className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
-                    liked ? "text-red-500" : "md:text-slate-900 text-white dark:text-white hover:text-red-500"
-                  }`}
-                >
-                  <Heart size={16} className={liked ? "fill-red-500" : "text-white md:text-slate-900 dark:text-white"} />
-                  {likesCount}
-                </button>
-
+              <div className="w-max pl-0 flex items-center gap-3">
                 <button onClick={handleBookmark} className="flex items-center gap-1.5 text-white md:text-slate-900 dark:text-white text-sm">
                   <Bookmark size={16} className={bookmarked ? "fill-accent text-accent" : "text-white md:text-slate-900 dark:text-white"} />
                   {bookmarked ? "Saved" : "Save"}
@@ -1748,7 +1738,7 @@ import BrowseGuidesSidebar from "../components/Post/BrowseGuidesSidebar.jsx";
                     </>
                   )}
                 </div>
-                <span className="flex items-center gap-1.5 text-sm text-white md:text-slate-500 dark:text-white"><Eye size={16} />{post?.views}</span>
+                {/* <span className="flex items-center gap-1.5 text-sm text-white md:text-slate-500 dark:text-white"><Eye size={16} />{post?.views}</span> */}
               </div>
 
               <div className="w-max flex flex-wrap items-center gap-3 md:mt-0 mt-2.5">
