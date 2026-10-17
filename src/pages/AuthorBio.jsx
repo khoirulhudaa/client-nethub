@@ -223,10 +223,9 @@ const AuthorBio = () => {
           )}
 
           {/* Stats grid */}
-          <div className="grid grid-cols-1 gap-3 md:space-y-0 space-y-2 md:grid-cols-3">
+          <div className="grid gap-3 grid-cols-2">
             <StatPill icon={BookOpen} label="Guides" value={stats.guides} />
             <StatPill icon={Eye} label="Views" value={stats.totalViews} />
-            <StatPill icon={Heart} label="Likes" value={stats.totalLikes} />
           </div>
         </div>
       </div>
