@@ -1,15 +1,10 @@
 import {
   Bell,
   BookOpen,
-  Box,
-  Brain,
   Calculator,
-  CheckSquare,
   ChevronDown,
   Expand,
   FileText,
-  Flame,
-  HelpCircle,
   LayoutGrid,
   LifeBuoy,
   Loader2,
@@ -26,20 +21,27 @@ import { NavLink, useLocation, useNavigate, useSearchParams } from "react-router
 import { useAuth } from "../../context/AuthContext.jsx";
 
 const categoryLinks = [
-  { label: "All Guide", icon: LayoutGrid, to: "/", category: null },
+  { label: "Main Dashboard", icon: LayoutGrid, to: "/", category: null },
 ];
 
 const discoverLinks = [
-  { label: "Go-Subneting", icon: Calculator, to: "/tools/subnet" },
+  { label: "Subneting", icon: Calculator, to: "/tools/subnet" },
 ];
 
 const quizLinks = [
-  { label: "Topology Practice", icon: PencilRuler, to: "/topology-practice" },
+  { label: "Practice", icon: PencilRuler, to: "/topology-practice" },
 ];
 
 const supportLinks = [
   { label: "Ticket List", icon: Ticket, to: "/tickets" },
   { label: "Create Ticket", icon: LifeBuoy, to: "/tickets/create" },
+];
+
+const mainLinks = [
+  { label: "Dashboard", icon: LayoutGrid, to: "/", end: true, tour: "categories" },
+  { label: "Read Guide", icon: BookOpen, to: "/reading-list", tour: "library" },
+  { label: "Subneting", icon: Calculator, to: "/tools/subnet", tour: "discover" },
+  { label: "Practice", icon: PencilRuler, to: "/topology-practice", tour: "practice" },
 ];
 
 const NavGroup = ({ title, open, onToggle, collapsed, single = false, children }) => {
@@ -107,11 +109,8 @@ const Sidebar = ({ onNavigate }) => {
   const isSuperAdmin = user?.role === "superAdmin";
 
   const [openGroups, setOpenGroups] = useState({
-    categories: true,
-    discover: false,
+    main: true,
     workspace: false,
-    quiz: false,
-    library: false,
     support: false,
     admin: false,
   });
@@ -119,6 +118,29 @@ const Sidebar = ({ onNavigate }) => {
   const location = useLocation();
 
   // di dalam komponen Sidebar, setelah state openGroups / collapsed
+
+  useEffect(() => {
+    const p = location.pathname;
+    let group = null;
+
+    if (
+      p === "/" ||
+      p.startsWith("/reading-list") ||
+      p.startsWith("/tools") ||
+      p.startsWith("/topology-practice")
+    ) group = "main";
+    else if (p.startsWith("/contacts") || p.startsWith("/remote")) group = "workspace";
+    else if (p.startsWith("/tickets")) group = "support";
+    else if (p.startsWith("/admin")) group = "admin";
+
+    if (group) {
+      setOpenGroups((prev) => {
+        const next = {};
+        Object.keys(prev).forEach((k) => (next[k] = k === group));
+        return next;
+      });
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const handler = (e) => {
@@ -201,8 +223,8 @@ const Sidebar = ({ onNavigate }) => {
             : "text-white hover:dark:!text-slate-400 dark:text-gray-300"
         }`;
 
-  const renderLink = ({ to, icon: Icon, label, end }) => (
-    <div key={to} className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
+  const renderLink = ({ to, icon: Icon, label, end, tour }) => (
+    <div key={to} data-tour={tour} className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
       <NavLink
         to={to}
         end={end}
@@ -298,36 +320,14 @@ const Sidebar = ({ onNavigate }) => {
             collapsed ? "" : "border-x dark:border-white/10"
           }`}
         >
-          {/* Categories */}
+
           <NavGroup
-            title="Dashboard"
-            open={openGroups.categories}
-            single={categoryLinks.length <= 1}
-            onToggle={() => toggleGroup("categories")}
+            title="Menu"
+            open={openGroups.main}
+            onToggle={() => toggleGroup("main")}
             collapsed={collapsed}
           >
-            <div data-tour="categories">
-              {categoryLinks.map(({ label, icon: Icon, to, category }) => {
-                const isCategoryActive =
-                  category === null
-                    ? !currentCategory && location.pathname === "/"
-                    : currentCategory === category;
-
-                return (
-                  <div key={label} className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
-                    <NavLink
-                      to={to}
-                      onClick={onNavigate}
-                      title={collapsed ? label : undefined}
-                      className={linkClass(isCategoryActive)}
-                    >
-                      <Icon size={17} />
-                      {!collapsed && label}
-                    </NavLink>
-                  </div>
-                );
-              })}
-            </div>
+            {mainLinks.map(renderLink)}
           </NavGroup>
 
           {/* Workspace */}
@@ -342,69 +342,6 @@ const Sidebar = ({ onNavigate }) => {
               {!isGuest &&
                 renderLink({ to: "/contacts", icon: Phone, label: "Phone Book" })}
               {renderLink({ to: "/remote", icon: NotebookPen, label: "Remote Client" })}
-            </div>
-          </NavGroup>
-
-          {/* Library */}
-          <NavGroup
-            title="Library"
-            open={openGroups.library}
-            onToggle={() => toggleGroup("library")}
-            single
-            collapsed={collapsed}
-          >
-            <div data-tour="library">
-              {renderLink({ to: "/reading-list", icon: BookOpen, label: "Reading" })}
-            </div>
-          </NavGroup>
-
-          {/* Discover */}
-          <NavGroup
-            title="Discover"
-            open={openGroups.discover}
-            single={discoverLinks.length <= 1}
-            onToggle={() => toggleGroup("discover")}
-            collapsed={collapsed}
-          >
-            <div data-tour="discover">
-              {discoverLinks.map(({ label, icon: Icon, to }) => (
-                <div key={label} className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
-                  <NavLink
-                    to={to}
-                    onClick={onNavigate}
-                    title={collapsed ? label : undefined}
-                    className={({ isActive }) => linkClass(isActive)}
-                  >
-                    <Icon size={17} />
-                    {!collapsed && label}
-                  </NavLink>
-                </div>
-              ))}
-            </div>
-          </NavGroup>
-
-          {/* Quiz */}
-          <NavGroup
-            title="Practice"
-            open={openGroups.quiz}
-            onToggle={() => toggleGroup("quiz")}
-            single={filteredQuizLinks.length <= 1}
-            collapsed={collapsed}
-          >
-            <div data-tour="practice">
-              {filteredQuizLinks.map(({ label, icon: Icon, to }) => (
-                <div key={label} className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
-                  <NavLink
-                    to={to}
-                    onClick={onNavigate}
-                    title={collapsed ? label : undefined}
-                    className={({ isActive }) => linkClass(isActive)}
-                  >
-                    <Icon size={17} />
-                    {!collapsed && label}
-                  </NavLink>
-                </div>
-              ))}
             </div>
           </NavGroup>
 
