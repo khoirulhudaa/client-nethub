@@ -361,7 +361,7 @@ const CreatePost = () => {
             </div>
             <div>
               <label className="mb-1.5 block text-sm font-medium">
-                Tags (max: 4)
+                Tags (max: 3)
               </label>
               <input
                 className="input-field dark:!bg-slate-100/10 dark:!text-white"
@@ -375,11 +375,11 @@ const CreatePost = () => {
                     .filter(Boolean);
 
                   // Kalau sudah 4 tag dan user masih mengetik koma baru → tolak
-                  if (currentTags.length > 4) return;
+                  if (currentTags.length > 3) return;
 
                   setForm({ ...form, tags: value });
                 }}
-                placeholder="vlan, mikrotik, switch, wifi"
+                placeholder="vlan, mikrotik, switch"
               />
             </div>
           </div>
