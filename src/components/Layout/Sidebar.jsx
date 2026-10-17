@@ -20,14 +20,6 @@ import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 
-const categoryLinks = [
-  { label: "Main Dashboard", icon: LayoutGrid, to: "/", category: null },
-];
-
-const discoverLinks = [
-  { label: "Subneting", icon: Calculator, to: "/tools/subnet" },
-];
-
 const quizLinks = [
   { label: "Practice", icon: PencilRuler, to: "/topology-practice" },
 ];

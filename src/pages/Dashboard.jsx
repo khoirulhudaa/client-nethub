@@ -425,7 +425,29 @@ const Dashboard = () => {
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  const LIMIT = 4;
+  // const LIMIT = 4;
+  const PAGE_SIZES = [6, 12, 24, 32, 60];
+
+  const [limit, setLimit] = useState(() => {
+  const saved = Number(localStorage.getItem("nethub_page_size"));
+    return PAGE_SIZES.includes(saved) ? saved : 12;
+  });
+  const [searchShown, setSearchShown] = useState(limit); // jumlah tampil saat search aktif
+
+  useEffect(() => {
+    localStorage.setItem("nethub_page_size", String(limit));
+  }, [limit]);
+
+  const handleLimitChange = (n) => {
+    setLimit(n);
+    setPage(1);
+    setSearchShown(n);
+  };
+
+  useEffect(() => {
+    setPage(1);
+    setSearchShown(limit);
+  }, [tagsKey, search]);
 
   // Fetch stats sekali
   useEffect(() => {
@@ -443,7 +465,10 @@ const Dashboard = () => {
       .finally(() => setStatsLoading(false));
   }, []);
 
-  useEffect(() => { setPage(1); }, [tagsKey]);
+  useEffect(() => {
+    setPage(1);
+    setSearchShown(limit);
+  }, [tagsKey, search]);
 
   // ✅ useEffect KEDUA — ini yang benar, biarkan
   useEffect(() => {
@@ -457,7 +482,7 @@ const Dashboard = () => {
     }
 
     api
-      .get("/posts", { params: { tags: tagsKey || undefined, page, limit: LIMIT } })
+      .get("/posts", { params: { tags: tagsKey || undefined, page, limit } })
       .then(({ data: res }) => {
         if (cancelled) return;
 
@@ -479,7 +504,7 @@ const Dashboard = () => {
     return () => {
       cancelled = true;
     };
-  }, [tagsKey, page]);
+  }, [tagsKey, page, limit]);
 
   // Sync localSearch dari URL
   useEffect(() => {
@@ -620,29 +645,21 @@ const { remainingPosts } = useMemo(() => {
     newestThree: sorted.slice(0, 3),
     remainingPosts: filteredPosts,
   };
-}, [overviewPosts, search, hasTagFilter]);
+  }, [overviewPosts, search, hasTagFilter]);
 
-  // const { newestThree, remainingPosts } = useMemo(() => {
-  //   // When searching or filtering by category, just show everything in the normal grid
-  //   if (search.trim() || category) {
-  //     return { newestThree: [], remainingPosts: filteredPosts };
-  //   }
+  const hasMore = data.page < data.pages;
 
-  //   // Assume posts are already ordered newest-first from the API.
-  //   // If you have a createdAt / publishedAt field, sort explicitly:
-  //   // const sorted = [...filteredPosts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  //   const sorted = filteredPosts;
+  const isSearching = Boolean(search.trim());
 
-  //   const newestThree = sorted.slice(0, 3);
-  //   const remainingPosts = sorted.slice(3);
-
-  //   return { newestThree, remainingPosts };
-  // }, [filteredPosts, search, category]);
-
-   const hasMore = data.page < data.pages;
+  // Search: hasil Fuse dipotong di client. Selain itu: data sudah dipaginasi server.
+  const visiblePosts = isSearching
+    ? remainingPosts.slice(0, searchShown)
+    : remainingPosts;
+  const totalItems = isSearching ? remainingPosts.length : data.total || 0;
 
   const handleLoadMore = () => {
-    setPage((prev) => prev + 1);
+    if (isSearching) setSearchShown((n) => n + limit);
+    else setPage((p) => p + 1);
   };
 
   const updateParam = (key, value) => {
@@ -745,6 +762,41 @@ const { remainingPosts } = useMemo(() => {
       result.push(arr.slice(i, i + size));
     }
     return result;
+  };
+
+  const LoadMoreBar = ({ shown, total, limit, loadingMore, onLoadMore, onLimit }) => {
+    const remaining = Math.max(0, total - shown);
+    const nextCount = Math.min(limit, remaining);
+
+    return (
+      <div className="mt-8 flex flex-col gap-2.5 border-t border-slate-300 dark:border-white/10 pt-5 md:flex-row md:items-center md:justify-start">
+        <div className="flex flex-wrap items-center gap-3 text-sm text-slate-700 dark:text-gray-400">
+          <span>Showing {shown} of {total}</span>
+          <label className="flex items-center gap-2">
+            <select
+              value={limit}
+              onChange={(e) => onLimit(Number(e.target.value))}
+              className="rounded-lg border border-gray-200 bg-white dark:bg-slate-200 px-2 py-1.5 h-[32px] text-sm text-black outline-none"
+            >
+              {PAGE_SIZES.map((n) => (
+                <option key={n} value={n}>{n}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        {remaining > 0 && (
+          <button
+            type="button"
+            onClick={onLoadMore}
+            disabled={loadingMore}
+            className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white dark:bg-slate-200 px-3 py-1.5 h-[32px] text-sm font-medium text-slate-800 transition hover:bg-gray-100 active:scale-[0.98] duration-100 disabled:opacity-50"
+          >
+            {loadingMore ? "Loading..." : `Load more (+${nextCount})`}
+          </button>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -865,16 +917,7 @@ const { remainingPosts } = useMemo(() => {
                   
                 {/* Posts Grid — Other guides */}
                  <section className="mb-8 px-3 md:px-4 border-white/10 pt-8 border-t">
-                  {/* <div className={`mb-4 flex items-center gap-2 ${isGuest ? 'hidden' : ''}`}>
-                    <h2 className="flex items-center text-lg mt-1 font-medium tracking-tight">
-                      <Newspaper size={17} className="relative top-[-1px] mr-2 text-slate-900 dark:text-white" />
-                      <span className="relative top-[-1.7px] text-slate-900 dark:text-white">
-                        Other guides
-                      </span>
-                    </h2>
-                  </div> */}
-
-                  {remainingPosts.length === 0 ? (
+                  {visiblePosts.length === 0  ? (
                     <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
                       <img src="/notFound.png" alt="No guides" className="h-16 w-16 mb-1.5" />
                       <p className="font-medium">
@@ -890,7 +933,7 @@ const { remainingPosts } = useMemo(() => {
                     <>
                       {/* Ganti grid-cols-* jadi flex */}
                       <div className="flex flex-col gap-5">
-                        {chunk(remainingPosts, 2).map((row, rowIndex) => (
+                        {chunk(visiblePosts, 2).map((row, rowIndex) => (
                           <div
                             key={rowIndex}
                             className="flex flex-col sm:flex-row gap-5"
@@ -912,14 +955,23 @@ const { remainingPosts } = useMemo(() => {
                       {/* Skeleton saat load more */}
                       {loadingMore && (
                         <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-2">
-                          {Array.from({ length: 4 }).map((_, i) => (
+                          {Array.from({ length: Math.min(limit, 4) }).map((_, i) => (
                             <PostCardSkeleton key={i} />
                           ))}
                         </div>
                       )}
 
+                      <LoadMoreBar
+                        shown={visiblePosts.length}
+                        total={totalItems}
+                        limit={limit}
+                        loadingMore={loadingMore}
+                        onLoadMore={handleLoadMore}
+                        onLimit={handleLimitChange}
+                      />
+
                       {/* ===== LOAD MORE ===== */}
-                      {!search && hasMore && !loadingMore && (
+                      {/* {!search && hasMore && !loadingMore && (
                         <div
                           className="mt-6 cursor-pointer active:scale-[0.98] duration-100 hover:brightness-75 flex flex-col items-center justify-center"
                           onClick={handleLoadMore}
@@ -927,7 +979,7 @@ const { remainingPosts } = useMemo(() => {
                           <p>Load more</p>
                           <ChevronDown size={14} className="relative top-1.5 duration-300 ease-out animate-bounce" />
                         </div>
-                      )}
+                      )} */}
                     </>
                   )}
                 </section>
