@@ -248,7 +248,7 @@ const AuthorBio = () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-2">
           {posts.map((post) => (
             <PostCard key={post._id} post={post} />
           ))}
