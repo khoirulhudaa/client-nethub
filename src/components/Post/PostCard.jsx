@@ -411,7 +411,7 @@ return (
                     key={tag}
                     className={`shrink-0 text-xs font-medium !text-slate-600 dark:text-gray-200 md:text-gray-200 !bg-white dark:bg-white/10 md:bg-white/10 whitespace-nowrap ${
                       hideImage
-                        ? "px-2 py-0.5 rounded-full"
+                        ? "px-2 py-0.5 rounded-md"
                         : "px-2 py-1 rounded-lg"
                     }`}
                   >
