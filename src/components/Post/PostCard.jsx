@@ -1,11 +1,27 @@
-import { Book, BookLock, BookPlus, Check, ChevronRight, Download, Link2, Link2Icon, Loader2, Pin, PinOffIcon, Plus } from "lucide-react";
-import { useState } from "react";
+import { BookLock, BookPlus, Check, ChevronRight, Download, Link2, Link2Icon, Loader2, Pin, PinOffIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import api from "../../api/axios.js";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { downloadPostPdf } from "../../utils/pdfExport.js";
 import CategoryPill from "../UI/CategoryPill.jsx";
+
+const useIsMobile = (query = "(max-width: 767px)") => {
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== "undefined" && window.matchMedia(query).matches
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const handler = (e) => setIsMobile(e.matches);
+    setIsMobile(mq.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, [query]);
+
+  return isMobile;
+};
 
 const PostCard = ({
   post,
@@ -14,12 +30,17 @@ const PostCard = ({
   onPinChange,
   hideImage = false,
 }) => {
-  const { user } = useAuth();
+ const { user } = useAuth();
+  
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [copied, setCopied] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
+
+  const isMobile = useIsMobile();
+  const Wrapper = isMobile ? Link : "div";
+  const wrapperProps = isMobile ? { to: `/posts/${post.slug}` } : {};
 
   const isGuest = user?.isGuest || user?.role === "guest";
   const canPin = !!user && !isGuest;
@@ -295,15 +316,16 @@ const PostCard = ({
   );
 
 return (
-    <div
-      // to={`/posts/${post.slug}`}
-      className="
+    <Wrapper
+      {...wrapperProps}
+      className={`
         block
         flex-1
         min-w-0
         transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)]
         hover:flex-[2.2]
-      "
+        ${isMobile ? 'active:scale-[0.99]' : ''}
+      `}
     >
       <div
         className={`group hover:dark:!border-blue-300/50 relative p-3.5 bg-slate-300 rounded-[24px] dark:!bg-[#0c0c18] border dark:!border-white/20 flex flex-col overflow-hidden ${
@@ -563,7 +585,7 @@ return (
           </div>
         </div>
       </div>
-    </div>
+    </Wrapper>
   );
 };
 
