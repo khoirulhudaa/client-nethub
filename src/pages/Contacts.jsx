@@ -436,7 +436,7 @@ const Contacts = () => {
               <div
                 key={c._id}
                 onClick={() => setDetail(c)}
-                className="group cursor-pointer rounded-2xl border border-gray-100 bg-slate-300 p-4 transition hover:-translate-y-0.5 hover:shadow-lg dark:border-white/5 dark:!bg-[#0c0c18]"
+                className="group hover:!border-blue-400/70 cursor-pointer rounded-2xl border border-gray-100 bg-slate-300 p-4 transition hover:shadow-lg dark:border-white/5 dark:!bg-[#0c0c18]"
               >
                 <div className="flex items-center gap-3">
                   <Avatar contact={c} />
