@@ -43,7 +43,7 @@ const tokenize = (query) => {
 };
 
 // --- Welcome / greeting row -------------------------------------------------
-const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
+const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false, isUser=false }) => {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
 
@@ -54,19 +54,19 @@ const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false }) => {
           {greeting}, {userName}
         </h1>
         <p className="mt-1 text-sm dark:text-gray-400 text-gray-300">
-          {isGuest
+          {(isGuest || isUser)
             ? "You are currently in Guest mode. Sign up to create guides"
             : "Your network is quiet. Here's what the community is learning"}
         </p>
       </div>
 
       {/* Hanya tampilkan tombol New post jika BUKAN guest */}
-      {!isGuest && (
+      {(!isGuest && !isUser) && (
         <button
           onClick={onNewPost}
           className="relative w-full active:scale-[0.99] duration-100 md:w-max flex md:inline-flex items-center gap-1.5 rounded-lg bg-slate-200 dark:bg-transparent px-3 md:px-4 py-2 text-sm font-medium text-slate-900 dark:text-white border border-white/15 shadow-sm transition hover:opacity-90"
         >
-          <Plus size={16} /> New post
+          <Plus size={16} /> New guide
         </button>
       )}
     </div>
@@ -563,6 +563,7 @@ const Dashboard = () => {
   }, [search, tagsKey]);
 
   const isGuest = user?.isGuest || user?.role === "gues+t";
+  const isUser = user?.role === "user";
 
   // Sumber data search: semua post + pinned (backend menyembunyikan pinned dari list biasa)
   const searchSource = useMemo(() => {
@@ -810,6 +811,7 @@ const { remainingPosts } = useMemo(() => {
             userName={user?.name || "reader"}
             onNewPost={() => navigate("/create")}
             isGuest={isGuest}
+            isUser={isUser}
           />
           <MetricGrid
             signal={signal}

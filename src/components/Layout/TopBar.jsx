@@ -43,6 +43,7 @@ const TopBar = ({ onMenuClick }) => {
   const navigate = useNavigate();
 
   const isGuest = user?.isGuest || user?.role === "guest";
+  const isUser = user?.role === "user";
 
   const TYPE_META = {
     info: { icon: Info, color: "text-blue-500", bg: "bg-gradient-to-br from-blue-400 to-blue-900/10" },
@@ -180,7 +181,7 @@ useEffect(() => {
 
         <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
           {/* New post — hanya user login */}
-          {!isGuest && (
+          {(!isGuest && !isUser) && (
             <button
               onClick={() => navigate("/create")}
               className="active:scale-[0.98] duration-100 hidden items-center dark:hover:bg-white/10 hover:bg-black/10 h-10 gap-1.5 rounded-xl border-[2px] border-slate-400 dark:md:border-white/20 dark:border-white/30 px-3 py-2 text-sm font-medium text-gray-500 dark:text-white transition hover:opacity-90 sm:inline-flex"
