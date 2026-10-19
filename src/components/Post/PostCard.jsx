@@ -1,4 +1,4 @@
-import { BookPlus, Check, ChevronRight, Download, Link2, Link2Icon, Loader2, Pin, PinOffIcon } from "lucide-react";
+import { Book, BookLock, BookPlus, Check, ChevronRight, Download, Link2, Link2Icon, Loader2, Pin, PinOffIcon, Plus } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -377,11 +377,11 @@ return (
               <CategoryPill category={post.category} />
             </div>
 
-            {!hideImage && (
+            {/* {!hideImage && (
               <div className="hidden md:flex group-hover:md:hidden items-center gap-2">
                 {AddButton}
               </div>
-            )}
+            )} */}
 
             {post.tags?.length > 0
               ? post.tags.map((tag) => (
@@ -517,7 +517,22 @@ return (
                 </div>
               </button>
             )}
-
+            <button
+              type="button"
+              onClick={handleAddToReadingList}
+              disabled={adding || added}
+              className="flex h-max justify-center w-full items-center gap-x-2 bg-white border px-2 py-1 text-sm font-medium text-slate-950 transition-all ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98]"
+            >
+              <div className={`active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[32px] w-[30px] ${(adding || added) ? 'bg-green-200' : ''}`}>
+                {pinning ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : adding || added ? (
+                  <BookLock size={17.5} className="fill-white" />
+                ) : (
+                  <BookPlus size={17.5} />
+                )}
+              </div>
+            </button>
             <button
               type="button"
               onClick={handleDownloadPdf}
