@@ -308,9 +308,9 @@ const Pcs = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="active:scale-[0.98] flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white/50 px-2 py-2 text-xs font-medium text-gray-700 transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-gray-200 dark:hover:bg-white/10"
+                    className="active:scale-[0.98] text-[12px] font-bold text-green-600 flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white/50 px-2 py-2 text-xs transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
                 >
-                    <span className="text-[12px] font-bold text-green-600">WA</span>
+                    {/* <span className="text-[12px] font-bold text-green-600">WA</span> */}
                     WhatsApp
                 </a>
 
