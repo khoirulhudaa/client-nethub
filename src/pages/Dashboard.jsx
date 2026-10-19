@@ -147,7 +147,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
       />
       <MetricCard
         icon={Tag}
-        iconClass="bg-purple-600 text-white"
+        iconClass="bg-cyan-600 text-white"
         label="Categories"
         value={totalCategories}
         delta="Active categories"
