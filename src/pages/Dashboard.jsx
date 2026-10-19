@@ -772,7 +772,6 @@ const { remainingPosts } = useMemo(() => {
     return (
       <div className="mt-8 flex flex-col gap-2.5 border-t border-slate-300 dark:border-white/10 pt-5 md:flex-row md:items-center md:justify-start">
         <div className="flex flex-wrap items-center gap-3 text-sm text-slate-700 dark:text-gray-400">
-          <span>Showing {shown} of {total}</span>
           <label className="flex items-center gap-2">
             <select
               value={limit}
