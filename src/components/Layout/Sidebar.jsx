@@ -2,6 +2,7 @@ import {
   Bell,
   BookOpen,
   Calculator,
+  Camera,
   ChevronDown,
   Expand,
   FileText,
@@ -19,10 +20,6 @@ import {
 import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
-
-const quizLinks = [
-  { label: "Practice", icon: PencilRuler, to: "/topology-practice" },
-];
 
 const supportLinks = [
   { label: "Ticket List", icon: Ticket, to: "/tickets" },
@@ -322,9 +319,11 @@ const Sidebar = ({ onNavigate }) => {
             collapsed={collapsed}
           >
             <div data-tour="workspace">
-              {!isGuest &&
+              {
+              !isGuest &&
                 renderLink({ to: "/contacts", icon: Phone, label: "Phone Book" })}
               {renderLink({ to: "/remote", icon: NotebookPen, label: "Remote Client" })}
+              {renderLink({ to: "/camera", icon: Camera, label: "Cameras" })}
             </div>
           </NavGroup>
 

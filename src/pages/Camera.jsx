@@ -1,0 +1,683 @@
+import {
+  Check,
+  Copy,
+  Eye,
+  EyeOff,
+  Loader2,
+  Pencil,
+  Plus,
+  Search,
+  Trash2,
+  Video,
+  X,
+} from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import api from "../api/axios.js";
+import { useAuth } from "../context/AuthContext.jsx";
+
+const TYPES = ["NVR", "DVR", "Camera"];
+const ENTITIES = [
+  { value: "pintex", label: "Pintex" },
+  { value: "tdi", label: "TDI" },
+];
+const EMPTY_FORM = {
+  deviceType: "NVR",
+  name: "",
+  ipAddress: "",
+  username: "",
+  password: "",
+  entity: "pintex",
+};
+
+const errMsg = (err) => err?.response?.data?.message || "Terjadi kesalahan, coba lagi";
+
+const inputCls =
+  "w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-black outline-none focus:border-blue-500";
+
+// --- Tombol copy -------------------------------------------------------------
+const CopyButton = ({ getText, title = "Copy" }) => {
+  const [done, setDone] = useState(false);
+
+  const handle = async () => {
+    try {
+      const text = await getText();
+      await navigator.clipboard.writeText(text);
+      setDone(true);
+      setTimeout(() => setDone(false), 1500);
+    } catch {
+      /* diabaikan */
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handle}
+      title={title}
+      className="rounded-md p-1.5 text-slate-500 transition hover:bg-slate-300 active:scale-95 dark:text-gray-400 dark:hover:bg-white/10"
+    >
+      {done ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+    </button>
+  );
+};
+
+// --- Password: baru diambil dari server saat diklik ---------------------------
+const PasswordCell = ({ id }) => {
+  const [value, setValue] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  const fetchPassword = async () => {
+    if (value !== null) return value;
+    const { data } = await api.get(`/cameras/${id}/password`);
+    setValue(data.password);
+    return data.password;
+  };
+
+  const toggle = async () => {
+    if (visible) return setVisible(false);
+    setLoading(true);
+    try {
+      await fetchPassword();
+      setVisible(true);
+    } catch (err) {
+      alert(errMsg(err));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-1">
+      <span className="min-w-[88px] font-mono text-sm">{visible ? value : "••••••••"}</span>
+      <button
+        type="button"
+        onClick={toggle}
+        title={visible ? "Sembunyikan password" : "Lihat password"}
+        className="rounded-md p-1.5 text-slate-500 transition hover:bg-slate-300 dark:text-gray-400 dark:hover:bg-white/10"
+      >
+        {loading ? (
+          <Loader2 size={14} className="animate-spin" />
+        ) : visible ? (
+          <EyeOff size={14} />
+        ) : (
+          <Eye size={14} />
+        )}
+      </button>
+      <CopyButton getText={fetchPassword} title="Copy password" />
+    </div>
+  );
+};
+
+// --- Badge -------------------------------------------------------------------
+const TypeBadge = ({ type }) => {
+  const color =
+    type === "NVR"
+      ? "bg-blue-600"
+      : type === "DVR"
+      ? "bg-orange-600"
+      : "bg-emerald-600";
+  return (
+    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium text-white ${color}`}>
+      {type}
+    </span>
+  );
+};
+
+const EntityBadge = ({ entity }) => (
+  <span className="rounded-full border border-slate-400 px-2.5 py-0.5 text-xs font-medium text-slate-800 dark:border-white/20 dark:text-gray-200">
+    {entity === "tdi" ? "TDI" : "Pintex"}
+  </span>
+);
+
+// --- Modal form --------------------------------------------------------------
+const CameraFormModal = ({ initial, onClose, onSaved }) => {
+  const isEdit = Boolean(initial?._id);
+  const [form, setForm] = useState(
+    isEdit ? { ...EMPTY_FORM, ...initial, password: "" } : EMPTY_FORM
+  );
+  const [showPass, setShowPass] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setError("");
+    try {
+      const payload = {
+        deviceType: form.deviceType,
+        name: form.name,
+        ipAddress: form.ipAddress,
+        username: form.username,
+        password: form.password,
+        entity: form.entity,
+      };
+      const { data } = isEdit
+        ? await api.put(`/cameras/${initial._id}`, payload)
+        : await api.post("/cameras", payload);
+      onSaved(data.camera, isEdit);
+    } catch (err) {
+      setError(errMsg(err));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const nameLabel =
+    form.deviceType === "Camera" ? "Nama kamera" : `Nama ${form.deviceType}`;
+
+  return (
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
+      <div
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        onClick={() => !saving && onClose()}
+      />
+      <form
+        onSubmit={submit}
+        className="relative w-full max-w-lg rounded-2xl border border-white bg-white p-5 shadow-2xl dark:border-white/10 dark:bg-gray-900 md:p-6"
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-lg font-semibold">{isEdit ? "Edit perangkat" : "Tambah perangkat"}</h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-md p-1.5 hover:bg-black/5 dark:hover:bg-white/10"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <label className="text-sm">
+            <span className="mb-1 block font-medium">Jenis hardware</span>
+            <select value={form.deviceType} onChange={set("deviceType")} className={inputCls}>
+              {TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="text-sm">
+            <span className="mb-1 block font-medium">Entitas</span>
+            <select value={form.entity} onChange={set("entity")} className={inputCls}>
+              {ENTITIES.map((en) => (
+                <option key={en.value} value={en.value}>
+                  {en.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="text-sm sm:col-span-2">
+            <span className="mb-1 block font-medium">{nameLabel}</span>
+            <input
+              required
+              maxLength={100}
+              value={form.name}
+              onChange={set("name")}
+              placeholder="contoh: NVR Gudang A"
+              className={inputCls}
+            />
+          </label>
+
+          <label className="text-sm sm:col-span-2">
+            <span className="mb-1 block font-medium">IP address</span>
+            <input
+              required
+              value={form.ipAddress}
+              onChange={set("ipAddress")}
+              placeholder="192.168.1.100 atau 192.168.1.100:8000"
+              className={`${inputCls} font-mono`}
+            />
+          </label>
+
+          <label className="text-sm">
+            <span className="mb-1 block font-medium">Username</span>
+            <input
+              required
+              autoComplete="off"
+              value={form.username}
+              onChange={set("username")}
+              className={inputCls}
+            />
+          </label>
+
+          <label className="text-sm">
+            <span className="mb-1 block font-medium">Password</span>
+            <div className="relative">
+              <input
+                required={!isEdit}
+                type={showPass ? "text" : "password"}
+                autoComplete="new-password"
+                value={form.password}
+                onChange={set("password")}
+                placeholder={isEdit ? "Kosongkan jika tidak diubah" : ""}
+                className={`${inputCls} pr-9`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPass((s) => !s)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500"
+                tabIndex={-1}
+              >
+                {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
+              </button>
+            </div>
+          </label>
+        </div>
+
+        {error && (
+          <p className="mt-3 rounded-lg bg-red-100 px-3 py-2 text-sm text-red-700 dark:bg-red-500/20 dark:text-red-300">
+            {error}
+          </p>
+        )}
+
+        <div className="mt-5 flex gap-3">
+          <button
+            type="button"
+            disabled={saving}
+            onClick={onClose}
+            className="flex-1 rounded-xl border border-slate-300 bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 active:scale-[0.99] disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:text-gray-200"
+          >
+            Batal
+          </button>
+          <button
+            type="submit"
+            disabled={saving}
+            className="flex-1 rounded-xl bg-blue-600 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 active:scale-[0.99] disabled:opacity-50"
+          >
+            {saving ? (
+              <span className="inline-flex items-center justify-center gap-2">
+                <Loader2 size={15} className="animate-spin" /> Menyimpan...
+              </span>
+            ) : (
+              "Simpan"
+            )}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+// --- Modal hapus -------------------------------------------------------------
+const DeleteModal = ({ camera, onClose, onDeleted }) => {
+  const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState("");
+
+  const confirm = async () => {
+    setDeleting(true);
+    try {
+      await api.delete(`/cameras/${camera._id}`);
+      onDeleted(camera._id);
+    } catch (err) {
+      setError(errMsg(err));
+      setDeleting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
+      <div
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        onClick={() => !deleting && onClose()}
+      />
+      <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-white bg-white shadow-2xl dark:border-white/10 dark:bg-gray-900">
+        <div className="p-6 text-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/20">
+            <Trash2 size={22} className="text-red-600 dark:text-red-400" />
+          </div>
+          <h3 className="text-lg font-semibold">Hapus perangkat?</h3>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            <strong>{camera.name}</strong> ({camera.ipAddress}) akan dihapus permanen.
+          </p>
+          {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+        </div>
+        <div className="flex gap-3 border-t border-white bg-gray-50 px-6 py-4 dark:border-white/5 dark:bg-white/5">
+          <button
+            type="button"
+            disabled={deleting}
+            onClick={onClose}
+            className="flex-1 rounded-xl border border-slate-300 bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 active:scale-[0.99] disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:text-gray-200"
+          >
+            Batal
+          </button>
+          <button
+            type="button"
+            disabled={deleting}
+            onClick={confirm}
+            className="flex-1 rounded-xl bg-red-600 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 active:scale-[0.99] disabled:opacity-50"
+          >
+            {deleting ? "Menghapus..." : "Ya, hapus"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- Halaman utama -----------------------------------------------------------
+const Cameras = () => {
+  const { user } = useAuth();
+  const isGuest = user?.isGuest || user?.role === "guest";
+
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [entityFilter, setEntityFilter] = useState("all");
+
+  const [formState, setFormState] = useState(null); // null | {} (baru) | camera (edit)
+  const [toDelete, setToDelete] = useState(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const { data } = await api.get("/cameras");
+      setItems(data.cameras || []);
+    } catch (err) {
+      setError(errMsg(err));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isGuest) load();
+    else setLoading(false);
+  }, [isGuest, load]);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return items.filter((c) => {
+      if (typeFilter !== "all" && c.deviceType !== typeFilter) return false;
+      if (entityFilter !== "all" && c.entity !== entityFilter) return false;
+      if (!q) return true;
+      return [c.name, c.ipAddress, c.username].some((v) => v?.toLowerCase().includes(q));
+    });
+  }, [items, search, typeFilter, entityFilter]);
+
+  const handleSaved = (camera, isEdit) => {
+    setItems((list) =>
+      isEdit ? list.map((c) => (c._id === camera._id ? camera : c)) : [camera, ...list]
+    );
+    setFormState(null);
+  };
+
+  const handleDeleted = (id) => {
+    setItems((list) => list.filter((c) => c._id !== id));
+    setToDelete(null);
+  };
+
+  if (isGuest) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-2 py-24 text-center text-white">
+        <Video size={32} />
+        <p className="font-medium">Halaman ini khusus akun terdaftar</p>
+        <p className="text-sm text-gray-300">Login untuk melihat data kamera dan NVR/DVR.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto max-w-full pr-0 md:border-x border-white shadow-none dark:border-white/10">
+      {/* Header */}
+      <div className="mb-6 flex flex-col gap-4 border-b border-slate-300 px-0 pb-4 dark:border-white/10 md:h-[11vh] md:flex-row md:items-center md:justify-between md:px-6 md:pt-4">
+        <div>
+          <h1 className="mt-[1px] text-xl font-semibold tracking-tight text-white">Cameras</h1>
+          <p className="mt-1 text-sm text-gray-300 dark:text-gray-400">
+            Daftar NVR, DVR, dan kamera beserta akses loginnya.
+          </p>
+        </div>
+        <button
+          onClick={() => setFormState({})}
+          className="relative flex w-full items-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition duration-100 hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:inline-flex md:w-max md:px-4"
+        >
+          <Plus size={16} /> Tambah perangkat
+        </button>
+      </div>
+
+      <div className="pb-6 md:px-6">
+        <div className="rounded-xl bg-slate-200 px-3 py-3 dark:bg-white/5 md:p-4">
+          {/* Filter */}
+          <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center">
+            <div className="flex w-full items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 shadow-sm dark:bg-slate-200 md:flex-1">
+              <Search size={16} className="shrink-0 text-gray-400" />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Cari nama, IP, atau username..."
+                className="h-[24.5px] w-full px-1 py-2 text-sm font-medium text-black outline-none dark:bg-transparent"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="text-xs text-gray-400 hover:text-gray-600"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none dark:bg-slate-200 md:w-44"
+            >
+              <option value="all">Semua jenis</option>
+              {TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={entityFilter}
+              onChange={(e) => setEntityFilter(e.target.value)}
+              className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none dark:bg-slate-200 md:w-44"
+            >
+              <option value="all">Semua entitas</option>
+              {ENTITIES.map((en) => (
+                <option key={en.value} value={en.value}>
+                  {en.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Konten */}
+          {loading ? (
+            <div className="space-y-2" aria-busy="true">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-12 w-full animate-pulse rounded-lg bg-slate-300 dark:bg-white/10"
+                />
+              ))}
+            </div>
+          ) : error ? (
+            <div className="flex flex-col items-center gap-2 py-12 text-center">
+              <p className="text-sm text-red-600">{error}</p>
+              <button
+                onClick={load}
+                className="rounded-lg border border-slate-400 px-3 py-1.5 text-sm hover:bg-slate-300 dark:border-white/20 dark:hover:bg-white/10"
+              >
+                Coba lagi
+              </button>
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
+              <Video size={28} className="text-slate-500" />
+              <p className="font-medium">
+                {items.length === 0 ? "Belum ada perangkat" : "Tidak ada hasil"}
+              </p>
+              <p className="text-sm text-gray-500">
+                {items.length === 0
+                  ? "Klik “Tambah perangkat” untuk menyimpan NVR, DVR, atau kamera pertama."
+                  : "Ubah kata kunci atau filter."}
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* Desktop: tabel */}
+              <div className="hidden overflow-x-auto rounded-lg md:block">
+                <table className="w-full min-w-[820px] text-left text-sm">
+                  <thead className="border-b border-slate-300 text-xs text-slate-600 dark:border-white/10 dark:text-gray-400">
+                    <tr>
+                      <th className="px-3 py-2 font-medium">Jenis</th>
+                      <th className="px-3 py-2 font-medium">Nama</th>
+                      <th className="px-3 py-2 font-medium">IP address</th>
+                      <th className="px-3 py-2 font-medium">Username</th>
+                      <th className="px-3 py-2 font-medium">Password</th>
+                      <th className="px-3 py-2 font-medium">Entitas</th>
+                      <th className="px-3 py-2 text-right font-medium">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map((c) => (
+                      <tr
+                        key={c._id}
+                        className="border-b border-slate-300/70 last:border-b-0 hover:bg-slate-300/40 dark:border-white/5 dark:hover:bg-white/5"
+                      >
+                        <td className="px-3 py-2.5">
+                          <TypeBadge type={c.deviceType} />
+                        </td>
+                        <td className="px-3 py-2.5 font-medium">{c.name}</td>
+                        <td className="px-3 py-2.5">
+                          <span className="inline-flex items-center gap-1 font-mono">
+                            {c.ipAddress}
+                            <CopyButton getText={async () => c.ipAddress} title="Copy IP" />
+                          </span>
+                        </td>
+                        <td className="px-3 py-2.5">
+                          <span className="inline-flex items-center gap-1">
+                            {c.username}
+                            <CopyButton getText={async () => c.username} title="Copy username" />
+                          </span>
+                        </td>
+                        <td className="px-3 py-2.5">
+                          <PasswordCell id={c._id} />
+                        </td>
+                        <td className="px-3 py-2.5">
+                          <EntityBadge entity={c.entity} />
+                        </td>
+                        <td className="px-3 py-2.5">
+                          <div className="flex justify-end gap-1">
+                            <button
+                              onClick={() => setFormState(c)}
+                              title="Edit"
+                              className="rounded-md p-2 text-slate-600 transition hover:bg-slate-300 active:scale-95 dark:text-gray-300 dark:hover:bg-white/10"
+                            >
+                              <Pencil size={15} />
+                            </button>
+                            <button
+                              onClick={() => setToDelete(c)}
+                              title="Hapus"
+                              className="rounded-md p-2 text-red-600 transition hover:bg-red-100 active:scale-95 dark:hover:bg-red-500/20"
+                            >
+                              <Trash2 size={15} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile: kartu */}
+              <div className="flex flex-col gap-3 md:hidden">
+                {filtered.map((c) => (
+                  <div
+                    key={c._id}
+                    className="rounded-xl border border-slate-300 bg-slate-100 p-3 dark:border-white/10 dark:bg-slate-950"
+                  >
+                    <div className="mb-2 flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="truncate font-medium">{c.name}</p>
+                        <div className="mt-1 flex gap-1.5">
+                          <TypeBadge type={c.deviceType} />
+                          <EntityBadge entity={c.entity} />
+                        </div>
+                      </div>
+                      <div className="flex shrink-0">
+                        <button
+                          onClick={() => setFormState(c)}
+                          className="rounded-md p-2 text-slate-600 dark:text-gray-300"
+                          title="Edit"
+                        >
+                          <Pencil size={16} />
+                        </button>
+                        <button
+                          onClick={() => setToDelete(c)}
+                          className="rounded-md p-2 text-red-600"
+                          title="Hapus"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <dl className="space-y-1 text-sm">
+                      <div className="flex items-center justify-between">
+                        <dt className="text-slate-500">IP</dt>
+                        <dd className="inline-flex items-center gap-1 font-mono">
+                          {c.ipAddress}
+                          <CopyButton getText={async () => c.ipAddress} title="Copy IP" />
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <dt className="text-slate-500">Username</dt>
+                        <dd className="inline-flex items-center gap-1">
+                          {c.username}
+                          <CopyButton getText={async () => c.username} title="Copy username" />
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <dt className="text-slate-500">Password</dt>
+                        <dd>
+                          <PasswordCell id={c._id} />
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+                ))}
+              </div>
+
+              <p className="mt-3 text-xs text-slate-600 dark:text-gray-400">
+                Menampilkan {filtered.length} dari {items.length} perangkat
+              </p>
+            </>
+          )}
+        </div>
+      </div>
+
+      {formState && (
+        <CameraFormModal
+          initial={formState}
+          onClose={() => setFormState(null)}
+          onSaved={handleSaved}
+        />
+      )}
+      {toDelete && (
+        <DeleteModal
+          camera={toDelete}
+          onClose={() => setToDelete(null)}
+          onDeleted={handleDeleted}
+        />
+      )}
+    </div>
+  );
+};
+
+export default Cameras;

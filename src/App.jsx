@@ -8,15 +8,22 @@ import AnnouncementDetail from "./pages/AnnouncementDetail.jsx";
 import AnnouncementsAdmin from "./pages/AnnouncementsAdmin.jsx";
 import AuthorBio from "./pages/AuthorBio.jsx";
 import AuthorProfile from "./pages/AuthorProfile.jsx";
+import Cameras from "./pages/Camera.jsx";
+import ContactForm from "./pages/ContactForm.jsx";
+import Contacts from "./pages/Contacts.jsx";
 import CreatePost from "./pages/CreatePost.jsx";
 import CreateTicketPage from "./pages/CreateTicketPage.jsx";
+import CreateTicketUserPage from "./pages/CreateTicketUserPage.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Following from "./pages/Following.jsx";
 import HardwareCollection from "./pages/HardwareCollection.jsx";
+import InstallAppPage from "./pages/InstallAppPage.jsx";
 import { ContentPolicyPage, PrivacyPage, TermsPage } from "./pages/Legal.jsx";
 import Login from "./pages/Login.jsx";
 import MyPosts from "./pages/MyPosts.jsx";
 import PCBuildCanvas from "./pages/PCBuildCanvas.jsx";
+import PcForm from "./pages/PcForm.jsx";
+import Pcs from "./pages/Pcs.jsx";
 import PostDetail from "./pages/PostDetail.jsx";
 import PracticeHub from "./pages/PracticeHub.jsx";
 import Profile from "./pages/Profile.jsx";
@@ -27,21 +34,13 @@ import Register from "./pages/Register.jsx";
 import SubnetCalculator from "./pages/SubnetCalculator.jsx";
 import TagPosts from "./pages/TagPosts.jsx";
 import TakeQuiz from "./pages/TakeQuiz.jsx";
+import TaskForm from "./pages/TaskForm.jsx";
+import Tasks from "./pages/Tasks.jsx";
 import TicketDetailPage from "./pages/TicketDetailPage.jsx";
 import TicketsPage from "./pages/TicketsPage.jsx";
 import TopologyPractice from "./pages/TopologyPractice.jsx";
-import Tasks from "./pages/Tasks.jsx";
-import TaskForm from "./pages/TaskForm.jsx";
-import Notes from "./pages/Notes.jsx";
-import NoteForm from "./pages/NoteForm.jsx";
-import Trending from "./pages/Trending.jsx";
-import CreateTicketUserPage from "./pages/CreateTicketUserPage.jsx";
-import InstallAppPage from "./pages/InstallAppPage.jsx";
 import TrackTicketPage from "./pages/TrackTicketPage.jsx";
-import Contacts from "./pages/Contacts.jsx";
-import ContactForm from "./pages/ContactForm.jsx";
-import Pcs from "./pages/Pcs.jsx";
-import PcForm from "./pages/PcForm.jsx";
+import Trending from "./pages/Trending.jsx";
 
 function App() {
   return (
@@ -89,6 +88,7 @@ function App() {
           <Route path="tasks/create" element={<TaskForm />} />
           <Route path="tasks/edit/:id" element={<TaskForm />} />
           <Route path="remote" element={<Pcs />} />
+          <Route path="camera" element={<Cameras />} />
           <Route path="remote/create" element={<PcForm />} />
           <Route path="remote/edit/:id" element={<PcForm />} />
           <Route path="my-posts" element={<MyPosts />} />
