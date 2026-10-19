@@ -1,5 +1,6 @@
 import Fuse from "fuse.js";
 import {
+  ArrowRight,
   BookOpen,
   Box,
   Brain,
@@ -419,6 +420,7 @@ const Dashboard = () => {
   const [pinnedFirst, setPinnedFirst] = useState(true); // true = Pinned di atas
   const [allPostsForSearch, setAllPostsForSearch] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
+  const guidesRef = useRef(null);
 
   const [stats, setStats] = useState({
     totalGuides: 0,
@@ -566,7 +568,7 @@ const Dashboard = () => {
     };
   }, [search, tagsKey]);
 
-  const isGuest = user?.isGuest || user?.role === "gues+t";
+  const isGuest = user?.isGuest || user?.role === "guest";
   const isUser = user?.role === "user";
 
   // Sumber data search: semua post + pinned (backend menyembunyikan pinned dari list biasa)
@@ -803,12 +805,66 @@ const { remainingPosts } = useMemo(() => {
     );
   };
 
+  // --- Guest jumbotron ---------------------------------------------------------
+  const GuestJumbotron = ({ onSignUp, onLogin, onBrowse, totalGuides = 0 }) => (
+    <section className="relative mb-6 overflow-hidden md:mx-6 md:mt-6 md:rounded-2xl bg-gradient-to-br from-blue-600 via-blue-700 to-slate-900 px-5 py-10 md:px-8 md:py-8">
+      {/* dekorasi */}
+      <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-cyan-400/20 blur-3xl" />
+
+      <div className="relative max-w-2xl">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium text-white">
+          <Sparkles size={13} /> Guest mode
+        </span>
+
+        <h1 className="mt-4 text-3xl md:text-3xl font-bold tracking-tight text-white">
+          Belajar jaringan, <br className="hidden md:block" />
+          mulai dari panduan komunitas.
+        </h1>
+
+        <p className="mt-3 text-sm md:text-base text-blue-100">
+          Jelajahi {totalGuides > 0 ? `${totalGuides}+ ` : ""}guide seputar Mikrotik,
+          Ubiquiti, TP-Link dan lainnya. Daftar untuk membuat guide sendiri dan
+          berbagi ilmu dengan komunitas.
+        </p>
+
+        <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:items-center">
+          <button
+            onClick={onSignUp}
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-blue-700 shadow-sm transition hover:bg-blue-50 active:scale-[0.98] duration-100"
+          >
+            Sign up gratis <ArrowRight size={16} />
+          </button>
+          <button
+            onClick={onLogin}
+            className="inline-flex items-center justify-center rounded-lg border border-white/30 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-white/10 active:scale-[0.98] duration-100"
+          >
+            Login
+          </button>
+          {/* <button
+            onClick={onBrowse}
+            className="inline-flex items-center justify-center gap-1 px-2 py-2.5 text-sm font-medium text-blue-100 underline-offset-4 hover:underline"
+          >
+            Lihat guide <ChevronDown size={14} />
+          </button> */}
+        </div>
+      </div>
+    </section>
+  );
+
   return (
     <div className="mx-auto max-w-full md:border-x border-white dark:border-white/10 pr-0 shadow-none">
       {/* Guest / Welcome tetap sama */}
-      {user?.isGuest || user?.role === "guest" ? (
-        <></>
-      ) : (
+      {isGuest ? (
+          <GuestJumbotron
+            totalGuides={stats.totalGuides}
+            onSignUp={() => navigate("/register")}
+            onLogin={() => navigate("/login")}
+            onBrowse={() =>
+              guidesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+            }
+          />
+        ) : (
         <div className="w-full h-max">
           <WelcomeRow
             userName={user?.name || "reader"}
@@ -828,7 +884,7 @@ const { remainingPosts } = useMemo(() => {
 
       <div className="border-t border-slate-300 dark:border-white/10 mb-6"></div>
 
-      <div className="md:px-6 pb-6">
+      <div ref={guidesRef} className="md:px-6 pb-6 scroll-mt-4">
         <div className="px-0 pt-3 pb-3 md:px-0 w-full md:py-4 relative rounded-xl bg-slate-200 dark:bg-white/5 dark:bg-none">
           {/* Header */}
           <header className="mt-1 px-3 md:px-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

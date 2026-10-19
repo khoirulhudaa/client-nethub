@@ -54,7 +54,7 @@ const NavGroup = ({ title, open, onToggle, collapsed, single = false, children }
   }
 
   return (
-    <div className={`pt-2 pb-1 px-[4px] ${divider}`}>
+    <div className={`hover:bg-slate-100/5 pt-2 pb-1 px-[4px] ${divider}`}>
       <button
         type="button"
         onClick={onToggle}
