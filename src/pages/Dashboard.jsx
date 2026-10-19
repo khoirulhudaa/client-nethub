@@ -6,10 +6,14 @@ import {
   ChevronDown,
   ChevronRight,
   Eye,
+  Key,
+  Lock,
   Plus,
   Search,
   Sparkles,
   Tag,
+  User2,
+  UserCircle,
   Wifi,
   X
 } from "lucide-react";
@@ -134,11 +138,11 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
         deltaTone="neutral"
       />
       <MetricCard
-        icon={Eye}
+        icon={UserCircle}
         iconClass="bg-blue-600 text-white"
-        label="Total reads"
-        value={totalReads}
-        delta="All-time views"
+        label="Total users"
+        value={2}
+        delta="All account"
         deltaTone="neutral"
       />
       <MetricCard
