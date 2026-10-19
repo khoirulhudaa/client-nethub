@@ -191,22 +191,13 @@ const Sidebar = ({ onNavigate }) => {
     }
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (!search.trim()) return;
-    navigate(`/?search=${encodeURIComponent(search.trim())}`);
-    onNavigate?.();
-  };
-
-  const filteredQuizLinks = isGuest
-    ? quizLinks.filter((item) => item.to !== "/quiz-builder")
-    : quizLinks;
-
   const linkClass = (active) =>
     collapsed
       ? `flex h-10 active:scale-[0.99] w-10 items-center justify-center rounded-xl transition ${
-          active
-            ? "text-blue-950"
+          active && !collapsed
+            ? "text-blue-950" : 
+            active && collapsed ? 
+            'text-blue-700 bg-blue-100'
             : "text-white hover:dark:!text-slate-400 dark:text-gray-400 hover:text-white"
         }`
       : `active:scale-[0.99] flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
@@ -299,10 +290,10 @@ const Sidebar = ({ onNavigate }) => {
             <button
               type="button"
               onClick={() => setCollapsed(false)}
-              className="h-10 active:scale-[0.99] mb-2 w-10 left-[1px] mt-2 relative border flex items-center justify-center border-white/20 rounded-lg md:rounded-xl bg-red-600 text-gray-400 transition hover:bg-red-700 hover:text-white"
+              className="h-10 active:scale-[0.99] mb-2 w-10 left-[1px] mt-2 relative border flex items-center justify-center border-white/20 rounded-lg md:rounded-xl bg-transparent text-gray-400 transition hover:bg-red-700 hover:text-white"
               title="Collapse sidebar"
             >
-              <Expand className="text-slate-200 relative top-[1px]" size={16} />
+              <Expand className="text-slate-200 relative top-[-0.7px]" size={16} />
             </button>
           </div>
         )}
@@ -350,7 +341,7 @@ const Sidebar = ({ onNavigate }) => {
                   <div key={label} className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
                     <NavLink
                       to={to}
-                      end={to === "/tickets"}   // ← ini yang penting
+                      end={to === "/tickets"}   
                       onClick={onNavigate}
                       title={collapsed ? label : undefined}
                       className={({ isActive }) => linkClass(isActive)}
