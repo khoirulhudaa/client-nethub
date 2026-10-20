@@ -1029,16 +1029,16 @@ const Cameras = () => {
   return (
     <div className="mx-auto max-w-full pr-0 md:border-x border-white shadow-none dark:border-white/10">
       <div className="flex w-full gap-2 pb-3.5 md:p-6 justify-start">
-        <div className="w-full md:w-max flex items-center gap-2">
+        <div className="w-max flex items-center gap-2">
           <button
             onClick={() => setShowBulk(true)}
-            className="flex w-max md:flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:px-4"
+            className="flex md: w-max items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:px-4"
           >
             <ClipboardPaste size={16} /> Import banyak
           </button>
           <button
             onClick={() => setFormState({})}
-            className="flex w-max md:flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:px-4"
+            className="flex md: w-max items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:px-4"
           >
             <Plus size={16} /> Tambah
           </button>
