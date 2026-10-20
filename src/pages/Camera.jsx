@@ -1,6 +1,8 @@
 import {
   Camera,
   Check,
+  ChevronLeft,
+  ChevronRight,
   ClipboardPaste,
   Copy,
   CopyIcon,
@@ -759,18 +761,14 @@ const Pagination = ({ page, pageCount, total, pageSize, onPage, onPageSize }) =>
     "inline-flex h-8 min-w-8 items-center justify-center rounded-md px-2 text-sm transition disabled:opacity-40";
 
   return (
-    <div className="mt-4 flex flex-col gap-3 text-sm md:flex-row md:items-center md:justify-between">
+    <div className="mt-4 flex flex-col gap-3 text-sm md:flex-row md:items-center">
       <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-gray-400">
-        <span>
-          Menampilkan {from}–{to} dari {total} perangkat
-        </span>
         <label className="inline-flex items-center gap-1.5">
-          <span>Per halaman</span>
           <select
             value={pageSize}
             onChange={(e) => onPageSize(Number(e.target.value))}
-            className="rounded-md border border-gray-200 bg-white px-1.5 py-1 text-xs text-gray-700 outline-none dark:bg-slate-200"
-          >
+            className="rounded-md border border-gray-200 bg-white px-1.5 py-1 h-8 mr-1 text-xs text-gray-700 outline-none dark:bg-slate-200"
+            >
             {PAGE_SIZES.map((n) => (
               <option key={n} value={n}>{n}</option>
             ))}
