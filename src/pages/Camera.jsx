@@ -1,10 +1,12 @@
 import {
+  Camera,
   Check,
   ClipboardPaste,
   Copy,
   CopyIcon,
   Eye,
   EyeOff,
+  Link,
   Loader2,
   Pencil,
   Plus,
@@ -122,9 +124,9 @@ const TypeBadge = ({ type }) => {
       ? "bg-orange-600"
       : "bg-emerald-600";
   return (
-    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium text-white ${color}`}>
+    <div className={`rounded-full w-max px-2.5 py-0.5 text-xs font-medium text-white ${color}`}>
       {type}
-    </span>
+    </div>
   );
 };
 
@@ -715,7 +717,186 @@ const BulkImportModal = ({ onClose, onSaved }) => {
   );
 };
 
-// --- Halaman utama -----------------------------------------------------------
+// --- Checkbox (mendukung indeterminate) --------------------------------------
+const Checkbox = ({ checked, indeterminate = false, onChange, title }) => {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (ref.current) ref.current.indeterminate = indeterminate && !checked;
+  }, [indeterminate, checked]);
+  return (
+    <input
+      ref={ref}
+      type="checkbox"
+      checked={checked}
+      onChange={onChange}
+      title={title}
+      className="h-4 w-4 cursor-pointer rounded border-slate-400 accent-blue-600"
+    />
+  );
+};
+
+// --- Pagination --------------------------------------------------------------
+const PAGE_SIZES = [10, 25, 50, 100];
+
+const getPages = (page, count) => {
+  if (count <= 7) return Array.from({ length: count }, (_, i) => i + 1);
+  const set = new Set([1, count, page - 1, page, page + 1]);
+  if (page <= 3) [2, 3, 4].forEach((n) => set.add(n));
+  if (page >= count - 2) [count - 3, count - 2, count - 1].forEach((n) => set.add(n));
+  const arr = [...set].filter((n) => n >= 1 && n <= count).sort((a, b) => a - b);
+  const out = [];
+  arr.forEach((n, i) => {
+    if (i > 0 && n - arr[i - 1] > 1) out.push(`gap-${n}`);
+    out.push(n);
+  });
+  return out;
+};
+
+const Pagination = ({ page, pageCount, total, pageSize, onPage, onPageSize }) => {
+  const from = total === 0 ? 0 : (page - 1) * pageSize + 1;
+  const to = Math.min(page * pageSize, total);
+  const btn =
+    "inline-flex h-8 min-w-8 items-center justify-center rounded-md px-2 text-sm transition disabled:opacity-40";
+
+  return (
+    <div className="mt-4 flex flex-col gap-3 text-sm md:flex-row md:items-center md:justify-between">
+      <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-gray-400">
+        <span>
+          Menampilkan {from}–{to} dari {total} perangkat
+        </span>
+        <label className="inline-flex items-center gap-1.5">
+          <span>Per halaman</span>
+          <select
+            value={pageSize}
+            onChange={(e) => onPageSize(Number(e.target.value))}
+            className="rounded-md border border-gray-200 bg-white px-1.5 py-1 text-xs text-gray-700 outline-none dark:bg-slate-200"
+          >
+            {PAGE_SIZES.map((n) => (
+              <option key={n} value={n}>{n}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      {pageCount > 1 && (
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            disabled={page <= 1}
+            onClick={() => onPage(page - 1)}
+            className={`${btn} hover:bg-slate-300 dark:hover:bg-white/10`}
+            title="Sebelumnya"
+          >
+            <ChevronLeft size={16} />
+          </button>
+
+          {getPages(page, pageCount).map((p) =>
+            typeof p === "string" ? (
+              <span key={p} className="px-1 text-slate-500">…</span>
+            ) : (
+              <button
+                key={p}
+                type="button"
+                onClick={() => onPage(p)}
+                className={`${btn} ${
+                  p === page
+                    ? "bg-blue-600 font-medium text-white"
+                    : "hover:bg-slate-300 dark:hover:bg-white/10"
+                }`}
+              >
+                {p}
+              </button>
+            )
+          )}
+
+          <button
+            type="button"
+            disabled={page >= pageCount}
+            onClick={() => onPage(page + 1)}
+            className={`${btn} hover:bg-slate-300 dark:hover:bg-white/10`}
+            title="Berikutnya"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// --- Modal hapus massal ------------------------------------------------------
+const BulkDeleteModal = ({ cameras, onClose, onDeleted }) => {
+  const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState("");
+
+  const confirm = async () => {
+    setDeleting(true);
+    setError("");
+    try {
+      const { data } = await api.delete("/cameras/bulk", {
+        data: { ids: cameras.map((c) => c._id) },
+      });
+      onDeleted(data.deletedIds);
+    } catch (err) {
+      setError(errMsg(err));
+      setDeleting(false);
+    }
+  };
+
+  const preview = cameras.slice(0, 5);
+
+  return (
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
+      <div
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        onClick={() => !deleting && onClose()}
+      />
+      <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-white bg-white shadow-2xl dark:border-white/10 dark:bg-gray-900">
+        <div className="p-6 text-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/20">
+            <Trash2 size={22} className="text-red-600 dark:text-red-400" />
+          </div>
+          <h3 className="text-lg font-semibold">Hapus {cameras.length} perangkat?</h3>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            Semua perangkat terpilih akan dihapus permanen dan tidak bisa dikembalikan.
+          </p>
+          <ul className="mt-3 space-y-0.5 text-left text-sm">
+            {preview.map((c) => (
+              <li key={c._id} className="truncate rounded-md bg-slate-100 px-2 py-1 dark:bg-white/5">
+                {c.name} <span className="font-mono text-xs text-slate-500">({c.ipAddress})</span>
+              </li>
+            ))}
+            {cameras.length > preview.length && (
+              <li className="px-2 py-1 text-xs text-slate-500">
+                + {cameras.length - preview.length} perangkat lainnya
+              </li>
+            )}
+          </ul>
+          {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+        </div>
+        <div className="flex gap-3 border-t border-white bg-gray-50 px-6 py-4 dark:border-white/5 dark:bg-white/5">
+          <button
+            type="button"
+            disabled={deleting}
+            onClick={onClose}
+            className="flex-1 rounded-xl border border-slate-300 bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:text-gray-200"
+          >
+            Batal
+          </button>
+          <button
+            type="button"
+            disabled={deleting}
+            onClick={confirm}
+            className="flex-1 rounded-xl bg-red-600 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
+          >
+            {deleting ? "Menghapus..." : `Ya, hapus ${cameras.length}`}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Cameras = () => {
   const { user } = useAuth();
   const isGuest = user?.isGuest || user?.role === "guest";
@@ -728,15 +909,14 @@ const Cameras = () => {
   const [typeFilter, setTypeFilter] = useState("all");
   const [entityFilter, setEntityFilter] = useState("all");
 
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
+  const [selected, setSelected] = useState(() => new Set());
+
   const [formState, setFormState] = useState(null); // null | {} (baru) | camera (edit)
   const [toDelete, setToDelete] = useState(null);
-
+  const [showBulkDelete, setShowBulkDelete] = useState(false);
   const [showBulk, setShowBulk] = useState(false);
-
-  const handleBulkSaved = (cameras) => {
-    setItems((list) => [...cameras, ...list]);
-    setShowBulk(false);
-  };
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -766,6 +946,54 @@ const Cameras = () => {
     });
   }, [items, search, typeFilter, entityFilter]);
 
+  // Filter / pencarian / ukuran halaman berubah → balik ke halaman 1 & reset seleksi
+  useEffect(() => {
+    setPage(1);
+    setSelected(new Set());
+  }, [search, typeFilter, entityFilter, pageSize]);
+
+  const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const currentPage = Math.min(page, pageCount);
+  const paged = useMemo(
+    () => filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize),
+    [filtered, currentPage, pageSize]
+  );
+
+  // ---- Seleksi ----
+  const pageIds = paged.map((c) => c._id);
+  const allPageSelected = pageIds.length > 0 && pageIds.every((id) => selected.has(id));
+  const somePageSelected = pageIds.some((id) => selected.has(id));
+  const allFilteredSelected = filtered.length > 0 && selected.size === filtered.length;
+
+  const toggleOne = (id) =>
+    setSelected((s) => {
+      const n = new Set(s);
+      n.has(id) ? n.delete(id) : n.add(id);
+      return n;
+    });
+
+  const togglePage = () =>
+    setSelected((s) => {
+      const n = new Set(s);
+      if (allPageSelected) pageIds.forEach((id) => n.delete(id));
+      else pageIds.forEach((id) => n.add(id));
+      return n;
+    });
+
+  const selectAllFiltered = () => setSelected(new Set(filtered.map((c) => c._id)));
+  const clearSelection = () => setSelected(new Set());
+
+  const selectedCameras = useMemo(
+    () => items.filter((c) => selected.has(c._id)),
+    [items, selected]
+  );
+
+  // ---- Handler hasil ----
+  const handleBulkSaved = (cameras) => {
+    setItems((list) => [...cameras, ...list]);
+    setShowBulk(false);
+  };
+
   const handleSaved = (camera, isEdit) => {
     setItems((list) =>
       isEdit ? list.map((c) => (c._id === camera._id ? camera : c)) : [camera, ...list]
@@ -775,7 +1003,19 @@ const Cameras = () => {
 
   const handleDeleted = (id) => {
     setItems((list) => list.filter((c) => c._id !== id));
+    setSelected((s) => {
+      const n = new Set(s);
+      n.delete(id);
+      return n;
+    });
     setToDelete(null);
+  };
+
+  const handleBulkDeleted = (ids) => {
+    const gone = new Set(ids);
+    setItems((list) => list.filter((c) => !gone.has(c._id)));
+    setSelected(new Set());
+    setShowBulkDelete(false);
   };
 
   if (isGuest) {
@@ -790,18 +1030,26 @@ const Cameras = () => {
 
   return (
     <div className="mx-auto max-w-full pr-0 md:border-x border-white shadow-none dark:border-white/10">
-      <div className="flex w-full gap-2 md:w-max p-6">
-        <button
-          onClick={() => setShowBulk(true)}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:flex-none md:px-4"
-        >
-          <ClipboardPaste size={16} /> Import banyak
-        </button>
+      <div className="flex w-full gap-2 p-6 justify-start">
+        <div className="w-max flex items-center gap-2">
+          <button
+            onClick={() => setShowBulk(true)}
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:flex-none md:px-4"
+          >
+            <ClipboardPaste size={16} /> Import banyak
+          </button>
+          <button
+            onClick={() => setFormState({})}
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:flex-none md:px-4"
+          >
+            <Plus size={16} /> Tambah perangkat
+          </button>
+        </div>
         <button
           onClick={() => setFormState({})}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:flex-none md:px-4"
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/15 shadow-none bg-slate-200 px-2 py-2 text-sm font-medium text-slate-900 transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:flex-none md:px-3"
         >
-          <Plus size={16} /> Tambah perangkat
+          <Camera size={16} /> 
         </button>
       </div>
 
@@ -835,9 +1083,7 @@ const Cameras = () => {
             >
               <option value="all">Semua jenis</option>
               {TYPES.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
+                <option key={t} value={t}>{t}</option>
               ))}
             </select>
 
@@ -848,12 +1094,54 @@ const Cameras = () => {
             >
               <option value="all">Semua entitas</option>
               {ENTITIES.map((en) => (
-                <option key={en.value} value={en.value}>
-                  {en.label}
-                </option>
+                <option key={en.value} value={en.value}>{en.label}</option>
               ))}
             </select>
           </div>
+
+          {/* Bar aksi seleksi */}
+          {selected.size > 0 && (
+            <div className="mb-3 rounded-lg bg-blue-600 px-3 py-2 text-sm text-white">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="font-medium">{selected.size} dipilih</span>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={clearSelection}
+                    className="rounded-md px-2.5 py-1 hover:bg-white/15"
+                  >
+                    Batal pilih
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowBulkDelete(true)}
+                    className="inline-flex items-center gap-1 rounded-md bg-red-600 px-2.5 py-1 font-medium hover:bg-red-700"
+                  >
+                    <Trash2 size={14} /> Hapus
+                  </button>
+                </div>
+              </div>
+
+              {allPageSelected && filtered.length > pageIds.length && (
+                <p className="mt-1.5 border-t border-white/20 pt-1.5 text-xs">
+                  {allFilteredSelected ? (
+                    <>Semua {filtered.length} perangkat hasil filter dipilih.</>
+                  ) : (
+                    <>
+                      {pageIds.length} perangkat di halaman ini dipilih.{" "}
+                      <button
+                        type="button"
+                        onClick={selectAllFiltered}
+                        className="font-semibold underline"
+                      >
+                        Pilih semua {filtered.length} hasil
+                      </button>
+                    </>
+                  )}
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Konten */}
           {loading ? (
@@ -891,132 +1179,204 @@ const Cameras = () => {
             <>
               {/* Desktop: tabel */}
               <div className="hidden overflow-x-auto rounded-lg md:block">
-                <table className="w-full min-w-[820px] text-left text-sm">
+                <table className="w-full min-w-[860px] text-left text-sm">
                   <thead className="border-b border-slate-300 text-xs text-slate-600 dark:border-white/10 dark:text-gray-400">
                     <tr>
-                      <th className="px-3 py-2 font-medium">Jenis</th>
-                      <th className="px-3 py-2 font-medium">Nama</th>
-                      <th className="px-3 py-2 font-medium">IP address</th>
-                      <th className="px-3 py-2 font-medium">Username</th>
-                      <th className="px-3 py-2 font-medium">Password</th>
-                      <th className="px-3 py-2 font-medium">Entitas</th>
-                      <th className="px-3 py-2 text-right font-medium">Aksi</th>
+                      <th className="w-10 px-3 py-2">
+                        <Checkbox
+                          checked={allPageSelected}
+                          indeterminate={somePageSelected}
+                          onChange={togglePage}
+                          title="Pilih semua di halaman ini"
+                        />
+                      </th>
+                      <th className="px-3 py-2 font-medium">
+                        <span className="relative bottom-[1.6px]">
+                          Jenis
+                        </span>
+                      </th>
+                      <th className="px-3 py-2 font-medium">
+                        <span className="relative bottom-[1.6px]">
+                          Nama
+                        </span>
+                      </th>
+                      <th className="px-3 py-2 font-medium">
+                        <span className="relative bottom-[1.6px]">
+                          IP address
+                        </span>
+                      </th>
+                      <th className="px-3 py-2 font-medium">
+                        <span className="relative bottom-[1.6px]">
+                          Username
+                        </span>
+                      </th>
+                      <th className="px-3 py-2 font-medium">
+                        <span className="relative bottom-[1.6px]">
+                          Password
+                        </span>
+                      </th>
+                      <th className="px-3 py-2 font-medium">
+                        <span className="relative bottom-[1.6px]">
+                          Entitas
+                        </span>
+                      </th>
+                      <th className="px-3 py-2 text-right font-medium">
+                        <span className="relative bottom-[1.6px]">
+                          Aksi
+                        </span>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filtered.map((c) => (
-                      <tr
-                        key={c._id}
-                        className="border-b border-slate-300/70 last:border-b-0 hover:bg-slate-300/40 dark:border-white/5 dark:hover:bg-white/5"
-                      >
-                        <td className="px-3 py-2.5">
-                          <TypeBadge type={c.deviceType} />
-                        </td>
-                        <td className="px-3 py-2.5 font-medium">{c.name}</td>
-                        <td className="px-3 py-2.5">
-                          <span className="inline-flex items-center gap-1 font-mono">
-                            {c.ipAddress}
-                            <CopyButton getText={async () => c.ipAddress} title="Copy IP" />
-                          </span>
-                        </td>
-                        <td className="px-3 py-2.5">
-                          <span className="inline-flex items-center gap-1">
-                            {c.username}
-                            <CopyButton getText={async () => c.username} title="Copy username" />
-                          </span>
-                        </td>
-                        <td className="px-3 py-2.5">
-                          <PasswordCell id={c._id} />
-                        </td>
-                        <td className="px-3 py-2.5">
-                          <EntityBadge entity={c.entity} />
-                        </td>
-                        <td className="px-3 py-2.5">
-                          <div className="flex justify-end gap-1">
-                            <button
-                              onClick={() => setFormState(c)}
-                              title="Edit"
-                              className="rounded-md p-2 text-slate-600 transition hover:bg-slate-300 active:scale-95 dark:text-gray-300 dark:hover:bg-white/10"
-                            >
-                              <Pencil size={15} />
-                            </button>
-                            <button
-                              onClick={() => setToDelete(c)}
-                              title="Hapus"
-                              className="rounded-md p-2 text-red-600 transition hover:bg-red-100 active:scale-95 dark:hover:bg-red-500/20"
-                            >
-                              <Trash2 size={15} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                    {paged.map((c) => {
+                      const checked = selected.has(c._id);
+                      return (
+                        <tr
+                          key={c._id}
+                          className={`border-b border-slate-300/70 last:border-b-0 dark:border-white/5 ${
+                            checked
+                              ? "bg-blue-100/70 dark:bg-blue-500/10"
+                              : "hover:bg-slate-300/40 dark:hover:bg-white/5"
+                          }`}
+                        >
+                          <td className="px-3 py-2.5">
+                            <Checkbox checked={checked} onChange={() => toggleOne(c._id)} />
+                          </td>
+                          <td className="px-3 py-2.5">
+                            <TypeBadge type={c.deviceType} />
+                          </td>
+                          <td className="px-3 py-2.5 font-medium">{c.name}</td>
+                          <td className="px-3 py-2.5">
+                            <span className="inline-flex items-center gap-1 font-mono">
+                              {c.ipAddress}
+                              <CopyButton getText={async () => c.ipAddress} title="Copy IP" />
+                            </span>
+                          </td>
+                          <td className="px-3 py-2.5">
+                            <span className="inline-flex items-center gap-1">
+                              {c.username}
+                              <CopyButton getText={async () => c.username} title="Copy username" />
+                            </span>
+                          </td>
+                          <td className="px-3 py-2.5">
+                            <PasswordCell id={c._id} />
+                          </td>
+                          <td className="px-3 py-2.5">
+                            <EntityBadge entity={c.entity} />
+                          </td>
+                          <td className="px-3 py-2.5">
+                            <div className="flex justify-end gap-1">
+                              <button
+                                onClick={() => setFormState(c)}
+                                title="Edit"
+                                className="rounded-md p-2 text-slate-600 transition hover:bg-slate-300 active:scale-95 dark:text-gray-300 dark:hover:bg-white/10"
+                              >
+                                <Pencil size={15} />
+                              </button>
+                              <button
+                                onClick={() => setToDelete(c)}
+                                title="Hapus"
+                                className="rounded-md p-2 text-red-600 transition hover:bg-red-100 active:scale-95 dark:hover:bg-red-500/20"
+                              >
+                                <Trash2 size={15} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
 
               {/* Mobile: kartu */}
               <div className="flex flex-col gap-3 md:hidden">
-                {filtered.map((c) => (
-                  <div
-                    key={c._id}
-                    className="rounded-xl border border-slate-300 bg-slate-100 p-3 dark:border-white/10 dark:bg-slate-950"
-                  >
-                    <div className="mb-2 flex items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <p className="truncate font-medium">{c.name}</p>
-                        <div className="mt-1 flex gap-1.5">
-                          <TypeBadge type={c.deviceType} />
-                          <EntityBadge entity={c.entity} />
+                <label className="flex items-center gap-2 px-1 text-sm text-slate-600 dark:text-gray-300">
+                  <Checkbox
+                    checked={allPageSelected}
+                    indeterminate={somePageSelected}
+                    onChange={togglePage}
+                  />
+                  Pilih semua di halaman ini
+                </label>
+
+                {paged.map((c) => {
+                  const checked = selected.has(c._id);
+                  return (
+                    <div
+                      key={c._id}
+                      className={`rounded-xl border p-3 ${
+                        checked
+                          ? "border-blue-400 bg-blue-50 dark:border-blue-500/50 dark:bg-blue-500/10"
+                          : "border-slate-300 bg-slate-100 dark:border-white/10 dark:bg-slate-950"
+                      }`}
+                    >
+                      <div className="mb-2 flex items-start justify-between gap-2">
+                        <div className="flex min-w-0 items-start gap-2.5">
+                          <div className="pt-1">
+                            <Checkbox checked={checked} onChange={() => toggleOne(c._id)} />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="truncate font-medium">{c.name}</p>
+                            <div className="mt-1 flex gap-1.5">
+                              <TypeBadge type={c.deviceType} />
+                              <EntityBadge entity={c.entity} />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex shrink-0">
+                          <button
+                            onClick={() => setFormState(c)}
+                            className="rounded-md p-2 text-slate-600 dark:text-gray-300"
+                            title="Edit"
+                          >
+                            <Pencil size={16} />
+                          </button>
+                          <button
+                            onClick={() => setToDelete(c)}
+                            className="rounded-md p-2 text-red-600"
+                            title="Hapus"
+                          >
+                            <Trash2 size={16} />
+                          </button>
                         </div>
                       </div>
-                      <div className="flex shrink-0">
-                        <button
-                          onClick={() => setFormState(c)}
-                          className="rounded-md p-2 text-slate-600 dark:text-gray-300"
-                          title="Edit"
-                        >
-                          <Pencil size={16} />
-                        </button>
-                        <button
-                          onClick={() => setToDelete(c)}
-                          className="rounded-md p-2 text-red-600"
-                          title="Hapus"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </div>
 
-                    <dl className="space-y-1 text-sm">
-                      <div className="flex items-center justify-between">
-                        <dt className="text-slate-500">IP</dt>
-                        <dd className="inline-flex items-center gap-1 font-mono">
-                          {c.ipAddress}
-                          <CopyButton getText={async () => c.ipAddress} title="Copy IP" />
-                        </dd>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <dt className="text-slate-500">Username</dt>
-                        <dd className="inline-flex items-center gap-1">
-                          {c.username}
-                          <CopyButton getText={async () => c.username} title="Copy username" />
-                        </dd>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <dt className="text-slate-500">Password</dt>
-                        <dd>
-                          <PasswordCell id={c._id} />
-                        </dd>
-                      </div>
-                    </dl>
-                  </div>
-                ))}
+                      <dl className="space-y-1 text-sm">
+                        <div className="flex items-center justify-between">
+                          <dt className="text-slate-500">IP</dt>
+                          <dd className="inline-flex items-center gap-1 font-mono">
+                            {c.ipAddress}
+                            <CopyButton getText={async () => c.ipAddress} title="Copy IP" />
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <dt className="text-slate-500">Username</dt>
+                          <dd className="inline-flex items-center gap-1">
+                            {c.username}
+                            <CopyButton getText={async () => c.username} title="Copy username" />
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <dt className="text-slate-500">Password</dt>
+                          <dd>
+                            <PasswordCell id={c._id} />
+                          </dd>
+                        </div>
+                      </dl>
+                    </div>
+                  );
+                })}
               </div>
 
-              <p className="mt-3 text-xs text-slate-600 dark:text-gray-400">
-                Menampilkan {filtered.length} dari {items.length} perangkat
-              </p>
+              <Pagination
+                page={currentPage}
+                pageCount={pageCount}
+                total={filtered.length}
+                pageSize={pageSize}
+                onPage={setPage}
+                onPageSize={setPageSize}
+              />
             </>
           )}
         </div>
@@ -1035,6 +1395,13 @@ const Cameras = () => {
           camera={toDelete}
           onClose={() => setToDelete(null)}
           onDeleted={handleDeleted}
+        />
+      )}
+      {showBulkDelete && (
+        <BulkDeleteModal
+          cameras={selectedCameras}
+          onClose={() => setShowBulkDelete(false)}
+          onDeleted={handleBulkDeleted}
         />
       )}
     </div>
