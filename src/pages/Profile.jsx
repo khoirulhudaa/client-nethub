@@ -81,8 +81,8 @@ const EmptyState = ({ text }) => (
 const PostGrid = ({ posts, loading, emptyText }) => {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-        {Array.from({ length: 3 }).map((_, i) => (
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-2">
+        {Array.from({ length: 2 }).map((_, i) => (
           <div
             key={i}
             className="h-56 animate-pulse rounded-xl border border-border-light bg-gray-100 dark:border-border-dark dark:bg-gray-800/60"
@@ -256,21 +256,7 @@ const GuidesTab = () => {
       setBusyId(null);
     }
   };
-
-  const handleDelete = async (post) => {
-    if (!window.confirm(`Hapus guide "${post.title}"? Tindakan ini tidak bisa dibatalkan.`)) return;
-    setBusyId(post._id);
-    try {
-      await api.delete(ENDPOINTS.deletePost(post._id));
-      setPosts((prev) => prev.filter((p) => p._id !== post._id));
-      toast.success("Guide berhasil dihapus");
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Gagal menghapus guide");
-    } finally {
-      setBusyId(null);
-    }
-  };
-
+  
   if (loading) {
     return <PostGrid posts={[]} loading emptyText="" />;
   }
@@ -278,7 +264,7 @@ const GuidesTab = () => {
   if (posts.length === 0) return <EmptyState text="Kamu belum membuat guide apa pun." />;
 
   return (
-    <div className="surface-card dark:bg-white/5 rounded-xl border border-border-light bg-white p-3 md:px-4 md:py-4 dark:border-border-dark grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="surface-card dark:bg-white/5 rounded-xl border border-border-light bg-white p-3 md:px-4 md:py-4 dark:border-border-dark grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-2">
       {posts.map((post) => (
         <div key={post._id} className="relative">
           <PostCard post={post} />
@@ -295,14 +281,14 @@ const GuidesTab = () => {
                 </button>
               )
             }
-            <button
+            {/* <button
               onClick={() => handleDelete(post)}
               disabled={busyId === post._id}
               title="Hapus"
               className="rounded-xl dark:bg-slate-800 bg-white/90 p-1.5 text-gray-600 shadow-sm backdrop-blur transition hover:text-red-500 disabled:opacity-50/90 dark:text-gray-300"
             >
               <Trash2 size={14} />
-            </button>
+            </button> */}
           </div>
         </div>
       ))}

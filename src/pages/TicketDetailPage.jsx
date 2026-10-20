@@ -318,7 +318,6 @@ const TicketDetailPage = () => {
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
 

@@ -458,7 +458,7 @@ return (
                   featured ? "mt-3" : "mt-2"
                 }`}
               >
-                <p>Share</p>
+                {/* <p>Share</p> */}
                 <div className="rounded-full active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[32px] w-[30px]">
                   <Link2Icon size={18} />
                 </div>
