@@ -6,6 +6,7 @@ import {
   Loader2,
   Pencil,
   Plus,
+  ClipboardPaste,
   Search,
   Trash2,
   Video,
@@ -18,7 +19,8 @@ import { useAuth } from "../context/AuthContext.jsx";
 const TYPES = ["NVR", "DVR", "Camera"];
 const ENTITIES = [
   { value: "pintex", label: "Pintex" },
-  { value: "tdi", label: "TDI" },
+  { value: "tfi", label: "TFI" },
+  { value: "umum", label: "Umum" },
 ];
 const EMPTY_FORM = {
   deviceType: "NVR",
@@ -34,6 +36,7 @@ const errMsg = (err) => err?.response?.data?.message || "Terjadi kesalahan, coba
 const inputCls =
   "w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-black outline-none focus:border-blue-500";
 
+  
 // --- Tombol copy -------------------------------------------------------------
 const CopyButton = ({ getText, title = "Copy" }) => {
   const [done, setDone] = useState(false);
@@ -126,7 +129,7 @@ const TypeBadge = ({ type }) => {
 
 const EntityBadge = ({ entity }) => (
   <span className="rounded-full border border-slate-400 px-2.5 py-0.5 text-xs font-medium text-slate-800 dark:border-white/20 dark:text-gray-200">
-    {entity === "tdi" ? "TDI" : "Pintex"}
+    {ENTITIES.find((e) => e.value === entity)?.label || entity}
   </span>
 );
 
@@ -149,7 +152,7 @@ const CameraFormModal = ({ initial, onClose, onSaved }) => {
     try {
       const payload = {
         deviceType: form.deviceType,
-        name: form.name,
+        name: form.name,  
         ipAddress: form.ipAddress,
         username: form.username,
         password: form.password,
@@ -361,6 +364,259 @@ const DeleteModal = ({ camera, onClose, onDeleted }) => {
   );
 };
 
+// --- Parser teks massal ------------------------------------------------------
+const KEY_MAP = {
+  nama: "name", name: "name",
+  ip: "ipAddress", "ip address": "ipAddress", ipaddress: "ipAddress",
+  pass: "password", password: "password",
+  entitas: "entity", entity: "entity",
+  jenis: "deviceType", tipe: "deviceType", type: "deviceType",
+  user: "username", username: "username",
+};
+const TYPE_MAP = { nvr: "NVR", dvr: "DVR", camera: "Camera", kamera: "Camera", cam: "Camera" };
+const HOST_RE = /^[a-zA-Z0-9.\-]+(:\d{1,5})?$/;
+const EMPTY_ROW = { deviceType: "NVR", name: "", ipAddress: "", username: "admin", password: "", entity: "pintex" };
+
+let rowSeq = 0;
+const newRow = (data = {}) => ({ ...EMPTY_ROW, ...data, _k: ++rowSeq });
+
+const parseBulk = (text) => {
+  const rows = [];
+  let cur = null;
+  const flush = () => {
+    if (cur && Object.keys(cur).length) rows.push(newRow(cur));
+    cur = null;
+  };
+
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.trim();
+    if (!line) { flush(); continue; } // baris kosong = pemisah perangkat
+    const m = line.match(/^([^:=]+?)\s*[:=]\s*(.*)$/); // pisah di titik dua pertama
+    if (!m) continue;
+    const key = KEY_MAP[m[1].trim().toLowerCase()];
+    if (!key) continue;
+
+    let val = m[2].trim();
+    if (key === "deviceType") val = TYPE_MAP[val.toLowerCase()] || val;
+    if (key === "entity") val = val.toLowerCase();
+
+    if (cur && key in cur) flush(); // key berulang = perangkat baru
+    if (!cur) cur = {};
+    cur[key] = val;
+  }
+  flush();
+  return rows;
+};
+
+const validateRow = (r) => {
+  if (!TYPES.includes(r.deviceType)) return "Jenis tidak valid";
+  if (!ENTITIES.some((e) => e.value === r.entity)) return "Entitas tidak valid";
+  if (!r.name.trim()) return "Nama kosong";
+  if (!r.ipAddress.trim() || !HOST_RE.test(r.ipAddress.trim())) return "IP tidak valid";
+  if (!r.username.trim()) return "Username kosong";
+  if (!r.password) return "Password kosong";
+  return "";
+};
+
+const cellCls =
+  "w-full rounded-md border border-gray-200 bg-white px-2 py-1.5 text-sm text-black outline-none focus:border-blue-500";
+
+// --- Modal import massal -----------------------------------------------------
+const BulkImportModal = ({ onClose, onSaved }) => {
+  const [text, setText] = useState("");
+  const [rows, setRows] = useState([]);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  const readText = () => {
+    const parsed = parseBulk(text);
+    if (parsed.length === 0) return setError("Tidak ada data yang bisa dibaca. Cek formatnya.");
+    setError("");
+    setRows((r) => [...r, ...parsed]);
+    setText("");
+  };
+
+  const update = (k, key, value) =>
+    setRows((list) => list.map((r) => (r._k === k ? { ...r, [key]: value } : r)));
+  const remove = (k) => setRows((list) => list.filter((r) => r._k !== k));
+
+  const invalidCount = rows.filter((r) => validateRow(r)).length;
+
+  const submit = async () => {
+    setSaving(true);
+    setError("");
+    try {
+      const items = rows.map(({ _k, ...r }) => ({
+        ...r,
+        name: r.name.trim(),
+        ipAddress: r.ipAddress.trim(),
+        username: r.username.trim(),
+      }));
+      const { data } = await api.post("/cameras/bulk", { items });
+      onSaved(data.cameras);
+    } catch (err) {
+      const list = err?.response?.data?.errors;
+      setError(
+        list?.length
+          ? list.map((e) => `Baris ${e.row}: ${e.message}`).join("\n")
+          : errMsg(err)
+      );
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => !saving && onClose()} />
+      <div className="relative flex max-h-[92vh] w-full max-w-5xl flex-col rounded-2xl border border-white bg-white shadow-2xl dark:border-white/10 dark:bg-gray-900">
+        <div className="flex items-center justify-between border-b border-slate-200 p-4 dark:border-white/10">
+          <h3 className="text-lg font-semibold">Import banyak perangkat</h3>
+          <button type="button" onClick={onClose} className="rounded-md p-1.5 hover:bg-black/5 dark:hover:bg-white/10">
+            <X size={18} />
+          </button>
+        </div>
+
+        <div className="flex-1 space-y-4 overflow-y-auto p-4">
+          {/* Paste */}
+          <div>
+            <label className="mb-1 block text-sm font-medium">
+              Tempel data (pisahkan tiap perangkat dengan baris kosong)
+            </label>
+            <textarea
+              rows={7}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder={`Nama : OFFICE PINTEX\nIP : 192.168.1.41\nPass: HikVision1269\nEntitas: PINTEX\nJenis: NVR\nUsername: admin\n\nNama : GUDANG A\nIP : 192.168.1.42\n...`}
+              className={`${inputCls} font-mono`}
+            />
+            <div className="mt-2 flex items-center justify-between gap-2">
+              <p className="text-xs text-gray-500">
+                Jenis kosong → NVR, Username kosong → admin, Entitas kosong → Pintex.
+              </p>
+              <button
+                type="button"
+                onClick={readText}
+                disabled={!text.trim()}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
+              >
+                <ClipboardPaste size={15} /> Baca data
+              </button>
+            </div>
+          </div>
+
+          {/* Tabel editable */}
+          <div>
+            <div className="mb-2 flex items-center justify-between">
+              <p className="text-sm font-medium">
+                Daftar ({rows.length}){invalidCount > 0 && (
+                  <span className="ml-2 text-red-600">{invalidCount} baris perlu diperbaiki</span>
+                )}
+              </p>
+              <button
+                type="button"
+                onClick={() => setRows((r) => [...r, newRow()])}
+                className="inline-flex items-center gap-1 rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm hover:bg-slate-100 dark:border-white/10 dark:hover:bg-white/10"
+              >
+                <Plus size={14} /> Tambah baris
+              </button>
+            </div>
+
+            {rows.length === 0 ? (
+              <p className="rounded-lg border border-dashed border-slate-300 py-8 text-center text-sm text-gray-500 dark:border-white/10">
+                Belum ada data. Tempel teks di atas atau tambah baris manual.
+              </p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[900px] text-left text-sm">
+                  <thead className="text-xs text-slate-600 dark:text-gray-400">
+                    <tr>
+                      <th className="px-1 py-1 font-medium">Jenis</th>
+                      <th className="px-1 py-1 font-medium">Nama</th>
+                      <th className="px-1 py-1 font-medium">IP address</th>
+                      <th className="px-1 py-1 font-medium">Username</th>
+                      <th className="px-1 py-1 font-medium">Password</th>
+                      <th className="px-1 py-1 font-medium">Entitas</th>
+                      <th />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.map((r) => {
+                      const msg = validateRow(r);
+                      return (
+                        <tr key={r._k} className={msg ? "bg-red-50 dark:bg-red-500/10" : ""} title={msg}>
+                          <td className="p-1">
+                            <select value={r.deviceType} onChange={(e) => update(r._k, "deviceType", e.target.value)} className={cellCls}>
+                              {TYPES.map((t) => <option key={t}>{t}</option>)}
+                            </select>
+                          </td>
+                          <td className="p-1">
+                            <input value={r.name} onChange={(e) => update(r._k, "name", e.target.value)} className={cellCls} />
+                          </td>
+                          <td className="p-1">
+                            <input value={r.ipAddress} onChange={(e) => update(r._k, "ipAddress", e.target.value)} className={`${cellCls} font-mono`} />
+                          </td>
+                          <td className="p-1">
+                            <input value={r.username} onChange={(e) => update(r._k, "username", e.target.value)} className={cellCls} />
+                          </td>
+                          <td className="p-1">
+                            <input value={r.password} onChange={(e) => update(r._k, "password", e.target.value)} className={`${cellCls} font-mono`} />
+                          </td>
+                          <td className="p-1">
+                            <select value={r.entity} onChange={(e) => update(r._k, "entity", e.target.value)} className={cellCls}>
+                              {!ENTITIES.some((e) => e.value === r.entity) && <option value={r.entity}>{r.entity || "—"}</option>}
+                              {ENTITIES.map((en) => <option key={en.value} value={en.value}>{en.label}</option>)}
+                            </select>
+                          </td>
+                          <td className="p-1">
+                            <button type="button" onClick={() => remove(r._k)} className="rounded-md p-1.5 text-red-600 hover:bg-red-100 dark:hover:bg-red-500/20">
+                              <Trash2 size={15} />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          {error && (
+            <p className="whitespace-pre-line rounded-lg bg-red-100 px-3 py-2 text-sm text-red-700 dark:bg-red-500/20 dark:text-red-300">
+              {error}
+            </p>
+          )}
+        </div>
+
+        <div className="flex gap-3 border-t border-slate-200 p-4 dark:border-white/10">
+          <button
+            type="button"
+            disabled={saving}
+            onClick={onClose}
+            className="flex-1 rounded-xl border border-slate-300 bg-white py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:text-gray-200"
+          >
+            Batal
+          </button>
+          <button
+            type="button"
+            disabled={saving || rows.length === 0 || invalidCount > 0}
+            onClick={submit}
+            className="flex-1 rounded-xl bg-blue-600 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+          >
+            {saving ? (
+              <span className="inline-flex items-center justify-center gap-2">
+                <Loader2 size={15} className="animate-spin" /> Menyimpan...
+              </span>
+            ) : (
+              `Simpan ${rows.length} perangkat`
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // --- Halaman utama -----------------------------------------------------------
 const Cameras = () => {
   const { user } = useAuth();
@@ -376,6 +632,13 @@ const Cameras = () => {
 
   const [formState, setFormState] = useState(null); // null | {} (baru) | camera (edit)
   const [toDelete, setToDelete] = useState(null);
+
+  const [showBulk, setShowBulk] = useState(false);
+
+  const handleBulkSaved = (cameras) => {
+    setItems((list) => [...cameras, ...list]);
+    setShowBulk(false);
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -429,17 +692,16 @@ const Cameras = () => {
 
   return (
     <div className="mx-auto max-w-full pr-0 md:border-x border-white shadow-none dark:border-white/10">
-      {/* Header */}
-      <div className="mb-6 flex flex-col gap-4 border-b border-slate-300 px-0 pb-4 dark:border-white/10 md:h-[11vh] md:flex-row md:items-center md:justify-between md:px-6 md:pt-4">
-        <div>
-          <h1 className="mt-[1px] text-xl font-semibold tracking-tight text-white">Cameras</h1>
-          <p className="mt-1 text-sm text-gray-300 dark:text-gray-400">
-            Daftar NVR, DVR, dan kamera beserta akses loginnya.
-          </p>
-        </div>
+      <div className="flex w-full gap-2 md:w-max">
+        <button
+          onClick={() => setShowBulk(true)}
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:flex-none md:px-4"
+        >
+          <ClipboardPaste size={16} /> Import banyak
+        </button>
         <button
           onClick={() => setFormState({})}
-          className="relative flex w-full items-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition duration-100 hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:inline-flex md:w-max md:px-4"
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:flex-none md:px-4"
         >
           <Plus size={16} /> Tambah perangkat
         </button>
@@ -669,6 +931,7 @@ const Cameras = () => {
           onSaved={handleSaved}
         />
       )}
+      {showBulk && <BulkImportModal onClose={() => setShowBulk(false)} onSaved={handleBulkSaved} />}
       {toDelete && (
         <DeleteModal
           camera={toDelete}
