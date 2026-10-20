@@ -1075,27 +1075,29 @@ const Cameras = () => {
               )}
             </div>
 
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none dark:bg-slate-200 md:w-44"
-            >
-              <option value="all">Semua jenis</option>
-              {TYPES.map((t) => (
-                <option key={t} value={t}>{t}</option>
-              ))}
-            </select>
+            <div className="w-full md:w-max flex items-center gap-x-1.5">
+              <select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+                className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none dark:bg-slate-200 md:w-44"
+              >
+                <option value="all">Semua jenis</option>
+                {TYPES.map((t) => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
 
-            <select
-              value={entityFilter}
-              onChange={(e) => setEntityFilter(e.target.value)}
-              className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none dark:bg-slate-200 md:w-44"
-            >
-              <option value="all">Semua entitas</option>
-              {ENTITIES.map((en) => (
-                <option key={en.value} value={en.value}>{en.label}</option>
-              ))}
-            </select>
+              <select
+                value={entityFilter}
+                onChange={(e) => setEntityFilter(e.target.value)}
+                className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none dark:bg-slate-200 md:w-44"
+              >
+                <option value="all">Semua entitas</option>
+                {ENTITIES.map((en) => (
+                  <option key={en.value} value={en.value}>{en.label}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {/* Bar aksi seleksi */}
