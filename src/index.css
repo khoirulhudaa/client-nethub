@@ -125,3 +125,6 @@ mark.tts-highlight {
 html {
   font-family: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
 }
+
+@keyframes slide-in-right { from { transform: translateX(100%); } to { transform: translateX(0); } }
+.animate-slide-in-right { animation: slide-in-right .2s ease-out; }
