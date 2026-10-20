@@ -6,7 +6,6 @@ import {
   CopyIcon,
   Eye,
   EyeOff,
-  Link,
   Loader2,
   Pencil,
   Plus,
@@ -18,6 +17,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import { Link } from 'react-router-dom';
 
 const TYPES = ["NVR", "DVR", "Camera"];
 const ENTITIES = [
@@ -37,7 +37,7 @@ const EMPTY_FORM = {
 const errMsg = (err) => err?.response?.data?.message || "Terjadi kesalahan, coba lagi";
 
 const inputCls =
-  "w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-black outline-none focus:border-blue-500";
+  "w-full rounded-lg border border-white/20 bg-white/10 text-white border-gray-200 bg-white px-3 py-2 text-sm text-black outline-none focus:border-blue-500";
 
   
 // --- Tombol copy -------------------------------------------------------------
@@ -1045,12 +1045,13 @@ const Cameras = () => {
             <Plus size={16} /> Tambah perangkat
           </button>
         </div>
-        <button
-          onClick={() => setFormState({})}
-          className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/15 shadow-none bg-slate-200 px-2 py-2 text-sm font-medium text-slate-900 transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:flex-none md:px-3"
-        >
-          <Camera size={16} /> 
-        </button>
+        <Link to={'192.168.1.58:8000'}>
+          <button
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/15 shadow-none bg-slate-200 px-2 py-2 h-full text-sm font-medium text-slate-900 transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:flex-none md:px-3"
+          >
+            <Camera size={16} className="relative top-[-0.5px]" /> 
+          </button>
+        </Link>
       </div>
 
       <div className="pb-6 md:px-6">
@@ -1200,7 +1201,7 @@ const Cameras = () => {
                           Nama
                         </span>
                       </th>
-                      <th className="px-3 py-2 font-medium">
+                      <th className="px-3 py-2 font-medium">  
                         <span className="relative bottom-[1.6px]">
                           IP address
                         </span>
