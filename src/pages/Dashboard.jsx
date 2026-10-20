@@ -970,7 +970,7 @@ const { remainingPosts } = useMemo(() => {
               {/* ========== PINNED FIRST ========== */}
               {pinnedFirst ? (
                 <>
-                  {!isGuest && showOverviewSections && data.pinned?.length > 0 && (
+                  {data.pinned?.length > 0 && (
                     <section className="mb-8 px-3 md:px-4 md:mt-0 mt-4">
                       <PinnedHero pinned={data.pinned} onPinChange={handlePinChange} />
                     </section>

@@ -181,7 +181,7 @@ const ActivityLog = () => {
                   >
                     {/* Icon */}
                     <div
-                      className={`relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${meta.bg} ring-1 ${meta.ring} transition group-hover:scale-105`}
+                      className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${meta.bg} ring-1 ${meta.ring} transition group-hover:scale-105`}
                     >
                       <Icon size={18} className={meta.color} />
                     </div>
@@ -198,7 +198,16 @@ const ActivityLog = () => {
                       </div>
 
                       <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                         <span
+                        {/* {act.user?.role && (
+                          <span className="rounded-md bg-white/5 px-1.5 py-0.5 font-medium text-slate-400 ring-1 ring-white/10">
+                          {act.user.role}
+                          </span>
+                          )} */}
+                      </div>
+
+                      {/* IP address & device */}
+                      <div className="mt-0 flex flex-wrap items-center gap-2 text-xs text-slate-400">
+                        <span
                           className="inline-flex items-center gap-1 rounded-md bg-white/5 px-1.5 py-0.5 text-slate-400 font-mono ring-1 ring-white/10"
                           title="IP address"
                         >
@@ -209,22 +218,13 @@ const ActivityLog = () => {
                             })}
                           </time>
                         </span>
-                        {act.user?.role && (
-                          <span className="rounded-md bg-white/5 px-1.5 py-0.5 font-medium text-slate-400 ring-1 ring-white/10">
-                            {act.user.role}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* IP address & device */}
-                      <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-400">
-                        <span
+                        {/* <span
                           className="inline-flex items-center gap-1 rounded-md bg-white/5 px-1.5 py-0.5 font-mono ring-1 ring-white/10"
                           title="IP address"
                         >
                           <Globe size={11} />
                           {act.ip || "IP unknown"}
-                        </span>
+                        </span> */}
                         <span
                           className="inline-flex items-center gap-1 rounded-md bg-white/5 px-1.5 py-0.5 ring-1 ring-white/10"
                           title={act.userAgent || "No user-agent recorded"}
