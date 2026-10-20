@@ -319,45 +319,6 @@ const TicketDetailPage = () => {
                 </div>
               </div>
 
-              {/* Ticket stub (w-72 = 18rem, must match the number in the CSS mask) */}
-              <div className="flex flex-col justify-between gap-6 border-t-2 border-dashed border-slate-300 dark:border-white/15 p-6 lg:w-72 lg:border-l-2 lg:border-t-0 bg-slate-50 dark:bg-white/[0.03]">
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-xs font-semibold text-slate-500 dark:text-gray-500">Status</p>
-                    <span
-                      className={`mt-1 inline-flex pb-[3px] text-sm font-semibold ${
-                        statusColor[ticket.status] || statusColor.Ditutup
-                      }`}
-                    >
-                      {statusLabel[ticket.status] || ticket.status}
-                    </span>
-                  </div>
-
-                  <div>
-                    <p className="text-xs font-semibold text-slate-500 dark:text-gray-500">Reported by</p>
-                    <div className="mt-1.5 flex items-center gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/20 text-sm font-semibold text-accent">
-                        {ticket.createdBy?.name?.[0]?.toUpperCase() || <User size={16} />}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-medium dark:text-white">
-                          {ticket.createdBy?.name || "-"}
-                        </p>
-                        <p className="truncate text-xs text-slate-500 dark:text-gray-500">
-                          {ticket.createdBy?.title || "User"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <Barcode value={String(ticket._id)} className="w-full" />
-                  <p className="mt-2 select-all break-all font-mono text-[11px] text-blue-500 dark:text-blue-400">
-                    {ticket._id}
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
 
