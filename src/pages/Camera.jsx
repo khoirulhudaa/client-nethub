@@ -152,7 +152,7 @@ const Drawer = ({ title, onClose, busy = false, footer, width = "max-w-xl", chil
         onClick={() => !busy && onClose()}
       />
       <aside
-        className={`absolute right-0 top-0 flex h-full w-full ${width} flex-col border-l border-white bg-white shadow-2xl dark:border-white/10 dark:bg-gray-900`}
+        className={`absolute right-0 bottom-0 flex h-[91.5vh] w-full ${width} flex-col border-l border-white bg-white shadow-2xl dark:border-white/10 dark:bg-gray-900`}
       >
         <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-white/10">
           <h3 className="text-lg font-semibold">{title}</h3>
@@ -1028,19 +1028,19 @@ const Cameras = () => {
 
   return (
     <div className="mx-auto max-w-full pr-0 md:border-x border-white shadow-none dark:border-white/10">
-      <div className="flex w-full gap-2 p-6 justify-start">
-        <div className="w-max flex items-center gap-2">
+      <div className="flex w-full gap-2 pb-3.5 md:p-6 justify-start">
+        <div className="w-full md:w-max flex items-center gap-2">
           <button
             onClick={() => setShowBulk(true)}
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:flex-none md:px-4"
+            className="flex w-max md:flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:px-4"
           >
             <ClipboardPaste size={16} /> Import banyak
           </button>
           <button
             onClick={() => setFormState({})}
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:flex-none md:px-4"
+            className="flex w-max md:flex-1 items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:px-4"
           >
-            <Plus size={16} /> Tambah perangkat
+            <Plus size={16} /> Tambah
           </button>
         </div>
         <Link to={'192.168.1.58:8000'}>
