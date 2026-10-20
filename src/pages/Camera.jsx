@@ -1,6 +1,7 @@
 import {
   Camera,
   Check,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   ClipboardPaste,
@@ -8,13 +9,17 @@ import {
   CopyIcon,
   Eye,
   EyeOff,
+  FolderMinus,
+  FolderPlus,
+  Layers,
+  List,
   Loader2,
   Pencil,
   Plus,
   Search,
   Trash2,
   Video,
-  X
+  X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import api from "../api/axios.js";
@@ -34,6 +39,7 @@ const EMPTY_FORM = {
   username: "",
   password: "",
   entity: "pintex",
+  group: "",
 };
 
 const errMsg = (err) => err?.response?.data?.message || "Terjadi kesalahan, coba lagi";
@@ -186,7 +192,7 @@ const CancelBtn = ({ onClick, disabled }) => (
   </button>
 );
 
-const CameraFormModal = ({ initial, onClose, onSaved }) => {
+const CameraFormModal = ({ initial, groups = [], onClose, onSaved }) => {
   const isEdit = Boolean(initial?._id);
   const [form, setForm] = useState(
     isEdit ? { ...EMPTY_FORM, ...initial, password: "" } : EMPTY_FORM
@@ -209,6 +215,7 @@ const CameraFormModal = ({ initial, onClose, onSaved }) => {
         username: form.username,
         password: form.password,
         entity: form.entity,
+        group: form.group || "",
       };
       const { data } = isEdit
         ? await api.put(`/cameras/${initial._id}`, payload)
@@ -325,6 +332,21 @@ const CameraFormModal = ({ initial, onClose, onSaved }) => {
           </div>
         </label>
 
+        <label className="text-sm">
+          <span className="mb-1 block font-medium">Group (opsional)</span>
+          <input
+            list="group-list"
+            value={form.group || ""}
+            onChange={set("group")}
+            maxLength={100}
+            placeholder="contoh: OFFICE PINTEX"
+            className={inputCls}
+          />
+          <datalist id="group-list">
+            {groups.map((g) => <option key={g} value={g} />)}
+          </datalist>
+        </label>
+
         {error && (
           <p className="rounded-lg bg-red-100 px-3 py-2 text-sm text-red-700 dark:bg-red-500/20 dark:text-red-300">
             {error}
@@ -398,6 +420,7 @@ IP : 192.168.1.41
 Pass: HikVision1269
 Entitas: PINTEX
 Jenis: NVR
+Group: OFFICE PINTEX
 Username: admin
 
 Nama : GUDANG A
@@ -405,6 +428,7 @@ IP : 192.168.1.42
 Pass: abc12345
 Entitas: TFI
 Jenis: Camera
+Group: OFFICE PINTEX
 Username: admin`;
 
 const TABLE_TEMPLATE = `Jenis\tNama\tIP\tUsername\tPassword\tEntitas
@@ -484,6 +508,7 @@ const KEY_MAP = {
   ip: "ipAddress", "ip address": "ipAddress", ipaddress: "ipAddress",
   pass: "password", password: "password",
   entitas: "entity", entity: "entity",
+  group: "group", grup: "group",
   jenis: "deviceType", tipe: "deviceType", type: "deviceType",
   user: "username", username: "username",
 };
@@ -506,7 +531,7 @@ const validateRow = (r) => {
 
 const cellCls =
   "w-full rounded-lg border border-white/20 bg-white/10 text-white border-gray-200 bg-white px-2 py-1.5 text-sm text-black outline-none focus:border-blue-500";
-const BulkImportModal = ({ onClose, onSaved }) => {
+const BulkImportModal = ({ onClose, onSaved, groups = [] }) => {
   const [rows, setRows] = useState(() => [newRow()]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -618,6 +643,9 @@ const BulkImportModal = ({ onClose, onSaved }) => {
             saja dan  data akan terisi otomatis
           </p>
         </div>
+        <datalist id="group-list-bulk">
+          {groups.map((g) => <option key={g} value={g} />)}
+        </datalist>
         <div className="rounded-lg border border-dashed border-slate-300 px-3 pt-2 pb-2.5 text-sm dark:border-white/30">
           <button
             type="button"
@@ -626,6 +654,7 @@ const BulkImportModal = ({ onClose, onSaved }) => {
           >
             {showFormat ? "Sembunyikan format ▲" : "Lihat format yang didukung ▼"}
           </button>
+
 
           {showFormat && (
             <div className="mt-3 space-y-3 text-xs">
@@ -695,6 +724,14 @@ const BulkImportModal = ({ onClose, onSaved }) => {
                     onChange={(e) => update(r._k, "username", e.target.value)} className={textCls()} />
                   <input placeholder="Password" value={r.password} onPaste={handlePaste}
                     onChange={(e) => update(r._k, "password", e.target.value)} className={textCls("font-mono")} />
+                  <input
+                    list="group-list-bulk"
+                    placeholder="Group (opsional)"
+                    value={r.group || ""}
+                    onPaste={handlePaste}
+                    onChange={(e) => update(r._k, "group", e.target.value)}
+                    className={textCls("col-span-2")}
+                  />
                 </div>
               </div>
             );
@@ -895,6 +932,386 @@ const BulkDeleteModal = ({ cameras, onClose, onDeleted }) => {
   );
 };
 
+const GROUP_COLORS = [
+  "#7c3aed", "#2563eb", "#0891b2", "#059669",
+  "#ca8a04", "#ea580c", "#dc2626", "#db2777",
+];
+const DEFAULT_GROUP_COLOR = GROUP_COLORS[0];
+
+const ColorPicker = ({ value, onChange }) => (
+  <div className="flex flex-wrap items-center gap-2">
+    {GROUP_COLORS.map((c) => (
+      <button
+        key={c}
+        type="button"
+        onClick={() => onChange(c)}
+        title={c}
+        style={{ backgroundColor: c }}
+        className={`h-7 w-7 rounded-md transition hover:scale-110 ${
+          value?.toLowerCase() === c ? "ring-none border border-white ring-offset-0 ring-slate-500 dark:ring-offset-gray-900" : ""
+        }`}
+      />
+    ))}
+    <label
+      title="Warna lain"
+      className="relative h-7 w-7 cursor-pointer overflow-hidden rounded-full border border-dashed border-slate-400"
+      style={{ background: "conic-gradient(red, yellow, lime, aqua, blue, magenta, red)" }}
+    >
+      <input
+        type="color"
+        value={value || DEFAULT_GROUP_COLOR}
+        onChange={(e) => onChange(e.target.value)}
+        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+      />
+    </label>
+  </div>
+);
+
+const GroupBadge = ({ pre=false, group, color }) => {
+  if (!group) return <span className="text-xs text-slate-400">—</span>;
+  const c = color || DEFAULT_GROUP_COLOR;
+  return (
+    <span
+      className={`inline-flex ${pre ? 'w-max' : 'w-full'} text-center items-center justify-center rounded-full px-1.5 py-0.5 text-xs font-medium text-white`}
+      style={{ backgroundColor: c }}
+    >
+      {group}
+    </span>
+  );
+};
+
+const Th = ({ children, className = "" }) => (
+  <th className={`px-3 py-2 font-medium ${className}`}>
+    <span className="relative bottom-[1.6px]">{children}</span>
+  </th>
+);
+
+const GroupModal = ({ title, ids, initialName = "", initialColor = "", groups, colors, onClose, onSaved }) => {
+  const [name, setName] = useState(initialName);
+  const [color, setColor] = useState(initialColor || DEFAULT_GROUP_COLOR);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  // Pilih nama group yang sudah ada → otomatis ikut warnanya
+  const changeName = (value) => {
+    setName(value);
+    const existing = groups.find((g) => g.toLowerCase() === value.trim().toLowerCase());
+    if (existing && colors.get(existing)) setColor(colors.get(existing));
+  };
+
+  const submit = async (e) => {
+    e.preventDefault();
+    const typed = name.trim().replace(/\s+/g, " ");
+    if (!typed) return setError("Nama group wajib diisi");
+    const group = groups.find((g) => g.toLowerCase() === typed.toLowerCase()) || typed;
+    setSaving(true);
+    setError("");
+    try {
+      await api.patch("/cameras/group", { ids, group, color });
+      onSaved(ids, group, color);
+    } catch (err) {
+      setError(errMsg(err));
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => !saving && onClose()} />
+      <form
+        onSubmit={submit}
+        className="relative w-full max-w-md rounded-2xl border border-white bg-white p-5 shadow-2xl dark:border-white/10 dark:bg-gray-900"
+      >
+        <div className="mb-1 flex items-center justify-between">
+          <h3 className="text-lg font-semibold">{title}</h3>
+          <button type="button" onClick={onClose} className="rounded-md p-1.5 hover:bg-black/5 dark:hover:bg-white/10">
+            <X size={18} />
+          </button>
+        </div>
+        <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
+          {ids.length} perangkat akan dimasukkan ke group ini.
+        </p>
+
+        <label className="mb-1 block text-sm font-medium">Nama group</label>
+        <input
+          autoFocus
+          list="group-list-modal"
+          value={name}
+          onChange={(e) => changeName(e.target.value)}
+          maxLength={100}
+          placeholder="contoh: OFFICE PINTEX"
+          className={inputCls}
+        />
+        <datalist id="group-list-modal">
+          {groups.map((g) => <option key={g} value={g} />)}
+        </datalist>
+
+        {groups.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {groups.slice(0, 12).map((g) => (
+              <button key={g} type="button" onClick={() => changeName(g)}>
+                <GroupBadge group={g} color={colors.get(g)} />
+              </button>
+            ))}
+          </div>
+        )}
+
+        <label className="mb-2 mt-4 block text-sm font-medium">Warna group</label>
+        <ColorPicker value={color} onChange={setColor} />
+
+        <div className="mt-3 text-sm">
+          Pratinjau: <GroupBadge pre={true} group={name.trim() || "Nama group"} color={color} />
+        </div>
+
+        {error && (
+          <p className="mt-3 rounded-lg bg-red-100 px-3 py-2 text-sm text-red-700 dark:bg-red-500/20 dark:text-red-300">
+            {error}
+          </p>
+        )}
+
+        <div className="mt-5 flex gap-3">
+          <CancelBtn onClick={onClose} disabled={saving} />
+          <button
+            type="submit"
+            disabled={saving}
+            className="flex-1 rounded-xl bg-blue-600 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:opacity-50"
+          >
+            {saving ? (
+              <span className="inline-flex items-center justify-center gap-2">
+                <Loader2 size={15} className="animate-spin" /> Menyimpan...
+              </span>
+            ) : (
+              "Simpan"
+            )}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+// --- Daftar perangkat (tabel desktop + kartu mobile), dipakai List & Group -----
+const DeviceList = ({ rows, selected, onToggle, onToggleMany, onEdit, onDelete, showGroup = true }) => {
+  const ids = rows.map((c) => c._id);
+  const all = ids.length > 0 && ids.every((id) => selected.has(id));
+  const some = ids.some((id) => selected.has(id));
+
+  return (
+    <>
+      {/* Desktop */}
+      <div className="hidden overflow-x-auto rounded-lg md:block">
+        <table className={`w-full ${showGroup ? "min-w-[980px]" : "min-w-[860px]"} text-left text-sm`}>
+          <thead className="border-b border-slate-300 text-xs text-slate-600 dark:border-white/10 dark:text-gray-400">
+            <tr>
+              <th className="w-10 px-3 py-2">
+                <Checkbox checked={all} indeterminate={some} onChange={() => onToggleMany(ids)} title="Pilih semua" />
+              </th>
+              <Th>Jenis</Th>
+              <Th>Nama</Th>
+              {showGroup && <Th>Group</Th>}
+              <Th>IP address</Th>
+              <Th>Username</Th>
+              <Th>Password</Th>
+              <Th>Entitas</Th>
+              <Th className="text-right">Aksi</Th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((c) => {
+              const checked = selected.has(c._id);
+              return (
+                <tr
+                  key={c._id}
+                  className={`border-b border-slate-300/70 last:border-b-0 dark:border-white/5 ${
+                    checked ? "bg-blue-100/70 dark:bg-blue-500/10" : "hover:bg-slate-300/40 dark:hover:bg-white/5"
+                  }`}
+                >
+                  <td className="px-3 py-2.5">
+                    <Checkbox checked={checked} onChange={() => onToggle(c._id)} />
+                  </td>
+                  <td className="px-3 py-2.5"><TypeBadge type={c.deviceType} /></td>
+                  <td className="px-3 py-2.5 font-medium">{c.name}</td>
+                  {showGroup && <td className="px-3 py-2.5"><GroupBadge group={c.group} color={c.groupColor} /></td>}
+                  <td className="px-3 py-2.5">
+                    <span className="inline-flex items-center gap-1 font-mono">
+                      {c.ipAddress}
+                      <CopyButton getText={async () => c.ipAddress} title="Copy IP" />
+                    </span>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <span className="inline-flex items-center gap-1">
+                      {c.username}
+                      <CopyButton getText={async () => c.username} title="Copy username" />
+                    </span>
+                  </td>
+                  <td className="px-3 py-2.5"><PasswordCell id={c._id} /></td>
+                  <td className="px-3 py-2.5"><EntityBadge entity={c.entity} /></td>
+                  <td className="px-3 py-2.5">
+                    <div className="flex justify-end gap-1">
+                      <button
+                        onClick={() => onEdit(c)}
+                        title="Edit"
+                        className="rounded-md p-2 text-slate-600 transition hover:bg-slate-300 active:scale-95 dark:text-gray-300 dark:hover:bg-white/10"
+                      >
+                        <Pencil size={15} />
+                      </button>
+                      <button
+                        onClick={() => onDelete(c)}
+                        title="Hapus"
+                        className="rounded-md p-2 text-red-600 transition hover:bg-red-100 active:scale-95 dark:hover:bg-red-500/20"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile */}
+      <div className="flex flex-col gap-3 md:hidden">
+        {showGroup && (
+          <label className="flex items-center gap-2 px-1 text-sm text-slate-600 dark:text-gray-300">
+            <Checkbox checked={all} indeterminate={some} onChange={() => onToggleMany(ids)} />
+            Pilih semua di halaman ini
+          </label>
+        )}
+        {rows.map((c) => {
+          const checked = selected.has(c._id);
+          return (
+            <div
+              key={c._id}
+              className={`rounded-xl border p-3 ${
+                checked
+                  ? "border-blue-400 bg-blue-50 dark:border-blue-500/50 dark:bg-blue-500/10"
+                  : "border-slate-300 bg-slate-100 dark:border-white/10 dark:bg-slate-950"
+              }`}
+            >
+              <div className="mb-2 flex items-start justify-between gap-2">
+                <div className="flex min-w-0 items-start gap-2.5">
+                  <div className="pt-1">
+                    <Checkbox checked={checked} onChange={() => onToggle(c._id)} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate font-medium">{c.name}</p>
+                    <div className="mt-1 flex flex-wrap gap-1.5">
+                      <TypeBadge type={c.deviceType} />
+                      <EntityBadge entity={c.entity} />
+                      {showGroup && c.group && <GroupBadge group={c.group} color={c.groupColor} />}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex shrink-0">
+                  <button onClick={() => onEdit(c)} className="rounded-md p-2 text-slate-600 dark:text-gray-300" title="Edit">
+                    <Pencil size={16} />
+                  </button>
+                  <button onClick={() => onDelete(c)} className="rounded-md p-2 text-red-600" title="Hapus">
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+
+              <dl className="space-y-1 text-sm">
+                <div className="flex items-center justify-between">
+                  <dt className="text-slate-500">IP</dt>
+                  <dd className="inline-flex items-center gap-1 font-mono">
+                    {c.ipAddress}
+                    <CopyButton getText={async () => c.ipAddress} title="Copy IP" />
+                  </dd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <dt className="text-slate-500">Username</dt>
+                  <dd className="inline-flex items-center gap-1">
+                    {c.username}
+                    <CopyButton getText={async () => c.username} title="Copy username" />
+                  </dd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <dt className="text-slate-500">Password</dt>
+                  <dd><PasswordCell id={c._id} /></dd>
+                </div>
+              </dl>
+            </div>
+          );
+        })}
+      </div>
+    </>
+  );
+};
+
+// --- Satu section group (bisa dilipat) ---------------------------------------
+const GroupSection = ({
+  name, color, rows, collapsed, onCollapse, selected, onToggle, onToggleMany,
+  onEdit, onDelete, onRename, onUngroup,
+}) => {
+  const c = color || DEFAULT_GROUP_COLOR;
+  const ids = rows.map((c) => c._id);
+  const all = ids.length > 0 && ids.every((id) => selected.has(id));
+  const some = ids.some((id) => selected.has(id));
+  const hubs = rows.filter((c) => c.deviceType !== "Camera").length;
+  const cams = rows.length - hubs;
+
+  return (
+      <section
+        className="overflow-hidden rounded-xl border border-slate-300 dark:border-white/10"
+        style={name ? { borderLeft: `4px solid ${c}` } : undefined}
+      >
+      <div
+          className="flex items-center gap-2 bg-slate-300/50 px-3 py-2 dark:bg-white/5"
+          style={name ? { backgroundColor: `${c}1f` } : undefined}
+        >
+        <Checkbox checked={all} indeterminate={some} onChange={() => onToggleMany(ids)} title="Pilih semua di group ini" />
+        <button type="button" onClick={onCollapse} className="flex min-w-0 flex-1 items-center gap-2 text-left">
+          <ChevronDown size={16} className={`shrink-0 transition ${collapsed ? "-rotate-90" : ""}`} />
+          <span className="truncate font-semibold">{name ?? "Tanpa group"}</span>
+          <span className="shrink-0 text-xs text-slate-500 dark:text-gray-400">
+            {hubs > 0 && `${hubs} NVR/DVR`}
+            {hubs > 0 && cams > 0 && " · "}
+            {cams > 0 && `${cams} kamera`}
+          </span>
+        </button>
+        {name && (
+          <div className="flex shrink-0 gap-0.5">
+            <button
+              type="button"
+              onClick={onRename}
+              title="Ubah nama group"
+              className="rounded-md p-1.5 text-slate-600 hover:bg-slate-300 dark:text-gray-300 dark:hover:bg-white/10"
+            >
+              <Pencil size={14} />
+            </button>
+            <button
+              type="button"
+              onClick={onUngroup}
+              title="Bubarkan group"
+              className="rounded-md p-1.5 text-red-600 hover:bg-red-100 dark:hover:bg-red-500/20"
+            >
+              <FolderMinus size={14} />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {!collapsed && (
+        <div className="p-2">
+          <DeviceList
+            rows={rows}
+            selected={selected}
+            onToggle={onToggle}
+            onToggleMany={onToggleMany}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            showGroup={false}
+          />
+        </div>
+      )}
+    </section>
+  );
+};
+
 const Cameras = () => {
   const { user } = useAuth();
   const isGuest = user?.isGuest || user?.role === "guest";
@@ -902,6 +1319,11 @@ const Cameras = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const [groupFilter, setGroupFilter] = useState("all"); // all | __none | nama group
+  const [viewMode, setViewMode] = useState("list"); // list | group
+  const [collapsed, setCollapsed] = useState(() => new Set());
+  const [groupModal, setGroupModal] = useState(null); // { title, ids, initialName }
 
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -934,15 +1356,54 @@ const Cameras = () => {
     else setLoading(false);
   }, [isGuest, load]);
 
+  const groupNames = useMemo(
+    () => [...new Set(items.map((c) => c.group).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
+    [items]
+  );
+
+  const groupColors = useMemo(() => {
+    const m = new Map();
+    items.forEach((c) => {
+      if (c.group && c.groupColor && !m.has(c.group)) m.set(c.group, c.groupColor);
+    });
+    return m;
+  }, [items]);
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return items.filter((c) => {
       if (typeFilter !== "all" && c.deviceType !== typeFilter) return false;
       if (entityFilter !== "all" && c.entity !== entityFilter) return false;
+      if (groupFilter === "__none") {
+        if (c.group) return false;
+      } else if (groupFilter !== "all" && c.group !== groupFilter) return false;
       if (!q) return true;
-      return [c.name, c.ipAddress, c.username].some((v) => v?.toLowerCase().includes(q));
+      return [c.name, c.ipAddress, c.username, c.group].some((v) => v?.toLowerCase().includes(q));
     });
-  }, [items, search, typeFilter, entityFilter]);
+  }, [items, search, typeFilter, entityFilter, groupFilter]);
+
+  useEffect(() => {
+    setPage(1);
+    setSelected(new Set());
+  }, [search, typeFilter, entityFilter, groupFilter, pageSize]);
+
+  // Untuk tampilan Group: NVR/DVR di atas, lalu kamera
+  const grouped = useMemo(() => {
+    const order = { NVR: 0, DVR: 1, Camera: 2 };
+    const map = new Map();
+    filtered.forEach((c) => {
+      const g = c.group || "";
+      if (!map.has(g)) map.set(g, []);
+      map.get(g).push(c);
+    });
+    const sortRows = (rows) =>
+      rows.slice().sort((a, b) => order[a.deviceType] - order[b.deviceType] || a.name.localeCompare(b.name));
+    const named = [...map.entries()]
+      .filter(([g]) => g)
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([g, rows]) => [g, sortRows(rows)]);
+    return { named, none: sortRows(map.get("") || []) };
+  }, [filtered]);
 
   // Filter / pencarian / ukuran halaman berubah → balik ke halaman 1 & reset seleksi
   useEffect(() => {
@@ -970,13 +1431,51 @@ const Cameras = () => {
       return n;
     });
 
-  const togglePage = () =>
-    setSelected((s) => {
+  const toggleMany = (ids) =>
+  setSelected((s) => {
+    const n = new Set(s);
+    const all = ids.every((id) => n.has(id));
+    ids.forEach((id) => (all ? n.delete(id) : n.add(id)));
+    return n;
+  });
+  
+  const togglePage = () => toggleMany(pageIds);
+
+  const toggleCollapse = (key) =>
+    setCollapsed((s) => {
       const n = new Set(s);
-      if (allPageSelected) pageIds.forEach((id) => n.delete(id));
-      else pageIds.forEach((id) => n.add(id));
+      n.has(key) ? n.delete(key) : n.add(key);
       return n;
     });
+
+  const applyGroup = (ids, group, color = "") => {
+    const set = new Set(ids);
+    setItems((list) =>
+      list.map((c) => {
+        if (set.has(c._id)) return { ...c, group, groupColor: group ? color : "" };
+        // anggota lain yang bernama group sama ikut disamakan warnanya
+        if (group && c.group === group) return { ...c, groupColor: color };
+        return c;
+      })
+    );
+  };
+
+  const handleGroupSaved = (ids, group, color) => {
+    applyGroup(ids, group, color);
+    setSelected(new Set());
+    setGroupModal(null);
+  };
+
+  const ungroup = async (ids, label) => {
+    if (label && !window.confirm(`Bubarkan group "${label}"? Perangkatnya tidak dihapus.`)) return;
+    try {
+      await api.patch("/cameras/group", { ids, group: "" });
+      applyGroup(ids, "");
+      setSelected(new Set());
+    } catch (err) {
+      alert(errMsg(err));
+    }
+  };
 
   const selectAllFiltered = () => setSelected(new Set(filtered.map((c) => c._id)));
   const clearSelection = () => setSelected(new Set());
@@ -1097,6 +1596,35 @@ const Cameras = () => {
                   <option key={en.value} value={en.value}>{en.label}</option>
                 ))}
               </select>
+
+              <select
+                value={groupFilter}
+                onChange={(e) => setGroupFilter(e.target.value)}
+                className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none dark:bg-slate-200 md:w-44"
+              >
+                <option value="all">Semua group</option>
+                <option value="__none">Tanpa group</option>
+                {groupNames.map((g) => (
+                  <option key={g} value={g}>{g}</option>
+                ))}
+              </select>
+
+              <div className="flex shrink-0 overflow-hidden rounded-lg h-[40px] border border-gray-200 bg-white dark:bg-slate-200">
+                {[
+                  ["list", List, "Tampilan list"],
+                  ["group", Layers, "Tampilan group"],
+                ].map(([mode, Icon, title]) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    title={title}
+                    onClick={() => setViewMode(mode)}
+                    className={`px-3 py-2.5 ${viewMode === mode ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-100"}`}
+                  >
+                    <Icon size={16} />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -1113,6 +1641,29 @@ const Cameras = () => {
                   >
                     Batal pilih
                   </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setGroupModal({
+                        title: "Jadikan group",
+                        ids: [...selected],
+                        initialName: groupFilter !== "all" && groupFilter !== "__none" ? groupFilter : "",
+                        initialColor: groupColors.get(groupFilter) || "",
+                      })
+                    }
+                    className="inline-flex items-center gap-1 rounded-md bg-white/15 px-2.5 py-1 font-medium hover:bg-white/25"
+                  >
+                    <FolderPlus size={14} /> Jadikan group
+                  </button>
+                  {selectedCameras.some((c) => c.group) && (
+                    <button
+                      type="button"
+                      onClick={() => ungroup([...selected])}
+                      className="inline-flex items-center gap-1 rounded-md px-2.5 py-1 hover:bg-white/15"
+                    >
+                      <FolderMinus size={14} /> Keluarkan
+                    </button>
+                  )}
                   <button
                     type="button"
                     onClick={() => setShowBulkDelete(true)}
@@ -1176,200 +1727,59 @@ const Cameras = () => {
                   : "Ubah kata kunci atau filter."}
               </p>
             </div>
+          ) : viewMode === "group" ? (
+            <div className="space-y-3">
+              {grouped.named.map(([name, rows]) => (
+                <GroupSection
+                  key={name}
+                  name={name}
+                  rows={rows}
+                  color={groupColors.get(name)}
+                  collapsed={collapsed.has(name)}
+                  onCollapse={() => toggleCollapse(name)}
+                  selected={selected}
+                  onToggle={toggleOne}
+                  onToggleMany={toggleMany}
+                  onEdit={setFormState}
+                  onDelete={setToDelete}
+                  onRename={() =>
+                    setGroupModal({
+                      title: "Ubah group",
+                      ids: rows.map((c) => c._id),
+                      initialName: name,
+                      initialColor: groupColors.get(name) || "",
+                    })
+                  }
+                  onUngroup={() => ungroup(rows.map((c) => c._id), name)}
+                />
+              ))}
+              {grouped.none.length > 0 && (
+                <GroupSection
+                  name={null}
+                  rows={grouped.none}
+                  collapsed={collapsed.has("__none")}
+                  onCollapse={() => toggleCollapse("__none")}
+                  selected={selected}
+                  onToggle={toggleOne}
+                  onToggleMany={toggleMany}
+                  onEdit={setFormState}
+                  onDelete={setToDelete}
+                />
+              )}
+              <p className="text-xs text-slate-600 dark:text-gray-400">
+                Menampilkan {filtered.length} dari {items.length} perangkat dalam {grouped.named.length} group
+              </p>
+            </div>
           ) : (
             <>
-              {/* Desktop: tabel */}
-              <div className="hidden overflow-x-auto rounded-lg md:block">
-                <table className="w-full min-w-[860px] text-left text-sm">
-                  <thead className="border-b border-slate-300 text-xs text-slate-600 dark:border-white/10 dark:text-gray-400">
-                    <tr>
-                      <th className="w-10 px-3 py-2">
-                        <Checkbox
-                          checked={allPageSelected}
-                          indeterminate={somePageSelected}
-                          onChange={togglePage}
-                          title="Pilih semua di halaman ini"
-                        />
-                      </th>
-                      <th className="px-3 py-2 font-medium">
-                        <span className="relative bottom-[1.6px]">
-                          Jenis
-                        </span>
-                      </th>
-                      <th className="px-3 py-2 font-medium">
-                        <span className="relative bottom-[1.6px]">
-                          Nama
-                        </span>
-                      </th>
-                      <th className="px-3 py-2 font-medium">  
-                        <span className="relative bottom-[1.6px]">
-                          IP address
-                        </span>
-                      </th>
-                      <th className="px-3 py-2 font-medium">
-                        <span className="relative bottom-[1.6px]">
-                          Username
-                        </span>
-                      </th>
-                      <th className="px-3 py-2 font-medium">
-                        <span className="relative bottom-[1.6px]">
-                          Password
-                        </span>
-                      </th>
-                      <th className="px-3 py-2 font-medium">
-                        <span className="relative bottom-[1.6px]">
-                          Entitas
-                        </span>
-                      </th>
-                      <th className="px-3 py-2 text-right font-medium">
-                        <span className="relative bottom-[1.6px]">
-                          Aksi
-                        </span>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {paged.map((c) => {
-                      const checked = selected.has(c._id);
-                      return (
-                        <tr
-                          key={c._id}
-                          className={`border-b border-slate-300/70 last:border-b-0 dark:border-white/5 ${
-                            checked
-                              ? "bg-blue-100/70 dark:bg-blue-500/10"
-                              : "hover:bg-slate-300/40 dark:hover:bg-white/5"
-                          }`}
-                        >
-                          <td className="px-3 py-2.5">
-                            <Checkbox checked={checked} onChange={() => toggleOne(c._id)} />
-                          </td>
-                          <td className="px-3 py-2.5">
-                            <TypeBadge type={c.deviceType} />
-                          </td>
-                          <td className="px-3 py-2.5 font-medium">{c.name}</td>
-                          <td className="px-3 py-2.5">
-                            <span className="inline-flex items-center gap-1 font-mono">
-                              {c.ipAddress}
-                              <CopyButton getText={async () => c.ipAddress} title="Copy IP" />
-                            </span>
-                          </td>
-                          <td className="px-3 py-2.5">
-                            <span className="inline-flex items-center gap-1">
-                              {c.username}
-                              <CopyButton getText={async () => c.username} title="Copy username" />
-                            </span>
-                          </td>
-                          <td className="px-3 py-2.5">
-                            <PasswordCell id={c._id} />
-                          </td>
-                          <td className="px-3 py-2.5">
-                            <EntityBadge entity={c.entity} />
-                          </td>
-                          <td className="px-3 py-2.5">
-                            <div className="flex justify-end gap-1">
-                              <button
-                                onClick={() => setFormState(c)}
-                                title="Edit"
-                                className="rounded-md p-2 text-slate-600 transition hover:bg-slate-300 active:scale-95 dark:text-gray-300 dark:hover:bg-white/10"
-                              >
-                                <Pencil size={15} />
-                              </button>
-                              <button
-                                onClick={() => setToDelete(c)}
-                                title="Hapus"
-                                className="rounded-md p-2 text-red-600 transition hover:bg-red-100 active:scale-95 dark:hover:bg-red-500/20"
-                              >
-                                <Trash2 size={15} />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Mobile: kartu */}
-              <div className="flex flex-col gap-3 md:hidden">
-                <label className="flex items-center gap-2 px-1 text-sm text-slate-600 dark:text-gray-300">
-                  <Checkbox
-                    checked={allPageSelected}
-                    indeterminate={somePageSelected}
-                    onChange={togglePage}
-                  />
-                  Pilih semua di halaman ini
-                </label>
-
-                {paged.map((c) => {
-                  const checked = selected.has(c._id);
-                  return (
-                    <div
-                      key={c._id}
-                      className={`rounded-xl border p-3 ${
-                        checked
-                          ? "border-blue-400 bg-blue-50 dark:border-blue-500/50 dark:bg-blue-500/10"
-                          : "border-slate-300 bg-slate-100 dark:border-white/10 dark:bg-slate-950"
-                      }`}
-                    >
-                      <div className="mb-2 flex items-start justify-between gap-2">
-                        <div className="flex min-w-0 items-start gap-2.5">
-                          <div className="pt-1">
-                            <Checkbox checked={checked} onChange={() => toggleOne(c._id)} />
-                          </div>
-                          <div className="min-w-0">
-                            <p className="truncate font-medium">{c.name}</p>
-                            <div className="mt-1 flex gap-1.5">
-                              <TypeBadge type={c.deviceType} />
-                              <EntityBadge entity={c.entity} />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex shrink-0">
-                          <button
-                            onClick={() => setFormState(c)}
-                            className="rounded-md p-2 text-slate-600 dark:text-gray-300"
-                            title="Edit"
-                          >
-                            <Pencil size={16} />
-                          </button>
-                          <button
-                            onClick={() => setToDelete(c)}
-                            className="rounded-md p-2 text-red-600"
-                            title="Hapus"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </div>
-
-                      <dl className="space-y-1 text-sm">
-                        <div className="flex items-center justify-between">
-                          <dt className="text-slate-500">IP</dt>
-                          <dd className="inline-flex items-center gap-1 font-mono">
-                            {c.ipAddress}
-                            <CopyButton getText={async () => c.ipAddress} title="Copy IP" />
-                          </dd>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <dt className="text-slate-500">Username</dt>
-                          <dd className="inline-flex items-center gap-1">
-                            {c.username}
-                            <CopyButton getText={async () => c.username} title="Copy username" />
-                          </dd>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <dt className="text-slate-500">Password</dt>
-                          <dd>
-                            <PasswordCell id={c._id} />
-                          </dd>
-                        </div>
-                      </dl>
-                    </div>
-                  );
-                })}
-              </div>
-
+              <DeviceList
+                rows={paged}
+                selected={selected}
+                onToggle={toggleOne}
+                onToggleMany={toggleMany}
+                onEdit={setFormState}
+                onDelete={setToDelete}
+              />
               <Pagination
                 page={currentPage}
                 pageCount={pageCount}
@@ -1386,11 +1796,26 @@ const Cameras = () => {
       {formState && (
         <CameraFormModal
           initial={formState}
+          groups={groupNames}
           onClose={() => setFormState(null)}
           onSaved={handleSaved}
         />
       )}
-      {showBulk && <BulkImportModal onClose={() => setShowBulk(false)} onSaved={handleBulkSaved} />}
+      {showBulk && (
+        <BulkImportModal groups={groupNames} onClose={() => setShowBulk(false)} onSaved={handleBulkSaved} />
+      )}
+      {groupModal && (
+        <GroupModal
+          title={groupModal.title}
+          ids={groupModal.ids}
+          initialName={groupModal.initialName}
+          initialColor={groupModal.initialColor}
+          groups={groupNames}
+          colors={groupColors}
+          onClose={() => setGroupModal(null)}
+          onSaved={handleGroupSaved}
+        />
+      )}
       {toDelete && (
         <DeleteModal
           camera={toDelete}
