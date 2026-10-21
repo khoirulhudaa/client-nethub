@@ -404,7 +404,7 @@ const Sidebar = ({ onNavigate }) => {
                 : "flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors border-white hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]"
             }
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-200 dark:!bg-gradient-to-br from-blue-400 to-blue-100 text-md font-semibold text-slate-900 dark:text-accent">
+            <div className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg ${collapsed ? '' : 'border'} border-white/15 text-md font-semibold text-slate-900 dark:text-white/50`}>
               {user?.avatar ? (
                 <img
                   src={user.avatar}
