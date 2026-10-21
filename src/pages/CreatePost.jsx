@@ -572,7 +572,7 @@ const CreatePost = () => {
           type="button"
           onClick={() => setShowImport((s) => !s)}
           aria-expanded={showImport}
-          className="flex w-full items-center justify-between gap-3 p-5 text-left"
+          className="flex w-full items-center justify-between gap-3 p-3 md:p-5 text-left"
         >
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <span className="text-sm font-medium">Scraping (optional)</span>
@@ -590,7 +590,7 @@ const CreatePost = () => {
           }`}
         >
           <div className="overflow-hidden">
-            <div className="px-5 pb-5">
+            <div className="p-3 md:px-5 pb-5">
               <div className="flex gap-2">
                 <input
                   className="input-field flex-1 dark:!bg-slate-100/10"
