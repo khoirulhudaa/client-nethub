@@ -30,7 +30,7 @@ const TYPES = ["NVR", "DVR", "Camera"];
 const ENTITIES = [
   { value: "pintex", label: "Pintex" },
   { value: "tfi", label: "TFI" },
-  { value: "umum", label: "Umum" },
+  { value: "umum", label: "General" },
 ];
 const EMPTY_FORM = {
   deviceType: "NVR",
@@ -42,13 +42,13 @@ const EMPTY_FORM = {
   group: "",
 };
 
-const errMsg = (err) => err?.response?.data?.message || "Terjadi kesalahan, coba lagi";
+const errMsg = (err) => err?.response?.data?.message || "Something went wrong, please try again";
 
 const inputCls =
   "w-full rounded-lg border border-white/20 bg-white/10 text-white border-gray-200 bg-white px-3 py-2 text-sm text-black outline-none focus:border-blue-500";
 
   
-// --- Tombol copy -------------------------------------------------------------
+// --- Copy button -------------------------------------------------------------
 const CopyButton = ({ getText, title = "Copy" }) => {
   const [done, setDone] = useState(false);
 
@@ -59,7 +59,7 @@ const CopyButton = ({ getText, title = "Copy" }) => {
       setDone(true);
       setTimeout(() => setDone(false), 1500);
     } catch {
-      /* diabaikan */
+      /* ignored */
     }
   };
 
@@ -75,7 +75,7 @@ const CopyButton = ({ getText, title = "Copy" }) => {
   );
 };
 
-// --- Password: baru diambil dari server saat diklik ---------------------------
+// --- Password: only fetched from the server when clicked ---------------------
 const PasswordCell = ({ id }) => {
   const [value, setValue] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -107,7 +107,7 @@ const PasswordCell = ({ id }) => {
       <button
         type="button"
         onClick={toggle}
-        title={visible ? "Sembunyikan password" : "Lihat password"}
+        title={visible ? "Hide password" : "Show password"}
         className="rounded-md p-1.5 text-slate-500 transition hover:bg-slate-300 dark:text-gray-400 dark:hover:bg-white/10"
       >
         {loading ? (
@@ -188,7 +188,7 @@ const CancelBtn = ({ onClick, disabled }) => (
     onClick={onClick}
     className="flex-1 rounded-xl border border-slate-300 bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:text-gray-200"
   >
-    Batal
+    Cancel
   </button>
 );
 
@@ -228,11 +228,11 @@ const CameraFormModal = ({ initial, groups = [], onClose, onSaved }) => {
     }
   };
 
-  const nameLabel = form.deviceType === "Camera" ? "Nama kamera" : `Nama ${form.deviceType}`;
+  const nameLabel = form.deviceType === "Camera" ? "Camera name" : `${form.deviceType} name`;
 
   return (
     <Drawer
-      title={isEdit ? "Edit perangkat" : "Tambah perangkat"}
+      title={isEdit ? "Edit device" : "Add device"}
       onClose={onClose}
       busy={saving}
       width="max-w-md"
@@ -247,10 +247,10 @@ const CameraFormModal = ({ initial, groups = [], onClose, onSaved }) => {
           >
             {saving ? (
               <span className="inline-flex items-center justify-center gap-2">
-                <Loader2 size={15} className="animate-spin" /> Menyimpan...
+                <Loader2 size={15} className="animate-spin" /> Saving...
               </span>
             ) : (
-              "Simpan"
+              "Save"
             )}
           </button>
         </>
@@ -258,7 +258,7 @@ const CameraFormModal = ({ initial, groups = [], onClose, onSaved }) => {
     >
       <form id="camera-form" onSubmit={submit} className="grid grid-cols-1 gap-4">
         <label className="text-sm">
-          <span className="mb-1 block font-medium">Jenis hardware</span>
+          <span className="mb-1 block font-medium">Hardware type</span>
           <select value={form.deviceType} onChange={set("deviceType")} className={inputCls}>
             {TYPES.map((t) => (
               <option key={t} value={t}>{t}</option>
@@ -267,7 +267,7 @@ const CameraFormModal = ({ initial, groups = [], onClose, onSaved }) => {
         </label>
 
         <label className="text-sm">
-          <span className="mb-1 block font-medium">Entitas</span>
+          <span className="mb-1 block font-medium">Entity</span>
           <select value={form.entity} onChange={set("entity")} className={inputCls}>
             {ENTITIES.map((en) => (
               <option key={en.value} value={en.value}>{en.label}</option>
@@ -282,7 +282,7 @@ const CameraFormModal = ({ initial, groups = [], onClose, onSaved }) => {
             maxLength={100}
             value={form.name}
             onChange={set("name")}
-            placeholder="contoh: NVR Gudang A"
+            placeholder="e.g. NVR Warehouse A"
             className={inputCls}
           />
         </label>
@@ -293,7 +293,7 @@ const CameraFormModal = ({ initial, groups = [], onClose, onSaved }) => {
             required
             value={form.ipAddress}
             onChange={set("ipAddress")}
-            placeholder="192.168.1.100 atau 192.168.1.100:8000"
+            placeholder="192.168.1.100 or 192.168.1.100:8000"
             className={`${inputCls} font-mono`}
           />
         </label>
@@ -318,7 +318,7 @@ const CameraFormModal = ({ initial, groups = [], onClose, onSaved }) => {
               autoComplete="new-password"
               value={form.password}
               onChange={set("password")}
-              placeholder={isEdit ? "Kosongkan jika tidak diubah" : ""}
+              placeholder={isEdit ? "Leave blank to keep unchanged" : ""}
               className={`${inputCls} pr-9`}
             />
             <button
@@ -333,13 +333,13 @@ const CameraFormModal = ({ initial, groups = [], onClose, onSaved }) => {
         </label>
 
         <label className="text-sm">
-          <span className="mb-1 block font-medium">Group (opsional)</span>
+          <span className="mb-1 block font-medium">Group (optional)</span>
           <input
             list="group-list"
             value={form.group || ""}
             onChange={set("group")}
             maxLength={100}
-            placeholder="contoh: OFFICE PINTEX"
+            placeholder="e.g. OFFICE PINTEX"
             className={inputCls}
           />
           <datalist id="group-list">
@@ -357,7 +357,7 @@ const CameraFormModal = ({ initial, groups = [], onClose, onSaved }) => {
   );
 };
 
-// --- Modal hapus -------------------------------------------------------------
+// --- Delete modal ------------------------------------------------------------
 const DeleteModal = ({ camera, onClose, onDeleted }) => {
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
@@ -384,9 +384,9 @@ const DeleteModal = ({ camera, onClose, onDeleted }) => {
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/20">
             <Trash2 size={22} className="text-red-600 dark:text-red-400" />
           </div>
-          <h3 className="text-lg font-semibold">Hapus perangkat?</h3>
+          <h3 className="text-lg font-semibold">Delete device?</h3>
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            <strong>{camera.name}</strong> ({camera.ipAddress}) akan dihapus permanen.
+            <strong>{camera.name}</strong> ({camera.ipAddress}) will be permanently deleted.
           </p>
           {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
         </div>
@@ -397,7 +397,7 @@ const DeleteModal = ({ camera, onClose, onDeleted }) => {
             onClick={onClose}
             className="flex-1 rounded-xl border border-slate-300 bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 active:scale-[0.99] disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:text-gray-200"
           >
-            Batal
+            Cancel
           </button>
           <button
             type="button"
@@ -405,7 +405,7 @@ const DeleteModal = ({ camera, onClose, onDeleted }) => {
             onClick={confirm}
             className="flex-1 rounded-xl bg-red-600 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 active:scale-[0.99] disabled:opacity-50"
           >
-            {deleting ? "Menghapus..." : "Ya, hapus"}
+            {deleting ? "Deleting..." : "Yes, delete"}
           </button>
         </div>
       </div>
@@ -415,36 +415,39 @@ const DeleteModal = ({ camera, onClose, onDeleted }) => {
 
 const COLS = ["deviceType", "name", "ipAddress", "username", "password", "entity"];
 
-const TEMPLATE = `Nama : OFFICE PINTEX
+const TEMPLATE = `Name : OFFICE PINTEX
 IP : 192.168.1.41
 Pass: HikVision1269
-Entitas: PINTEX
-Jenis: NVR
+Entity: PINTEX
+Type: NVR
 Group: OFFICE PINTEX
 Username: admin
 
-Nama : GUDANG A
+Name : WAREHOUSE A
 IP : 192.168.1.42
 Pass: abc12345
-Entitas: TFI
-Jenis: Camera
+Entity: TFI
+Type: Camera
 Group: OFFICE PINTEX
 Username: admin`;
 
-const TABLE_TEMPLATE = `Jenis\tNama\tIP\tUsername\tPassword\tEntitas
+const TABLE_TEMPLATE = `Type\tName\tIP\tUsername\tPassword\tEntity
 NVR\tOFFICE PINTEX\t192.168.1.41\tadmin\tHikVision1269\tPINTEX
-DVR\tGUDANG A\t192.168.1.42\tadmin\tabc12345\tTFI`;
+DVR\tWAREHOUSE A\t192.168.1.42\tadmin\tabc12345\tTFI`;
 
 const normalize = (key, val) => {
   val = (val || "").trim();
   if (key === "deviceType") return TYPE_MAP[val.toLowerCase()] || val;
-  if (key === "entity") return val.toLowerCase();
+  if (key === "entity") {
+    const v = val.toLowerCase();
+    return v === "general" ? "umum" : v; // "General" label maps to the stored "umum" value
+  }
   return val;
 };
 
 const LABEL_RE = /^\s*([^:=|\t,]+?)\s*[:=]\s*(.*)$/;
 
-// Format berlabel: "Nama : xxx", blok dipisah baris kosong
+// Labeled format: "Name : xxx", blocks separated by blank lines
 const parseLabeled = (lines) => {
   const rows = [];
   let cur = null;
@@ -458,7 +461,7 @@ const parseLabeled = (lines) => {
     const m = line.match(LABEL_RE);
     const key = m && KEY_MAP[m[1].trim().toLowerCase()];
     if (!key) continue;
-    if (cur && key in cur) flush(); // label berulang = perangkat baru
+    if (cur && key in cur) flush(); // repeated label = new device
     if (!cur) cur = {};
     cur[key] = normalize(key, m[2]);
   }
@@ -466,7 +469,7 @@ const parseLabeled = (lines) => {
   return rows;
 };
 
-// Format tabel: tab / | / koma, header opsional
+// Table format: tab / | / comma, optional header
 const parseTable = (lines) => {
   const first = lines[0];
   const sep = first.includes("\t") ? "\t" : first.includes("|") ? "|" : ",";
@@ -502,7 +505,9 @@ const parseBulk = (text) => {
 
 const isBlank = (r) => !r.name.trim() && !r.ipAddress.trim() && !r.password;
 
-// --- Parser teks massal ------------------------------------------------------
+// --- Bulk text parser --------------------------------------------------------
+// NOTE: the Indonesian aliases (nama, pass, entitas, grup, jenis, tipe, user, kamera)
+// are kept on purpose so previously formatted pasted data still works.
 const KEY_MAP = {
   nama: "name", name: "name",
   ip: "ipAddress", "ip address": "ipAddress", ipaddress: "ipAddress",
@@ -520,12 +525,12 @@ let rowSeq = 0;
 const newRow = (data = {}) => ({ ...EMPTY_ROW, ...data, _k: ++rowSeq });
 
 const validateRow = (r) => {
-  if (!TYPES.includes(r.deviceType)) return "Jenis tidak valid";
-  if (!ENTITIES.some((e) => e.value === r.entity)) return "Entitas tidak valid";
-  if (!r.name.trim()) return "Nama kosong";
-  if (!r.ipAddress.trim() || !HOST_RE.test(r.ipAddress.trim())) return "IP tidak valid";
-  if (!r.username.trim()) return "Username kosong";
-  if (!r.password) return "Password kosong";
+  if (!TYPES.includes(r.deviceType)) return "Invalid type";
+  if (!ENTITIES.some((e) => e.value === r.entity)) return "Invalid entity";
+  if (!r.name.trim()) return "Name is empty";
+  if (!r.ipAddress.trim() || !HOST_RE.test(r.ipAddress.trim())) return "Invalid IP";
+  if (!r.username.trim()) return "Username is empty";
+  if (!r.password) return "Password is empty";
   return "";
 };
 
@@ -542,20 +547,20 @@ const BulkImportModal = ({ onClose, onSaved, groups = [] }) => {
   const addParsed = useCallback((parsed) => {
     setRows((list) => [...list.filter((r) => !isBlank(r)), ...parsed]);
     setError("");
-    setNotice(`${parsed.length} perangkat ditambahkan dari paste`);
+    setNotice(`${parsed.length} devices added from paste`);
   }, []);
 
-  // Paste di kolom mana saja: kalau multi-baris / dari Excel, otomatis jadi banyak baris
+  // Paste in any field: if multi-line / from Excel, it automatically becomes multiple rows
   const handlePaste = (e) => {
     const t = (e.clipboardData?.getData("text") || "").trim();
-    if (!t.includes("\n") && !t.includes("\t")) return; // paste biasa (1 baris)
+    if (!t.includes("\n") && !t.includes("\t")) return; // normal paste (single line)
     const parsed = parseBulk(t);
     if (!parsed.length) return;
     e.preventDefault();
     addParsed(parsed);
   };
 
-  // Paste di area drawer saat tidak sedang fokus di kolom input
+  // Paste anywhere in the drawer when no input field is focused
   useEffect(() => {
     const onDocPaste = (e) => {
       if (["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName)) return;
@@ -573,7 +578,7 @@ const BulkImportModal = ({ onClose, onSaved, groups = [] }) => {
     e.target.value = "";
     if (!file) return;
     const parsed = parseBulk(await file.text());
-    if (!parsed.length) return setError("Isi file tidak bisa dibaca. Cek formatnya.");
+    if (!parsed.length) return setError("Couldn't read the file contents. Check the format.");
     addParsed(parsed);
   };
 
@@ -600,7 +605,7 @@ const BulkImportModal = ({ onClose, onSaved, groups = [] }) => {
     } catch (err) {
       const list = err?.response?.data?.errors;
       setError(
-        list?.length ? list.map((e) => `Baris ${e.row}: ${e.message}`).join("\n") : errMsg(err)
+        list?.length ? list.map((e) => `Row ${e.row}: ${e.message}`).join("\n") : errMsg(err)
       );
       setSaving(false);
     }
@@ -610,7 +615,7 @@ const BulkImportModal = ({ onClose, onSaved, groups = [] }) => {
 
   return (
     <Drawer
-      title="Tambah perangkat"
+      title="Add devices"
       onClose={onClose}
       busy={saving}
       width="max-w-xl"
@@ -625,10 +630,10 @@ const BulkImportModal = ({ onClose, onSaved, groups = [] }) => {
           >
             {saving ? (
               <span className="inline-flex items-center justify-center gap-2">
-                <Loader2 size={15} className="animate-spin" /> Menyimpan...
+                <Loader2 size={15} className="animate-spin" /> Saving...
               </span>
             ) : (
-              `Simpan ${filled.length || ""} perangkat`
+              `Save ${filled.length || ""} devices`
             )}
           </button>
         </>
@@ -639,8 +644,8 @@ const BulkImportModal = ({ onClose, onSaved, groups = [] }) => {
         <div className="flex items-center gap-2">
           <CopyIcon size={14} />
           <p className="text-slate-600 dark:text-gray-300 text-sm">
-            <strong>Langsung ctrl + v</strong> di kolom mana
-            saja dan  data akan terisi otomatis
+            <strong>Just press Ctrl + V</strong> in any field
+            and the data will be filled in automatically
           </p>
         </div>
         <datalist id="group-list-bulk">
@@ -652,7 +657,7 @@ const BulkImportModal = ({ onClose, onSaved, groups = [] }) => {
             onClick={() => setShowFormat((s) => !s)}
             className="mt-0 text-xs font-medium text-slate-400 hover:text-slate-800 dark:hover:text-white"
           >
-            {showFormat ? "Sembunyikan format ▲" : "Lihat format yang didukung ▼"}
+            {showFormat ? "Hide format ▲" : "View supported formats ▼"}
           </button>
 
 
@@ -660,8 +665,8 @@ const BulkImportModal = ({ onClose, onSaved, groups = [] }) => {
             <div className="mt-3 space-y-3 text-xs">
               <div>
                 <div className="mb-1 flex items-center justify-between">
-                  <span className="font-medium">1. Berlabel (pisahkan dengan baris kosong)</span>
-                  <CopyButton getText={async () => TEMPLATE} title="Salin template" />
+                  <span className="font-medium">1. Labeled (separate with blank lines)</span>
+                  <CopyButton getText={async () => TEMPLATE} title="Copy template" />
                 </div>
                 <pre className="overflow-x-auto rounded-lg bg-slate-100 p-2 font-mono dark:bg-black/30">{TEMPLATE}</pre>
               </div>
@@ -675,7 +680,7 @@ const BulkImportModal = ({ onClose, onSaved, groups = [] }) => {
           </p>
         )}
 
-        {/* Daftar baris */}
+        {/* Row list */}
         <div className="space-y-3">
           {rows.map((r, i) => {
             const msg = !isBlank(r) ? validateRow(r) : "";
@@ -697,7 +702,7 @@ const BulkImportModal = ({ onClose, onSaved, groups = [] }) => {
                     type="button"
                     onClick={() => remove(r._k)}
                     className="rounded-md p-1 bg-red-500/40 text-white hover:bg-red-500 dark:hover:bg-red-500"
-                    title="Hapus baris"
+                    title="Delete row"
                   >
                     <X size={15} />
                   </button>
@@ -716,7 +721,7 @@ const BulkImportModal = ({ onClose, onSaved, groups = [] }) => {
                     ))}
                   </select>
 
-                  <input placeholder="Nama (contoh: NVR Gudang A)" value={r.name} onPaste={handlePaste}
+                  <input placeholder="Name (e.g. NVR Warehouse A)" value={r.name} onPaste={handlePaste}
                     onChange={(e) => update(r._k, "name", e.target.value)} className={textCls("col-span-2")} />
                   <input placeholder="IP address" value={r.ipAddress} onPaste={handlePaste}
                     onChange={(e) => update(r._k, "ipAddress", e.target.value)} className={textCls("col-span-2 font-mono")} />
@@ -726,7 +731,7 @@ const BulkImportModal = ({ onClose, onSaved, groups = [] }) => {
                     onChange={(e) => update(r._k, "password", e.target.value)} className={textCls("font-mono")} />
                   <input
                     list="group-list-bulk"
-                    placeholder="Group (opsional)"
+                    placeholder="Group (optional)"
                     value={r.group || ""}
                     onPaste={handlePaste}
                     onChange={(e) => update(r._k, "group", e.target.value)}
@@ -743,7 +748,7 @@ const BulkImportModal = ({ onClose, onSaved, groups = [] }) => {
           onClick={() => setRows((r) => [...r, newRow()])}
           className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-300 py-2.5 text-sm font-medium hover:bg-slate-100 dark:border-white/10 dark:hover:bg-white/10"
         >
-          <Plus size={15} /> Tambah perangkat lain
+          <Plus size={15} /> Add another device
         </button>
 
         {error && (
@@ -756,7 +761,7 @@ const BulkImportModal = ({ onClose, onSaved, groups = [] }) => {
   );
 };
 
-// --- Checkbox (mendukung indeterminate) --------------------------------------
+// --- Checkbox (supports indeterminate) ---------------------------------------
 const Checkbox = ({ checked, indeterminate = false, onChange, title }) => {
   const ref = useRef(null);
   useEffect(() => {
@@ -820,7 +825,7 @@ const Pagination = ({ page, pageCount, total, pageSize, onPage, onPageSize }) =>
             disabled={page <= 1}
             onClick={() => onPage(page - 1)}
             className={`${btn} hover:bg-slate-300 dark:hover:bg-white/10`}
-            title="Sebelumnya"
+            title="Previous"
           >
             <ChevronLeft size={16} />
           </button>
@@ -849,7 +854,7 @@ const Pagination = ({ page, pageCount, total, pageSize, onPage, onPageSize }) =>
             disabled={page >= pageCount}
             onClick={() => onPage(page + 1)}
             className={`${btn} hover:bg-slate-300 dark:hover:bg-white/10`}
-            title="Berikutnya"
+            title="Next"
           >
             <ChevronRight size={16} />
           </button>
@@ -859,7 +864,7 @@ const Pagination = ({ page, pageCount, total, pageSize, onPage, onPageSize }) =>
   );
 };
 
-// --- Modal hapus massal ------------------------------------------------------
+// --- Bulk delete modal -------------------------------------------------------
 const BulkDeleteModal = ({ cameras, onClose, onDeleted }) => {
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
@@ -891,9 +896,9 @@ const BulkDeleteModal = ({ cameras, onClose, onDeleted }) => {
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/20">
             <Trash2 size={22} className="text-red-600 dark:text-red-400" />
           </div>
-          <h3 className="text-lg font-semibold">Hapus {cameras.length} perangkat?</h3>
+          <h3 className="text-lg font-semibold">Delete {cameras.length} devices?</h3>
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Semua perangkat terpilih akan dihapus permanen dan tidak bisa dikembalikan.
+            All selected devices will be permanently deleted and cannot be restored.
           </p>
           <ul className="mt-3 space-y-0.5 text-left text-sm">
             {preview.map((c) => (
@@ -903,7 +908,7 @@ const BulkDeleteModal = ({ cameras, onClose, onDeleted }) => {
             ))}
             {cameras.length > preview.length && (
               <li className="px-2 py-1 text-xs text-slate-500">
-                + {cameras.length - preview.length} perangkat lainnya
+                + {cameras.length - preview.length} more devices
               </li>
             )}
           </ul>
@@ -916,7 +921,7 @@ const BulkDeleteModal = ({ cameras, onClose, onDeleted }) => {
             onClick={onClose}
             className="flex-1 rounded-xl border border-slate-300 bg-white py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 dark:border-white/10 dark:bg-gray-800 dark:text-gray-200"
           >
-            Batal
+            Cancel
           </button>
           <button
             type="button"
@@ -924,7 +929,7 @@ const BulkDeleteModal = ({ cameras, onClose, onDeleted }) => {
             onClick={confirm}
             className="flex-1 rounded-xl bg-red-600 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
           >
-            {deleting ? "Menghapus..." : `Ya, hapus ${cameras.length}`}
+            {deleting ? "Deleting..." : `Yes, delete ${cameras.length}`}
           </button>
         </div>
       </div>
@@ -953,7 +958,7 @@ const ColorPicker = ({ value, onChange }) => (
       />
     ))}
     <label
-      title="Warna lain"
+      title="Other color"
       className="relative h-7 w-7 cursor-pointer overflow-hidden rounded-full border border-dashed border-slate-400"
       style={{ background: "conic-gradient(red, yellow, lime, aqua, blue, magenta, red)" }}
     >
@@ -992,7 +997,7 @@ const GroupModal = ({ title, ids, initialName = "", initialColor = "", groups, c
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  // Pilih nama group yang sudah ada → otomatis ikut warnanya
+  // Choosing an existing group name automatically adopts its color
   const changeName = (value) => {
     setName(value);
     const existing = groups.find((g) => g.toLowerCase() === value.trim().toLowerCase());
@@ -1002,7 +1007,7 @@ const GroupModal = ({ title, ids, initialName = "", initialColor = "", groups, c
   const submit = async (e) => {
     e.preventDefault();
     const typed = name.trim().replace(/\s+/g, " ");
-    if (!typed) return setError("Nama group wajib diisi");
+    if (!typed) return setError("Group name is required");
     const group = groups.find((g) => g.toLowerCase() === typed.toLowerCase()) || typed;
     setSaving(true);
     setError("");
@@ -1029,17 +1034,17 @@ const GroupModal = ({ title, ids, initialName = "", initialColor = "", groups, c
           </button>
         </div>
         <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-          {ids.length} perangkat akan dimasukkan ke group ini.
+          {ids.length} devices will be added to this group.
         </p>
 
-        <label className="mb-1 block text-sm font-medium">Nama group</label>
+        <label className="mb-1 block text-sm font-medium">Group name</label>
         <input
           autoFocus
           list="group-list-modal"
           value={name}
           onChange={(e) => changeName(e.target.value)}
           maxLength={100}
-          placeholder="contoh: OFFICE PINTEX"
+          placeholder="e.g. OFFICE PINTEX"
           className={inputCls}
         />
         <datalist id="group-list-modal">
@@ -1056,11 +1061,11 @@ const GroupModal = ({ title, ids, initialName = "", initialColor = "", groups, c
           </div>
         )}
 
-        <label className="mb-2 mt-4 block text-sm font-medium">Warna group</label>
+        <label className="mb-2 mt-4 block text-sm font-medium">Group color</label>
         <ColorPicker value={color} onChange={setColor} />
 
         <div className="mt-3 text-sm">
-          Pratinjau: <GroupBadge pre={true} group={name.trim() || "Nama group"} color={color} />
+          Preview: <GroupBadge pre={true} group={name.trim() || "Group name"} color={color} />
         </div>
 
         {error && (
@@ -1078,10 +1083,10 @@ const GroupModal = ({ title, ids, initialName = "", initialColor = "", groups, c
           >
             {saving ? (
               <span className="inline-flex items-center justify-center gap-2">
-                <Loader2 size={15} className="animate-spin" /> Menyimpan...
+                <Loader2 size={15} className="animate-spin" /> Saving...
               </span>
             ) : (
-              "Simpan"
+              "Save"
             )}
           </button>
         </div>
@@ -1090,7 +1095,7 @@ const GroupModal = ({ title, ids, initialName = "", initialColor = "", groups, c
   );
 };
 
-// --- Daftar perangkat (tabel desktop + kartu mobile), dipakai List & Group -----
+// --- Device list (desktop table + mobile cards), used by List & Group views ---
 const DeviceList = ({ rows, selected, onToggle, onToggleMany, onEdit, onDelete, showGroup = true }) => {
   const ids = rows.map((c) => c._id);
   const all = ids.length > 0 && ids.every((id) => selected.has(id));
@@ -1104,16 +1109,16 @@ const DeviceList = ({ rows, selected, onToggle, onToggleMany, onEdit, onDelete, 
           <thead className="border-b border-slate-300 text-xs text-slate-600 dark:border-white/10 dark:text-gray-400">
             <tr>
               <th className="w-10 px-3 py-2">
-                <Checkbox checked={all} indeterminate={some} onChange={() => onToggleMany(ids)} title="Pilih semua" />
+                <Checkbox checked={all} indeterminate={some} onChange={() => onToggleMany(ids)} title="Select all" />
               </th>
-              <Th>Jenis</Th>
-              <Th>Nama</Th>
+              <Th>Type</Th>
+              <Th>Name</Th>
               {showGroup && <Th>Group</Th>}
               <Th>IP address</Th>
               <Th>Username</Th>
               <Th>Password</Th>
-              <Th>Entitas</Th>
-              <Th className="text-right">Aksi</Th>
+              <Th>Entity</Th>
+              <Th className="text-right">Actions</Th>
             </tr>
           </thead>
           <tbody>
@@ -1157,7 +1162,7 @@ const DeviceList = ({ rows, selected, onToggle, onToggleMany, onEdit, onDelete, 
                       </button>
                       <button
                         onClick={() => onDelete(c)}
-                        title="Hapus"
+                        title="Delete"
                         className="rounded-md p-2 text-red-600 transition hover:bg-red-100 active:scale-95 dark:hover:bg-red-500/20"
                       >
                         <Trash2 size={15} />
@@ -1176,7 +1181,7 @@ const DeviceList = ({ rows, selected, onToggle, onToggleMany, onEdit, onDelete, 
         {showGroup && (
           <label className="flex items-center gap-2 px-1 text-sm text-slate-600 dark:text-gray-300">
             <Checkbox checked={all} indeterminate={some} onChange={() => onToggleMany(ids)} />
-            Pilih semua di halaman ini
+            Select all on this page
           </label>
         )}
         {rows.map((c) => {
@@ -1208,7 +1213,7 @@ const DeviceList = ({ rows, selected, onToggle, onToggleMany, onEdit, onDelete, 
                   <button onClick={() => onEdit(c)} className="rounded-md p-2 text-slate-600 dark:text-gray-300" title="Edit">
                     <Pencil size={16} />
                   </button>
-                  <button onClick={() => onDelete(c)} className="rounded-md p-2 text-red-600" title="Hapus">
+                  <button onClick={() => onDelete(c)} className="rounded-md p-2 text-red-600" title="Delete">
                     <Trash2 size={16} />
                   </button>
                 </div>
@@ -1242,7 +1247,7 @@ const DeviceList = ({ rows, selected, onToggle, onToggleMany, onEdit, onDelete, 
   );
 };
 
-// --- Satu section group (bisa dilipat) ---------------------------------------
+// --- A single group section (collapsible) ------------------------------------
 const GroupSection = ({
   name, color, rows, collapsed, onCollapse, selected, onToggle, onToggleMany,
   onEdit, onDelete, onRename, onUngroup,
@@ -1263,14 +1268,14 @@ const GroupSection = ({
           className="flex items-center gap-2 bg-slate-300/50 px-3 py-2 dark:bg-white/5"
           style={name ? { backgroundColor: `${c}1f` } : undefined}
         >
-        <Checkbox checked={all} indeterminate={some} onChange={() => onToggleMany(ids)} title="Pilih semua di group ini" />
+        <Checkbox checked={all} indeterminate={some} onChange={() => onToggleMany(ids)} title="Select all in this group" />
         <button type="button" onClick={onCollapse} className="flex min-w-0 flex-1 items-center gap-2 text-left">
           <ChevronDown size={16} className={`shrink-0 transition ${collapsed ? "-rotate-90" : ""}`} />
-          <span className="truncate font-semibold">{name ?? "Tanpa group"}</span>
+          <span className="truncate font-semibold">{name ?? "No group"}</span>
           <span className="shrink-0 text-xs text-slate-500 dark:text-gray-400">
             {hubs > 0 && `${hubs} NVR/DVR`}
             {hubs > 0 && cams > 0 && " · "}
-            {cams > 0 && `${cams} kamera`}
+            {cams > 0 && `${cams} cameras`}
           </span>
         </button>
         {name && (
@@ -1278,7 +1283,7 @@ const GroupSection = ({
             <button
               type="button"
               onClick={onRename}
-              title="Ubah nama group"
+              title="Rename group"
               className="rounded-md p-1.5 text-slate-600 hover:bg-slate-300 dark:text-gray-300 dark:hover:bg-white/10"
             >
               <Pencil size={14} />
@@ -1286,7 +1291,7 @@ const GroupSection = ({
             <button
               type="button"
               onClick={onUngroup}
-              title="Bubarkan group"
+              title="Disband group"
               className="rounded-md p-1.5 text-red-600 hover:bg-red-100 dark:hover:bg-red-500/20"
             >
               <FolderMinus size={14} />
@@ -1320,7 +1325,7 @@ const Cameras = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const [groupFilter, setGroupFilter] = useState("all"); // all | __none | nama group
+  const [groupFilter, setGroupFilter] = useState("all"); // all | __none | group name
   const [viewMode, setViewMode] = useState("list"); // list | group
   const [collapsed, setCollapsed] = useState(() => new Set());
   const [groupModal, setGroupModal] = useState(null); // { title, ids, initialName }
@@ -1333,7 +1338,7 @@ const Cameras = () => {
   const [pageSize, setPageSize] = useState(25);
   const [selected, setSelected] = useState(() => new Set());
 
-  const [formState, setFormState] = useState(null); // null | {} (baru) | camera (edit)
+  const [formState, setFormState] = useState(null); // null | {} (new) | camera (edit)
   const [toDelete, setToDelete] = useState(null);
   const [showBulkDelete, setShowBulkDelete] = useState(false);
   const [showBulk, setShowBulk] = useState(false);
@@ -1387,7 +1392,7 @@ const Cameras = () => {
     setSelected(new Set());
   }, [search, typeFilter, entityFilter, groupFilter, pageSize]);
 
-  // Untuk tampilan Group: NVR/DVR di atas, lalu kamera
+  // For Group view: NVR/DVR first, then cameras
   const grouped = useMemo(() => {
     const order = { NVR: 0, DVR: 1, Camera: 2 };
     const map = new Map();
@@ -1405,7 +1410,7 @@ const Cameras = () => {
     return { named, none: sortRows(map.get("") || []) };
   }, [filtered]);
 
-  // Filter / pencarian / ukuran halaman berubah → balik ke halaman 1 & reset seleksi
+  // Filter / search / page size changes → back to page 1 & reset selection
   useEffect(() => {
     setPage(1);
     setSelected(new Set());
@@ -1418,7 +1423,7 @@ const Cameras = () => {
     [filtered, currentPage, pageSize]
   );
 
-  // ---- Seleksi ----
+  // ---- Selection ----
   const pageIds = paged.map((c) => c._id);
   const allPageSelected = pageIds.length > 0 && pageIds.every((id) => selected.has(id));
   const somePageSelected = pageIds.some((id) => selected.has(id));
@@ -1453,7 +1458,7 @@ const Cameras = () => {
     setItems((list) =>
       list.map((c) => {
         if (set.has(c._id)) return { ...c, group, groupColor: group ? color : "" };
-        // anggota lain yang bernama group sama ikut disamakan warnanya
+        // other members with the same group name get the same color
         if (group && c.group === group) return { ...c, groupColor: color };
         return c;
       })
@@ -1467,7 +1472,7 @@ const Cameras = () => {
   };
 
   const ungroup = async (ids, label) => {
-    if (label && !window.confirm(`Bubarkan group "${label}"? Perangkatnya tidak dihapus.`)) return;
+    if (label && !window.confirm(`Disband group "${label}"? The devices won't be deleted.`)) return;
     try {
       await api.patch("/cameras/group", { ids, group: "" });
       applyGroup(ids, "");
@@ -1485,7 +1490,7 @@ const Cameras = () => {
     [items, selected]
   );
 
-  // ---- Handler hasil ----
+  // ---- Result handlers ----
   const handleBulkSaved = (cameras) => {
     setItems((list) => [...cameras, ...list]);
     setShowBulk(false);
@@ -1519,8 +1524,8 @@ const Cameras = () => {
     return (
       <div className="flex flex-col items-center justify-center gap-2 py-24 text-center text-white">
         <Video size={32} />
-        <p className="font-medium">Halaman ini khusus akun terdaftar</p>
-        <p className="text-sm text-gray-300">Login untuk melihat data kamera dan NVR/DVR.</p>
+        <p className="font-medium">This page is for registered accounts only</p>
+        <p className="text-sm text-gray-300">Log in to view camera and NVR/DVR data.</p>
       </div>
     );
   }
@@ -1533,13 +1538,13 @@ const Cameras = () => {
             onClick={() => setShowBulk(true)}
             className="flex md: w-max items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:px-4"
           >
-            <ClipboardPaste size={16} /> Import banyak
+            <ClipboardPaste size={16} /> Bulk import
           </button>
           <button
             onClick={() => setFormState({})}
             className="flex md: w-max items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:opacity-90 active:scale-[0.99] dark:bg-transparent dark:text-white md:px-4"
           >
-            <Plus size={16} /> Tambah
+            <Plus size={16} /> Add
           </button>
         </div>
         <Link to={'192.168.1.58:8000'}>
@@ -1553,14 +1558,14 @@ const Cameras = () => {
 
       <div className="pb-6 md:px-6">
         <div className="rounded-xl bg-slate-200 px-3 py-3 dark:bg-white/5 md:p-4">
-          {/* Filter */}
+          {/* Filters */}
           <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center">
             <div className="flex w-full items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 shadow-sm dark:bg-slate-200 md:flex-1">
               <Search size={16} className="shrink-0 text-gray-400" />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Cari nama, IP, atau username..."
+                placeholder="Search name, IP, or username..."
                 className="h-[24.5px] w-full px-1 py-2 text-sm font-medium text-black outline-none dark:bg-transparent"
               />
               {search && (
@@ -1580,7 +1585,7 @@ const Cameras = () => {
                 onChange={(e) => setTypeFilter(e.target.value)}
                 className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none dark:bg-slate-200 md:w-44"
               >
-                <option value="all">Semua jenis</option>
+                <option value="all">All types</option>
                 {TYPES.map((t) => (
                   <option key={t} value={t}>{t}</option>
                 ))}
@@ -1591,7 +1596,7 @@ const Cameras = () => {
                 onChange={(e) => setEntityFilter(e.target.value)}
                 className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none dark:bg-slate-200 md:w-44"
               >
-                <option value="all">Semua entitas</option>
+                <option value="all">All entities</option>
                 {ENTITIES.map((en) => (
                   <option key={en.value} value={en.value}>{en.label}</option>
                 ))}
@@ -1602,8 +1607,8 @@ const Cameras = () => {
                 onChange={(e) => setGroupFilter(e.target.value)}
                 className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none dark:bg-slate-200 md:w-44"
               >
-                <option value="all">Semua group</option>
-                <option value="__none">Tanpa group</option>
+                <option value="all">All groups</option>
+                <option value="__none">No group</option>
                 {groupNames.map((g) => (
                   <option key={g} value={g}>{g}</option>
                 ))}
@@ -1611,8 +1616,8 @@ const Cameras = () => {
 
               <div className="flex shrink-0 overflow-hidden rounded-lg h-[40px] border border-gray-200 bg-white dark:bg-slate-200">
                 {[
-                  ["list", List, "Tampilan list"],
-                  ["group", Layers, "Tampilan group"],
+                  ["list", List, "List view"],
+                  ["group", Layers, "Group view"],
                 ].map(([mode, Icon, title]) => (
                   <button
                     key={mode}
@@ -1628,24 +1633,24 @@ const Cameras = () => {
             </div>
           </div>
 
-          {/* Bar aksi seleksi */}
+          {/* Selection action bar */}
           {selected.size > 0 && (
             <div className="mb-3 rounded-lg bg-blue-600 px-3 py-2 text-sm text-white">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="font-medium">{selected.size} dipilih</span>
+                <span className="font-medium">{selected.size} selected</span>
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={clearSelection}
                     className="rounded-md px-2.5 py-1 hover:bg-white/15"
                   >
-                    Batal pilih
+                    Deselect
                   </button>
                   <button
                     type="button"
                     onClick={() =>
                       setGroupModal({
-                        title: "Jadikan group",
+                        title: "Add to group",
                         ids: [...selected],
                         initialName: groupFilter !== "all" && groupFilter !== "__none" ? groupFilter : "",
                         initialColor: groupColors.get(groupFilter) || "",
@@ -1653,7 +1658,7 @@ const Cameras = () => {
                     }
                     className="inline-flex items-center gap-1 rounded-md bg-white/15 px-2.5 py-1 font-medium hover:bg-white/25"
                   >
-                    <FolderPlus size={14} /> Jadikan group
+                    <FolderPlus size={14} /> Add to group
                   </button>
                   {selectedCameras.some((c) => c.group) && (
                     <button
@@ -1661,7 +1666,7 @@ const Cameras = () => {
                       onClick={() => ungroup([...selected])}
                       className="inline-flex items-center gap-1 rounded-md px-2.5 py-1 hover:bg-white/15"
                     >
-                      <FolderMinus size={14} /> Keluarkan
+                      <FolderMinus size={14} /> Remove from group
                     </button>
                   )}
                   <button
@@ -1669,7 +1674,7 @@ const Cameras = () => {
                     onClick={() => setShowBulkDelete(true)}
                     className="inline-flex items-center gap-1 rounded-md bg-red-600 px-2.5 py-1 font-medium hover:bg-red-700"
                   >
-                    <Trash2 size={14} /> Hapus
+                    <Trash2 size={14} /> Delete
                   </button>
                 </div>
               </div>
@@ -1677,16 +1682,16 @@ const Cameras = () => {
               {allPageSelected && filtered.length > pageIds.length && (
                 <p className="mt-1.5 border-t border-white/20 pt-1.5 text-xs">
                   {allFilteredSelected ? (
-                    <>Semua {filtered.length} perangkat hasil filter dipilih.</>
+                    <>All {filtered.length} filtered devices are selected.</>
                   ) : (
                     <>
-                      {pageIds.length} perangkat di halaman ini dipilih.{" "}
+                      {pageIds.length} devices on this page are selected.{" "}
                       <button
                         type="button"
                         onClick={selectAllFiltered}
                         className="font-semibold underline"
                       >
-                        Pilih semua {filtered.length} hasil
+                        Select all {filtered.length} results
                       </button>
                     </>
                   )}
@@ -1695,7 +1700,7 @@ const Cameras = () => {
             </div>
           )}
 
-          {/* Konten */}
+          {/* Content */}
           {loading ? (
             <div className="space-y-2" aria-busy="true">
               {Array.from({ length: 5 }).map((_, i) => (
@@ -1712,19 +1717,19 @@ const Cameras = () => {
                 onClick={load}
                 className="rounded-lg border border-slate-400 px-3 py-1.5 text-sm hover:bg-slate-300 dark:border-white/20 dark:hover:bg-white/10"
               >
-                Coba lagi
+                Try again
               </button>
             </div>
           ) : filtered.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
               <Video size={28} className="text-slate-500" />
               <p className="font-medium">
-                {items.length === 0 ? "Belum ada perangkat" : "Tidak ada hasil"}
+                {items.length === 0 ? "No devices yet" : "No results"}
               </p>
               <p className="text-sm text-gray-500">
                 {items.length === 0
-                  ? "Klik “Tambah perangkat” untuk menyimpan NVR, DVR, atau kamera pertama."
-                  : "Ubah kata kunci atau filter."}
+                  ? "Click “Add” to save your first NVR, DVR, or camera."
+                  : "Change your keywords or filters."}
               </p>
             </div>
           ) : viewMode === "group" ? (
@@ -1744,7 +1749,7 @@ const Cameras = () => {
                   onDelete={setToDelete}
                   onRename={() =>
                     setGroupModal({
-                      title: "Ubah group",
+                      title: "Edit group",
                       ids: rows.map((c) => c._id),
                       initialName: name,
                       initialColor: groupColors.get(name) || "",
@@ -1767,7 +1772,7 @@ const Cameras = () => {
                 />
               )}
               <p className="text-xs text-slate-600 dark:text-gray-400">
-                Menampilkan {filtered.length} dari {items.length} perangkat dalam {grouped.named.length} group
+                Showing {filtered.length} of {items.length} devices in {grouped.named.length} groups
               </p>
             </div>
           ) : (

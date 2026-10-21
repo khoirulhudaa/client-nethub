@@ -6,7 +6,7 @@ import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { OS_LIST, copyText, formatAnydesk, osOf } from "./PcShared.jsx";
 
-// Baris ID / alamat dengan tombol salin
+// ID / address row with a copy button
 const CopyRow = ({ label, value, display }) =>
   (
     <div className="flex items-center justify-between gap-2 rounded-lg bg-black/5 px-2.5 py-1.5 dark:bg-white/5">
@@ -17,14 +17,14 @@ const CopyRow = ({ label, value, display }) =>
       <button
         onClick={(e) => copyText(e, value, label)}
         className="shrink-0 rounded-md p-1.5 hover:bg-black/10 dark:hover:bg-white/10"
-        title={`Salin ${label}`}
+        title={`Copy ${label}`}
       >
         <Copy size={14} />
       </button>
     </div>
   )
 
-// Teks yang dibagikan. Password SENGAJA tidak disertakan (daftar PC pun tidak memuatnya).
+// Text to be shared. The password is INTENTIONALLY not included (the PC list doesn't contain it either).
 const buildShareText = (pc) => {
   const o = osOf(pc.os);
   const lines = [`*${pc.name}*`];
@@ -34,7 +34,7 @@ const buildShareText = (pc) => {
   if (pc.anydeskId) lines.push(`AnyDesk: ${formatAnydesk(pc.anydeskId)}`);
   if (pc.vncAddress) lines.push(`VNC: ${pc.vncAddress}`);
   if (pc.ipAddress) lines.push(`IP: ${pc.ipAddress}`);
-  if (pc.notes) lines.push("", `Catatan: ${pc.notes}`);
+  if (pc.notes) lines.push("", `Notes: ${pc.notes}`);
   return lines.join("\n");
 };
 
@@ -59,7 +59,7 @@ const Pcs = () => {
   const [location, setLocation] = useState("");
   const [onlyPinned, setOnlyPinned] = useState(false);
   const [sort, setSort] = useState("name");
-  const [shareId, setShareId] = useState(null); // id PC yang menu bagikannya sedang terbuka
+  const [shareId, setShareId] = useState(null); // id of the PC whose share menu is currently open
 
   const reqRef = useRef(0);
 
@@ -72,7 +72,7 @@ const Pcs = () => {
     setPage(1);
   }, [q, os, location, onlyPinned, sort]);
 
-  // Tutup menu bagikan dengan tombol Esc
+  // Close the share menu with the Esc key
   useEffect(() => {
     if (!shareId) return;
     const onKey = (e) => e.key === "Escape" && setShareId(null);
@@ -106,7 +106,7 @@ const Pcs = () => {
       setTotal(data.total);
     } catch (err) {
       if (id !== reqRef.current) return;
-      toast.error(err?.response?.data?.message || "Gagal memuat daftar PC");
+      toast.error(err?.response?.data?.message || "Failed to load PC list");
     } finally {
       if (id === reqRef.current) setLoading(false);
     }
@@ -122,7 +122,7 @@ const Pcs = () => {
 
   const handleDelete = async (e, pc) => {
     e.stopPropagation();
-    if (!confirm(`Hapus "${pc.name}"? Tindakan ini tidak bisa dibatalkan.`)) return;
+    if (!confirm(`Delete "${pc.name}"? This action cannot be undone.`)) return;
 
     // optimistic remove
     setPcs((list) => list.filter((x) => x._id !== pc._id));
@@ -130,13 +130,13 @@ const Pcs = () => {
 
     try {
         await api.delete(`/pcs/${pc._id}`);
-        toast.success("PC dihapus");
+        toast.success("PC deleted");
         fetchStats();
-        // kalau halaman jadi kosong, mundur 1 halaman
+        // if the page becomes empty, go back 1 page
         if (pcs.length === 1 && page > 1) setPage((p) => p - 1);
         else fetchPcs();
     } catch (err) {
-        toast.error(err?.response?.data?.message || "Gagal menghapus PC");
+        toast.error(err?.response?.data?.message || "Failed to delete PC");
         fetchPcs(); // rollback
     }
     };
@@ -150,31 +150,31 @@ const Pcs = () => {
       fetchStats();
     } catch (err) {
       setPcs((l) => l.map((x) => (x._id === pc._id ? { ...x, pinned: pc.pinned } : x)));
-      toast.error(err?.response?.data?.message || "Gagal menyematkan PC");
+      toast.error(err?.response?.data?.message || "Failed to pin PC");
     }
   };
 
-  // Bagikan lewat share sheet bawaan perangkat (umumnya HP)
+  // Share via the device's native share sheet (usually mobile)
   const handleNativeShare = async (e, pc) => {
     e.stopPropagation();
     setShareId(null);
     try {
       await navigator.share({ title: pc.name, text: buildShareText(pc).replace(/\*/g, "") });
     } catch (err) {
-      if (err?.name !== "AbortError") toast.error("Gagal membagikan");
+      if (err?.name !== "AbortError") toast.error("Failed to share");
     }
   };
 
   if (isGuest) {
     return (
       <div className="mx-auto max-w-full py-24 text-center text-white md:text-slate-900 dark:text-white">
-        Daftar PC hanya untuk user yang sudah login.
+        The PC list is only available to logged-in users.
       </div>
     );
   }
 
   const chip = (active) =>
-    `rounded-lg border px-3 py-1.5 text-xs font-medium transition active:scale-[0.98] ${
+    `rounded-lg border px-3 py-1.5 h-[32px] text-xs font-medium transition active:scale-[0.98] ${
       active
         ? "border-blue-500 bg-blue-600 text-white"
         : "border-white/20 bg-slate-300 text-slate-700 hover:brightness-95 dark:bg-[#0c0c18] dark:text-gray-300"
@@ -187,8 +187,8 @@ const Pcs = () => {
   return (
     <div className="mx-auto max-w-full space-y-4 border-white pb-16 dark:border-white/15 md:border-x md:p-6">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <button onClick={() => navigate("/remote/create")} className="btn-primary">
-          <Plus size={16} /> Tambah PC
+        <button onClick={() => navigate("/remote/create")} className="btn-primary py-2 px-3 pl-2.5 rounded-lg">
+          <Plus size={16} /> Add PC
         </button>
       </div>
 
@@ -198,7 +198,7 @@ const Pcs = () => {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari nama PC, ID AnyDesk, VNC, IP, lokasi…"
+            placeholder="Search PC name, AnyDesk ID, VNC, IP, location…"
             className="input-field !pl-9 dark:!bg-slate-100/10 dark:!text-white"
           />
         </div>
@@ -206,29 +206,29 @@ const Pcs = () => {
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           className="input-field sm:w-44 dark:!bg-slate-100/10 dark:!text-white"
-          title="Filter lokasi"
+          title="Filter by location"
         >
-          <option value="" className="!text-black">Semua lokasi</option>
+          <option value="" className="!text-black">All locations</option>
           {locations.map((l) => (
             <option key={l} value={l} className="!text-black">{l} ({stats.byLocation[l]})</option>
           ))}
         </select>
         <select value={sort} onChange={(e) => setSort(e.target.value)} className="input-field sm:w-40 dark:!bg-slate-100/10 dark:!text-white">
-          <option value="name" className="!text-black">Nama A–Z</option>
-          <option value="newest" className="!text-black">Terbaru</option>
+          <option value="name" className="!text-black">Name A–Z</option>
+          <option value="newest" className="!text-black">Newest</option>
         </select>
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <button className={chip(!os)} onClick={() => setOs("")}>Semua OS</button>
+        <button className={chip(!os)} onClick={() => setOs("")}>All OS</button>
         {OS_LIST.map((o) => (
           <button key={o.value} className={chip(os === o.value)} onClick={() => setOs(os === o.value ? "" : o.value)}>
             {o.label} {stats?.byOs?.[o.value] || 0}
           </button>
         ))}
         <span className="mx-1 hidden h-7 w-px bg-white/20 md:block" />
-        <button className={chip(onlyPinned)} onClick={() => setOnlyPinned((v) => !v)}>Disematkan</button>
-        {location && <button className={chip(false)} onClick={() => setLocation("")}>Reset lokasi</button>}
+        <button className={chip(onlyPinned)} onClick={() => setOnlyPinned((v) => !v)}>Pinned</button>
+        {location && <button className={chip(false)} onClick={() => setLocation("")}>Reset location</button>}
       </div>
 
       {loading ? (
@@ -240,9 +240,9 @@ const Pcs = () => {
       ) : pcs.length === 0 ? (
         <div className="rounded-2xl bg-slate-300 py-16 text-center dark:!bg-[#0c0c18]">
           <Monitor size={28} className="mx-auto mb-2 text-gray-500" />
-          <p className="font-medium text-gray-800 dark:text-white">{hasFilter ? "Tidak ada PC yang cocok" : "Belum ada PC"}</p>
+          <p className="font-medium text-gray-800 dark:text-white">{hasFilter ? "No matching PCs" : "No PCs yet"}</p>
           <p className="mt-1 text-sm text-gray-500">
-            {hasFilter ? "Ubah kata kunci atau reset filter." : "Klik “Tambah PC” untuk menyimpan ID AnyDesk dan VNC pertamamu."}
+            {hasFilter ? "Change your keywords or reset the filters." : "Click “Add PC” to save your first AnyDesk ID and VNC address."}
           </p>
         </div>
       ) : (
@@ -254,7 +254,7 @@ const Pcs = () => {
               <div
                 key={pc._id}
                 onClick={() => navigate(`/remote/edit/${pc._id}`)}
-                // z-30 saat menu terbuka agar dropdown tidak tertutup kartu di bawahnya
+                // z-30 while the menu is open so the dropdown isn't covered by the card below
                 className={`group flex min-h-[11rem] cursor-pointer flex-col gap-2 rounded-2xl border border-gray-100 bg-slate-300 p-4 text-gray-900 transition hover:!border-blue-400/70 hover:shadow-lg dark:border-white/5 dark:!bg-[#0c0c18] dark:text-white ${
                   shareOpen ? "relative z-30" : ""
                 }`}
@@ -263,23 +263,23 @@ const Pcs = () => {
                   <div className="min-w-0">
                     <h3 className="truncate font-semibold">{pc.name}</h3>
                     <p className="truncate text-[11px] text-gray-600 dark:text-gray-400">
-                      {[pc.location, o?.label].filter(Boolean).join(" · ") || "Tanpa lokasi"}
+                      {[pc.location, o?.label].filter(Boolean).join(" · ") || "No location"}
                     </p>
                   </div>
 
                   <div className="flex shrink-0 items-center gap-1">
                     <div className="flex shrink-0 items-center gap-1">
-                        {/* Hapus */}
+                        {/* Delete */}
                         <button
                             onClick={(e) => handleDelete(e, pc)}
                             className="rounded-md p-0.5 text-gray-500 hover:bg-red-500/15 hover:text-red-500"
-                            title="Hapus PC"
+                            title="Delete PC"
                         >
                             <Trash2 size={14} />
                         </button>
                     </div>
-                    {/* Sematkan */}
-                    <button onClick={(e) => handlePin(e, pc)} className="relative top-[1.5px] rounded-md p-0.5 hover:bg-black/10 dark:hover:bg-white/10" title="Sematkan">
+                    {/* Pin */}
+                    <button onClick={(e) => handlePin(e, pc)} className="relative top-[1.5px] rounded-md p-0.5 hover:bg-black/10 dark:hover:bg-white/10" title="Pin">
                       <Pin size={14} className={pc.pinned ? "fill-accent text-accent" : "text-gray-500"} />
                     </button>
                   </div>
@@ -288,18 +288,18 @@ const Pcs = () => {
                 <CopyRow label="ANYDESK" value={pc.anydeskId} display={formatAnydesk(pc.anydeskId)} />
                 <CopyRow label="VNC" value={pc.vncAddress} />
 
-                {/* ===== 3 BUTTON SHARE LANGSUNG ===== */}
+                {/* ===== 3 DIRECT SHARE BUTTONS ===== */}
                 <div className="mt-1 flex gap-1.5">
-                {/* 1. Salin Info */}
+                {/* 1. Copy Info */}
                 <button
                     onClick={(e) => {
                     e.stopPropagation();
-                    copyText(e, buildShareText(pc), "Info PC");
+                    copyText(e, buildShareText(pc), "PC info");
                     }}
                     className="active:scale-[0.98] flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white/50 px-2 py-2 text-xs font-medium text-gray-700 transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-gray-200 dark:hover:bg-white/10"
                 >
                     <Copy size={13} />
-                    Salin
+                    Copy
                 </button>
 
                 {/* 2. WhatsApp */}
@@ -314,14 +314,14 @@ const Pcs = () => {
                     WhatsApp
                 </a>
 
-                {/* 3. Native Share (hanya muncul kalau browser support) */}
+                {/* 3. Native Share (only shown if the browser supports it) */}
                 {canNativeShare && (
                     <button
                     onClick={(e) => handleNativeShare(e, pc)}
                     className="active:scale-[0.98] flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white/50 px-2 py-2 text-xs font-medium text-gray-700 transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-gray-200 dark:hover:bg-white/10"
                     >
                     <Share2 size={13} />
-                    Lainnya
+                    More
                     </button>
                 )}
                 </div>
@@ -339,9 +339,9 @@ const Pcs = () => {
 
       {pages > 1 && (
         <div className="flex items-center justify-center gap-3 pt-2 text-sm text-white md:text-slate-900 dark:text-white">
-          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="btn-secondary disabled:opacity-40">Sebelumnya</button>
-          <span>Hal. {page} / {pages} · {total} PC</span>
-          <button disabled={page >= pages} onClick={() => setPage((p) => p + 1)} className="btn-secondary disabled:opacity-40">Berikutnya</button>
+          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="btn-secondary disabled:opacity-40">Previous</button>
+          <span>Page {page} / {pages} · {total} PCs</span>
+          <button disabled={page >= pages} onClick={() => setPage((p) => p + 1)} className="btn-secondary disabled:opacity-40">Next</button>
         </div>
       )}
     </div>

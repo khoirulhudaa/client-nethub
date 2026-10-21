@@ -42,9 +42,9 @@ const ContactDetail = ({ contact, onClose, onEdit, onDelete, onFavorite, onConta
   const copy = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success("Disalin");
+      toast.success("Copied");
     } catch {
-      toast.error("Gagal menyalin");
+      toast.error("Failed to copy");
     }
   };
 
@@ -55,7 +55,7 @@ const ContactDetail = ({ contact, onClose, onEdit, onDelete, onFavorite, onConta
       <div className="fixed inset-0 z-[9999] h-[91.5vh] bg-black/60 backdrop-blur-sm top-[7%] bottom-0 mt-auto" onClick={onClose} />
       <div className="fixed right-0 z-[99999] flex h-[91.5vh] bottom-0 w-full max-w-xl flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-white/15 dark:bg-[#12121b]">
         <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-white/15">
-          <h3 className="text-base font-semibold text-gray-900 dark:text-white">Detail kontak</h3>
+          <h3 className="text-base font-semibold text-gray-900 dark:text-white">Contact details</h3>
           <button type="button" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10">
             <X size={18} />
           </button>
@@ -68,32 +68,32 @@ const ContactDetail = ({ contact, onClose, onEdit, onDelete, onFavorite, onConta
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 <h2 className="truncate text-lg font-semibold text-gray-900 dark:text-white">{contact.name}</h2>
-                {contact.visibility === "private" && <Lock size={13} className="text-gray-500" title="Privat" />}
+                {contact.visibility === "private" && <Lock size={13} className="text-gray-500" title="Private" />}
               </div>
               {contact.nickname && <p className="text-xs text-gray-500">“{contact.nickname}”</p>}
               <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                 <CategoryBadge category={contact.category} />
                 {contact.isEmergency && (
                   <span className="inline-flex items-center gap-1 rounded-md bg-red-500/15 px-2 py-0.5 text-[11px] font-medium text-red-600 dark:text-red-300">
-                    <AlertTriangle size={11} /> Darurat
+                    <AlertTriangle size={11} /> Emergency
                   </span>
                 )}
                 {contact.relationship && <span className="text-xs text-gray-500">{contact.relationship}</span>}
               </div>
             </div>
-            <button onClick={() => onFavorite(contact)} className="rounded-lg p-1.5 hover:bg-gray-100 dark:hover:bg-white/10" title="Favorit">
+            <button onClick={() => onFavorite(contact)} className="rounded-lg p-1.5 hover:bg-gray-100 dark:hover:bg-white/10" title="Favorite">
               <Star size={18} className={contact.isFavorite ? "fill-yellow-400 text-yellow-400" : "text-gray-400"} />
             </button>
           </div>
 
-          {/* Telepon */}
+          {/* Phones */}
           <div className="space-y-2">
             {contact.phones.map((p, i) => (
               <div key={i} className="rounded-xl border border-gray-200 p-3 dark:border-white/10">
                 <div className="flex items-center justify-between gap-2">
                   <div className="min-w-0">
                     <p className="text-[11px] text-gray-500">
-                      {p.label}{p.isPrimary && " · Utama"}
+                      {p.label}{p.isPrimary && " · Primary"}
                     </p>
                     <p className="font-mono text-sm font-medium text-gray-900 dark:text-white">
                       {p.number}{p.extension && <span className="text-gray-500"> ext. {p.extension}</span>}
@@ -101,10 +101,10 @@ const ContactDetail = ({ contact, onClose, onEdit, onDelete, onFavorite, onConta
                     {p.note && <p className="mt-0.5 text-xs text-gray-500">{p.note}</p>}
                   </div>
                   <div className="flex shrink-0 gap-1.5">
-                    <button onClick={() => copy(p.number)} className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-white/10 dark:text-white" title="Salin">
+                    <button onClick={() => copy(p.number)} className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-white/10 dark:text-white" title="Copy">
                       <Copy size={14} />
                     </button>
-                    <a href={telLink(p)} onClick={() => onContacted(contact)} className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700" title="Telepon">
+                    <a href={telLink(p)} onClick={() => onContacted(contact)} className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700" title="Call">
                       <Phone size={14} />
                     </a>
                     {(p.isWhatsApp || p.label === "WhatsApp") && (
@@ -121,13 +121,13 @@ const ContactDetail = ({ contact, onClose, onEdit, onDelete, onFavorite, onConta
           {/* Info */}
           <div className="space-y-3.5">
             {contact.emails?.map((m, i) => (
-              <InfoRow key={i} icon={Mail} label={`${m.label}${m.isPrimary ? " · Utama" : ""}`}>
+              <InfoRow key={i} icon={Mail} label={`${m.label}${m.isPrimary ? " · Primary" : ""}`}>
                 <a href={`mailto:${m.address}`} className="text-accent hover:underline">{m.address}</a>
               </InfoRow>
             ))}
 
             {hasWork && (
-              <InfoRow icon={Building2} label="Pekerjaan">
+              <InfoRow icon={Building2} label="Work">
                 {[contact.jobTitle, contact.department, contact.company].filter(Boolean).join(" · ")}
                 {contact.employeeId && <p className="text-xs text-gray-500">ID: {contact.employeeId}</p>}
                 {contact.location && <p className="text-xs text-gray-500">{contact.location}</p>}
@@ -140,7 +140,7 @@ const ContactDetail = ({ contact, onClose, onEdit, onDelete, onFavorite, onConta
                   {[a.street, a.district, a.city, a.province, a.postalCode, a.country].filter(Boolean).join(", ")}
                 </p>
                 {a.mapUrl && (
-                  <a href={a.mapUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-accent hover:underline">Buka peta</a>
+                  <a href={a.mapUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-accent hover:underline">Open map</a>
                 )}
               </InfoRow>
             ))}
@@ -159,13 +159,13 @@ const ContactDetail = ({ contact, onClose, onEdit, onDelete, onFavorite, onConta
             )}
 
             {contact.birthday && (
-              <InfoRow icon={Cake} label="Tanggal lahir">{formatDate(contact.birthday)}</InfoRow>
+              <InfoRow icon={Cake} label="Date of birth">{formatDate(contact.birthday)}</InfoRow>
             )}
             {contact.availability && (
-              <InfoRow icon={Clock} label="Waktu tersedia">{contact.availability}</InfoRow>
+              <InfoRow icon={Clock} label="Availability">{contact.availability}</InfoRow>
             )}
             {contact.lastContactedAt && (
-              <InfoRow icon={Phone} label="Terakhir dihubungi">{timeAgo(contact.lastContactedAt)}</InfoRow>
+              <InfoRow icon={Phone} label="Last contacted">{timeAgo(contact.lastContactedAt)}</InfoRow>
             )}
           </div>
 
@@ -179,14 +179,14 @@ const ContactDetail = ({ contact, onClose, onEdit, onDelete, onFavorite, onConta
 
           {contact.notes && (
             <div className="rounded-xl bg-slate-100 p-3 dark:bg-white/5">
-              <p className="mb-1 text-[11px] text-gray-500">Catatan</p>
+              <p className="mb-1 text-[11px] text-gray-500">Notes</p>
               <p className="whitespace-pre-line text-sm text-gray-700 dark:text-gray-200">{contact.notes}</p>
             </div>
           )}
 
           {/* <p className="text-[11px] text-gray-500">
-            Dibuat oleh {contact.createdBy?.name || "—"} · {formatDate(contact.createdAt)}
-            {contact.updatedBy?.name && ` · diubah oleh ${contact.updatedBy.name} ${timeAgo(contact.updatedAt)}`}
+            Created by {contact.createdBy?.name || "—"} · {formatDate(contact.createdAt)}
+            {contact.updatedBy?.name && ` · edited by ${contact.updatedBy.name} ${timeAgo(contact.updatedAt)}`}
           </p> */}
         </div>
 
@@ -194,7 +194,7 @@ const ContactDetail = ({ contact, onClose, onEdit, onDelete, onFavorite, onConta
           <div className="flex shrink-0 gap-3 pb-4 border-t border-gray-100 px-5 py-4 dark:border-white/15">
             <button onClick={() => onEdit(contact)} className="btn-secondary flex-1"><Pencil size={14} /> Edit</button>
             <button onClick={() => onDelete(contact)} className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-red-600 py-2 text-sm font-medium text-white hover:bg-red-700">
-              <Trash2 size={14} /> Hapus
+              <Trash2 size={14} /> Delete
             </button>
           </div>
         )}
@@ -203,7 +203,7 @@ const ContactDetail = ({ contact, onClose, onEdit, onDelete, onFavorite, onConta
   );
 };
 
-// ===== Halaman utama =====
+// ===== Main page =====
 const Contacts = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -231,13 +231,13 @@ const Contacts = () => {
 
   const reqRef = useRef(0);
 
-  // Debounce pencarian
+  // Search debounce
   useEffect(() => {
     const t = setTimeout(() => setQ(search.trim()), 400);
     return () => clearTimeout(t);
   }, [search]);
 
-  // Reset ke halaman 1 saat filter berubah
+  // Reset to page 1 when filters change
   useEffect(() => {
     setPage(1);
   }, [q, category, letter, onlyFav, onlyMine, onlyEmergency, sort]);
@@ -270,7 +270,7 @@ const Contacts = () => {
       setTotal(data.total);
     } catch (err) {
       if (id !== reqRef.current) return;
-      toast.error(err?.response?.data?.message || "Gagal memuat kontak");
+      toast.error(err?.response?.data?.message || "Failed to load contacts");
     } finally {
       if (id === reqRef.current) setLoading(false);
     }
@@ -298,7 +298,7 @@ const Contacts = () => {
       fetchStats();
     } catch (err) {
       patchLocal(c._id, { isFavorite: !next });
-      toast.error(err?.response?.data?.message || "Gagal mengubah favorit");
+      toast.error(err?.response?.data?.message || "Failed to change favorite");
     }
   };
 
@@ -314,13 +314,13 @@ const Contacts = () => {
     setDeleting(true);
     try {
       await api.delete(`/contacts/${deleteTarget._id}`);
-      toast.success("Kontak dihapus");
+      toast.success("Contact deleted");
       setDeleteTarget(null);
       setDetail(null);
       fetchContacts();
       fetchStats();
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Gagal menghapus kontak");
+      toast.error(err?.response?.data?.message || "Failed to delete contact");
     } finally {
       setDeleting(false);
     }
@@ -330,9 +330,9 @@ const Contacts = () => {
     e.stopPropagation();
     try {
       await navigator.clipboard.writeText(text);
-      toast.success("Nomor disalin");
+      toast.success("Number copied");
     } catch {
-      toast.error("Gagal menyalin");
+      toast.error("Failed to copy");
     }
   };
 
@@ -340,7 +340,7 @@ const Contacts = () => {
     return (
       <div className="mx-auto flex max-w-full flex-col items-center gap-3 py-24 text-center text-white md:text-slate-900 dark:text-white">
         <Lock size={28} />
-        <p className="font-medium">Buku telepon hanya untuk user yang sudah login.</p>
+        <p className="font-medium">The phone book is only available to logged-in users.</p>
       </div>
     );
   }
@@ -356,7 +356,7 @@ const Contacts = () => {
     <div className="mx-auto max-w-full space-y-3.5 border-white pb-16 dark:border-white/15 md:border-x md:p-6">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <button onClick={() => navigate("/contacts/create")} className="btn-primary mb-3">
+        <button onClick={() => navigate("/contacts/create")} className="btn-primary px-3 py-2 pl-2.5 rounded-lg mb-3">
           <Plus size={16} /> Add Contact
         </button>
       </div>
@@ -368,33 +368,33 @@ const Contacts = () => {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari nama, nomor, perusahaan, email, tags…"
+            placeholder="Search name, number, company, email, tags…"
             className="input-field !pl-9 dark:!bg-slate-100/10 dark:!text-white"
           />
         </div>
         <select value={sort} onChange={(e) => setSort(e.target.value)} className="input-field sm:w-48 dark:!bg-slate-100/10 dark:!text-white">
-          <option value="name" className="!text-black">Nama A–Z</option>
-          <option value="-name" className="!text-black">Nama Z–A</option>
-          <option value="recent" className="!text-black">Terakhir dihubungi</option>
-          <option value="-createdAt" className="!text-black">Terbaru ditambah</option>
+          <option value="name" className="!text-black">Name A–Z</option>
+          <option value="-name" className="!text-black">Name Z–A</option>
+          <option value="recent" className="!text-black">Last contacted</option>
+          <option value="-createdAt" className="!text-black">Recently added</option>
         </select>
       </div>
 
-      {/* Filter */}
+      {/* Filters */}
       <div className="flex flex-wrap gap-2">
-        <button className={chip(!category)} onClick={() => setCategory("")}>Semua</button>
+        <button className={chip(!category)} onClick={() => setCategory("")}>All</button>
         {CATEGORIES.map((c) => (
           <button key={c} className={chip(category === c)} onClick={() => setCategory(category === c ? "" : c)}>
             {c}{stats?.byCategory?.[c] ? ` (${stats.byCategory[c]})` : ""}
           </button>
         ))}
         <span className="mx-1 hidden h-7 w-px bg-white/20 md:block" />
-        <button className={chip(onlyFav)} onClick={() => setOnlyFav((v) => !v)}>★ Favorit</button>
-        <button className={chip(onlyEmergency)} onClick={() => setOnlyEmergency((v) => !v)}>Darurat</button>
-        <button className={chip(onlyMine)} onClick={() => setOnlyMine((v) => !v)}>Punya saya</button>
+        <button className={chip(onlyFav)} onClick={() => setOnlyFav((v) => !v)}>★ Favorites</button>
+        <button className={chip(onlyEmergency)} onClick={() => setOnlyEmergency((v) => !v)}>Emergency</button>
+        <button className={chip(onlyMine)} onClick={() => setOnlyMine((v) => !v)}>Mine</button>
       </div>
 
-      {/* Huruf */}
+      {/* Letters */}
       <div className="flex gap-1 overflow-x-auto pb-1 [scrollbar-width:none]">
         {LETTERS.map((l) => (
           <button
@@ -420,12 +420,12 @@ const Contacts = () => {
         <div className="rounded-2xl bg-slate-300 py-16 text-center dark:!bg-[#0c0c18]">
           <Phone size={28} className="mx-auto mb-2 text-gray-500" />
           <p className="font-medium text-gray-800 dark:text-white">
-            {q || category || letter || onlyFav || onlyMine || onlyEmergency ? "Tidak ada kontak yang cocok" : "Belum ada kontak"}
+            {q || category || letter || onlyFav || onlyMine || onlyEmergency ? "No matching contacts" : "No contacts yet"}
           </p>
           <p className="mt-1 text-sm text-gray-500">
             {q || category || letter || onlyFav || onlyMine || onlyEmergency
-              ? "Ubah kata kunci atau reset filter."
-              : "Klik “Tambah kontak” untuk menyimpan nomor pertama."}
+              ? "Change your keywords or reset the filters."
+              : "Click “Add Contact” to save your first number."}
           </p>
         </div>
       ) : (
@@ -466,10 +466,10 @@ const Contacts = () => {
                       <p className="truncate font-mono text-sm text-gray-900 dark:text-white">{p.number}</p>
                     </div>
                     <div className="flex shrink-0 gap-1.5" onClick={(e) => e.stopPropagation()}>
-                      <button onClick={(e) => copyNumber(e, p.number)} className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-white/10 dark:text-white" title="Salin">
+                      <button onClick={(e) => copyNumber(e, p.number)} className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-white/10 dark:text-white" title="Copy">
                         <Copy size={14} />
                       </button>
-                      <a href={telLink(p)} onClick={() => handleContacted(c)} className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700" title="Telepon">
+                      <a href={telLink(p)} onClick={() => handleContacted(c)} className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700" title="Call">
                         <Phone size={14} />
                       </a>
                       {(p.isWhatsApp || p.label === "WhatsApp") && (
@@ -482,7 +482,7 @@ const Contacts = () => {
                 )}
 
                 {c.phones.length > 1 && (
-                  <p className="mt-1.5 text-[11px] text-gray-500">+{c.phones.length - 1} nomor lain</p>
+                  <p className="mt-1.5 text-[11px] text-gray-500">+{c.phones.length - 1} other numbers</p>
                 )}
               </div>
             );
@@ -493,9 +493,9 @@ const Contacts = () => {
       {/* Pagination */}
       {pages > 1 && (
         <div className="flex items-center justify-center gap-3 pt-2 text-sm text-white md:text-slate-900 dark:text-white">
-          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="btn-secondary disabled:opacity-40">Sebelumnya</button>
-          <span>Hal. {page} / {pages} · {total} kontak</span>
-          <button disabled={page >= pages} onClick={() => setPage((p) => p + 1)} className="btn-secondary disabled:opacity-40">Berikutnya</button>
+          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="btn-secondary disabled:opacity-40">Previous</button>
+          <span>Page {page} / {pages} · {total} contacts</span>
+          <button disabled={page >= pages} onClick={() => setPage((p) => p + 1)} className="btn-secondary disabled:opacity-40">Next</button>
         </div>
       )}
 
@@ -511,7 +511,7 @@ const Contacts = () => {
         />
       )}
 
-      {/* Konfirmasi hapus */}
+      {/* Delete confirmation */}
       {deleteTarget && (
         <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => !deleting && setDeleteTarget(null)} />
@@ -520,20 +520,20 @@ const Contacts = () => {
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-500/20">
                 <Trash2 size={22} className="text-red-600 dark:text-red-400" />
               </div>
-              <h3 className="text-center text-lg font-semibold">Hapus kontak?</h3>
+              <h3 className="text-center text-lg font-semibold">Delete contact?</h3>
               <p className="mt-2 text-center text-sm text-gray-500 dark:text-white">
-                <span className="font-medium text-gray-700 dark:text-gray-200">{deleteTarget.name}</span> akan dihapus permanen dan tidak bisa dikembalikan.
+                <span className="font-medium text-gray-700 dark:text-gray-200">{deleteTarget.name}</span> will be permanently deleted and cannot be restored.
               </p>
             </div>
             <div className="flex gap-3 border-t border-gray-100 bg-slate-300 px-6 py-4 dark:border-white/5 dark:!bg-[#0c0c18]">
               <button disabled={deleting} onClick={() => setDeleteTarget(null)} className="flex-1 rounded-xl border border-gray-200 bg-white py-2.5 text-sm font-medium text-gray-700 hover:bg-slate-300 disabled:opacity-50 dark:border-white/15 dark:bg-gray-800 dark:text-gray-200">
-                Batal
+                Cancel
               </button>
               <button disabled={deleting} onClick={confirmDelete} className="flex-1 rounded-xl bg-red-600 py-2.5 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50">
                 {deleting ? (
-                  <span className="inline-flex items-center gap-2"><Loader2 size={15} className="animate-spin" /> Menghapus…</span>
+                  <span className="inline-flex items-center gap-2"><Loader2 size={15} className="animate-spin" /> Deleting…</span>
                 ) : (
-                  "Ya, hapus"
+                  "Yes, delete"
                 )}
               </button>
             </div>
