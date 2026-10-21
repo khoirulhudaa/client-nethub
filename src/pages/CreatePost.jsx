@@ -575,7 +575,7 @@ const CreatePost = () => {
       {/* ===== Import dari URL / Paste ===== */}
       <div className="surface-card dark:!bg-white/5 rounded-xl p-5 pb-5 mb-4">
         <label className="block text-sm font-medium mb-2">
-          Import dari URL / Paste konten
+          Import dari URL
         </label>
         <div className="flex gap-2">
           <input
