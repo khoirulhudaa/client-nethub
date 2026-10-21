@@ -29,6 +29,7 @@ const CreatePost = () => {
   const navigate = useNavigate();
   const [importUrl, setImportUrl] = useState("");
   const [importing, setImporting] = useState(false);
+  const [importSuccess, setImportSuccess] = useState(false);
   
   const [topology, setTopology] = useState({ nodes: [], edges: [] });
   const [form, setForm] = useState({
@@ -101,6 +102,12 @@ const CreatePost = () => {
     };
   }, [id, isEditing]);
 
+  useEffect(() => {
+    if (!importSuccess) return;
+    const t = setTimeout(() => setImportSuccess(false), 4500);
+    return () => clearTimeout(t);
+  }, [importSuccess]);
+
  // Cari similar images berdasarkan Title / Category / Tags
   useEffect(() => {
     // Hanya search kalau title sudah diisi minimal 3 karakter
@@ -118,7 +125,171 @@ const CreatePost = () => {
     return () => clearTimeout(timer);
   }, [form.title, form.category, form.tags]);
 
-  // Fungsi import dari URL
+  // ===== Helper: ambil title dari HTML (h1 → h2) =====
+  const extractTitleFromHtml = (html) => {
+    if (!html) return "";
+    try {
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      const h1 = doc.querySelector("h1");
+      if (h1?.textContent?.trim()) return h1.textContent.trim().slice(0, 140);
+
+      const h2 = doc.querySelector("h2");
+      if (h2?.textContent?.trim()) return h2.textContent.trim().slice(0, 140);
+    } catch (_) {}
+    return "";
+  };
+
+  // ===== Helper: buat tags dinamis dari konten =====
+  const generateTagsFromText = (text, max = 3) => {
+    if (!text) return "";
+
+    const stopwords = new Set([
+      "yang", "dan", "di", "ke", "dari", "untuk", "dengan", "pada", "adalah", "ini", "itu",
+      "atau", "juga", "akan", "sudah", "bisa", "tidak", "ada", "dalam", "oleh", "sebagai",
+      "the", "a", "an", "and", "or", "of", "to", "in", "on", "for", "is", "are", "was", "be",
+      "cara", "mengaktifkan", "mengatasi", "langkah", "langkahnya", "berikut", "tersebut",
+      "anda", "kamu", "saya", "kami", "mereka", "file", "klik", "buka", "lalu", "kemudian",
+    ]);
+
+    // Ambil kata 3+ huruf, buang stopwords
+    const words = text
+      .toLowerCase()
+      .replace(/[^a-z0-9\s\-]/g, " ")
+      .split(/\s+/)
+      .filter((w) => w.length >= 3 && !stopwords.has(w) && !/^\d+$/.test(w));
+
+    // Hitung frekuensi
+    const freq = {};
+    words.forEach((w) => {
+      freq[w] = (freq[w] || 0) + 1;
+    });
+
+    // Ambil kandidat paling sering, lalu acak sedikit supaya tidak selalu sama
+    const sorted = Object.entries(freq)
+      .sort((a, b) => b[1] - a[1])
+      .map(([word]) => word);
+
+    // Ambil top 8, lalu acak urutannya, ambil max 3
+    const top = sorted.slice(0, 8);
+    for (let i = top.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [top[i], top[j]] = [top[j], top[i]];
+    }
+
+    return top.slice(0, max).join(", ");
+  };
+
+  // ===== Helper: deteksi kategori (tetap keyword-based) =====
+  const detectCategory = (text) => {
+    const lower = (text || "").toLowerCase();
+
+    const rules = [
+      { cat: "Security", keywords: ["gpedit", "group policy", "firewall", "security", "antivirus", "ransomware", "bitlocker", "uac", "policy", "mmc"] },
+      { cat: "Hardware", keywords: ["hardware", "motherboard", "ram", "cpu", "gpu", "ssd", "hdd", "driver", "bios", "laptop"] },
+      { cat: "Installation", keywords: ["install", "instalasi", "setup", "cara install", "download", "installer", "mengaktifkan"] },
+      { cat: "Maintenance", keywords: ["maintenance", "perbaikan", "fix", "troubleshoot", "error", "crash", "mengatasi"] },
+      { cat: "Topology", keywords: ["topology", "topologi", "network", "jaringan", "vlan", "switch", "router", "mikrotik", "cisco"] },
+      { cat: "Code", keywords: ["script", "code", "bash", "powershell", "python", "javascript", "command", "cli"] },
+      { cat: "Eproc", keywords: ["eproc", "pengadaan", "tender", "lelang"] },
+      { cat: "E-kantin", keywords: ["kantin", "e-kantin", "makanan", "kasir"] },
+      { cat: "EHRD", keywords: ["hrd", "ehrd", "karyawan", "absensi", "payroll"] },
+    ];
+
+    let best = "Maintenance";
+    let max = 0;
+    for (const r of rules) {
+      const score = r.keywords.filter((k) => lower.includes(k)).length;
+      if (score > max) {
+        max = score;
+        best = r.cat;
+      }
+    }
+    return best;
+  };
+
+  // ===== Smart Paste (pakai h1/h2 + tags dinamis) =====
+  const handleSmartPaste = (e) => {
+    const text = e.clipboardData.getData("text/plain") || "";
+    const html = e.clipboardData.getData("text/html") || "";
+
+    if (form.title.trim() || text.length < 150) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    // 1. Title dari h1 / h2 dulu
+    let title = extractTitleFromHtml(html);
+
+    // Fallback: baris pertama yang masuk akal
+    if (!title) {
+      const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+      for (const line of lines) {
+        const clean = line.replace(/\s+/g, " ").trim();
+        if (
+          clean.length >= 12 &&
+          clean.length <= 140 &&
+          !/^by\s+/i.test(clean) &&
+          !/^\d{1,2}\s+(jan|feb|mar|apr|mei|jun|jul|agu|sep|okt|nov|des)/i.test(clean) &&
+          !/^table of contents/i.test(clean) &&
+          !/^download:/i.test(clean)
+        ) {
+          title = clean;
+          break;
+        }
+      }
+      if (!title) title = (lines[0] || "Untitled Guide").slice(0, 140);
+    }
+
+    // 2. Excerpt
+    const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+    let excerpt = "";
+    for (const line of lines.slice(1)) {
+      if (
+        line.length > 35 &&
+        !/^\d+[\.\)]/.test(line) &&
+        !/^download:/i.test(line) &&
+        !/^langkah/i.test(line) &&
+        !/^table of contents/i.test(line)
+      ) {
+        excerpt = line.slice(0, 240);
+        break;
+      }
+    }
+    if (!excerpt) excerpt = lines.slice(1, 4).join(" ").slice(0, 240);
+
+    // 3. Category + Tags dinamis
+    const category = detectCategory(text);
+    const tags = generateTagsFromText(`${title} ${text}`, 3);
+
+    // 4. Content
+    const content = html || text.replace(/\n/g, "<br/>");
+
+    // 5. Steps
+    const stepMatches = [...text.matchAll(/(?:^|\n)\s*(?:\d+[\.\)]|\-|\*)\s+(.+?)(?=\n|$)/g)];
+    if (stepMatches.length >= 2) {
+      setSteps(
+        stepMatches.slice(0, 12).map((m) => ({
+          title: m[1].slice(0, 80),
+          description: m[1],
+          image: "",
+        }))
+      );
+    }
+
+    setForm({
+      title,
+      excerpt,
+      content,
+      coverImage: form.coverImage,
+      category,
+      tags,
+    });
+
+    setContentMode("manual");
+    setImportSuccess(true);
+  };
+
+  // ===== Import dari URL =====
   const handleImportFromUrl = async () => {
     if (!importUrl.trim()) return;
     setImporting(true);
@@ -126,19 +297,29 @@ const CreatePost = () => {
     try {
       const { data } = await api.post("/posts/scrape", { url: importUrl.trim() });
 
+      // Title: prioritaskan dari backend, atau ekstrak dari content HTML
+      let title = data.title || "";
+      if (!title && data.content) {
+        title = extractTitleFromHtml(data.content);
+      }
+
+      const fullText = `${title} ${data.excerpt || ""} ${data.textContent || ""} ${data.content || ""}`;
+      const category = detectCategory(fullText);
+      const tags = generateTagsFromText(fullText, 3);
+
       setForm((f) => ({
         ...f,
-        title: data.title || f.title,
+        title: title || f.title,
         excerpt: data.excerpt || f.excerpt,
         content: data.content || f.content,
+        category,
+        tags,
       }));
 
-      // Ambil gambar pertama sebagai cover (opsional)
       if (data.images?.[0] && !form.coverImage) {
         setForm((f) => ({ ...f, coverImage: data.images[0].url }));
       }
 
-      // Masukkan sisa gambar ke referencesImages
       if (data.images?.length) {
         setReferencesImages(
           data.images.slice(0, 4).map((img) => ({
@@ -148,50 +329,16 @@ const CreatePost = () => {
         );
       }
 
-      // Steps otomatis
       if (data.steps?.length) {
         setSteps(data.steps);
       }
 
       setContentMode("manual");
+      setImportSuccess(true);
     } catch (err) {
       setError(err.response?.data?.message || "Gagal mengambil konten dari URL");
     } finally {
       setImporting(false);
-    }
-  };
-
-  // Fungsi paste cerdas
-  const handleSmartPaste = (e) => {
-    const text = e.clipboardData.getData("text/plain");
-    const html = e.clipboardData.getData("text/html");
-
-    // Jika user paste di area title kosong & text panjang → treat sebagai import
-    if (!form.title && text.length > 300) {
-      e.preventDefault();
-
-      // Ambil title dari baris pertama
-      const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
-      const title = lines[0]?.slice(0, 140) || "";
-
-      setForm((f) => ({
-        ...f,
-        title,
-        excerpt: lines[1]?.slice(0, 240) || "",
-        content: html || text.replace(/\n/g, "<br/>"),
-      }));
-
-      // Deteksi steps sederhana
-      const stepMatches = [...text.matchAll(/(?:^|\n)\s*(?:\d+[\.\)]|\-)\s+(.+)/g)];
-      if (stepMatches.length >= 2) {
-        setSteps(
-          stepMatches.slice(0, 12).map((m) => ({
-            title: m[1].slice(0, 80),
-            description: m[1],
-            image: "",
-          }))
-        );
-      }
     }
   };
 
@@ -407,8 +554,26 @@ const CreatePost = () => {
         </div>
       )}
 
+      {/* Toast sukses import */}
+      {importSuccess && (
+        <div className="fixed bottom-6 right-6 z-[999999] flex items-center gap-3 rounded-xl bg-emerald-600 px-4 py-3 text-white shadow-lg animate-in fade-in slide-in-from-top-2">
+          <Check size={18} />
+          <div>
+            <p className="text-sm font-medium">Import berhasil!</p>
+            <p className="text-xs opacity-90">Title, category, tags & content sudah terisi. Silakan review.</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setImportSuccess(false)}
+            className="ml-2 rounded-full p-1 hover:bg-white/20"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       {/* ===== Import dari URL / Paste ===== */}
-      <div className="surface-card dark:!bg-white/5 rounded-xl p-4 mb-4">
+      <div className="surface-card dark:!bg-white/5 rounded-xl p-5 pb-5 mb-4">
         <label className="block text-sm font-medium mb-2">
           Import dari URL / Paste konten
         </label>
@@ -429,9 +594,6 @@ const CreatePost = () => {
             {importing ? <Loader2 size={16} className="animate-spin" /> : "Import"}
           </button>
         </div>
-        <p className="text-xs text-gray-500 mt-2">
-          Atau tinggal <strong>paste</strong> (Ctrl+V) artikel lengkap di area Title kosong.
-        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 !mt-4 md:!mt-6 z-[99999] relative">

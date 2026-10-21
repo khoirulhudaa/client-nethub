@@ -1,18 +1,16 @@
-  import { Bookmark, Calendar, CheckCircle2, ChevronLeft, ChevronRight, Search, Circle, Clipboard, Download, Eye, Heart, Highlighter, Link2, Loader2, Pencil, Pin, Plus, Share2, Timer, Trash2, Volume2, VolumeX, X, ZoomIn, Filter } from "lucide-react";
+  import { Bookmark, Calendar, CheckCircle2, ChevronLeft, ChevronRight, Circle, Clipboard, Download, Filter, Highlighter, Link2, Loader2, Pencil, Pin, Search, Share2, Timer, Trash2, Volume2, VolumeX, X, ZoomIn } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import api from "../api/axios.js";
+import BrowseGuidesSidebar from "../components/Post/BrowseGuidesSidebar.jsx";
 import CommentThread from "../components/Post/CommentThread.jsx";
 import PostCard from "../components/Post/PostCard.jsx";
-import StickySearch from "../components/Post/StickySearch.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { formatDate } from "../utils/generateData.js";
 import { timeAgo } from "../utils/timeAgo.js";
 import FlowchartCanvas from "./FlowchartCanvas.jsx";
 import TopologyCanvas from "./TopologyCanvas.jsx";
-import BrowseGuidesSidebar from "../components/Post/BrowseGuidesSidebar.jsx";
-
   const CodeBlockItem = ({ block }) => {
     const [copied, setCopied] = useState(false);
 
@@ -1228,9 +1226,6 @@ import BrowseGuidesSidebar from "../components/Post/BrowseGuidesSidebar.jsx";
               <div className="h-[18px] w-[1.3px] md:flex hidden bg-slate-400 dark:bg-white/20 mr-1 ml-[2px]" />
 
               <div className="w-max flex md:mt-0 mt-2 gap-2 md:gap-2.5">
-                {/* <div className="md:flex hidden">
-                  <CategoryPill solid={false} border={true} category={post?.category} />
-                </div> */}
                 {isCompleted && (
                   <div className="w-max inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-100 px-3 py-1.5 h-[28px] text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
                     <CheckCircle2 size={13} />
