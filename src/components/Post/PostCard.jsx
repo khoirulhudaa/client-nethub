@@ -454,13 +454,13 @@ return (
                   e.stopPropagation();
                   setShowShare((v) => !v);
                 }}
-                className={`justify-center w-full flex mt-auto hover:brightness-75 h-max gap-x-2 hover:gap-x-5 pl-3 active:scale-[0.98] items-center px-2 py-1 rounded-tl-2xl rounded-bl-2xl overflow-hidden border dark:!border-white bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
+                className={`justify-center w-full flex mt-auto hover:brightness-75 h-max gap-x-2 hover:gap-x-5 pl-2 active:scale-[0.98] items-center px-2 py-1 rounded-tl-2xl rounded-bl-2xl overflow-hidden border dark:!border-white bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
                   featured ? "mt-3" : "mt-2"
                 }`}
               >
                 {/* <p>Share</p> */}
                 <div className="rounded-full active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[32px] w-[30px]">
-                  <Link2Icon size={18} />
+                  <Link2Icon size={19} className="relative rotate-45" />
                 </div>
               </button>
 
@@ -573,7 +573,7 @@ return (
 
             <Link
               to={`/posts/${post.slug}`}
-              className={`justify-center w-max pr-2 flex mt-auto hover:brightness-75 h-max gap-x-2 hover:gap-x-5 active:scale-[0.98] border dark:!border-white items-center px-2 py-1 rounded-tr-2xl rounded-br-2xl overflow-hidden bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
+              className={`justify-center w-max pr-1 flex mt-auto hover:brightness-75 h-max gap-x-2 hover:gap-x-5 active:scale-[0.98] border dark:!border-white items-center px-2 py-1 rounded-tr-2xl rounded-br-2xl overflow-hidden bg-white text-sm font-medium text-slate-950 transition-all ease-in-out hover:bg-accent-dark ${
                 featured ? "mt-3" : "mt-2"
               }`}
             >
