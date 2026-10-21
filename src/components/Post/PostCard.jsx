@@ -475,7 +475,7 @@ return (
                     }}
                   />
 
-                  <div className={`absolute bottom-full left-[105%] ${pinned ? 'md:left-[108%]' : 'md:left-[110%]'} -translate-x-1/2 mb-3 z-50 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/15 dark:bg-gray-900`}>
+                  <div className={`absolute bottom-full left-[105%] ${pinned ? 'md:left-[217%]' : 'md:left-[217%]'} -translate-x-1/2 mb-3 z-50 w-52 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/15 dark:bg-gray-900`}>
                     {
                       !pinned && (
                         <button
