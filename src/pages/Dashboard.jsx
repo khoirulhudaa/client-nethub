@@ -133,7 +133,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
       <MetricCard
         icon={BookOpen}
         iconClass="bg-green-600 text-white"
-        label="Total guides"
+        label="Knowledges"
         value={totalGuides}
         delta="Across all categories"
         deltaTone="neutral"

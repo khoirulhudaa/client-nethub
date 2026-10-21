@@ -366,11 +366,11 @@ const Sidebar = ({ onNavigate }) => {
                 <NavLink 
                   to="/admin/activities"
                   onClick={onNavigate}
-                  title={collapsed ? "Activity Log" : undefined}
+                  title={collapsed ? "Activity" : undefined}
                   className={({ isActive }) => linkClass(isActive)}
                 >
                   <FileText size={17} />   {/* atau import Activity / History dari lucide */}
-                  {!collapsed && "Activity Log"}
+                  {!collapsed && "Activity"}
                 </NavLink>
               </div>
               <div className={collapsed ? "mb-2" : "mb-1.5 px-2"}>
