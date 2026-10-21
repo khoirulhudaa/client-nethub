@@ -1,6 +1,6 @@
 
 
-import { Check, Loader2, Save, Upload } from "lucide-react";
+import { Check, ChevronDown, Loader2, Save, Upload } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios.js";
@@ -28,6 +28,7 @@ const CreatePost = () => {
   const isEditing = Boolean(id);
   const navigate = useNavigate();
   const [importUrl, setImportUrl] = useState("");
+  const [showImport, setShowImport] = useState(false); 
   const [importing, setImporting] = useState(false);
   const [importSuccess, setImportSuccess] = useState(false);
   
@@ -541,13 +542,6 @@ const CreatePost = () => {
 
   return (
     <div className="mx-auto max-w-full md:border-x border-white dark:border-white/10 min-h-screen h-max pb-16 md:p-6">
-      <h1 className="text-xl md:mb-0 mb-4 text-white font-semibold tracking-tight">
-        {isEditing ? "Edit Guide" : "Publish a New Guide"}
-      </h1>
-      <p className="mb-4 text-sm md:flex hidden text-gray-400 dark:text-gray-500">
-        Share a maintenance walkthrough, a fix, an install checklist, or a topology
-      </p>
-
       {error && (
         <div className="mb-4 rounded-control bg-red-50 px-3 py-2 text-sm text-red-600 dark:bg-red-500/10 dark:text-red-400">
           {error}
@@ -572,27 +566,50 @@ const CreatePost = () => {
         </div>
       )}
 
-      {/* ===== Import dari URL / Paste ===== */}
-      <div className="surface-card dark:!bg-white/5 rounded-xl p-5 pb-5 mb-4">
-        <label className="block text-sm font-medium mb-2">
-          Import dari URL
-        </label>
-        <div className="flex gap-2">
-          <input
-            className="input-field flex-1 dark:!bg-slate-100/10"
-            placeholder="https://contoh.com/artikel-tutorial..."
-            value={importUrl}
-            onChange={(e) => setImportUrl(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleImportFromUrl()}
+      {/* ===== Import from URL (accordion) ===== */}
+      <div className="surface-card dark:!bg-white/5 rounded-xl mb-4 overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setShowImport((s) => !s)}
+          aria-expanded={showImport}
+          className="flex w-full items-center justify-between gap-3 p-5 text-left"
+        >
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="text-sm font-medium">Scraping (optional)</span>
+          </div>
+          <ChevronDown
+            size={18}
+            className={`shrink-0 transition-transform duration-200 ${showImport ? "rotate-180" : ""}`}
           />
-          <button
-            type="button"
-            onClick={handleImportFromUrl}
-            disabled={importing || !importUrl.trim()}
-            className="btn-primary whitespace-nowrap"
-          >
-            {importing ? <Loader2 size={16} className="animate-spin" /> : "Import"}
-          </button>
+        </button>
+
+        <div
+          aria-hidden={!showImport}
+          className={`grid transition-all duration-200 ease-out ${
+            showImport ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+          }`}
+        >
+          <div className="overflow-hidden">
+            <div className="px-5 pb-5">
+              <div className="flex gap-2">
+                <input
+                  className="input-field flex-1 dark:!bg-slate-100/10"
+                  placeholder="https://example.com/tutorial-article..."
+                  value={importUrl}
+                  onChange={(e) => setImportUrl(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleImportFromUrl()}
+                />
+                <button
+                  type="button"
+                  onClick={handleImportFromUrl}
+                  disabled={importing || !importUrl.trim()}
+                  className="btn-primary whitespace-nowrap"
+                >
+                  {importing ? <Loader2 size={16} className="animate-spin" /> : "Import"}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
