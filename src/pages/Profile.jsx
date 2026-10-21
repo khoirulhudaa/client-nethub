@@ -18,7 +18,7 @@ import api from "../api/axios.js";
 import PostCard from "../components/Post/PostCard.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 
-// NOTE: sesuaikan path endpoint berikut dengan postRoutes.js kamu jika berbeda.
+// NOTE: adjust the endpoint paths below to match your postRoutes.js if they differ.
 const ENDPOINTS = {
   me: "/auth/me",
   changeUsername: "/auth/me/username",
@@ -67,7 +67,7 @@ const TabButton = ({ active, icon: Icon, label, onClick, count }) => (
 );
 
 const FieldLabel = ({ children }) => (
-  <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-gray-400">
+  <label className="mb-1.5 block text-sm tracking-wide text-gray-400">
     {children}
   </label>
 );
@@ -101,7 +101,7 @@ const PostGrid = ({ posts, loading, emptyText }) => {
   );
 };
 
-// --- Overview tab: intro/biodata ---------------------------------------------
+// --- Overview tab: intro/bio ---------------------------------------------------
 const OverviewTab = ({ profile, onSaved }) => {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({
@@ -128,9 +128,9 @@ const OverviewTab = ({ profile, onSaved }) => {
       const { data } = await api.put(ENDPOINTS.me, form);
       onSaved(data.user);
       setEditing(false);
-      toast.success("Biodata berhasil diperbarui");
+      toast.success("Profile details updated successfully");
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Gagal memperbarui biodata");
+      toast.error(err?.response?.data?.message || "Failed to update profile details");
     } finally {
       setSaving(false);
     }
@@ -139,7 +139,7 @@ const OverviewTab = ({ profile, onSaved }) => {
   return (
     <div className="surface-card dark:bg-white/5 rounded-xl border border-border-light bg-white p-3 md:px-4 md:py-4 dark:border-border-dark">
       <div className="mb-5 flex items-center justify-between">
-        <h3 className="text-base font-semibold text-gray-900 dark:text-white">Intro & Biodata</h3>
+        <h3 className="text-base font-semibold text-gray-900 dark:text-white">Intro & Bio</h3>
         {!editing && (
           <button
             onClick={() => setEditing(true)}
@@ -153,24 +153,24 @@ const OverviewTab = ({ profile, onSaved }) => {
       {!editing ? (
         <div className="space-y-4">
           <div>
-            <FieldLabel>Nama</FieldLabel>
+            <FieldLabel>Name</FieldLabel>
             <p className="text-sm text-gray-800 dark:text-gray-200">{profile?.name || "-"}</p>
           </div>
           <div>
-            <FieldLabel>Jabatan / Role</FieldLabel>
+            <FieldLabel>Title / Role</FieldLabel>
             <p className="text-sm text-gray-800 dark:text-gray-200">{profile?.title || "-"}</p>
           </div>
           <div>
             <FieldLabel>Intro</FieldLabel>
             <p className="whitespace-pre-line text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-              {profile?.bio || "Belum ada intro. Klik Edit untuk menambahkan."}
+              {profile?.bio || "No intro yet. Click Edit to add one."}
             </p>
           </div>
         </div>
       ) : (
         <form onSubmit={handleSave} className="space-y-4">
           <div>
-            <FieldLabel>Nama</FieldLabel>
+            <FieldLabel>Name</FieldLabel>
             <input
               className="input-field w-full dark:!bg-white/10"
               value={form.name}
@@ -179,12 +179,12 @@ const OverviewTab = ({ profile, onSaved }) => {
             />
           </div>
           <div>
-            <FieldLabel>Jabatan / Role</FieldLabel>
+            <FieldLabel>Title / Role</FieldLabel>
             <input
               className="input-field w-full dark:!bg-white/10"
               value={form.title}
               onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-              placeholder="mis. Network Engineer"
+              placeholder="e.g. Network Engineer"
             />
           </div>
           <div>
@@ -204,21 +204,21 @@ const OverviewTab = ({ profile, onSaved }) => {
               maxLength={500}
               value={form.bio}
               onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
-              placeholder="Ceritakan sedikit tentang dirimu..."
+              placeholder="Tell us a little about yourself..."
             />
             <p className="mt-1 text-right text-xs text-gray-400">{form.bio.length}/500</p>
           </div>
           <div className="flex items-center gap-2 pt-1">
             <button type="submit" disabled={saving} className="btn-primary flex items-center gap-1.5 disabled:opacity-60">
               {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
-              Simpan
+              Save
             </button>
             <button
               type="button"
               onClick={() => setEditing(false)}
               className="rounded-control border border-border-light px-3.5 py-2 text-sm font-medium text-gray-600 hover:bg-black/[0.04] dark:border-border-dark dark:text-gray-300 dark:hover:bg-white/[0.06]"
             >
-              Batal
+              Cancel
             </button>
           </div>
         </form>
@@ -238,7 +238,7 @@ const GuidesTab = () => {
     api
       .get(ENDPOINTS.myGuides)
       .then(({ data }) => setPosts(data.posts || []))
-      .catch(() => toast.error("Gagal memuat guide kamu"))
+      .catch(() => toast.error("Failed to load your guides"))
       .finally(() => setLoading(false));
   };
 
@@ -249,9 +249,9 @@ const GuidesTab = () => {
     try {
       const { data } = await api.patch(ENDPOINTS.togglePin(post._id));
       setPosts((prev) => prev.map((p) => (p._id === post._id ? data.post : p)));
-      toast.success(data.post.isPinned ? "Guide dipin" : "Guide di-unpin");
+      toast.success(data.post.isPinned ? "Guide pinned" : "Guide unpinned");
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Gagal mengubah status pin");
+      toast.error(err?.response?.data?.message || "Failed to change pin status");
     } finally {
       setBusyId(null);
     }
@@ -261,7 +261,7 @@ const GuidesTab = () => {
     return <PostGrid posts={[]} loading emptyText="" />;
   }
 
-  if (posts.length === 0) return <EmptyState text="Kamu belum membuat guide apa pun." />;
+  if (posts.length === 0) return <EmptyState text="You haven't created any guides yet." />;
 
   return (
     <div className="surface-card dark:bg-white/5 rounded-xl border border-border-light bg-white p-3 md:px-4 md:py-4 dark:border-border-dark grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-2">
@@ -284,7 +284,7 @@ const GuidesTab = () => {
             {/* <button
               onClick={() => handleDelete(post)}
               disabled={busyId === post._id}
-              title="Hapus"
+              title="Delete"
               className="rounded-xl dark:bg-slate-800 bg-white/90 p-1.5 text-gray-600 shadow-sm backdrop-blur transition hover:text-red-500 disabled:opacity-50/90 dark:text-gray-300"
             >
               <Trash2 size={14} />
@@ -305,13 +305,13 @@ const SavedTab = () => {
     api
       .get(ENDPOINTS.myBookmarks)
       .then(({ data }) => setPosts(data.posts || []))
-      .catch(() => toast.error("Gagal memuat guide tersimpan"))
+      .catch(() => toast.error("Failed to load saved guides"))
       .finally(() => setLoading(false));
   }, []);
 
   return (
     <div className="surface-card dark:bg-white/5 rounded-xl border border-border-light bg-white p-3 md:px-4 md:py-4 dark:border-border-dark">
-      <PostGrid posts={posts} loading={loading} emptyText="Belum ada guide yang kamu simpan." />
+      <PostGrid posts={posts} loading={loading} emptyText="You haven't saved any guides yet." />
     </div>
   )
   
@@ -326,13 +326,13 @@ const LikedTab = () => {
     api
       .get(ENDPOINTS.myLikes)
       .then(({ data }) => setPosts(data.posts || []))
-      .catch(() => toast.error("Gagal memuat guide yang disukai"))
+      .catch(() => toast.error("Failed to load liked guides"))
       .finally(() => setLoading(false));
   }, []);
 
   return (
     <div className="surface-card dark:bg-white/5 rounded-xl border border-border-light bg-white p-3 md:px-4 md:py-4 dark:border-border-dark">
-      <PostGrid posts={posts} loading={loading} emptyText="Belum ada guide yang kamu sukai." />
+      <PostGrid posts={posts} loading={loading} emptyText="You haven't liked any guides yet." />
     </div>
     
   );
@@ -355,9 +355,9 @@ const AccountTab = ({ profile, onSaved }) => {
     try {
       const { data } = await api.put(ENDPOINTS.changeUsername, { username });
       onSaved(data.user);
-      toast.success("Username berhasil diperbarui");
+      toast.success("Username updated successfully");
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Gagal memperbarui username");
+      toast.error(err?.response?.data?.message || "Failed to update username");
     } finally {
       setSavingUsername(false);
     }
@@ -370,9 +370,9 @@ const AccountTab = ({ profile, onSaved }) => {
       const { data } = await api.put(ENDPOINTS.changeEmail, emailForm);
       onSaved(data.user);
       setEmailForm((f) => ({ ...f, currentPassword: "" }));
-      toast.success("Email berhasil diperbarui");
+      toast.success("Email updated successfully");
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Gagal memperbarui email");
+      toast.error(err?.response?.data?.message || "Failed to update email");
     } finally {
       setSavingEmail(false);
     }
@@ -381,7 +381,7 @@ const AccountTab = ({ profile, onSaved }) => {
   const submitPassword = async (e) => {
     e.preventDefault();
     if (pwForm.newPassword !== pwForm.confirmPassword) {
-      toast.error("Konfirmasi password baru tidak cocok");
+      toast.error("New password confirmation does not match");
       return;
     }
     setSavingPw(true);
@@ -391,9 +391,9 @@ const AccountTab = ({ profile, onSaved }) => {
         newPassword: pwForm.newPassword,
       });
       setPwForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
-      toast.success("Password berhasil diperbarui");
+      toast.success("Password updated successfully");
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Gagal memperbarui password");
+      toast.error(err?.response?.data?.message || "Failed to update password");
     } finally {
       setSavingPw(false);
     }
@@ -417,7 +417,7 @@ const AccountTab = ({ profile, onSaved }) => {
           onChange={(e) => setUsername(e.target.value)}
           minLength={3}
           maxLength={30}
-          placeholder="mis. jaringan_hebat"
+          placeholder="e.g. great_network"
           required
         />
         <button
@@ -426,7 +426,7 @@ const AccountTab = ({ profile, onSaved }) => {
           className="btn-primary mt-4 flex items-center gap-1.5 disabled:opacity-60"
         >
           {savingUsername ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
-          Simpan Username
+          Save
         </button>
       </form>
 
@@ -441,7 +441,7 @@ const AccountTab = ({ profile, onSaved }) => {
         </div>
         <div className="space-y-3">
           <div>
-            <FieldLabel>Email baru</FieldLabel>
+            <FieldLabel>New email</FieldLabel>
             <input
               type="email"
               className="input-field w-full dark:!bg-white/10"
@@ -451,13 +451,13 @@ const AccountTab = ({ profile, onSaved }) => {
             />
           </div>
           <div>
-            <FieldLabel>Password saat ini</FieldLabel>
+            <FieldLabel>Current password</FieldLabel>
             <input
               type="password"
               className="input-field w-full dark:!bg-white/10"
               value={emailForm.currentPassword}
               onChange={(e) => setEmailForm((f) => ({ ...f, currentPassword: e.target.value }))}
-              placeholder="Konfirmasi dengan password kamu"
+              placeholder="Confirm with your password"
               required
             />
           </div>
@@ -468,7 +468,7 @@ const AccountTab = ({ profile, onSaved }) => {
           className="btn-primary mt-4 flex items-center gap-1.5 disabled:opacity-60"
         >
           {savingEmail ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
-          Simpan Email
+          Save
         </button>
       </form>
 
@@ -483,7 +483,7 @@ const AccountTab = ({ profile, onSaved }) => {
         </div>
         <div className="space-y-3">
           <div>
-            <FieldLabel>Password saat ini</FieldLabel>
+            <FieldLabel>Current password</FieldLabel>
             <input
               type="password"
               className="input-field w-full dark:!bg-white/10"
@@ -493,7 +493,7 @@ const AccountTab = ({ profile, onSaved }) => {
             />
           </div>
           <div>
-            <FieldLabel>Password baru</FieldLabel>
+            <FieldLabel>New password</FieldLabel>
             <input
               type="password"
               className="input-field w-full dark:!bg-white/10"
@@ -504,7 +504,7 @@ const AccountTab = ({ profile, onSaved }) => {
             />
           </div>
           <div>
-            <FieldLabel>Konfirmasi password baru</FieldLabel>
+            <FieldLabel>Confirm new password</FieldLabel>
             <input
               type="password"
               className="input-field w-full dark:!bg-white/10"
@@ -521,7 +521,7 @@ const AccountTab = ({ profile, onSaved }) => {
           className="btn-primary mt-4 flex items-center gap-1.5 disabled:opacity-60"
         >
           {savingPw ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
-          Simpan Password
+          Save
         </button>
       </form>
     </div>
@@ -539,13 +539,13 @@ const Profile = () => {
     api
       .get(ENDPOINTS.me)
       .then(({ data }) => setProfile(data.user))
-      .catch(() => toast.error("Gagal memuat profil"))
+      .catch(() => toast.error("Failed to load profile"))
       .finally(() => setLoading(false));
   }, []);
 
   const handleProfileUpdate = (valueUpdateUser) => {
     setProfile(valueUpdateUser);
-    updateUser?.(valueUpdateUser); // Sidebar ikut ter-update
+    updateUser?.(valueUpdateUser); // Keeps the sidebar in sync
   };
 
   if (loading) {
