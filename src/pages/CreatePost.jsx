@@ -27,6 +27,8 @@ const CreatePost = () => {
   const { id } = useParams();
   const isEditing = Boolean(id);
   const navigate = useNavigate();
+  const [importUrl, setImportUrl] = useState("");
+  const [importing, setImporting] = useState(false);
   
   const [topology, setTopology] = useState({ nodes: [], edges: [] });
   const [form, setForm] = useState({
@@ -115,6 +117,83 @@ const CreatePost = () => {
 
     return () => clearTimeout(timer);
   }, [form.title, form.category, form.tags]);
+
+  // Fungsi import dari URL
+  const handleImportFromUrl = async () => {
+    if (!importUrl.trim()) return;
+    setImporting(true);
+    setError("");
+    try {
+      const { data } = await api.post("/posts/scrape", { url: importUrl.trim() });
+
+      setForm((f) => ({
+        ...f,
+        title: data.title || f.title,
+        excerpt: data.excerpt || f.excerpt,
+        content: data.content || f.content,
+      }));
+
+      // Ambil gambar pertama sebagai cover (opsional)
+      if (data.images?.[0] && !form.coverImage) {
+        setForm((f) => ({ ...f, coverImage: data.images[0].url }));
+      }
+
+      // Masukkan sisa gambar ke referencesImages
+      if (data.images?.length) {
+        setReferencesImages(
+          data.images.slice(0, 4).map((img) => ({
+            url: img.url,
+            name: img.alt || "imported",
+          }))
+        );
+      }
+
+      // Steps otomatis
+      if (data.steps?.length) {
+        setSteps(data.steps);
+      }
+
+      setContentMode("manual");
+    } catch (err) {
+      setError(err.response?.data?.message || "Gagal mengambil konten dari URL");
+    } finally {
+      setImporting(false);
+    }
+  };
+
+  // Fungsi paste cerdas
+  const handleSmartPaste = (e) => {
+    const text = e.clipboardData.getData("text/plain");
+    const html = e.clipboardData.getData("text/html");
+
+    // Jika user paste di area title kosong & text panjang → treat sebagai import
+    if (!form.title && text.length > 300) {
+      e.preventDefault();
+
+      // Ambil title dari baris pertama
+      const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+      const title = lines[0]?.slice(0, 140) || "";
+
+      setForm((f) => ({
+        ...f,
+        title,
+        excerpt: lines[1]?.slice(0, 240) || "",
+        content: html || text.replace(/\n/g, "<br/>"),
+      }));
+
+      // Deteksi steps sederhana
+      const stepMatches = [...text.matchAll(/(?:^|\n)\s*(?:\d+[\.\)]|\-)\s+(.+)/g)];
+      if (stepMatches.length >= 2) {
+        setSteps(
+          stepMatches.slice(0, 12).map((m) => ({
+            title: m[1].slice(0, 80),
+            description: m[1],
+            image: "",
+          }))
+        );
+      }
+    }
+  };
 
   const readPdf = (file) => {
     if (!file) return;
@@ -328,6 +407,33 @@ const CreatePost = () => {
         </div>
       )}
 
+      {/* ===== Import dari URL / Paste ===== */}
+      <div className="surface-card dark:!bg-white/5 rounded-xl p-4 mb-4">
+        <label className="block text-sm font-medium mb-2">
+          Import dari URL / Paste konten
+        </label>
+        <div className="flex gap-2">
+          <input
+            className="input-field flex-1 dark:!bg-slate-100/10"
+            placeholder="https://contoh.com/artikel-tutorial..."
+            value={importUrl}
+            onChange={(e) => setImportUrl(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleImportFromUrl()}
+          />
+          <button
+            type="button"
+            onClick={handleImportFromUrl}
+            disabled={importing || !importUrl.trim()}
+            className="btn-primary whitespace-nowrap"
+          >
+            {importing ? <Loader2 size={16} className="animate-spin" /> : "Import"}
+          </button>
+        </div>
+        <p className="text-xs text-gray-500 mt-2">
+          Atau tinggal <strong>paste</strong> (Ctrl+V) artikel lengkap di area Title kosong.
+        </p>
+      </div>
+
       <form onSubmit={handleSubmit} className="space-y-6 !mt-4 md:!mt-6 z-[99999] relative">
         {/* ===== Basic Info ===== */}
         <div className="surface-card rounded-lg md:rounded-3xl dark:!bg-white/5 space-y-4 p-3 md:p-5">
@@ -336,6 +442,7 @@ const CreatePost = () => {
             <input
               className="input-field dark:!bg-slate-100/10 dark:!text-white"
               value={form.title}
+              onPaste={handleSmartPaste}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               placeholder="e.g. Diagnosing intermittent packet loss on a VLAN trunk"
             />
