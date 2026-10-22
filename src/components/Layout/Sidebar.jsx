@@ -27,7 +27,7 @@ const supportLinks = [
 ];
 
 const mainLinks = [
-  { label: "Dashboard", icon: LayoutGrid, to: "/", end: true, tour: "categories" },
+  { label: "Main Menu", icon: LayoutGrid, to: "/", end: true, tour: "categories" },
   { label: "Read Guide", icon: BookOpen, to: "/reading-list", tour: "library" },
   { label: "Subneting", icon: Calculator, to: "/tools/subnet", tour: "discover" },
   { label: "Practice", icon: PencilRuler, to: "/topology-practice", tour: "practice" },
