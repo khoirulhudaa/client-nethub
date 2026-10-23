@@ -1179,7 +1179,7 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
                 {canPin && (
                   <button
                     onClick={handlePin}
-                    className="rounded-lg btn-secondary hover:!bg-blue-700 hover:dark:!bg-blue-700 hover:!text-white !text-white dark:!bg-blue-500/15 !bg-blue-500/30 md:!bg-blue-500 border !border-white/20 px-4 py-1.5 h-[28px] text-xs"
+                    className="rounded-lg btn-secondary hover:!bg-blue-700 hover:dark:!bg-blue-700 hover:!text-white !text-white dark:!bg-blue-500/15 !bg-blue-500/30 md:!bg-blue-500 border !border-white/20 px-4 py-1.5 w-[40px] h-[40px] text-xs"
                   >
                     <Pin size={13} className={post?.isPinned ? "fill-accent text-accent" : ""} />
                     {post?.isPinned ? "Pinned" : "Pin"}
