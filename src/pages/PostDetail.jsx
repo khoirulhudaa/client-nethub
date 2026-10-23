@@ -99,10 +99,6 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
   const PostDetailSkeleton = () => (
     <div className="md:p-6 mx-auto max-w-full md:border-x border-white dark:border-white/15 space-y-3 pb-16">
       <div className="p-0 md:p-5 md:bg-slate-100 dark:md:bg-white/5 rounded-xl">
-        {/* <div className="flex items-center justify-center gap-2 py-3 text-sm font-medium text-white md:text-slate-900 dark:text-white">
-          <Loader2 size={18} className="animate-spin" />
-          Memuat guide...
-        </div> */}
 
         <div className="animate-pulse">
           <div className="mb-3 h-8 w-2/3 rounded-xl bg-slate-300 dark:bg-white/10" />
@@ -118,9 +114,11 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
           <div className="h-72 w-full rounded-2xl bg-slate-300 dark:bg-white/10" />
 
           <div className="my-5 flex gap-2">
-            <div className="h-[28px] w-20 rounded-lg bg-slate-300 dark:bg-white/10" />
-            <div className="h-[28px] w-20 rounded-lg bg-slate-300 dark:bg-white/10" />
-            <div className="h-[28px] w-24 rounded-lg bg-slate-300 dark:bg-white/10" />
+            <div className="h-9 w-9 rounded-lg bg-slate-300 dark:bg-white/10" />
+            <div className="h-9 w-9 rounded-lg bg-slate-300 dark:bg-white/10" />
+            <div className="h-9 w-9 rounded-lg bg-slate-300 dark:bg-white/10" />
+            <div className="h-9 w-9 rounded-lg bg-slate-300 dark:bg-white/10" />
+            <div className="h-9 w-9 rounded-lg bg-slate-300 dark:bg-white/10" />
           </div>
 
           <div className="mb-2 h-4 w-28 rounded bg-slate-300 dark:bg-white/10" />
