@@ -1,4 +1,4 @@
-  import { Bookmark, Calendar, CheckCircle2, ChevronLeft, ChevronRight, Circle, Clipboard, Download, Filter, Highlighter, Link2, Loader2, Pencil, Pin, Search, Share2, Timer, Trash2, Volume2, VolumeX, X, ZoomIn } from "lucide-react";
+  import { Bookmark, Calendar, CheckCircle2, ChevronLeft, ChevronRight, Circle, Clipboard, Download, Filter, Highlighter, Link2, Loader2, Pen, Pencil, Pin, Search, Share2, Timer, Trash2, Volume2, VolumeX, X, ZoomIn } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -1129,7 +1129,7 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
 
         <div className="p-0 md:p-5 md:bg-slate-100 dark:md:bg-white/5 rounded-xl">
 
-            <h1 className="mb-3 max-w-full w-max truncate dark:rounded-xl dark:!px-3 dark:md:!px-4 dark:py-2 text-xl sm:text-2xl font-semibold tracking-tight bg-transparent md:!text-slate-900 !text-white dark:!text-white dark:!bg-[#111122] dark:border border-slate-200 dark:border-white/20">
+            <h1 className="mb-3 max-w-full w-max truncate text-xl sm:text-2xl font-semibold tracking-tight bg-transparent md:!text-slate-900 !text-white dark:!text-white">
               {post?.title} 
             </h1>
 
@@ -1166,38 +1166,38 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
                   onClick={handleDownloadPdf}
                   disabled={pdfLoading}
                   title="Download guide as PDF"
-                  className="active:scale-[0.99] duration-100 inline-flex items-center gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 px-2 py-1.5 h-[28px] text-xs font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-red-500/25 dark:hover:!bg-red-500/90"
+                  className="active:scale-[0.99] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20"
                 >
                   {pdfLoading ? (
                     <Loader2 size={14} className="animate-spin" />
                   ) : (
                     <Download size={13} className="relative top-[-1px]" />
                   )}
-                  Download
+                  {/* Download */}
                 </button>
                 <div className="h-[18px] w-[1.3px] md:flex hidden bg-slate-400 dark:bg-white/20 mx-1" />
                 {canPin && (
                   <button
                     onClick={handlePin}
-                    className="rounded-lg btn-secondary hover:!bg-blue-700 hover:dark:!bg-blue-700 hover:!text-white !text-white dark:!bg-blue-500/15 !bg-blue-500/30 md:!bg-blue-500 border !border-white/20 px-4 py-1.5 w-[40px] h-[40px] text-xs"
+                    className="active:scale-[0.99] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20"
                   >
                     <Pin size={13} className={post?.isPinned ? "fill-accent text-accent" : ""} />
-                    {post?.isPinned ? "Pinned" : "Pin"}
                   </button>
                 )}
                 {isOwner && (
                   <>
-                    <div className="h-[18px] w-[1.3px] md:flex hidden bg-slate-400 dark:bg-white/20 mx-1" />
-                    <Link to={`/edit/${post?._id}`} className="rounded-lg btn-secondary hover:!bg-yellow-700 hover:dark:!bg-yellow-700 hover:!text-white !text-white dark:!bg-yellow-500/10 md:!bg-yellow-500 !bg-yellow-500/30 border !border-white/20 px-4 py-1.5 h-[28px] text-xs">
-                      <Pencil size={13} />
-                      Edit
-                    </Link>
+                    <button 
+                      className="active:scale-[0.99] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20"
+                    >
+                      <Link to={`/edit/${post?._id}`}>
+                        <Pencil size={13} />
+                      </Link>
+                    </button>
                     <button
                       onClick={() => setShowDeleteModal(true)}
-                      className="rounded-lg btn-secondary hover:!bg-red-700 hover:dark:!bg-red-700 !bg-red-500/15 md:!bg-red-500 md:dark:!bg-red-500/20 border !border-white/20 !text-white hover:!text-white px-4 py-1.5 h-[28px] text-xs text-red-500"
+                      className="active:scale-[0.99] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20"
                       >
                       <Trash2 size={13} />
-                      Delete
                     </button>
                   </>
                 )}
@@ -1208,16 +1208,14 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
                         isSpeaking
                           ? "border-red-300 bg-red-50 text-pink-600 dark:border-pink-500/40 dark:bg-pink-500/10 dark:text-pink-400"
                           : "border-gray-200 bg-white text-gray-600 hover:border-pink-500 hover:!bg-pink-600 hover:dark:!bg-pink-600 dark:border-white/15 dark:bg-blue-900/20 dark:text-gray-300"
-                      } active:scale-[0.99] duration-100 cursor-pointer hover:brightness-95 inline-flex border border-white/20 items-center gap-1.5 rounded-lg !bg-pink-500/20 md:!bg-pink-500 px-2 py-1.5 h-[28px] text-xs font-medium text-white dark:!bg-red-500/25 dark:text-white`}>
+                      } active:scale-[0.99] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20`}>
                         {isSpeaking ? (
                           <>
                             <VolumeX size={14} />
-                            Stop
                           </>
                         ) : (
                           <>
                             <Volume2 size={14} />
-                            Listen
                           </>
                         )}
                   </button>
@@ -1227,17 +1225,17 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
 
               <div className="w-max flex md:mt-0 mt-2 gap-2 md:gap-2.5">
                 {isCompleted && (
-                  <div className="w-max inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-100 px-3 py-1.5 h-[28px] text-xs font-medium text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
+                  <div className="active:scale-[0.99] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-max h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20">
                     <CheckCircle2 size={13} />
                     Sudah dibaca
                   </div>
                 )}
-                <div className="w-max inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-emerald-500 px-2 py-1.5 h-[28px] text-xs font-medium text-white dark:bg-slate-300/10 dark:text-slate-300">
-                  <Calendar size={13} />
+                <div className="active:scale-[0.99] duration-100 gap-1.5 text-xs px-2 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-max h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5">
+                  <Calendar size={12.8} />
                   {formatDate(post?.createdAt)}
                 </div>
-                <div className="w-max inline-flex border border-white/20 items-center gap-1.5 rounded-lg bg-orange-500 px-2 py-1.5 h-[28px] text-xs font-medium text-white dark:bg-slate-300/10 dark:text-slate-300">
-                  <Timer size={13} />
+                <div className="active:scale-[0.99] duration-100 gap-1.5 text-xs px-2 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-max h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5">
+                  <Timer size={13.5} />
                   {timeAgo(post?.createdAt)}
                 </div>
               </div>
