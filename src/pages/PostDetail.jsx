@@ -1166,7 +1166,7 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
                   onClick={handleDownloadPdf}
                   disabled={pdfLoading}
                   title="Download guide as PDF"
-                  className="active:scale-[0.99] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20"
+                  className="active:scale-[0.98] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20"
                 >
                   {pdfLoading ? (
                     <Loader2 size={14} className="animate-spin" />
@@ -1179,7 +1179,7 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
                 {canPin && (
                   <button
                     onClick={handlePin}
-                    className="active:scale-[0.99] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20"
+                    className="active:scale-[0.98] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20"
                   >
                     <Pin size={13} className={post?.isPinned ? "fill-accent text-accent" : ""} />
                   </button>
@@ -1187,7 +1187,7 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
                 {isOwner && (
                   <>
                     <button 
-                      className="active:scale-[0.99] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20"
+                      className="active:scale-[0.98] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20"
                     >
                       <Link to={`/edit/${post?._id}`}>
                         <Pencil size={13} />
@@ -1195,7 +1195,7 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
                     </button>
                     <button
                       onClick={() => setShowDeleteModal(true)}
-                      className="active:scale-[0.99] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20"
+                      className="active:scale-[0.98] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20"
                       >
                       <Trash2 size={13} />
                     </button>
@@ -1208,7 +1208,7 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
                         isSpeaking
                           ? "border-red-300 bg-red-50 text-pink-600 dark:border-pink-500/40 dark:bg-pink-500/10 dark:text-pink-400"
                           : "border-gray-200 bg-white text-gray-600 hover:border-pink-500 hover:!bg-pink-600 hover:dark:!bg-pink-600 dark:border-white/15 dark:bg-blue-900/20 dark:text-gray-300"
-                      } active:scale-[0.99] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20`}>
+                      } active:scale-[0.98] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20`}>
                         {isSpeaking ? (
                           <>
                             <VolumeX size={14} />
@@ -1225,16 +1225,16 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
 
               <div className="w-max flex md:mt-0 mt-2 gap-2 md:gap-2.5">
                 {isCompleted && (
-                  <div className="active:scale-[0.99] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-max h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20">
+                  <div className="active:scale-[0.98] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-max h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20">
                     <CheckCircle2 size={13} />
                     Sudah dibaca
                   </div>
                 )}
-                <div className="active:scale-[0.99] duration-100 gap-1.5 text-xs px-2 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-max h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5">
+                <div className="active:scale-[0.98] duration-100 gap-1.5 text-xs px-2 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-max h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5">
                   <Calendar size={12.8} />
                   {formatDate(post?.createdAt)}
                 </div>
-                <div className="active:scale-[0.99] duration-100 gap-1.5 text-xs px-2 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-max h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5">
+                <div className="active:scale-[0.98] duration-100 gap-1.5 text-xs px-2 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-max h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5">
                   <Timer size={13.5} />
                   {timeAgo(post?.createdAt)}
                 </div>
@@ -1422,7 +1422,7 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
                   <button
                     type="button"
                     onClick={() => setSidebarType("topology")}
-                    className="group flex items-center active:scale-[0.99] duration-100 gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/15 dark:!bg-[#0c0c18] dark:hover:border-accent"
+                    className="group flex items-center active:scale-[0.98] duration-100 gap-4 rounded-2xl border border-gray-200 bg-slate-300 !p-3 md:!p-5 text-left transition hover:border-accent hover:bg-accent/5 dark:border-white/15 dark:!bg-[#0c0c18] dark:hover:border-accent"
                   >
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -1823,7 +1823,7 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
                 <button
                   type="button"
                   onClick={() => setSidebarType(null)}
-                  className="flex h-8 w-8 active:scale-[0.99] duration-100 bg-red-500/70 items-center justify-center rounded-lg text-white transition hover:bg-red-500/80 hover:text-white"
+                  className="flex h-8 w-8 active:scale-[0.98] duration-100 bg-red-500/70 items-center justify-center rounded-lg text-white transition hover:bg-red-500/80 hover:text-white"
                 >
                   ✕
                 </button>
@@ -1968,7 +1968,7 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
             <button
               type="button"
               onClick={() => setPreviewIndex(null)}
-              className="absolute right-0 px-3 gap-x-1.5 active:scale-[0.99] duration-100 !top-12 md:top-24 z-[9999] flex h-10 w-max items-center justify-center rounded-bl-xl rounded-tl-xl bg-red-600 text-white transition hover:bg-red-700"
+              className="absolute right-0 px-3 gap-x-1.5 active:scale-[0.98] duration-100 !top-12 md:top-24 z-[9999] flex h-10 w-max items-center justify-center rounded-bl-xl rounded-tl-xl bg-red-600 text-white transition hover:bg-red-700"
               aria-label="Tutup"
             >
               Close
