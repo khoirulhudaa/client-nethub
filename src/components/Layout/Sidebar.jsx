@@ -27,7 +27,7 @@ const supportLinks = [
 ];
 
 const mainLinks = [
-  { label: "Main Menu", icon: LayoutGrid, to: "/", end: true, tour: "categories" },
+  { label: "Main Meneu", icon: LayoutGrid, to: "/", end: true, tour: "categories" },
   { label: "Read Guide", icon: BookOpen, to: "/reading-list", tour: "library" },
   { label: "Subneting", icon: Calculator, to: "/tools/subnet", tour: "discover" },
   { label: "Practice", icon: PencilRuler, to: "/topology-practice", tour: "practice" },
@@ -221,7 +221,7 @@ const Sidebar = ({ onNavigate }) => {
   return (
     <aside
       className={`relative flex h-screen shrink-0 z-[999] flex-col overflow-x-hidden border-l dark:border-white/5 dark:bg-[#0c0c18] bg-blue-950 md:bg-transparent transition-all duration-300 ${
-        collapsed ? "w-[72px] px-2 overflow-y-auto" : "w-screen overflow-y-auto md:overflow-y-hidden md:w-[17vw] px-3"
+        collapsed ? "w-[72px] px-2 overflow-y-auto" : "w-screen overflow-y-auto md:overflow-y-hidden md:w-[18vw] px-3"
       }`}
     >
 
@@ -232,7 +232,6 @@ const Sidebar = ({ onNavigate }) => {
         src="/hero.jpg" alt="wallpaper-sidebar" className={`rotate-[4deg] ${collapsed ? 'dark:rotate-0 duration-0' : ''} scale-[1.2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-15 left-0`} />
       
       <div className="z-10 relative h-screen flex flex-col">
-        {/* Logo + toggle */}
         <div
           className={`mb-0 z-[22] flex h-[8.6vh] min-h-[56px] shrink-0 items-center border-b border-white dark:border-white/10 ${
             collapsed

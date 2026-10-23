@@ -24,11 +24,11 @@ const STATUSES = [
 ];
 
 const statusStyle = {
-  Baru: { dot: "bg-blue-400", badge: "text-blue-300" },
-  "Sedang Dikerjakan": { dot: "bg-amber-400", badge: "text-amber-300" },
-  "Menunggu Info": { dot: "bg-purple-400", badge: "text-purple-300" },
-  Selesai: { dot: "bg-emerald-400", badge: "text-emerald-300" },
-  Ditutup: { dot: "bg-gray-400", badge: "text-gray-300" },
+  Baru: { dot: "bg-blue-400", badge: "text-blue-800" },
+  "Sedang Dikerjakan": { dot: "bg-amber-400", badge: "text-amber-800" },
+  "Menunggu Info": { dot: "bg-purple-400", badge: "text-purple-800" },
+  Selesai: { dot: "bg-emerald-400", badge: "text-emerald-800" },
+  Ditutup: { dot: "bg-gray-400", badge: "text-gray-800" },
 };
 
 const priorityStyle = {
@@ -62,12 +62,11 @@ const TicketCard = ({ ticket }) => {
 
       {/* Top: category + status */}
       <div className="flex items-center justify-start">
-        <span className="truncate text-xs text-white">
+        <span className="truncate text-xs bg-white px-1 text-slate-900">
           {ticket.category}
         </span>
-        ,
         <span
-          className={`inline-flex shrink-0 items-center ml-1 gap-1.5 text-xs ${status.badge}`}
+          className={`inline-flex shrink-0 items-center bg-white px-1 ml-1.5 gap-1.5 text-xs ${status.badge}`}
         >
           {statusLabel(ticket.status)}
         </span>
