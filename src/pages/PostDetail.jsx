@@ -1171,7 +1171,6 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
                   ) : (
                     <Download size={13} className="relative top-[-1px]" />
                   )}
-                  {/* Download */}
                 </button>
                 <div className="h-[18px] w-[1.3px] md:flex hidden bg-slate-400 dark:bg-white/20 mx-1" />
                 {canPin && (
@@ -1184,13 +1183,13 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
                 )}
                 {isOwner && (
                   <>
-                    <button 
-                      className="active:scale-[0.98] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20"
-                    >
-                      <Link to={`/edit/${post?._id}`}>
-                        <Pencil size={13} />
-                      </Link>
-                    </button>
+                    <Link to={`/edit/${post?._id}`}>
+                      <button 
+                        className="active:scale-[0.98] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20"
+                      >
+                          <Pencil size={13} />
+                      </button>
+                    </Link>
                     <button
                       onClick={() => setShowDeleteModal(true)}
                       className="active:scale-[0.98] duration-100 gap-1.5 rounded-lg border border-white/20 !bg-red-500/30 md:!bg-red-500 flex items-center justify-center w-[34px] h-[34px] font-medium text-white hover:brightness-90 disabled:opacity-60 disabled:cursor-not-allowed dark:!bg-white/5 dark:hover:!bg-white/20"
