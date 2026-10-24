@@ -945,23 +945,25 @@ const { remainingPosts } = useMemo(() => {
                 )}
               </form>
 
-              <button
-                type="button"
-                onClick={handleExportPdf}
-                disabled={exporting}
-                className="w-[41px] inline-flex items-center justify-center gap-2 rounded-xl bg-slate-200 px-3 py-2 h-[40px] font-medium text-sm text-slate-500 hover:text-white transition hover:bg-blue-600 active:scale-[0.98] duration-100 disabled:opacity-60"
-              >
-                <Download size={15} />
-                {/* {exporting ? "Menyiapkan PDF..." : "Handbook (PDF)"} */}
-              </button>
+              <div className="md:w-max w-full gap-x-[7px] flex items-center">
+                <button
+                  type="button"
+                  onClick={handleExportPdf}
+                  disabled={exporting}
+                  className="w-[41px] inline-flex items-center justify-center gap-2 rounded-xl bg-slate-200 px-3 py-2 h-[40px] font-medium text-sm text-slate-500 hover:text-white transition hover:bg-blue-600 active:scale-[0.98] duration-100 disabled:opacity-60"
+                >
+                  <Download size={15} />
+                  {/* {exporting ? "Menyiapkan PDF..." : "Handbook (PDF)"} */}
+                </button>
 
-             <TagFilter
-                tags={availableTags}
-                selected={selectedTags}
-                onToggle={toggleTag}
-                onClear={clearTags}
-                loading={loading}
-              />
+              <TagFilter
+                  tags={availableTags}
+                  selected={selectedTags}
+                  onToggle={toggleTag}
+                  onClear={clearTags}
+                  loading={loading}
+                />
+              </div>
 
             </div>
             {hasTagFilter && (
