@@ -6,6 +6,7 @@ import {
   Brain,
   ChevronDown,
   ChevronRight,
+  Download,
   Eye,
   Key,
   Lock,
@@ -412,6 +413,7 @@ const Dashboard = () => {
   const tagsKey = selectedTags.join(",");
   const hasTagFilter = selectedTags.length > 0;
   const search = searchParams.get("search") || "";
+  const [exporting, setExporting] = useState(false);
 
   const [data, setData] = useState({ pinned: [], posts: [], categories: [], total: 0 });
   const [loading, setLoading] = useState(true);
@@ -664,6 +666,26 @@ const { remainingPosts } = useMemo(() => {
     : remainingPosts;
   const totalItems = isSearching ? remainingPosts.length : data.total || 0;
 
+  const handleExportPdf = async () => {
+    try {
+      setExporting(true);
+      const res = await api.get("/posts/export/pdf", { responseType: "blob" });
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/pdf" }));
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `NetHub-IT-Handbook-${new Date().toISOString().slice(0, 10)}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Export PDF gagal:", err);
+      alert("Gagal mengunduh PDF. Coba lagi.");
+    } finally {
+      setExporting(false);
+    }
+  };
+
   const handleLoadMore = () => {
     if (isSearching) setSearchShown((n) => n + limit);
     else setPage((p) => p + 1);
@@ -882,14 +904,11 @@ const { remainingPosts } = useMemo(() => {
 
       <div ref={guidesRef} className="md:px-6 pb-6 scroll-mt-4">
         <div className="px-0 pt-3 pb-3 md:px-0 w-full md:py-4 relative rounded-xl bg-slate-200 dark:bg-white/5 dark:bg-none">
-          {/* Header */}
           <header className="mt-1 px-3 md:px-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mt-1">
                 <Brain size={17} className="text-slate-900 dark:text-white" />
-                <span className="relative top-[-1.2px] text-slate-900 dark:text-white">
-                  {headingText}
-                </span>
+                <span className="relative top-[-1.2px] text-slate-900 dark:text-white">{headingText}</span>
               </h2>
             </div>
           </header>
@@ -926,6 +945,16 @@ const { remainingPosts } = useMemo(() => {
                 )}
               </form>
 
+              <button
+                type="button"
+                onClick={handleExportPdf}
+                disabled={exporting}
+                className="w-[41px] inline-flex items-center justify-center gap-2 rounded-xl bg-slate-200 px-3 py-2 h-[40px] font-medium text-sm text-slate-500 hover:text-white transition hover:bg-blue-600 active:scale-[0.98] duration-100 disabled:opacity-60"
+              >
+                <Download size={15} />
+                {/* {exporting ? "Menyiapkan PDF..." : "Handbook (PDF)"} */}
+              </button>
+
              <TagFilter
                 tags={availableTags}
                 selected={selectedTags}
@@ -933,6 +962,7 @@ const { remainingPosts } = useMemo(() => {
                 onClear={clearTags}
                 loading={loading}
               />
+
             </div>
             {hasTagFilter && (
               <div className="mt-3 flex flex-wrap items-center gap-2">

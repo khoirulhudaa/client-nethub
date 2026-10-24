@@ -28,6 +28,7 @@
     "jspdf": "^4.2.1",
     "lowlight": "^3.3.0",
     "lucide-react": "^0.400.0",
+    "pdfkit": "^0.20.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hot-toast": "^2.6.0",
