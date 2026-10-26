@@ -340,7 +340,7 @@ const TagFilter = ({ tags, selected, onToggle, onClear, loading }) => {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center justify-between gap-2 rounded-xl border border-gray-200 bg-white dark:bg-slate-200 px-3 py-2.5 text-sm text-gray-600 dark:border-slate-700"
+        className="flex w-full items-center justify-between gap-2 rounded-xl border border-gray-200/20 bg-white dark:bg-slate-200/20 px-3 py-2.5 text-sm text-gray-600 dark:!text-white dark:border-slate-700"
       >
         <span className="flex items-center gap-2 truncate">
           <Tag size={14} />
@@ -918,7 +918,7 @@ const { remainingPosts } = useMemo(() => {
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
               {/* Search */}
               <form
-                className="flex w-full items-center gap-2 rounded-xl border border-gray-200 bg-white dark:bg-slate-200 px-3 py-1.5 shadow-sm sm:flex-1"
+                className="flex w-full items-center gap-2 rounded-xl border border-gray-200/20 bg-white dark:bg-slate-200/20 px-3 py-1.5 shadow-sm sm:flex-1"
                 onSubmit={(e) => {
                   e.preventDefault();
                   updateParam("search", localSearch.trim());
@@ -950,7 +950,7 @@ const { remainingPosts } = useMemo(() => {
                   type="button"
                   onClick={handleExportPdf}
                   disabled={exporting}
-                  className="w-[41px] inline-flex items-center justify-center gap-2 rounded-xl bg-slate-200 px-3 py-2 h-[40px] font-medium text-sm text-slate-500 hover:text-white transition hover:bg-blue-600 active:scale-[0.98] duration-100 disabled:opacity-60"
+                  className="w-[41px] inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200/20 bg-white dark:bg-slate-200/20 px-3 py-2 h-[40px] font-medium text-sm text-slate-500 md:!text-white hover:text-white transition hover:bg-blue-600 active:scale-[0.98] duration-100 disabled:opacity-60"
                 >
                   <Download size={15} />
                   {/* {exporting ? "Menyiapkan PDF..." : "Handbook (PDF)"} */}
