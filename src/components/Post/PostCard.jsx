@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import api from "../../api/axios.js";
+import { createPortal } from "react-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { downloadPostPdf } from "../../utils/pdfExport.js";
 import CategoryPill from "../UI/CategoryPill.jsx";
@@ -34,6 +35,8 @@ const PostCard = ({
   
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
+  const [showRemoveModal, setShowRemoveModal] = useState(false);
+  const [removing, setRemoving] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [copied, setCopied] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
@@ -225,58 +228,53 @@ const PostCard = ({
     requestPin(false);
   };
 
-  const handleAddToReadingList = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+const handleAddToReadingList = async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
 
-    if (isGuest) {
-      toast.error("Login dulu untuk menambahkan ke Reading List");
-      return;
-    }
+  if (isGuest) {
+    toast.error("Login dulu untuk menambahkan ke Reading List");
+    return;
+  }
 
-    try {
-      setAdding(true);
-      await api.post("/auth/me/reading-list", { postId: post._id });
+  // Sudah ditambahkan → tanya dulu mau dihapus atau tidak
+  if (added) {
+    setShowRemoveModal(true);
+    return;
+  }
+
+  try {
+    setAdding(true);
+    await api.post("/auth/me/reading-list", { postId: post._id });
+    setAdded(true);
+  } catch (err) {
+    if (err.response?.status === 400) {
       setAdded(true);
-    } catch (err) {
-      if (err.response?.status === 400) {
-        setAdded(true);
-      } else {
-        console.error("Gagal menambahkan ke Reading List:", err);
-        toast.error("Gagal menambahkan ke Reading List");
-      }
-    } finally {
-      setAdding(false);
+    } else {
+      console.error("Gagal menambahkan ke Reading List:", err);
+      toast.error("Gagal menambahkan ke Reading List");
     }
-  };
+  } finally {
+    setAdding(false);
+  }
+};
 
-  // Tombol Add saja
-  const AddButton = !isGuest && (
-    <button
-      onClick={handleAddToReadingList}
-      disabled={adding || added}
-      className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${
-        added
-          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-600 dark:text-white"
-          : "bg-gray-100 text-gray-600 hover:bg-accent hover:text-white dark:bg-white dark:text-slate-900 dark:hover:text-white dark:hover:bg-accent"
-      }`}
-      title={added ? "Sudah di Reading List" : "Tambah ke Reading List"}
-    >
-      {adding ? (
-        <Loader2 size={11} className="animate-spin" />
-      ) : added ? (
-        <>
-          <Check size={11} />
-          Added
-        </>
-      ) : (
-        <>
-          <BookPlus size={11} />
-          Add
-        </>
-      )}
-    </button>
-  );
+const handleRemoveFromReadingList = async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  try {
+    setRemoving(true);
+    await api.delete(`/auth/me/reading-list/${post._id}`);
+    setAdded(false);
+    setShowRemoveModal(false);
+    toast.success("Dihapus dari Reading List");
+  } catch (err) {
+    console.error("Gagal menghapus dari Reading List:", err);
+    toast.error("Gagal menghapus dari Reading List");
+  } finally {
+    setRemoving(false);
+  }
+};
 
   // Category + Add button (dipakai di 2 tempat berbeda tergantung hideImage)
   const CategoryAndAdd = (
@@ -288,13 +286,13 @@ const PostCard = ({
         {!isGuest && (
           <button
             onClick={handleAddToReadingList}
-            disabled={adding || added}
+            disabled={adding || removing}
             className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${
               added
                 ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-600 dark:text-white"
                 : "bg-gray-100 text-gray-600 hover:bg-accent hover:text-white dark:bg-white dark:text-slate-900 dark:hover:text-white dark:hover:bg-accent"
             }`}
-            title={added ? "Sudah di Reading List" : "Tambah ke Reading List"}
+            title={added ? "Klik untuk hapus dari Reading List" : "Tambah ke Reading List"}
           >
             {adding ? (
               <Loader2 size={11} className="animate-spin" />
@@ -398,12 +396,6 @@ return (
             <div className={`relative z-20 ${!pinned ? 'md:flex hidden' : 'hidden'}`}>
               <CategoryPill category={post.category} />
             </div>
-
-            {/* {!hideImage && (
-              <div className="hidden md:flex group-hover:md:hidden items-center gap-2">
-                {AddButton}
-              </div>
-            )} */}
 
             {post.tags?.length > 0
               ? post.tags.map((tag) => (
@@ -545,7 +537,7 @@ return (
               disabled={adding || added}
               className="flex h-max justify-center w-full items-center gap-x-2 bg-white border px-2 py-1 text-sm font-medium text-slate-950 transition-all ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98]"
             >
-              <div className={`active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center bg-white h-[32px] w-[30px] ${(adding || added) ? 'bg-green-200' : ''}`}>
+              <div className={`active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center h-[32px] w-[30px] ${added ? 'bg-green-200' : 'bg-white'}`}>
                 {pinning ? (
                   <Loader2 size={18} className="animate-spin" />
                 ) : adding || added ? (
@@ -585,6 +577,59 @@ return (
           </div>
         </div>
       </div>
+
+      {showRemoveModal &&
+      createPortal(
+        <div
+          className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 p-4"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!removing) setShowRemoveModal(false);
+          }}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl border border-white/15 bg-white p-5 shadow-xl dark:bg-slate-900"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 text-red-600">
+              <Trash2 size={18} />
+            </div>
+            <h4 className="mt-3 text-base font-semibold text-slate-900 dark:text-white">
+              Hapus dari Reading List?
+            </h4>
+            <p className="mt-1 text-sm text-slate-600 dark:text-gray-400 break-words">
+              “{post.title}” akan dihapus dari Reading List kamu.
+            </p>
+            <div className="mt-5 flex gap-2">
+              <button
+                type="button"
+                disabled={removing}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowRemoveModal(false);
+                }}
+                className="flex-1 rounded-lg bg-slate-200 px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-300 active:scale-[0.98] duration-100 disabled:opacity-50"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                disabled={removing}
+                onClick={handleRemoveFromReadingList}
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-500 active:scale-[0.98] duration-100 disabled:opacity-60"
+              >
+                {removing ? <Loader2 size={14} className="animate-spin" /> : "Hapus"}
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </Wrapper>
   );
 };
