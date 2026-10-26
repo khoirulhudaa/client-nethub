@@ -1,4 +1,4 @@
-import { BookLock, BookPlus, Check, ChevronRight, Download, Link2, Link2Icon, Loader2, Pin, PinOffIcon } from "lucide-react";
+import { BookLock, BookPlus, Check, ChevronRight, Download, Link2, Link2Icon, Loader2, Pin, PinOffIcon, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -34,7 +34,7 @@ const PostCard = ({
  const { user } = useAuth();
   
   const [adding, setAdding] = useState(false);
-  const [added, setAdded] = useState(false);
+  const [added, setAdded] = useState(!!post.inReadingList);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [showShare, setShowShare] = useState(false);
@@ -242,6 +242,10 @@ const handleAddToReadingList = async (e) => {
     setShowRemoveModal(true);
     return;
   }
+
+  useEffect(() => {
+    setAdded(!!post.inReadingList);
+  }, [post.inReadingList]);
 
   try {
     setAdding(true);
@@ -538,12 +542,12 @@ return (
               className="flex h-max justify-center w-full items-center gap-x-2 bg-white border px-2 py-1 text-sm font-medium text-slate-950 transition-all ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98]"
             >
               <div className={`active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center h-[32px] w-[30px] ${added ? 'bg-green-200' : 'bg-white'}`}>
-                {pinning ? (
-                  <Loader2 size={18} className="animate-spin" />
-                ) : adding || added ? (
-                  <BookLock size={17.5} className="fill-white" />
-                ) : (
-                  <BookPlus size={17.5} />
+                {adding || removing ? (
+                    <Loader2 size={18} className="animate-spin" />
+                  ) : added ? (
+                    <BookLock size={17.5} className="fill-white" />
+                  ) : (
+                    <BookPlus size={17.5} />
                 )}
               </div>
             </button>
