@@ -1145,7 +1145,7 @@ const { remainingPosts } = useMemo(() => {
               {/* Brand cards */}
               {showOverviewSections && (
                 <>
-                  <div className="w-full border-t px-3 md:px-4 b0rder-slate-400 dark:border-white/10 pt-7">
+                  <div className="w-full border-t px-0 md:px-4 b0rder-slate-400 dark:border-white/10 pt-7">
                     <p className="text-xs font-medium uppercase tracking-wide text-slate-900 dark:text-blue-500">
                       Network brands
                     </p>
@@ -1156,7 +1156,7 @@ const { remainingPosts } = useMemo(() => {
                       </span>
                     </h2>
                   </div>
-                  <div className="md:mb-2 mt-4 px-3 md:px-4 g0id grid-cols-1 gap-3 lg:grid-cols-3">
+                  <div className="md:mb-2 mt-4 px-0 md:px-4 grid grid-cols-1 gap-3 lg:grid-cols-3">
                     <Card2 />
                     <Card1 />
                     <Card3 />
