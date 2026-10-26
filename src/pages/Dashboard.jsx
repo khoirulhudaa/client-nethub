@@ -70,7 +70,7 @@ const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false, isUser=fa
       {(!isGuest && !isUser) && (
         <button
           onClick={onNewPost}
-          className="relative w-full active:scale-[0.99] duration-100 md:w-max flex md:inline-flex items-center gap-1.5 rounded-lg bg-slate-200 dark:bg-transparent px-3 md:px-4 py-2 text-sm font-medium text-slate-900 dark:text-white border border-white/15 shadow-sm transition hover:opacity-90"
+          className="relative w-full active:scale-[0.99] duration-100 md:w-max flex md:inline-flex items-center gap-1.5 rounded-lg bg-slate-200 dark:bg-transparent px-3 md:px-4 p0-2 text-sm font-medium text-slate-900 dark:text-white border border-white/15 shadow-sm transition hover:opacity-90"
         >
           <Plus size={16} /> New guide
         </button>
@@ -295,12 +295,12 @@ const PostCardSkeleton = () => (
 const DashboardSkeleton = ({ showPinned = false }) => (
   <div aria-busy="true" aria-label="Loading content">
     {showPinned && (
-      <section className="mb-8 px-3 md:px-4 mt-4 md:mt-0">
+      <section className="mb-8 px-0 md:px-4 m0-4 md:mt-0">
         <SkeletonBlock className="h-56 md:h-72 w-full rounded-2xl" />
       </section>
     )}
 
-    <section className="mb-8 px-3 md:px-4">
+    <section className="mb-8 px-0 md:px-4">      
       <div className="mb-4 flex items-center gap-2">
         <SkeletonBlock className="h-5 w-5" />
         <SkeletonBlock className="h-5 w-32" />
@@ -903,8 +903,8 @@ const { remainingPosts } = useMemo(() => {
       <div className="border-t border-slate-300 dark:border-white/10 mb-6"></div>
 
       <div ref={guidesRef} className="md:px-6 pb-6 scroll-mt-4">
-        <div className="px-0 pt-3 pb-3 md:px-0 w-full md:py-4 relative rounded-xl bg-slate-200 dark:bg-white/5 dark:bg-none">
-          <header className="mt-1 px-3 md:px-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="px-0 pt-3 pb-3 md:px-0 w-full md:py-4 relative rounded-xl !bg-transparent md:bg-slate-200 dark:bg-white/5 dark:bg-none">
+          <header className="mt-1 px-0 md:px-4 f0ex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mt-1">
                 <Brain size={17} className="text-slate-900 dark:text-white" />
@@ -914,7 +914,7 @@ const { remainingPosts } = useMemo(() => {
           </header>
           
           {/* Search + Category — bersebelahan */}
-          <div className="w-full px-3 py-2 md:p-4">
+          <div className="w-full md:px-3 py-2 md:p-4">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
               {/* Search */}
               <form
@@ -999,13 +999,13 @@ const { remainingPosts } = useMemo(() => {
               {pinnedFirst ? (
                 <>
                   {data.pinned?.length > 0 && (
-                    <section className="mb-8 px-3 md:px-4 md:mt-0 mt-4">
+                    <section className="mb-8 px-0 md:px-4 m0:mt-0 mt-4">
                       <PinnedHero pinned={data.pinned} onPinChange={handlePinChange} />
                     </section>
                   )}
                   
                 {/* Posts Grid — Other guides */}
-                 <section className="mb-8 px-3 md:px-4 border-white/10 pt-8 border-t">
+                 <section className="mb-8 px-0 md:px-4 border-white/10 pt-8 border-t">
                   {visiblePosts.length === 0  ? (
                     <div className="surface-card flex flex-col items-center justify-center gap-2 py-16 text-center">
                       <img src="/notFound.png" alt="No guides" className="h-16 w-16 mb-1.5" />
@@ -1145,7 +1145,7 @@ const { remainingPosts } = useMemo(() => {
               {/* Brand cards */}
               {showOverviewSections && (
                 <>
-                  <div className="w-full border-t px-3 md:px-4 border-slate-400 dark:border-white/10 pt-7">
+                  <div className="w-full border-t px-3 md:px-4 b0rder-slate-400 dark:border-white/10 pt-7">
                     <p className="text-xs font-medium uppercase tracking-wide text-slate-900 dark:text-blue-500">
                       Network brands
                     </p>
@@ -1156,7 +1156,7 @@ const { remainingPosts } = useMemo(() => {
                       </span>
                     </h2>
                   </div>
-                  <div className="md:mb-2 mt-4 px-3 md:px-4 grid grid-cols-1 gap-3 lg:grid-cols-3">
+                  <div className="md:mb-2 mt-4 px-3 md:px-4 g0id grid-cols-1 gap-3 lg:grid-cols-3">
                     <Card2 />
                     <Card1 />
                     <Card3 />
