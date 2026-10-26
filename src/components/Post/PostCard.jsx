@@ -228,6 +228,11 @@ const PostCard = ({
     requestPin(false);
   };
 
+
+  useEffect(() => {
+    setAdded(!!post.inReadingList);
+  }, [post.inReadingList]);
+
 const handleAddToReadingList = async (e) => {
   e.preventDefault();
   e.stopPropagation();
@@ -242,10 +247,6 @@ const handleAddToReadingList = async (e) => {
     setShowRemoveModal(true);
     return;
   }
-
-  useEffect(() => {
-    setAdded(!!post.inReadingList);
-  }, [post.inReadingList]);
 
   try {
     setAdding(true);
@@ -538,7 +539,7 @@ return (
             <button
               type="button"
               onClick={handleAddToReadingList}
-              disabled={adding || added}
+              disabled={adding || removing}
               className="flex h-max justify-center w-full items-center gap-x-2 bg-white border px-2 py-1 text-sm font-medium text-slate-950 transition-all ease-in-out hover:gap-x-5 hover:brightness-75 active:scale-[0.98]"
             >
               <div className={`active:scale-[0.98] duration-100 text-slate-900 flex items-center justify-center h-[32px] w-[30px] ${added ? 'bg-green-200' : 'bg-white'}`}>
@@ -585,7 +586,7 @@ return (
       {showRemoveModal &&
       createPortal(
         <div
-          className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 p-4"
+          className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/80 p-4"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -593,20 +594,20 @@ return (
           }}
         >
           <div
-            className="w-full max-w-sm rounded-2xl border border-white/15 bg-white p-5 shadow-xl dark:bg-slate-900"
+            className="w-[90vw] md:max-w-sm text-center rounded-2xl border border-white/15 bg-white p-5 shadow-xl dark:bg-slate-900"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
             }}
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 text-red-600">
+            <div className="flex h-10 w-10 mx-auto items-center justify-center rounded-full bg-red-100 text-red-600">
               <Trash2 size={18} />
             </div>
             <h4 className="mt-3 text-base font-semibold text-slate-900 dark:text-white">
               Hapus dari Reading List?
             </h4>
             <p className="mt-1 text-sm text-slate-600 dark:text-gray-400 break-words">
-              “{post.title}” akan dihapus dari Reading List kamu.
+              “{post.title}”
             </p>
             <div className="mt-5 flex gap-2">
               <button
