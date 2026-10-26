@@ -109,7 +109,7 @@ export default function TopologyPractice() {
               onClick={() => loadChallenge(ch)}
               className={`rounded-xl border p-4 text-left transition ${
                 active
-                  ? "border-accent bg-accent/5 ring-2 ring-accent/20"
+                  ? "border-white/30 bg-white/5"
                   : "border-gray-200 surface-card hover:border-gray-500"
               }`}
             >
