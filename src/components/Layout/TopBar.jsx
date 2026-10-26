@@ -176,7 +176,7 @@ useEffect(() => {
         <div className="ml-3 hidden items-center gap-3 md:flex">
           <TopLink to="/trending" icon={Flame} label="Trending" />
           <TopLink to="/tools/subnet" icon={Calculator} label="Subnet" />
-          <TopLink to="/practice" icon={PencilRuler} label="Practice" />
+          <TopLink to="/topology-practice" icon={PencilRuler} label="Practice" />
         </div>
 
         <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
