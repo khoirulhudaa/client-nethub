@@ -70,7 +70,7 @@ const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false, isUser=fa
       {(!isGuest && !isUser) && (
         <button
           onClick={onNewPost}
-          className="relative w-full active:scale-[0.99] duration-100 md:w-max flex md:inline-flex items-center gap-1.5 rounded-lg bg-slate-200 dark:bg-transparent px-3 md:px-4 p0-2 text-sm font-medium text-slate-900 dark:text-white border border-white/15 shadow-sm transition hover:opacity-90"
+          className="relative w-full active:scale-[0.99] duration-100 md:w-max flex md:inline-flex items-center gap-1.5 rounded-lg bg-slate-200 dark:bg-transparent px-3 md:px-4 p-2 text-sm font-medium text-slate-900 dark:text-white border border-white/15 shadow-sm transition hover:opacity-90"
         >
           <Plus size={16} /> New guide
         </button>
