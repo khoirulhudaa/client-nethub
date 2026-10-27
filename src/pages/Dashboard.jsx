@@ -904,7 +904,7 @@ const { remainingPosts } = useMemo(() => {
       <div className={`${isGuest ? 'border-none' : 'border-t border-slate-300 dark:border-white/10'} md:mb-6`}></div>
 
       <div ref={guidesRef} className="md:px-6 pb-6 scroll-mt-4">
-        <div className="px-0 pt-3 pb-3 md:px-0 w-full md:py-4 relative rounded-xl !bg-transparent md:!bg-slate-200 md:dark:!bg-white/10">
+        <div className="px-0 pt-3 pb-3 md:px-0 w-full md:py-4 relative rounded-xl !bg-transparent md:!bg-slate-200 md:dark:!bg-white/5">
           <header className="mt-1 px-0 md:px-4 f0ex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-lg font-semibold tracking-tight flex items-center gap-1.5 mt-1">
