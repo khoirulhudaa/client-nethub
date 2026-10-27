@@ -834,7 +834,7 @@ const { remainingPosts } = useMemo(() => {
         src="/tech1.png"
         alt="bg-tech"
         draggable={false}
-        className="pointer-events-none absolute right-[-20%] md:right-[-4%] md:top-3 w-[100%] md:w-[63%] opacity-100 md:opacity-100"
+        className="pointer-events-none absolute right-[-20%] md:right-[-4%] top-36 md:top-3 w-[100%] md:w-[63%] opacity-100 md:opacity-100"
       />
 
       {/* Blur: kuat di kiri, hilang ke kanan (pakai mask) */}
