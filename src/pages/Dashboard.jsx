@@ -929,7 +929,7 @@ const { remainingPosts } = useMemo(() => {
                   value={localSearch}
                   onChange={(e) => setLocalSearch(e.target.value)}
                   placeholder="Search by title..."
-                  className="w-full dark:bg-transparent px-1 py-2 h-[24.5px] font-medium text-black text-sm outline-none"
+                  className="w-full dark:bg-transparent px-1 py-2 h-[24.5px] font-medium text-black dark:!text-white text-sm outline-none"
                 />
                 {localSearch && (
                   <button
