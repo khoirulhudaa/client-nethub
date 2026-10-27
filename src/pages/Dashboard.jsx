@@ -823,25 +823,46 @@ const { remainingPosts } = useMemo(() => {
   };
 
   // --- Guest jumbotron ---------------------------------------------------------
-  const GuestJumbotron = ({ onSignUp, onLogin, onBrowse, totalGuides = 0 }) => (
+  const GuestJumbotron = ({ onLogin, totalGuides = 0 }) => (
     <section className="relative mb-6 overflow-hidden md:mx-6 md:mt-6 rounded-2xl bg-gradient-to-br from-blue-600 via-blue-700 to-slate-900 px-5 py-10 md:px-8 md:pb-8 md:pt-6">
       {/* dekorasi */}
       <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-cyan-400/20 blur-3xl" />
 
-      <div className="relative max-w-2xl">
-        <h1 className="mt-0 text-xl md:text-3xl font-bold tracking-tight text-white">
+      {/* Gambar di kanan */}
+      <img
+        src="/tech1.png"
+        alt="bg-tech"
+        draggable={false}
+        className="pointer-events-none absolute right-[-4%] top-3 w-[70%] md:w-[63%] opacity-60 md:opacity-100"
+      />
+
+      {/* Blur: kuat di kiri, hilang ke kanan (pakai mask) */}
+      <div
+        className="pointer-events-none absolute inset-y-0 left-0 w-[85%] md:w-[90%] backdrop-blur-md"
+        style={{
+          WebkitMaskImage: "linear-gradient(to right, black 45%, transparent 100%)",
+          maskImage: "linear-gradient(to right, black 45%, transparent 100%)",
+        }}
+      />
+
+      {/* Shadow/gradient dari kiri supaya teks tetap terbaca */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-blue-900 via-blue-900/70 to-transparent" />
+
+      {/* Konten kiri */}
+      <div className="relative z-[1] max-w-2xl">
+        <h1 className="mt-0 text-xl md:text-3xl font-bold tracking-tight text-white drop-shadow-lg">
           Built From Real IT Pintex Experience
         </h1>
 
-        <p className="mt-2 w-full md:w-[80%] text-sm md:text-base text-blue-100">
-          {totalGuides > 0 ? `${totalGuides} ` : ""}guides written from real cases handled by the IT Pintex
+        <p className="mt-2 w-full md:w-[80%] text-sm md:text-base text-blue-100 drop-shadow">
+          {totalGuides > 0 ? `${totalGuides} ` : ""}guides written from real cases handled by the IT Pintex team
         </p>
 
         <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:items-center">
           <button
             onClick={onLogin}
-            className="w-max inline-flex items-center justify-center rounded-lg border border-white/30 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-white/10 active:scale-[0.98] duration-100"
+            className="w-max inline-flex items-center justify-center rounded-lg border border-white/30 bg-white/5 px-4 py-2.5 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/10 active:scale-[0.98] duration-100"
           >
             Login - writer
           </button>
