@@ -831,14 +831,12 @@ const { remainingPosts } = useMemo(() => {
 
       <div className="relative max-w-2xl">
         <h1 className="mt-0 text-3xl font-bold tracking-tight text-white">
-          Network &amp; hardware guides, <br className="hidden md:block" />
-          built from real IT Pintex experience.
+          {/* Network &amp; hardware guides, <br className="hidden md:block" /> */}
+          Built From Real IT Pintex Experience
         </h1>
 
-        <p className="mt-3 w-full md:w-[80%] text-sm md:text-base text-blue-100">
-          {totalGuides > 0 ? `${totalGuides} ` : ""}guides on networking, installation,
-          and hardware repair, written from real cases handled by the IT Pintex team
-          as an everyday reference.
+        <p className="mt-2 w-full md:w-[80%] text-sm md:text-base text-blue-100">
+          {totalGuides > 0 ? `${totalGuides} ` : ""}guides written from real cases handled by the IT Pintex
         </p>
 
         <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:items-center">
