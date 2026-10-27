@@ -824,14 +824,13 @@ const { remainingPosts } = useMemo(() => {
 
   // --- Guest jumbotron ---------------------------------------------------------
   const GuestJumbotron = ({ onSignUp, onLogin, onBrowse, totalGuides = 0 }) => (
-    <section className="relative mb-6 overflow-hidden md:mx-6 md:mt-6 md:rounded-2xl bg-gradient-to-br from-blue-600 via-blue-700 to-slate-900 px-5 py-10 md:px-8 md:pb-8 md:pt-6">
+    <section className="relative mb-6 overflow-hidden md:mx-6 md:mt-6 rounded-2xl bg-gradient-to-br from-blue-600 via-blue-700 to-slate-900 px-5 py-10 md:px-8 md:pb-8 md:pt-6">
       {/* dekorasi */}
       <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-cyan-400/20 blur-3xl" />
 
       <div className="relative max-w-2xl">
-        <h1 className="mt-0 text-3xl font-bold tracking-tight text-white">
-          {/* Network &amp; hardware guides, <br className="hidden md:block" /> */}
+        <h1 className="mt-0 text-xl md:text-3xl font-bold tracking-tight text-white">
           Built From Real IT Pintex Experience
         </h1>
 
@@ -842,7 +841,7 @@ const { remainingPosts } = useMemo(() => {
         <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:items-center">
           <button
             onClick={onLogin}
-            className="inline-flex items-center justify-center rounded-lg border border-white/30 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-white/10 active:scale-[0.98] duration-100"
+            className="w-max inline-flex items-center justify-center rounded-lg border border-white/30 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-white/10 active:scale-[0.98] duration-100"
           >
             Login - writer
           </button>
@@ -881,7 +880,7 @@ const { remainingPosts } = useMemo(() => {
         </div>
       )}
 
-      <div className="border-t border-slate-300 dark:border-white/10 mb-6"></div>
+      <div className="border-t border-slate-300 dark:border-white/10 md:mb-6"></div>
 
       <div ref={guidesRef} className="md:px-6 pb-6 scroll-mt-4">
         <div className="px-0 pt-3 pb-3 md:px-0 w-full md:py-4 relative rounded-xl !bg-transparent md:!bg-slate-200 md:dark:!bg-white/5">
