@@ -1,7 +1,6 @@
 import {
   Bell,
   BookOpen,
-  Calculator,
   Camera,
   ChevronDown,
   Expand,
@@ -9,6 +8,7 @@ import {
   LayoutGrid,
   LifeBuoy,
   Loader2,
+  LogIn,
   LogOut,
   NotebookPen,
   PencilRuler,
@@ -29,7 +29,6 @@ const supportLinks = [
 const mainLinks = [
   { label: "Main Menu", icon: LayoutGrid, to: "/", end: true, tour: "categories" },
   { label: "Read Guide", icon: BookOpen, to: "/reading-list", tour: "library" },
-  // { label: "Subneting", icon: Calculator, to: "/tools/subnet", tour: "discover" },
   { label: "Practice", icon: PencilRuler, to: "/topology-practice", tour: "practice" },
 ];
 
@@ -94,7 +93,7 @@ const Sidebar = ({ onNavigate }) => {
     localStorage.setItem("nethub_sidebar_collapsed", String(collapsed));
   }, [collapsed]);
 
-  const isGuest = user?.isGuest || user?.role === "guest";
+  const isGuest = !user || user?.isGuest || user?.role === "guest";
   const isSuperAdmin = user?.role === "superAdmin";
 
   const [openGroups, setOpenGroups] = useState({
@@ -307,25 +306,31 @@ const Sidebar = ({ onNavigate }) => {
             onToggle={() => toggleGroup("main")}
             collapsed={collapsed}
           >
-            {mainLinks.map(renderLink)}
+            {mainLinks
+            .filter((l) => user || l.to !== "/reading-list")
+            .map(renderLink)}
           </NavGroup>
 
-          {/* Workspace */}
-          <NavGroup
-            title="Workspace"
-            open={openGroups.workspace}
-            single={isGuest}
-            onToggle={() => toggleGroup("workspace")}
-            collapsed={collapsed}
-          >
-            <div data-tour="workspace">
-              {
-              !isGuest &&
-                renderLink({ to: "/contacts", icon: Phone, label: "Phone Book" })}
-              {renderLink({ to: "/remote", icon: NotebookPen, label: "Remote Client" })}
-              {renderLink({ to: "/camera", icon: Camera, label: "Cameras" })}
-            </div>
-          </NavGroup>
+          {user && (
+            <>
+              {/* Workspace */}
+              <NavGroup
+                title="Workspace"
+                open={openGroups.workspace}
+                single={isGuest}
+                onToggle={() => toggleGroup("workspace")}
+                collapsed={collapsed}
+              >
+                <div data-tour="workspace">
+                  {
+                  !isGuest &&
+                    renderLink({ to: "/contacts", icon: Phone, label: "Phone Book" })}
+                  {renderLink({ to: "/remote", icon: NotebookPen, label: "Remote Client" })}
+                  {renderLink({ to: "/camera", icon: Camera, label: "Cameras" })}
+                </div>
+              </NavGroup>
+            </>
+          )}
 
           {/* Support */}
           {!isGuest && (
@@ -394,51 +399,78 @@ const Sidebar = ({ onNavigate }) => {
             collapsed ? "flex flex-col items-center gap-2 py-3" : "pt-[1px]"
           }`}
         >
-          <NavLink
-            to={isGuest ? "#" : "/profile"}
-            onClick={onNavigate}
-            title={collapsed ? user?.name : undefined}
-            className={() =>
-              collapsed
-                ? "flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl"
-                : "flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors border-white hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]"
-            }
-          >
-            <div className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg ${collapsed ? '' : 'border'} border-white/15 text-md font-semibold text-slate-900 dark:text-white/50`}>
-              {user?.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt={user.name}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                user?.name?.[0]?.toUpperCase() || "G"
+          {user ? (
+            <>
+              {/* ===== SUDAH LOGIN ===== */}
+              <NavLink
+                to={isGuest ? "#" : "/profile"}
+                onClick={onNavigate}
+                title={collapsed ? user?.name : undefined}
+                className={() =>
+                  collapsed
+                    ? "flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl"
+                    : "flex items-center gap-3 border-x px-3 pb-4 pt-3 transition-colors border-white hover:bg-black/[0.03] dark:border-white/10 dark:hover:bg-white/[0.05]"
+                }
+              >
+                <div className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg ${collapsed ? "" : "border"} border-white/15 text-md font-semibold text-slate-900 dark:text-white/50`}>
+                  {user?.avatar ? (
+                    <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" />
+                  ) : (
+                    user?.name?.[0]?.toUpperCase() || "G"
+                  )}
+                </div>
+                {!collapsed && (
+                  <>
+                    <div className="min-w-0 flex-1 overflow-hidden">
+                      <p className="truncate text-sm font-medium text-white/80">{user?.name}</p>
+                      <p className="truncate text-xs text-white/80">
+                        {isGuest ? "Guest Reader" : user?.title}
+                      </p>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleLogoutClick();
+                      }}
+                      className="shrink-0 rounded-md p-1.5 transition-colors hover:bg-black/5 hover:text-red-500 text-white dark:text-white/90 dark:hover:bg-white/10"
+                      title="Log out"
+                    >
+                      <LogOut size={16} />
+                    </button>
+                  </>
+                )}
+              </NavLink>
+
+              {/* Logout icon saat collapsed */}
+              {collapsed && (
+                <button
+                  onClick={handleLogoutClick}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-400 transition hover:bg-white/10 hover:text-red-400"
+                  title="Log out"
+                >
+                  <LogOut size={15} />
+                </button>
               )}
+            </>
+          ) : (
+            /* ===== BELUM LOGIN: hanya tombol Login, tanpa ikon logout ===== */
+            <div className={collapsed ? "" : "border-x border-white dark:border-white/10 px-3 pb-4 pt-3"}>
+              <NavLink
+                to="/login"
+                onClick={onNavigate}
+                title={collapsed ? "Login" : undefined}
+                className={
+                  collapsed
+                    ? "flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-400 to-blue-900 text-white active:scale-[0.98] duration-100"
+                    : "flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-blue-400 to-blue-900 py-2.5 text-sm font-medium text-white active:scale-[0.98] duration-100 hover:brightness-110"
+                }
+              >
+                <LogIn size={16} />
+                {!collapsed && "Login"}
+              </NavLink>
             </div>
-            {!collapsed && (
-                <>
-                  <div className="min-w-0 flex-1 overflow-hidden">
-                    <p className="truncate text-sm font-medium text-white/80">
-                      {user?.name}
-                    </p>
-                    <p className="truncate text-xs text-white/80">
-                      {isGuest ? "Guest Reader" : user?.title}
-                    </p>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleLogoutClick();
-                    }}
-                    className="shrink-0 rounded-md p-1.5 transition-colors hover:bg-black/5 hover:text-red-500 text-white dark:text-white/90 dark:hover:bg-white/10"
-                    title="Log out"
-                  >
-                    <LogOut size={16} />
-                  </button>
-                </>
-              )}
-          </NavLink>
+          )}
 
           {/* ===== LOGOUT CONFIRMATION MODAL ===== */}
           {showLogoutModal && (

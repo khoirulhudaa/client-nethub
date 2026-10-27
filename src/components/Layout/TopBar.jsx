@@ -14,6 +14,7 @@ import {
   PencilRuler,
   Plus,
   Search,
+  LogIn,
   Sun,
   Ticket,
   User,
@@ -192,144 +193,146 @@ const TopBar = ({ onMenuClick }) => {
           )}
 
           {/* Notification */}
-          <div className="relative" ref={notifRefNotif} data-tour="notif">
-            <button
-              type="button"
-              className="active:scale-[0.98] duration-100 relative border-white dark:md:border-white/20 dark:border-white/30 border rounded-control p-2.5 text-white transition hover:bg-black/10 dark:text-gray-300 dark:hover:bg-white/10"
-              title="Notifications"
-              onClick={() => {
-                setOpenNotifTicket((prev) => !prev);
-                setOpenProfile(false);
-              }}
-            >
-              <Ticket size={18} />
-              {unreadCountNotification > 0 && (
-                <span className="absolute right-1.5 top-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-blue-900 px-1 text-[10px] font-semibold text-white">
-                  {unreadCountNotification > 9 ? "9+" : unreadCountNotification}
-                </span>
-              )}
-            </button>
+          {user && (
+            <div className="relative" ref={notifRefNotif} data-tour="notif">
+              <button
+                type="button"
+                className="active:scale-[0.98] duration-100 relative border-white dark:md:border-white/20 dark:border-white/30 border rounded-control p-2.5 text-white transition hover:bg-black/10 dark:text-gray-300 dark:hover:bg-white/10"
+                title="Notifications"
+                onClick={() => {
+                  setOpenNotifTicket((prev) => !prev);
+                  setOpenProfile(false);
+                }}
+              >
+                <Ticket size={18} />
+                {unreadCountNotification > 0 && (
+                  <span className="absolute right-1.5 top-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-blue-900 px-1 text-[10px] font-semibold text-white">
+                    {unreadCountNotification > 9 ? "9+" : unreadCountNotification}
+                  </span>
+                )}
+              </button>
 
-            {openNotifTicket && (
-              <div className="absolute right-[-236%] md:right-[122%] top-full z-[99] mt-2 w-[min(100vw-2rem,360px)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-white/10 dark:bg-[#12121a]">
-                {/* Header */}
-                <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-white/10">
-                  <div>
-                    <p className="text-sm font-semibold">Tiket</p>
-                    {unreadCountNotification > 0 && (
-                      <p className="text-xs text-gray-500">{unreadCountNotification} belum dibaca</p>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    {unreadCountNotification > 0 && (
-                      <button
-                        type="button"
-                        onClick={async () => {
-                          try {
-                            await api.patch("/notifications/read-all");
-                            setNotifications((prev) =>
-                              prev.map((n) => ({ ...n, isRead: true }))
-                            );
-                            setUnreadCountNotification(0);
-                          } catch (err) {
-                            console.error(err);
-                          }
-                        }}
-                        className="rounded-lg px-2 py-1 text-xs text-accent hover:bg-accent/10"
-                      >
-                        Tandai semua
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => setOpenNotifTicket(false)}
-                      className="rounded-lg active:scale-[0.98] p-1.5 text-gray-400 hover:bg-black/5 dark:hover:bg-white/10"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                </div>
-
-                {/* List Notifikasi */}
-                <div className="max-h-[min(60vh,380px)] overflow-y-auto">
-                  {notifications.length === 0 ? (
-                    <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
-                      <Bell size={24} className="text-gray-400" />
-                      <p className="text-sm font-medium">Tidak ada permintaan</p>
+              {openNotifTicket && (
+                <div className="absolute right-[-236%] md:right-[122%] top-full z-[99] mt-2 w-[min(100vw-2rem,360px)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-white/10 dark:bg-[#12121a]">
+                  {/* Header */}
+                  <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-white/10">
+                    <div>
+                      <p className="text-sm font-semibold">Tiket</p>
+                      {unreadCountNotification > 0 && (
+                        <p className="text-xs text-gray-500">{unreadCountNotification} belum dibaca</p>
+                      )}
                     </div>
-                  ) : (
-                    <ul className="divide-y divide-gray-100 dark:divide-white/5">
-                      {notifications.map((item) => (
-                        <li key={item._id}>
-                         <button
+                    <div className="flex items-center gap-1">
+                      {unreadCountNotification > 0 && (
+                        <button
                           type="button"
-                          onClick={() => {
-                            // 1. Tutup dropdown & redirect langsung, tanpa menunggu API
-                            setOpenNotifTicket(false);
-                            if (item.link) navigate(item.link);
-
-                            // 2. Tandai dibaca di background
-                            if (!item.isRead) {
+                          onClick={async () => {
+                            try {
+                              await api.patch("/notifications/read-all");
                               setNotifications((prev) =>
-                                prev.map((n) => (n._id === item._id ? { ...n, isRead: true } : n))
+                                prev.map((n) => ({ ...n, isRead: true }))
                               );
-                              setUnreadCountNotification((prev) => Math.max(0, prev - 1));
-
-                              api.patch(`/notifications/${item._id}/read`).catch((err) => {
-                                console.error(err);
-                                // rollback kalau gagal
-                                setNotifications((prev) =>
-                                  prev.map((n) => (n._id === item._id ? { ...n, isRead: false } : n))
-                                );
-                                setUnreadCountNotification((prev) => prev + 1);
-                              });
+                              setUnreadCountNotification(0);
+                            } catch (err) {
+                              console.error(err);
                             }
                           }}
-                          className={`w-full px-4 py-3 text-left transition hover:bg-black/[0.02] dark:hover:bg-white/[0.03] ${
-                            !item.isRead ? "bg-blue-50/50 dark:bg-blue-500/5" : ""
-                          }`}
+                          className="rounded-lg px-2 py-1 text-xs text-accent hover:bg-accent/10"
                         >
-                            <div className="flex gap-3">
-                              <div
-                                className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
-                                  item.type === "new_ticket"
-                                    ? "bg-blue-500/15 text-blue-500"
-                                    : "bg-gray-500/15 text-gray-500"
-                                }`}
-                              >
-                                <Bell size={15} />
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <div className="flex items-start justify-between gap-2">
-                                  <p className={`text-sm font-medium ${!item.isRead ? "text-white" : ""}`}>
-                                    {item.title}
-                                  </p>
-                                  {!item.isRead && (
-                                    <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
-                                  )}
+                          Tandai semua
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setOpenNotifTicket(false)}
+                        className="rounded-lg active:scale-[0.98] p-1.5 text-gray-400 hover:bg-black/5 dark:hover:bg-white/10"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* List Notifikasi */}
+                  <div className="max-h-[min(60vh,380px)] overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
+                        <Bell size={24} className="text-gray-400" />
+                        <p className="text-sm font-medium">Tidak ada permintaan</p>
+                      </div>
+                    ) : (
+                      <ul className="divide-y divide-gray-100 dark:divide-white/5">
+                        {notifications.map((item) => (
+                          <li key={item._id}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              // 1. Tutup dropdown & redirect langsung, tanpa menunggu API
+                              setOpenNotifTicket(false);
+                              if (item.link) navigate(item.link);
+
+                              // 2. Tandai dibaca di background
+                              if (!item.isRead) {
+                                setNotifications((prev) =>
+                                  prev.map((n) => (n._id === item._id ? { ...n, isRead: true } : n))
+                                );
+                                setUnreadCountNotification((prev) => Math.max(0, prev - 1));
+
+                                api.patch(`/notifications/${item._id}/read`).catch((err) => {
+                                  console.error(err);
+                                  // rollback kalau gagal
+                                  setNotifications((prev) =>
+                                    prev.map((n) => (n._id === item._id ? { ...n, isRead: false } : n))
+                                  );
+                                  setUnreadCountNotification((prev) => prev + 1);
+                                });
+                              }
+                            }}
+                            className={`w-full px-4 py-3 text-left transition hover:bg-black/[0.02] dark:hover:bg-white/[0.03] ${
+                              !item.isRead ? "bg-blue-50/50 dark:bg-blue-500/5" : ""
+                            }`}
+                          >
+                              <div className="flex gap-3">
+                                <div
+                                  className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                                    item.type === "new_ticket"
+                                      ? "bg-blue-500/15 text-blue-500"
+                                      : "bg-gray-500/15 text-gray-500"
+                                  }`}
+                                >
+                                  <Bell size={15} />
                                 </div>
-                                <p className="mt-0.5 line-clamp-2 text-xs text-gray-500">
-                                  {item.message}
-                                </p>
-                                <p className="mt-1.5 text-[11px] text-gray-400">
-                                  {new Date(item.createdAt).toLocaleDateString("id-ID", {
-                                    day: "numeric",
-                                    month: "short",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  })}
-                                </p>
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex items-start justify-between gap-2">
+                                    <p className={`text-sm font-medium ${!item.isRead ? "text-white" : ""}`}>
+                                      {item.title}
+                                    </p>
+                                    {!item.isRead && (
+                                      <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
+                                    )}
+                                  </div>
+                                  <p className="mt-0.5 line-clamp-2 text-xs text-gray-500">
+                                    {item.message}
+                                  </p>
+                                  <p className="mt-1.5 text-[11px] text-gray-400">
+                                    {new Date(item.createdAt).toLocaleDateString("id-ID", {
+                                      day: "numeric",
+                                      month: "short",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })}
+                                  </p>
+                                </div>
                               </div>
-                            </div>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
 
           {/* Notification */}
           <div className="relative" ref={notifRef} data-tour="notif">
@@ -442,107 +445,20 @@ const TopBar = ({ onMenuClick }) => {
             {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
           </button>
 
-          {/* ===== PROFILE DROPDOWN ===== */}
-          <div className="relative" ref={profileRef} data-tour="profile">
+          {user ? (
+            <div className="relative" ref={profileRef} data-tour="profile">
+              ...dropdown profil lama...
+            </div>
+          ) : (
             <button
               type="button"
-              onClick={() => {
-                setOpenProfile((prev) => !prev);
-                setOpenNotif(false);
-              }}
-              className="ml-0.5 flex h-10 w-10 active:scale-[0.98] items-center justify-center dark:border-[2px] dark:md:border-white/20 dark:border-white/30 border-white border rounded-control p-2.5 text-white transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
-              title={user?.name || "Profile"}
+              onClick={() => navigate("/login")}
+              className="ml-0.5 flex h-10 items-center gap-2 rounded-xl bg-gradient-to-br from-blue-400 to-blue-900 px-4 text-sm font-medium text-white active:scale-[0.98] duration-100 hover:brightness-110"
             >
-              {user?.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt={user.name}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                user?.name?.[0]?.toUpperCase() || "G"
-              )}
+              <LogIn size={16} />
+              <span className="hidden sm:inline">Login</span>
             </button>
-
-            {openProfile && (
-              <div className="absolute shadow-2xl right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-white/10 dark:bg-[#12121a]">
-                {/* Header */}
-                <div className="border-b border-gray-100 px-4 py-3 dark:border-white/10">
-                  <p className="truncate text-sm font-semibold">
-                    {user?.name || "Guest"}
-                  </p>
-                  {user?.email && (
-                    <p className="truncate text-xs text-gray-500">{user.email}</p>
-                  )}
-                </div>
-
-                <div className="py-1.5">
-                  {!isGuest ? (
-                    <>
-                      {/* Menu untuk user yang sudah login */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setOpenProfile(false);
-                          navigate("/profile");
-                        }}
-                        className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition hover:bg-black/[0.03] dark:text-gray-200 dark:hover:bg-white/[0.05]"
-                      >
-                        <User size={16} className="text-gray-400" />
-                        View profile
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setOpenProfile(false);
-                          navigate("/reading-list");
-                        }}
-                        className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition hover:bg-black/[0.03] dark:text-gray-200 dark:hover:bg-white/[0.05]"
-                      >
-                        <BookOpen size={16} className="text-gray-400" />
-                        Reading List
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setOpenProfile(false);
-                          navigate("/my-posts");
-                        }}
-                        className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition hover:bg-black/[0.03] dark:text-gray-200 dark:hover:bg-white/[0.05]"
-                      >
-                        <BookOpen size={16} className="text-gray-400" />
-                        My Guides
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={handleLogoutClick}
-                        className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10"
-                      >
-                        <LogOut size={16} />
-                        Logout
-                      </button>
-                    </>
-                  ) : (
-                    /* Menu untuk Guest */
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setOpenProfile(false);
-                        navigate("/register"); // atau "/auth/register" sesuai route kamu
-                      }}
-                      className="flex w-[94%] rounded-xl mx-auto items-center gap-2 px-2.5 active:scale-[0.99] duration-100 py-2.5 text-left text-sm text-white transition bg-gradient-to-br from-blue-400 to-blue-900"
-                    >
-                      <User size={16} />
-                      Register
-                    </button>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+          )}
         </div>
       </div>
 

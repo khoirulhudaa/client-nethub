@@ -1,6 +1,6 @@
 import { Download, Eye, EyeOff, Loader2, Network } from "lucide-react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 
 
@@ -12,13 +12,16 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
 
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
       await login(form);
-      navigate("/");
+      navigate(from, { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || "Unable to sign in. Please try again.");
     } finally {

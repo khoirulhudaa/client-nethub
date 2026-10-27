@@ -1,20 +1,15 @@
 import Fuse from "fuse.js";
 import {
-  ArrowRight,
   BookOpen,
   Box,
   Brain,
   ChevronDown,
   ChevronRight,
   Download,
-  Eye,
-  Key,
-  Lock,
   Plus,
   Search,
   Sparkles,
   Tag,
-  User2,
   UserCircle,
   Wifi,
   X
@@ -835,36 +830,24 @@ const { remainingPosts } = useMemo(() => {
       <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-cyan-400/20 blur-3xl" />
 
       <div className="relative max-w-2xl">
-        <h1 className="mt-0 text-3xl md:text-3xl font-bold tracking-tight text-white">
-          Belajar jaringan, <br className="hidden md:block" />
-          mulai dari panduan komunitas.
+        <h1 className="mt-0 text-3xl font-bold tracking-tight text-white">
+          Network &amp; hardware guides, <br className="hidden md:block" />
+          built from real IT Pintex experience.
         </h1>
 
-        <p className="mt-3 text-sm md:text-base text-blue-100">
-          Jelajahi {totalGuides > 0 ? `${totalGuides}+ ` : ""}guide seputar Mikrotik,
-          Ubiquiti, TP-Link dan lainnya. Daftar untuk membuat guide sendiri dan
-          berbagi ilmu dengan komunitas.
+        <p className="mt-3 w-full md:w-[80%] text-sm md:text-base text-blue-100">
+          {totalGuides > 0 ? `${totalGuides} ` : ""}guides on networking, installation,
+          and hardware repair, written from real cases handled by the IT Pintex team
+          as an everyday reference.
         </p>
 
         <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:items-center">
           <button
-            onClick={onSignUp}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-blue-700 shadow-sm transition hover:bg-blue-50 active:scale-[0.98] duration-100"
-          >
-            Sign up gratis <ArrowRight size={16} />
-          </button>
-          <button
             onClick={onLogin}
-            className="inline-flex items-center justify-center rounded-lg border border-white/30 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-white/10 active:scale-[0.98] duration-100"
+            className="inline-flex items-center justify-center rounded-lg border border-white/30 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-white/10 active:scale-[0.98] duration-100"
           >
-            Login
+            Login - writer
           </button>
-          {/* <button
-            onClick={onBrowse}
-            className="inline-flex items-center justify-center gap-1 px-2 py-2.5 text-sm font-medium text-blue-100 underline-offset-4 hover:underline"
-          >
-            Lihat guide <ChevronDown size={14} />
-          </button> */}
         </div>
       </div>
     </section>
