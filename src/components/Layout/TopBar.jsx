@@ -447,7 +447,104 @@ const TopBar = ({ onMenuClick }) => {
 
           {user ? (
             <div className="relative" ref={profileRef} data-tour="profile">
-              ...dropdown profil lama...
+               <button
+                  type="button"
+                  onClick={() => {
+                    setOpenProfile((prev) => !prev);
+                    setOpenNotif(false);
+                  }}
+                  className="ml-0.5 flex h-10 w-10 active:scale-[0.98] items-center justify-center dark:border-[2px] dark:md:border-white/20 dark:border-white/30 border-white border rounded-control p-2.5 text-white transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+                  title={user?.name || "Profile"}
+                >
+                  {user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={user.name}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    user?.name?.[0]?.toUpperCase() || "G"
+                  )}
+                </button>
+
+                {openProfile && (
+                  <div className="absolute shadow-2xl right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-white/10 dark:bg-[#12121a]">
+                    {/* Header */}
+                    <div className="border-b border-gray-100 px-4 py-3 dark:border-white/10">
+                      <p className="truncate text-sm font-semibold">
+                        {user?.name || "Guest"}
+                      </p>
+                      {user?.email && (
+                        <p className="truncate text-xs text-gray-500">{user.email}</p>
+                      )}
+                    </div>
+
+                    <div className="py-1.5">
+                      {!isGuest ? (
+                        <>
+                          {/* Menu untuk user yang sudah login */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setOpenProfile(false);
+                              navigate("/profile");
+                            }}
+                            className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition hover:bg-black/[0.03] dark:text-gray-200 dark:hover:bg-white/[0.05]"
+                          >
+                            <User size={16} className="text-gray-400" />
+                            View profile
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setOpenProfile(false);
+                              navigate("/reading-list");
+                            }}
+                            className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition hover:bg-black/[0.03] dark:text-gray-200 dark:hover:bg-white/[0.05]"
+                          >
+                            <BookOpen size={16} className="text-gray-400" />
+                            Reading List
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setOpenProfile(false);
+                              navigate("/my-posts");
+                            }}
+                            className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition hover:bg-black/[0.03] dark:text-gray-200 dark:hover:bg-white/[0.05]"
+                          >
+                            <BookOpen size={16} className="text-gray-400" />
+                            My Guides
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={handleLogoutClick}
+                            className="flex w-full items-center active:scale-[0.99] duration-100 gap-3 px-4 py-2.5 text-left text-sm text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10"
+                          >
+                            <LogOut size={16} />
+                            Logout
+                          </button>
+                        </>
+                      ) : (
+                        /* Menu untuk Guest */
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOpenProfile(false);
+                            navigate("/register"); // atau "/auth/register" sesuai route kamu
+                          }}
+                          className="flex w-[94%] rounded-xl mx-auto items-center gap-2 px-2.5 active:scale-[0.99] duration-100 py-2.5 text-left text-sm text-white transition bg-gradient-to-br from-blue-400 to-blue-900"
+                        >
+                          <User size={16} />
+                          Register
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
             </div>
           ) : (
             <button

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar.jsx";
 import TopBar from "./TopBar.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 // --- Quote modal -------------------------------------------------------------
 const QUOTE_SEEN_KEY = "nethub_quote_seen";
@@ -79,7 +80,13 @@ const QuoteModal = ({ onClose }) => {
 
 // --- Layout ------------------------------------------------------------------
 const AppLayout = () => {
+  const { user } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Kalau logout / belum login, pastikan drawer mobile tertutup
+  useEffect(() => {
+    if (!user) setMobileOpen(false);
+  }, [user]);
 
   // Tampil hanya jika belum pernah tampil di sesi login ini
   const [showQuote, setShowQuote] = useState(() => {
@@ -108,13 +115,16 @@ const AppLayout = () => {
     <div className="relative flex h-screen overflow-hidden bg-surface-light text-[#1D1D1F] dark:bg-surface-dark dark:text-[#F5F5F7]">
       {showQuote && <QuoteModal onClose={() => setShowQuote(false)} />}
 
-      {/* Desktop sidebar */}
-      <div className="hidden lg:block">
-        <Sidebar />
-      </div>
+      {/* Desktop sidebar: hanya kalau login */}
+      {user && (
+        <div className="hidden lg:block">
+          <Sidebar />
+        </div>
+      )}
+
 
       {/* Mobile sidebar drawer */}
-      {mobileOpen && (
+      {user && mobileOpen && (
         <div className="fixed inset-0 z-[99999] lg:hidden">
           <div className="absolute inset-0 bg-black/30" onClick={() => setMobileOpen(false)} />
           <div className="absolute inset-y-0 left-0 animate-fade-in">
@@ -122,6 +132,7 @@ const AppLayout = () => {
           </div>
         </div>
       )}
+
 
       <img src="/hero.jpg" alt="wallpaper-sidebar" className="absolute top-0 left-[0px] w-screen h-screen rotate-[0deg] scale-[2] dark:flex hidden object-cover brightness-[20%]" />
       <img src="/hero.jpg" alt="wallpaper-sidebar" className="absolute top-0 left-[0px] w-screen h-screen rotate-[150deg] scale-[4] dark:hidden flex object-cover brightness-[40%]" />

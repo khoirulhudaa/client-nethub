@@ -287,7 +287,7 @@ const PostCardSkeleton = () => (
   </div>
 );
 
-const DashboardSkeleton = ({ showPinned = false }) => (
+const DashboardSkeleton = ({ showPinned = false, user }) => (
   <div aria-busy="true" aria-label="Loading content">
     {showPinned && (
       <section className="mb-8 px-0 md:px-4 m0-4 md:mt-0">
@@ -300,8 +300,8 @@ const DashboardSkeleton = ({ showPinned = false }) => (
         <SkeletonBlock className="h-5 w-5" />
         <SkeletonBlock className="h-5 w-32" />
       </div>
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-2">
-        {Array.from({ length: 4 }).map((_, i) => (
+      <div className={`grid grid-cols-1 gap-5 sm:grid-cols-3 xl:grid-cols-3`}>
+        {Array.from({ length: 3 }).map((_, i) => (
           <PostCardSkeleton key={i} />
         ))}
       </div>
@@ -973,7 +973,7 @@ const { remainingPosts } = useMemo(() => {
 
           {/* Content */}
           {loading || (search.trim() && searchLoading) ? (
-            <DashboardSkeleton showPinned={!isGuest && showOverviewSections} />
+            <DashboardSkeleton user={user} showPinned={!isGuest && showOverviewSections} />
           ) : (
             <>
               {/* ========== PINNED FIRST ========== */}
@@ -1003,7 +1003,7 @@ const { remainingPosts } = useMemo(() => {
                     <>
                       {/* Ganti grid-cols-* jadi flex */}
                       <div className="flex flex-col gap-5">
-                        {chunk(visiblePosts, 2).map((row, rowIndex) => (
+                        {chunk(visiblePosts, 3).map((row, rowIndex) => (
                           <div
                             key={rowIndex}
                             className="flex flex-col sm:flex-row gap-5"
@@ -1024,7 +1024,7 @@ const { remainingPosts } = useMemo(() => {
 
                       {/* Skeleton saat load more */}
                       {loadingMore && (
-                        <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-2">
+                        <div className={`mt-5 grid grid-cols-1 gap-5 ${user ? 'sm:grid-cols-3 xl:grid-cols-3' : 'sm:grid-cols-2 xl:grid-cols-2'}`}>
                           {Array.from({ length: Math.min(limit, 4) }).map((_, i) => (
                             <PostCardSkeleton key={i} />
                           ))}
@@ -1072,7 +1072,7 @@ const { remainingPosts } = useMemo(() => {
                         </p>
                       </div>
                     ) : (
-                      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                      <div className={`grid grid-cols-1 gap-5 ${user ? 'sm:grid-cols-3 xl:grid-cols-3' : 'sm:grid-cols-2 xl:grid-cols-3'}`}>
                         {filteredPosts.map((post) => (
                           <PostCard slug={post.slug} key={post._id} post={post} />
                         ))}
