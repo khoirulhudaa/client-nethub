@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Outlet, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/Layout/AppLayout.jsx";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 
@@ -57,74 +57,60 @@ function App() {
         }}
       />
 
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/private/1a2b3c4d/register" element={<Register />} />
+     <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/private/1a2b3c4d/register" element={<Register />} />
+      <Route path="/ticket" element={<CreateTicketUserPage />} />
+      <Route path="/install" element={<InstallAppPage />} />
 
-        {/* ===== HALAMAN KHUSUS TANPA SIDEBAR & TOPBAR ===== */}
-        <Route
-          path="/ticket"
-          element={
-            <CreateTicketUserPage />
-          }
-        />
-        <Route path="/install" element={<InstallAppPage />} />
+      <Route path="/" element={<AppLayout />}>
+        {/* ===== PUBLIK: siapa pun bisa buka ===== */}
+        <Route index element={<Dashboard />} />
+        <Route path="posts/:slug" element={<PostDetail />} />
+        <Route path="authors/:id" element={<AuthorProfile />} />
+        <Route path="authors/detail/:id" element={<AuthorBio />} />
+        <Route path="tags/:tag" element={<TagPosts />} />
+        <Route path="trending" element={<Trending />} />
+        <Route path="tools/subnet" element={<SubnetCalculator />} />
+        <Route path="announcements/:id" element={<AnnouncementDetail />} />
+        <Route path="terms" element={<TermsPage />} />
+        <Route path="privacy" element={<PrivacyPage />} />
+        <Route path="content-policy" element={<ContentPolicyPage />} />
+        <Route path="topology-practice" element={<TopologyPractice />} />
+        <Route path="pc-build-practice" element={<PCBuildCanvas />} />
+        <Route path="practice" element={<PracticeHub />} />
+        <Route path="quizzes" element={<Quizzes />} />
+        <Route path="quizzes/:id" element={<TakeQuiz />} />
 
-        {/* ===== LAYOUT UTAMA (ada Sidebar + TopBar) ===== */}
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <AppLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<Dashboard />} />
+        {/* ===== PRIVAT: wajib login ===== */}
+        <Route element={<ProtectedRoute><Outlet /></ProtectedRoute>}>
           <Route path="create" element={<CreatePost />} />
           <Route path="edit/:id" element={<CreatePost />} />
-          <Route path="posts/:slug" element={<PostDetail />} />
-          <Route path="authors/:id" element={<AuthorProfile />} />
+          <Route path="my-posts" element={<MyPosts />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="following" element={<Following />} />
+          <Route path="reading-list" element={<ReadingListPage />} />
           <Route path="tasks" element={<Tasks />} />
           <Route path="tasks/create" element={<TaskForm />} />
           <Route path="tasks/edit/:id" element={<TaskForm />} />
           <Route path="remote" element={<Pcs />} />
-          <Route path="camera" element={<Cameras />} />
           <Route path="remote/create" element={<PcForm />} />
           <Route path="remote/edit/:id" element={<PcForm />} />
-          <Route path="my-posts" element={<MyPosts />} />
+          <Route path="camera" element={<Cameras />} />
           <Route path="contacts" element={<Contacts />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="following" element={<Following />} />
-          <Route path="tags/:tag" element={<TagPosts />} />
           <Route path="contacts/create" element={<ContactForm />} />
           <Route path="contacts/edit/:id" element={<ContactForm />} />
-          <Route path="quizzes/:id" element={<TakeQuiz />} />
-          <Route path="admin/activities" element={<ActivityLog />} />
-          <Route path="practice" element={<PracticeHub />} />
-          
-
-          <Route path="/user/tickets/track" element={<TrackTicketPage />} />
-
           <Route path="tickets" element={<TicketsPage />} />
           <Route path="tickets/:id" element={<TicketDetailPage />} />
           <Route path="tickets/create" element={<CreateTicketPage />} />
-          
+          <Route path="user/tickets/track" element={<TrackTicketPage />} />
           <Route path="hardware" element={<HardwareCollection />} />
-          <Route path="quizzes" element={<Quizzes />} />
-          <Route path="topology-practice" element={<TopologyPractice />} />
           <Route path="quiz-builder" element={<QuizBuilder />} />
-          <Route path="terms" element={<TermsPage />} />
-          <Route path="privacy" element={<PrivacyPage />} />
-          <Route path="content-policy" element={<ContentPolicyPage />} />
-          <Route path="trending" element={<Trending />} />
-          <Route path="tools/subnet" element={<SubnetCalculator />} />
-          <Route path="announcements/:id" element={<AnnouncementDetail />} />
-          <Route path="reading-list" element={<ReadingListPage />} />
-          <Route path="authors/detail/:id" element={<AuthorBio />} />
-          <Route path="pc-build-practice" element={<PCBuildCanvas />} />
+          <Route path="admin/activities" element={<ActivityLog />} />
           <Route path="admin/announcements" element={<AnnouncementsAdmin />} />
         </Route>
-      </Routes>
+      </Route>
+    </Routes>
     </>
   );
 }

@@ -9,6 +9,8 @@ export const AuthProvider = ({ children }) => {
     return stored ? JSON.parse(stored) : null;
   });
   const [loading, setLoading] = useState(true);
+  const canCreate = !!user && !["guest", "user"].includes(user.role);
+
 
   useEffect(() => {
     const token = localStorage.getItem("nethub_token");
@@ -75,18 +77,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        register,
-        login,
-        loginAsGuest,
-        logout,
-        updateProfile,
-        updateUser, // ← penting: diekspos
-      }}
-    >
+    <AuthContext.Provider value={{
+      user, loading, canCreate,
+      isAuthenticated: !!user,
+      register, login, loginAsGuest, logout, updateProfile, updateUser,
+    }}>
       {children}
     </AuthContext.Provider>
   );

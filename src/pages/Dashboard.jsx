@@ -401,7 +401,7 @@ const TagFilter = ({ tags, selected, onToggle, onClear, loading }) => {
 
 // --- Dashboard Component -----------------------------------------------------
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, canCreate } = useAuth();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -570,8 +570,8 @@ const Dashboard = () => {
     };
   }, [search, tagsKey]);
 
-  const isGuest = user?.isGuest || user?.role === "guest";
-  const isUser = user?.role === "user";
+const isGuest = !user || user.isGuest || user.role === "guest";
+const isUser = user?.role === "user";
 
   // Sumber data search: semua post + pinned (backend menyembunyikan pinned dari list biasa)
   const searchSource = useMemo(() => {
@@ -1034,7 +1034,7 @@ const { remainingPosts } = useMemo(() => {
                                 key={post._id}
                                 post={post}
                                 status={false}
-                                onPinChange={handlePinChange}
+                                onPinChange={canCreate ? handlePinChange : undefined}
                               />
                             ))}
                           </div>
@@ -1125,7 +1125,7 @@ const { remainingPosts } = useMemo(() => {
                         <Sparkles size={15} />
                         <span>Pinned</span>
                       </div>
-                      <PinnedHero pinned={data.pinned} />
+                        <PinnedHero pinned={data.pinned} onPinChange={canCreate ? handlePinChange : undefined} />
                     </section>
                   )}
                 </>
@@ -1138,7 +1138,7 @@ const { remainingPosts } = useMemo(() => {
                     <Sparkles size={15} />
                     <span>Pinned</span>
                   </div>
-                  <PinnedHero pinned={data.pinned} />
+                    <PinnedHero pinned={data.pinned} onPinChange={canCreate ? handlePinChange : undefined} />
                 </section>
               )}
 

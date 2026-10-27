@@ -65,11 +65,12 @@ const TopBar = ({ onMenuClick }) => {
     }
   };
 
-useEffect(() => {
-  fetchNotifications();
-  const interval = setInterval(fetchNotifications, 30000); // setiap 30 detik
-  return () => clearInterval(interval);
-}, []);
+  useEffect(() => {
+    if (!user) return;
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [user]);
 
   const fetchAnnouncements = async () => {
     try {
