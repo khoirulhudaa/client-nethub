@@ -186,7 +186,7 @@ const TopBar = ({ onMenuClick }) => {
           {(!isGuest && !isUser) && (
             <button
               onClick={() => navigate("/create")}
-              className="active:scale-[0.98] duration-100 hidden items-center dark:hover:bg-white/10 hover:bg-black/10 h-10 gap-1.5 rounded-xl border-[2px] border-white dark:md:border-white/20 dark:border-white/30 px-3 py-2 text-sm font-medium text-white dark:text-white transition hover:opacity-90 sm:inline-flex"
+              className="active:scale-[0.98] duration-100 hidden items-center dark:hover:bg-white/10 hover:bg-black/10 h-10 gap-1.5 rounded-xl border-[2px] border-white dark:md:border-white/30 dark:border-white/30 px-3 py-2 text-sm font-medium text-white dark:text-white transition hover:opacity-90 sm:inline-flex"
             >
               <Plus size={16} />
             </button>
@@ -197,7 +197,7 @@ const TopBar = ({ onMenuClick }) => {
             <div className="relative" ref={notifRefNotif} data-tour="notif">
               <button
                 type="button"
-                className="active:scale-[0.98] duration-100 relative border-white dark:md:border-white/20 dark:border-white/30 border rounded-control p-2.5 text-white transition hover:bg-black/10 dark:text-gray-300 dark:hover:bg-white/10"
+                className="active:scale-[0.98] duration-100 relative border-white dark:md:border-white/30 dark:border-white/30 border rounded-control p-2.5 text-white transition hover:bg-black/10 dark:text-gray-300 dark:hover:bg-white/10"
                 title="Notifications"
                 onClick={() => {
                   setOpenNotifTicket((prev) => !prev);
@@ -338,7 +338,7 @@ const TopBar = ({ onMenuClick }) => {
           <div className="relative" ref={notifRef} data-tour="notif">
             <button
               type="button"
-              className="active:scale-[0.98] duration-100 relative border-white dark:md:border-white/20 dark:border-white/30 border rounded-control p-2.5 text-white transition hover:bg-black/10 dark:text-gray-300 dark:hover:bg-white/10"
+              className="active:scale-[0.98] duration-100 relative border-white dark:md:border-white/30 dark:border-white/30 border rounded-control p-2.5 text-white transition hover:bg-black/10 dark:text-gray-300 dark:hover:bg-white/10"
               title="Notifications"
               onClick={openNotifications}
             >
@@ -439,7 +439,7 @@ const TopBar = ({ onMenuClick }) => {
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="active:scale-[0.98] duration-100 border-white dark:md:border-white/20 dark:border-white/30 border rounded-control p-2.5 text-white transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+            className="active:scale-[0.98] duration-100 border-white dark:md:border-white/30 dark:border-white/30 border rounded-control p-2.5 text-white transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
             title="Toggle theme"
             >
             {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
@@ -453,7 +453,7 @@ const TopBar = ({ onMenuClick }) => {
                     setOpenProfile((prev) => !prev);
                     setOpenNotif(false);
                   }}
-                  className="ml-0.5 flex h-10 w-10 active:scale-[0.98] items-center justify-center dark:border-[2px] dark:md:border-white/20 dark:border-white/30 border-white border rounded-control p-2.5 text-white transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+                  className="ml-0.5 flex h-10 w-10 active:scale-[0.98] items-center justify-center dark:border-[2px] dark:md:border-white/30 dark:border-white/30 border-white border rounded-control p-2.5 text-white transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
                   title={user?.name || "Profile"}
                 >
                   {user?.avatar ? (
@@ -550,7 +550,7 @@ const TopBar = ({ onMenuClick }) => {
             <button
               type="button"
               onClick={() => navigate("/login")}
-              className="ml-0.5 flex h-10 items-center gap-2 rounded-xl bg-gradient-to-br from-blue-400 to-blue-900 px-4 text-sm font-medium text-white active:scale-[0.98] duration-100 hover:brightness-110"
+              className="ml-0.5 flex h-10 items-center gap-2 rounded-xl border border-white/20 hover:bg-white/10 px-4 text-sm font-medium text-white active:scale-[0.98] duration-100 hover:brightness-110"
             >
               <LogIn size={16} />
               <span className="hidden sm:inline">Login</span>
