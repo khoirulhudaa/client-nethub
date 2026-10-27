@@ -259,7 +259,7 @@ const Card3 = () => {
 
 // --- Skeleton ----------------------------------------------------------------
 const SkeletonBlock = ({ className = "" }) => (
-  <div className={`animate-pulse rounded-lg bg-slate-300 dark:bg-white/10 ${className}`} />
+  <div className={`animate-pulse rounded-lg bg-slate-300 dark:bg-slate-400 ${className}`} />
 );
 
 const MetricCardSkeleton = () => (
@@ -271,7 +271,7 @@ const MetricCardSkeleton = () => (
 );
 
 const PostCardSkeleton = () => (
-  <div className="rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-slate-950 p-3 md:p-4">
+  <div className="rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white p-3 md:p-4">
     <SkeletonBlock className="h-40 md:flex hidden w-full rounded-lg" />
     <div className="md:mt-4 flex gap-2">
       <SkeletonBlock className="h-6 md:h-5 w-12 md:w-16 rounded-full" />
@@ -824,7 +824,7 @@ const { remainingPosts } = useMemo(() => {
 
   // --- Guest jumbotron ---------------------------------------------------------
   const GuestJumbotron = ({ onLogin, totalGuides = 0 }) => (
-    <section className="relative mb-6 overflow-hidden md:mx-6 md:mt-6 rounded-2xl bg-gradient-to-br from-blue-600 via-blue-700 to-slate-900 px-5 py-10 md:px-8 md:pb-8 md:pt-6">
+    <section className="relative mb-6 overflow-hidden md:mx-6 md:mt-6 rounded-2xl bg-gradient-to-br from-blue-300 via-blue-700 to-slate-900 px-5 py-10 md:px-8 md:pb-8 md:pt-6">
       {/* dekorasi */}
       <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-cyan-400/20 blur-3xl" />
@@ -834,7 +834,7 @@ const { remainingPosts } = useMemo(() => {
         src="/tech1.png"
         alt="bg-tech"
         draggable={false}
-        className="pointer-events-none absolute right-[-4%] top-3 w-[70%] md:w-[63%] opacity-60 md:opacity-100"
+        className="pointer-events-none absolute right-[-20%] md:right-[-4%] md:top-3 w-[100%] md:w-[63%] opacity-100 md:opacity-100"
       />
 
       {/* Blur: kuat di kiri, hilang ke kanan (pakai mask) */}
