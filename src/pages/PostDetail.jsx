@@ -1736,7 +1736,7 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
                   <Link
                     key={t}
                     to={`/tags/${encodeURIComponent(t)}`}
-                    className="pill w-max hover:brightness-75 bg-gray-100 text-gray-500 dark:!bg-white/90 dark:text-white hover:bg-accent hover:text-white transition-colors"
+                    className="pill w-max hover:brightness-75 bg-gray-100 text-gray-500 dark:!bg-white/90 dark:text-slate-900 hover:bg-accent hover:text-white transition-colors"
                   >
                     #{t}
                   </Link>
