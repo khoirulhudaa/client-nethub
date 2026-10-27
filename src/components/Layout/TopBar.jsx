@@ -338,7 +338,7 @@ const TopBar = ({ onMenuClick }) => {
             <Menu size={20} />
           </button>
         ) : (
-          <Link to="/" className="flex shrink-0 border border-white/20 rounded-lg px-1 pr-2 items-center gap-2">
+          <Link to="/" className="flex shrink-0 items-center gap-2">
             <img
               src="/icons/icon-192x192.png"
               alt="logo"
@@ -355,7 +355,7 @@ const TopBar = ({ onMenuClick }) => {
         {renderSearch(desktopSearchRef, desktopInputRef, "hidden md:block w-full max-w-md")}
 
         {/* Quick links — desktop */}
-        <div className="hidden h-[68%] border border-white/20 rounded-xl px-1 pr-2 items-center gap-3 md:flex">
+        <div className="hidden h-[68%] items-center gap-3 md:flex">
           <TopLink to="/" icon={Home} label="Dashboard" />
           <TopLink to="/tools/subnet" icon={Calculator} label="Subnet" />
           <TopLink to="/topology-practice" icon={PencilRuler} label="Practice" />
