@@ -172,7 +172,7 @@ const Card1 = () => {
         Map your network, inspect a node
       </p>
 
-      <div className="relative h-56 w-full rounded-lg bg-gray-50 flex items-center justify-center overflow-hidden">
+      <div className="relative h-56 w-full rounded-lg bg-gray-50 dark:bg-slate-300 flex items-center justify-center overflow-hidden">
         <img
           src="/mikrotik.png"
           alt="logo-mikrotik"
@@ -206,7 +206,7 @@ const Card2 = () => {
         Map your network, inspect a node
       </p>
 
-      <div className="relative h-56 w-full rounded-lg bg-gray-50 flex items-center justify-center overflow-hidden">
+      <div className="relative h-56 w-full rounded-lg bg-gray-50 dark:bg-slate-300 flex items-center justify-center overflow-hidden">
         <img
           src="/ubiquiti.png"
           alt="logo-ubiquiti"
@@ -240,7 +240,7 @@ const Card3 = () => {
         Map your network, inspect a node
       </p>
 
-      <div className="relative h-56 w-full rounded-lg bg-gray-50 flex items-center justify-center overflow-hidden">
+      <div className="relative h-56 w-full rounded-lg bg-gray-50 dark:bg-slate-300 flex items-center justify-center overflow-hidden">
         <img
           src="/tplink.png"
           alt="logo-tplink"
