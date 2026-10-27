@@ -74,7 +74,7 @@ const PostCard = ({
 
     let text = `*${title}*\n`;
     if (category) text += `Kategori: ${category}\n`;
-    if (author) text += `Oleh: ${author}\n`;
+    if (author) text += `Oleh: Pintex\n`;
     if (tags) text += `\n${tags}\n`;
     text += `\n${postUrl}`;
 
