@@ -901,7 +901,7 @@ const { remainingPosts } = useMemo(() => {
         </div>
       )}
 
-      <div className="border-t border-slate-300 dark:border-white/10 md:mb-6"></div>
+      <div className={`${isGuest ? 'border-none' : 'border-t border-slate-300 dark:border-white/10'} md:mb-6`}></div>
 
       <div ref={guidesRef} className="md:px-6 pb-6 scroll-mt-4">
         <div className="px-0 pt-3 pb-3 md:px-0 w-full md:py-4 relative rounded-xl !bg-transparent md:!bg-slate-200 md:dark:!bg-white/5">
