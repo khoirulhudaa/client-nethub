@@ -189,7 +189,7 @@ const TopBar = ({ onMenuClick }) => {
       <form
         data-tour="search"
         onSubmit={(e) => handleSearch(e, inputRef)}
-        className="flex w-full items-stretch overflow-hidden rounded-xl border border-slate-400 dark:border-white/20 focus-within:border-blue-400 transition"
+        className="flex w-full items-stretch overflow-hidden rounded-xl bg-white/25 border border-slate-400 dark:border-white/20 focus-within:border-blue-400 transition"
       >
         <div className="relative flex-1">
           <Search
@@ -208,7 +208,7 @@ const TopBar = ({ onMenuClick }) => {
               setShowSuggest(true);
             }}
             placeholder="Search guides by title…"
-            className="h-10 w-full bg-transparent pl-9 pr-8 text-sm text-white outline-none placeholder:text-slate-700 dark:placeholder:text-white/50"
+            className="h-10 w-full bg-transparent pl-9 pr-8 text-sm text-white outline-none placeholder:text-slate-700 dark:placeholder:text-white/90"
           />
           {query && (
             <button
@@ -328,7 +328,11 @@ const TopBar = ({ onMenuClick }) => {
         }}
       />
 
-      <div className="relative z-[1] w-[100%] flex justify-between h-full items-center pl-2 pr-2 md:pr-5 gap-3">
+      <div className="relative z-[1] w-[100%] flex justify-between h-full items-center pl-2.5 pr-2 md:pr-5 gap-3">
+
+        {/* Search desktop */}
+        {renderSearch(desktopSearchRef, desktopInputRef, "hidden md:block w-full max-w-md")}
+    
         {/* Hamburger (login) / Logo (pengunjung) */}
         {user ? (
           <button
@@ -338,21 +342,8 @@ const TopBar = ({ onMenuClick }) => {
             <Menu size={20} />
           </button>
         ) : (
-          <Link to="/" className="flex shrink-0 items-center gap-2">
-            <img
-              src="/icons/icon-192x192.png"
-              alt="logo"
-              draggable={false}
-              className="h-10 w-10 rounded-lg relative top-[1px] ml-[-2px]"
-            />
-            <span className="hidden sm:inline text-[18px] font-semibold tracking-tight text-white">
-              TEXNet
-            </span>
-          </Link>
+         <></>
         )}
-
-        {/* Search desktop */}
-        {renderSearch(desktopSearchRef, desktopInputRef, "hidden md:block w-full max-w-md")}
 
         {/* Quick links — desktop */}
         <div className="hidden h-[68%] items-center gap-3 md:flex">
@@ -519,7 +510,7 @@ const TopBar = ({ onMenuClick }) => {
           <div className="relative" ref={notifRef} data-tour="notif">
             <button
               type="button"
-              className="active:scale-[0.98] duration-100 relative border-white dark:md:border-white/30 dark:border-white/30 border rounded-control p-2.5 text-white transition hover:bg-black/10 dark:text-gray-300 dark:hover:bg-white/10"
+              className="active:scale-[0.98] duration-100 relative bg-white/20 border-white dark:border-white/30 border rounded-control p-2.5 text-white transition hover:bg-black/10 dark:hover:bg-white/10"
               title="Announcements"
               onClick={openNotifications}
             >
@@ -616,7 +607,7 @@ const TopBar = ({ onMenuClick }) => {
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="active:scale-[0.98] duration-100 border-white dark:md:border-white/30 dark:border-white/30 border rounded-control p-2.5 text-white transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+            className="active:scale-[0.98] bg-white/20 duration-100 border-white dark:md:border-white/30 dark:border-white/30 border rounded-control p-2.5 text-white transition hover:bg-black/5 dark:hover:bg-white/10"
             title="Toggle theme"
           >
             {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
@@ -718,7 +709,7 @@ const TopBar = ({ onMenuClick }) => {
             <button
               type="button"
               onClick={() => navigate("/login")}
-              className="ml-0.5 flex h-10 items-center gap-2 rounded-xl border border-white/20 hover:bg-white/10 px-4 text-sm font-medium text-white active:scale-[0.98] duration-100 hover:brightness-110"
+              className="ml-0.5 flex h-10 items-center gap-2 bg-white/20 rounded-xl border border-white/20 hover:bg-white/10 px-4 text-sm font-medium text-white active:scale-[0.98] duration-100 hover:brightness-110"
             >
               <LogIn size={16} />
               <span className="hidden sm:inline">Login</span>
@@ -788,7 +779,7 @@ const TopBar = ({ onMenuClick }) => {
 const TopLink = ({ to, icon: Icon, label }) => (
   <Link
     to={to}
-    className="inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-sm text-white transition hover:bg-black/5 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-white"
+    className="inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-sm text-white transition hover:bg-black/5 hover:text-gray-800 dark:hover:bg-white/10 dark:hover:text-white"
   >
     <Icon size={15} />
     <span className="hidden xl:inline">{label}</span>

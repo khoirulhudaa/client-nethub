@@ -65,7 +65,7 @@ const WelcomeRow = ({ userName = "reader", onNewPost, isGuest = false, isUser=fa
       {(!isGuest && !isUser) && (
         <button
           onClick={onNewPost}
-          className="relative w-full active:scale-[0.99] duration-100 md:w-max flex md:inline-flex items-center gap-1.5 rounded-lg bg-slate-200 dark:bg-transparent px-3 md:px-4 p-2 text-sm font-medium text-slate-900 dark:text-white border border-white/15 shadow-sm transition hover:opacity-90"
+          className="relative w-full active:scale-[0.99] duration-100 md:w-max flex md:inline-flex items-center gap-1.5 rounded-lg bg-slate-200 dark:bg-transparent px-3 md:px-4 p-2 text-sm font-medium text-slate-900 border border-white/15 shadow-sm transition hover:opacity-90"
         >
           <Plus size={16} /> New guide
         </button>
@@ -161,10 +161,10 @@ const Card1 = () => {
       href="https://mikrotik.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-slate-950 hover:brightness-[80%] !p-3.5 md:!p-4 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-white hover:brightness-[80%] !p-3.5 md:!p-4 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
-        <span className="flex items-center gap-1 text-sm font-medium text-slate-900 dark:text-white group-hover:underline">
+        <span className="flex items-center gap-1 text-sm font-medium text-slate-900 group-hover:underline">
           Open web <ChevronRight size={14} />
         </span>
       </div>
@@ -195,10 +195,10 @@ const Card2 = () => {
       href="https://ui.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-slate-950 hover:brightness-[80%] !p-3.5 md:!p-4 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-white hover:brightness-[80%] !p-3.5 md:!p-4 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
-        <span className="flex items-center gap-1 text-sm font-medium text-slate-900 dark:text-white group-hover:underline">
+        <span className="flex items-center gap-1 text-sm font-medium text-slate-900 group-hover:underline">
           Open web <ChevronRight size={14} />
         </span>
       </div>
@@ -229,10 +229,10 @@ const Card3 = () => {
       href="https://www.tp-link.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-slate-950 hover:brightness-[80%] !p-3.5 md:!p-4 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-white hover:brightness-[80%] !p-3.5 md:!p-4 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
-        <span className="flex items-center gap-1 text-sm font-medium text-slate-900 dark:text-white group-hover:underline">
+        <span className="flex items-center gap-1 text-sm font-medium text-slate-900 group-hover:underline">
           Open web <ChevronRight size={14} />
         </span>
       </div>
