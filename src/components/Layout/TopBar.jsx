@@ -779,7 +779,7 @@ const TopBar = ({ onMenuClick }) => {
 const TopLink = ({ to, icon: Icon, label }) => (
   <Link
     to={to}
-    className="inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-sm text-white transition hover:bg-black/5 hover:text-gray-800 dark:hover:bg-white/10 dark:hover:text-white"
+    className="inline-flex items-center gap-1.5 rounded-xl px-2.5 py-2 text-sm text-white transition hover:bg-black/5 hover:text-gray-800 dark:hover:bg-white/10 dark:hover:text-white"
   >
     <Icon size={15} />
     <span className="hidden xl:inline">{label}</span>
