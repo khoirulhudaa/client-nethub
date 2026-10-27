@@ -39,7 +39,7 @@ const Login = () => {
               src="/icons/icon-192x192.png" alt="logo" className="w-[85%] relative top-[1px] left-[-0.3px]" />
           </div>
           <h1 className="text-xl font-semibold text-slate-950 tracking-tight">Pintex Network</h1>
-          <p className="text-sm text-gray-600">Sign in to keep sharing networking know-how.</p>
+          <p className="text-sm text-gray-600">Sign in to keep sharing networking know-how</p>
         </div>
 
         {error && (
