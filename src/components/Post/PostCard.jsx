@@ -399,7 +399,7 @@ return (
               hideImage ? "md:group-hover:hidden" : ""
             } flex items-center gap-1.5 min-w-0 overflow-hidden`}
           >
-            <div className={`post-category transition-all max-w-[200px] relative z-20 ${!pinned ? 'md:flex hidden' : 'hidden'}`}>
+            <div className={`post-category duration-700 ease-out max-w-[200px] relative z-20 ${!pinned ? 'md:flex hidden' : 'hidden'}`}>
               <CategoryPill category={post.category} />
             </div>
 
@@ -407,7 +407,7 @@ return (
               ? post.tags.map((tag) => (
                   <span
                     key={tag}
-                    className={`post-tag transition-all shrink-0 text-xs font-medium !text-slate-600 dark:text-gray-200 md:text-gray-200 !bg-white dark:bg-white/10 md:bg-white/10 whitespace-nowrap ${
+                    className={`post-tag duration-700 shrink-0 text-xs font-medium !text-slate-600 dark:text-gray-200 md:text-gray-200 !bg-white dark:bg-white/10 md:bg-white/10 whitespace-nowrap ${
                       hideImage
                         ? "px-2 py-0.5 rounded-md"
                         : "px-2 py-1 rounded-lg"
