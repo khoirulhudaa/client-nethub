@@ -322,6 +322,7 @@ return (
     <Wrapper
       {...wrapperProps}
       className={`
+        post-card
         block
         flex-1
         min-w-0
@@ -331,7 +332,7 @@ return (
       `}
     >
       <div
-        className={`group hover:dark:!border-blue-300/50 relative p-3.5 bg-slate-300 rounded-[24px] dark:!bg-white border dark:!border-white/20 flex flex-col overflow-hidden ${
+        className={`group hover:dark:!border-blue-300/50 relative p-3.5 bg-slate-300 rounded-[24px] dark:!bg-white/10 border dark:!border-white/20 flex flex-col overflow-hidden ${
           hideImage
             ? "h-[130px]"
             : featured
@@ -385,7 +386,7 @@ return (
 
           {/* Title */}
           <h3
-            className={`font-semibold text-slate-900 dark:text-white md:text-white bg-transparent md:bg-blue-900/90 truncate w-max max-w-[90%] leading-snug tracking-tight ${
+            className={`post-title origin-left transition-all duration-300 font-semibold text-slate-900 dark:text-white md:text-white bg-transparent truncate w-max max-w-[90%] leading-snug tracking-tight ${
               featured ? "text-xl" : "text-base"
             }`}
           >
@@ -394,11 +395,11 @@ return (
 
           {/* Tags + Add (desktop, hideImage=false) */}
           <div
-            className={`${
+            className={`post-tagwrapper ${
               hideImage ? "md:group-hover:hidden" : ""
             } flex items-center gap-1.5 min-w-0 overflow-hidden`}
           >
-            <div className={`relative z-20 ${!pinned ? 'md:flex hidden' : 'hidden'}`}>
+            <div className={`post-category transition-all max-w-[200px] relative z-20 ${!pinned ? 'md:flex hidden' : 'hidden'}`}>
               <CategoryPill category={post.category} />
             </div>
 
@@ -406,7 +407,7 @@ return (
               ? post.tags.map((tag) => (
                   <span
                     key={tag}
-                    className={`shrink-0 text-xs font-medium !text-slate-600 dark:text-gray-200 md:text-gray-200 !bg-white dark:bg-white/10 md:bg-white/10 whitespace-nowrap ${
+                    className={`post-tag transition-all shrink-0 text-xs font-medium !text-slate-600 dark:text-gray-200 md:text-gray-200 !bg-white dark:bg-white/10 md:bg-white/10 whitespace-nowrap ${
                       hideImage
                         ? "px-2 py-0.5 rounded-md"
                         : "px-2 py-1 rounded-lg"

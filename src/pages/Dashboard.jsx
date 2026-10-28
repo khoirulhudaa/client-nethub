@@ -297,10 +297,11 @@ const DashboardSkeleton = ({ showPinned = false, user }) => (
 
     <section className="mb-8 px-0 md:px-4">      
       <div className="mb-4 flex items-center gap-2">
-        <SkeletonBlock className="h-5 w-5" />
-        <SkeletonBlock className="h-5 w-32" />
+        <SkeletonBlock className="h-6 w-20" />
+        <SkeletonBlock className="h-6 w-20" />
+        <SkeletonBlock className="h-6 w-20" />
       </div>
-      <div className={`grid grid-cols-1 gap-5 sm:grid-cols-3 xl:grid-cols-3`}>
+      <div className={`grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3`}>
         {Array.from({ length: 3 }).map((_, i) => (
           <PostCardSkeleton key={i} />
         ))}
@@ -1021,8 +1022,23 @@ const { remainingPosts } = useMemo(() => {
                     </div>
                   ) : (
                     <>
-                      {/* Ganti grid-cols-* jadi flex */}
-                      <div className="flex flex-col gap-5">
+                      <div
+                        className="
+                          flex flex-col gap-5
+
+                          md:[&:has(.post-card:hover)_.post-card:not(:hover)_.post-title]:scale-75
+                          md:[&:has(.post-card:hover)_.post-card:not(:hover)_.post-title]:opacity-70
+
+                          md:[&:has(.post-card:hover)_.post-card:not(:hover)_.post-tag]:!text-[10px]
+                          md:[&:has(.post-card:hover)_.post-card:not(:hover)_.post-tagwrapper]:!ml-[-5px]
+                          md:[&:has(.post-card:hover)_.post-card:not(:hover)_.post-tag]:!px-1.5
+                          md:[&:has(.post-card:hover)_.post-card:not(:hover)_.post-tag]:!py-0.5
+
+                          md:[&:has(.post-card:hover)_.post-card:not(:hover)_.post-category]:max-w-0
+                          md:[&:has(.post-card:hover)_.post-card:not(:hover)_.post-category]:opacity-0
+                          md:[&:has(.post-card:hover)_.post-card:not(:hover)_.post-category]:overflow-hidden
+                        "
+                      >
                         {chunk(visiblePosts, 3).map((row, rowIndex) => (
                           <div
                             key={rowIndex}
@@ -1044,7 +1060,7 @@ const { remainingPosts } = useMemo(() => {
 
                       {/* Skeleton saat load more */}
                       {loadingMore && (
-                        <div className={`mt-5 grid grid-cols-1 gap-5 ${user ? 'sm:grid-cols-3 xl:grid-cols-3' : 'sm:grid-cols-2 xl:grid-cols-2'}`}>
+                        <div className={`mt-5 grid grid-cols-1 gap-5 ${user ? 'sm:grid-cols-2 xl:grid-cols-3' : 'sm:grid-cols-2 xl:grid-cols-3'}`}>
                           {Array.from({ length: Math.min(limit, 4) }).map((_, i) => (
                             <PostCardSkeleton key={i} />
                           ))}
@@ -1060,16 +1076,6 @@ const { remainingPosts } = useMemo(() => {
                         onLimit={handleLimitChange}
                       />
 
-                      {/* ===== LOAD MORE ===== */}
-                      {/* {!search && hasMore && !loadingMore && (
-                        <div
-                          className="mt-6 cursor-pointer active:scale-[0.98] duration-100 hover:brightness-75 flex flex-col items-center justify-center"
-                          onClick={handleLoadMore}
-                        >
-                          <p>Load more</p>
-                          <ChevronDown size={14} className="relative top-1.5 duration-300 ease-out animate-bounce" />
-                        </div>
-                      )} */}
                     </>
                   )}
                 </section>
@@ -1092,7 +1098,7 @@ const { remainingPosts } = useMemo(() => {
                         </p>
                       </div>
                     ) : (
-                      <div className={`grid grid-cols-1 gap-5 ${user ? 'sm:grid-cols-3 xl:grid-cols-3' : 'sm:grid-cols-2 xl:grid-cols-3'}`}>
+                      <div className={`grid grid-cols-1 gap-5 ${user ? 'sm:grid-cols-2 xl:grid-cols-3' : 'sm:grid-cols-2 xl:grid-cols-3'}`}>
                         {filteredPosts.map((post) => (
                           <PostCard slug={post.slug} key={post._id} post={post} />
                         ))}
@@ -1157,7 +1163,7 @@ const { remainingPosts } = useMemo(() => {
                       </span>
                     </h2>
                   </div>
-                  <div className="md:mb-2 mt-4 px-0 md:px-4 grid grid-cols-1 gap-3 lg:grid-cols-3">
+                  <div className="md:mb-2 mt-4 px-0 md:px-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
                     <Card2 />
                     <Card1 />
                     <Card3 />

@@ -208,7 +208,7 @@ const TopBar = ({ onMenuClick }) => {
               setShowSuggest(true);
             }}
             placeholder="Search guides by title…"
-            className="h-10 w-full bg-transparent pl-9 pr-8 text-sm text-white outline-none placeholder:text-slate-700 dark:placeholder:text-white/90"
+            className="h-9 w-full bg-transparent pl-9 pr-8 text-sm text-white outline-none placeholder:text-slate-700 dark:placeholder:text-white/90"
           />
           {query && (
             <button
@@ -510,7 +510,7 @@ const TopBar = ({ onMenuClick }) => {
           <div className="relative" ref={notifRef} data-tour="notif">
             <button
               type="button"
-              className="active:scale-[0.98] duration-100 relative bg-white/20 border-white dark:border-white/30 border rounded-control p-2.5 text-white transition hover:bg-black/10 dark:hover:bg-white/10"
+              className="active:scale-[0.98] h-9 w-9 flex items-center justify-center duration-100 relative bg-white/20 border-white dark:border-white/30 border rounded-control text-white transition hover:bg-black/10 dark:hover:bg-white/10"
               title="Announcements"
               onClick={openNotifications}
             >
@@ -607,7 +607,7 @@ const TopBar = ({ onMenuClick }) => {
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="active:scale-[0.98] bg-white/20 duration-100 border-white dark:md:border-white/30 dark:border-white/30 border rounded-control p-2.5 text-white transition hover:bg-black/5 dark:hover:bg-white/10"
+            className="active:scale-[0.98] bg-white/20 duration-100 border-white dark:md:border-white/30 dark:border-white/30 border rounded-control h-9 w-9 flex items-center justify-center text-white transition hover:bg-black/5 dark:hover:bg-white/10"
             title="Toggle theme"
           >
             {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
@@ -622,7 +622,7 @@ const TopBar = ({ onMenuClick }) => {
                   setOpenProfile((prev) => !prev);
                   setOpenNotif(false);
                 }}
-                className="ml-0.5 flex h-10 w-10 active:scale-[0.98] items-center justify-center overflow-hidden dark:border-[2px] dark:md:border-white/30 dark:border-white/30 border-white border rounded-control p-2.5 text-white transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
+                className="ml-0.5 flex h-10 w-10 active:scale-[0.98] items-center justify-center overflow-hidden dark:border-[2px] dark:md:border-white/30 dark:border-white/30 border-white border rounded-control h-9 w-9 flex items-center justify-center text-white transition hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10"
                 title={user?.name || "Profile"}
               >
                 {user?.avatar ? (
@@ -709,7 +709,7 @@ const TopBar = ({ onMenuClick }) => {
             <button
               type="button"
               onClick={() => navigate("/login")}
-              className="ml-0.5 flex h-10 items-center gap-2 bg-white/20 rounded-xl border border-white/20 hover:bg-white/10 px-4 text-sm font-medium text-white active:scale-[0.98] duration-100 hover:brightness-110"
+              className="flex h-9 w-max items-center gap-2 bg-white/20 rounded-xl border border-white/20 hover:bg-white/10 px-2 text-sm font-medium text-white active:scale-[0.98] duration-100 hover:brightness-110"
             >
               <LogIn size={16} />
               <span className="hidden sm:inline">Login</span>
