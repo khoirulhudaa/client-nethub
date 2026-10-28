@@ -161,7 +161,7 @@ const Card1 = () => {
       href="https://mikrotik.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-white hover:brightness-[80%] !p-3.5 md:!p-4 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-white/10 hover:brightness-[80%] !p-3.5 md:!p-4 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
         <span className="flex items-center gap-1 text-sm font-medium text-slate-900 group-hover:underline">
@@ -195,7 +195,7 @@ const Card2 = () => {
       href="https://ui.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-white hover:brightness-[80%] !p-3.5 md:!p-4 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-white/10 hover:brightness-[80%] !p-3.5 md:!p-4 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
         <span className="flex items-center gap-1 text-sm font-medium text-slate-900 group-hover:underline">
@@ -229,7 +229,7 @@ const Card3 = () => {
       href="https://www.tp-link.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-white hover:brightness-[80%] !p-3.5 md:!p-4 shadow-sm"
+      className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-white/10 hover:brightness-[80%] !p-3.5 md:!p-4 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
         <span className="flex items-center gap-1 text-sm font-medium text-slate-900 group-hover:underline">
@@ -259,7 +259,7 @@ const Card3 = () => {
 
 // --- Skeleton ----------------------------------------------------------------
 const SkeletonBlock = ({ className = "" }) => (
-  <div className={`animate-pulse rounded-lg bg-slate-300 dark:bg-slate-400 ${className}`} />
+  <div className={`animate-pulse rounded-lg bg-slate-300 dark:bg-slate-400/20 ${className}`} />
 );
 
 const MetricCardSkeleton = () => (
@@ -271,7 +271,7 @@ const MetricCardSkeleton = () => (
 );
 
 const PostCardSkeleton = () => (
-  <div className="rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white p-3 md:p-4">
+  <div className="rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-white/10 p-3 md:p-4">
     <SkeletonBlock className="h-40 md:flex hidden w-full rounded-lg" />
     <div className="md:mt-4 flex gap-2">
       <SkeletonBlock className="h-6 md:h-5 w-12 md:w-16 rounded-full" />
@@ -1163,7 +1163,7 @@ const { remainingPosts } = useMemo(() => {
                       </span>
                     </h2>
                   </div>
-                  <div className="md:mb-2 mt-4 px-0 md:px-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
+                  <div className="md:mb-2 mt-4 px-0 md:px-4 grid grid-cols-1 gap-3 lg:grid-cols-3">
                     <Card2 />
                     <Card1 />
                     <Card3 />
