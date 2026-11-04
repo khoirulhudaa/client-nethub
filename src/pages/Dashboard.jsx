@@ -164,7 +164,7 @@ const Card1 = () => {
       className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-white/10 hover:brightness-[80%] !p-3.5 md:!p-4 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
-        <span className="flex items-center gap-1 text-sm font-medium text-slate-900 group-hover:underline">
+        <span className="flex items-center gap-1 dark:!text-white text-sm font-medium text-slate-900 group-hover:underline">
           Open web <ChevronRight size={14} />
         </span>
       </div>
