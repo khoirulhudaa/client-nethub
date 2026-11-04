@@ -310,10 +310,12 @@ const DashboardSkeleton = ({ showPinned = false, user }) => (
   </div>
 );
 
-const TagFilter = ({ tags, selected, onToggle, onClear, loading }) => {
+const TagFilter = ({ tags, selected, onToggle, onClear, loading, maxTags = 3 }) => {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const ref = useRef(null);
+
+  const limitReached = selected.length >= maxTags;
 
   // Tutup dropdown saat klik di luar
   useEffect(() => {
@@ -340,7 +342,7 @@ const TagFilter = ({ tags, selected, onToggle, onClear, loading }) => {
       >
         <span className="flex items-center gap-2 truncate">
           <Tag size={14} />
-          {selected.length ? `${selected.length} tags selected` : "All tags"}
+          {selected.length ? `${selected.length}/${maxTags} tags selected` : "All tags"}
         </span>
         <ChevronDown size={14} className={`shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
@@ -362,14 +364,23 @@ const TagFilter = ({ tags, selected, onToggle, onClear, loading }) => {
             )}
             {visible.map((tag) => {
               const checked = selected.includes(tag);
+              const disabled = !checked && limitReached;
+
               return (
                 <li key={tag}>
-                  <label className="flex cursor-pointer items-center gap-2 rounded-lg px-1 border border-slate-400 py-1 text-sm text-slate-800 hover:bg-gray-100">
+                  <label
+                    className={`flex items-center gap-2 rounded-lg px-1 border border-slate-400 py-1 text-sm text-slate-800 ${
+                      disabled
+                        ? "cursor-not-allowed opacity-40"
+                        : "cursor-pointer hover:bg-gray-100"
+                    }`}
+                  >
                     <input
                       type="checkbox"
                       checked={checked}
+                      disabled={disabled}
                       onChange={() => onToggle(tag)}
-                      className="h-4 w-4 accent-blue-600"
+                      className="h-4 w-4 accent-blue-600 disabled:cursor-not-allowed"
                     />
                     <span className="truncate">{tag}</span>
                   </label>
@@ -403,7 +414,7 @@ const Dashboard = () => {
 
   const tagsParam = searchParams.get("tags") || "";
   const selectedTags = useMemo(
-    () => (tagsParam ? tagsParam.split(",").filter(Boolean) : []),
+    () => (tagsParam ? tagsParam.split(",").filter(Boolean).slice(0, MAX_TAGS) : []),
     [tagsParam]
   );
   const tagsKey = selectedTags.join(",");
@@ -967,12 +978,13 @@ const { remainingPosts } = useMemo(() => {
                 </button>
 
               <TagFilter
-                  tags={availableTags}
-                  selected={selectedTags}
-                  onToggle={toggleTag}
-                  onClear={clearTags}
-                  loading={loading}
-                />
+                tags={availableTags}
+                selected={selectedTags}
+                onToggle={toggleTag}
+                onClear={clearTags}
+                loading={loading}
+                maxTags={MAX_TAGS}
+              />
               </div>
 
             </div>
