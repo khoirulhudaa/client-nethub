@@ -54,7 +54,7 @@ const NavGroup = ({ title, open, onToggle, collapsed, single = false, children }
       <button
         type="button"
         onClick={onToggle}
-        className="mb-1 flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-white dark:text-gray-400 transition hover:text-gray-200"
+        className="mb-1 flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-white dark:text-white transition hover:text-gray-200"
       >
         <span>{title}</span>
         <ChevronDown
@@ -194,12 +194,12 @@ const Sidebar = ({ onNavigate }) => {
             ? "text-blue-950 rounded-xl" : 
             active && collapsed ? 
             'text-blue-300 border-b border-blue-300 rounded-0'
-            : "text-white hover:dark:!text-slate-400 rounded-xl dark:text-gray-400 hover:text-white"
+            : "text-white hover:dark:!text-slate-400 rounded-xl dark:text-white hover:text-white"
         }`
       : `active:scale-[0.99] flex items-center gap-3 rounded-control px-3 py-2 text-sm font-medium transition-all duration-200 ease-fluid ${
           active
             ? "text-blue-400"
-            : "text-white hover:dark:!text-slate-400 dark:text-gray-300"
+            : "text-white hover:dark:!text-slate-400 dark:text-white"
         }`;
 
   const renderLink = ({ to, icon: Icon, label, end, tour }) => (
@@ -228,7 +228,7 @@ const Sidebar = ({ onNavigate }) => {
         draggable={false}
         onContextMenu={(e) => e.preventDefault()}
         onDragStart={(e) => e.preventDefault()}
-        src="/hero.jpg" alt="wallpaper-sidebar" className={`rotate-[4deg] ${collapsed ? 'dark:rotate-0 duration-0' : ''} scale-[1.2] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-15 left-0`} 
+        src="/tech5.jpg" alt="wallpaper-sidebar" className={`rotate-[0deg] ${collapsed ? 'dark:rotate-0 duration-0' : ''} scale-[5] w-full h-screen dark:flex hidden object-cover absolute z-0 top-0 opacity-60 left-0`} 
       />
       
       <div className="z-10 relative h-screen flex flex-col">
