@@ -694,10 +694,18 @@ const { remainingPosts } = useMemo(() => {
     setSearchParams(next);
   };
 
+  const MAX_TAGS = 3;
+
   const toggleTag = (tag) => {
-  const next = selectedTags.includes(tag)
+    const isSelected = selectedTags.includes(tag);
+
+    // Tolak penambahan jika sudah mencapai batas
+    if (!isSelected && selectedTags.length >= MAX_TAGS) return;
+
+    const next = isSelected
       ? selectedTags.filter((t) => t !== tag)
       : [...selectedTags, tag];
+
     updateParam("tags", next.join(","));
   };
 
