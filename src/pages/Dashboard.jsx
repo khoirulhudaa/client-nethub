@@ -21,6 +21,8 @@ import PinnedHero from "../components/Post/PinnedHero.jsx";
 import PostCard from "../components/Post/PostCard.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 
+const MAX_TAGS = 3;
+
 // --- Search helpers ---------------------------------------------------------
 const STOP_WORDS = new Set([
   "cara", "yang", "di", "ke", "dari", "dan", "atau", "untuk", "pada", "dengan",
@@ -704,8 +706,6 @@ const { remainingPosts } = useMemo(() => {
     else next.delete(key);
     setSearchParams(next);
   };
-
-  const MAX_TAGS = 3;
 
   const toggleTag = (tag) => {
     const isSelected = selectedTags.includes(tag);
