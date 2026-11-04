@@ -345,13 +345,6 @@ const TopBar = ({ onMenuClick }) => {
          <></>
         )}
 
-        {/* Quick links — desktop */}
-        <div className="hidden h-[68%] items-center gap-3 md:flex">
-          <TopLink to="/" icon={Home} label="Dashboard" />
-          <TopLink to="/tools/subnet" icon={Calculator} label="Subnet" />
-          <TopLink to="/topology-practice" icon={PencilRuler} label="Practice" />
-        </div>
-
         <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
           {/* Tombol search mobile */}
           <button
