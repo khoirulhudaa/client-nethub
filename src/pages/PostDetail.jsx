@@ -11,7 +11,7 @@ import { formatDate } from "../utils/generateData.js";
 import { timeAgo } from "../utils/timeAgo.js";
 import FlowchartCanvas from "./FlowchartCanvas.jsx";
 import TopologyCanvas from "./TopologyCanvas.jsx";
-  const     CodeBlockItem = ({ block }) => {
+  const codeBlockItem = ({ block }) => {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = async () => {
@@ -81,7 +81,7 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
         </div>
 
         {/* Code */}
-        <pre className="overflow-x-auto !p-3 md:!p-5 text-[13px] leading-relaxed text-gray-800 dark:text-gray-200">
+        <pre className="overflow-x-auto !p-3 md:!p-5 text-[13px] leading-relaxed text-gray-800">
           <code className="font-mono whitespace-pre">{block.code}</code>
         </pre>
       </div>
@@ -1581,13 +1581,13 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
                                     )}
 
                                     {/* Title */}
-                                    <h3 className="mb-2 text-[15px] font-semibold text-gray-900 dark:text-white line-clamp-2">
+                                    <h3 className="mb-2 text-[15px] font-semibold text-gray-900 line-clamp-2">
                                       {step.title || `Step ${realIndex + 1}`}
                                     </h3>
 
                                     {/* Description */}
                                     {step.description && (
-                                      <p className="text-[13px] leading-relaxed text-gray-500 dark:text-white line-clamp-2">
+                                      <p className="text-[13px] leading-relaxed text-gray-500 line-clamp-2">
                                         {step.description}
                                       </p>
                                     )}
