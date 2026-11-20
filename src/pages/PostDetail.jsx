@@ -11,7 +11,7 @@ import { formatDate } from "../utils/generateData.js";
 import { timeAgo } from "../utils/timeAgo.js";
 import FlowchartCanvas from "./FlowchartCanvas.jsx";
 import TopologyCanvas from "./TopologyCanvas.jsx";
-  const codeBlockItem = ({ block }) => {
+  const CodeBlockItem = ({ block }) => {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = async () => {
