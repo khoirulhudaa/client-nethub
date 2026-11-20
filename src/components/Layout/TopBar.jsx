@@ -241,7 +241,7 @@ const TopBar = ({ onMenuClick }) => {
             <p className="px-4 py-3 text-sm text-gray-500">Loading…</p>
           ) : suggestions.length === 0 ? (
             <p className="px-4 py-3 text-sm text-gray-500">
-              No guide found for "{query.trim()}"
+              No guide found for "{query.trim().slice(0, 100)}"
             </p>
           ) : (
             <ul className="max-h-[50vh] divide-y divide-gray-100 overflow-y-auto dark:divide-white/5">
@@ -344,7 +344,6 @@ const TopBar = ({ onMenuClick }) => {
         ) : (
          <></>
         )}
-
         <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
           {/* Tombol search mobile */}
           <button

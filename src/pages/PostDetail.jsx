@@ -11,7 +11,7 @@ import { formatDate } from "../utils/generateData.js";
 import { timeAgo } from "../utils/timeAgo.js";
 import FlowchartCanvas from "./FlowchartCanvas.jsx";
 import TopologyCanvas from "./TopologyCanvas.jsx";
-  const CodeBlockItem = ({ block }) => {
+  const     CodeBlockItem = ({ block }) => {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = async () => {
@@ -32,11 +32,11 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-100 px-3 md:px-5 py-3 dark:border-white/15">
           <div className="flex items-center gap-y-3 gap-x-1">
-            <span className="text-[11px] font-medium tracking-widest text-gray-700 dark:text-white">
+            <span className="text-[11px] font-medium tracking-widest text-gray-700">
               {block.language?.toUpperCase() || "CODE"} /
             </span>
             {block.title && (
-              <span className="text-[11px] uppercase font-medium text-gray-800 dark:text-gray-100">
+              <span className="text-[11px] uppercase font-medium text-gray-800">
                 {block.title}
               </span>
             )}
@@ -1546,12 +1546,12 @@ import TopologyCanvas from "./TopologyCanvas.jsx";
                                   >
                                     {/* Header */}
                                     <div className="mb-4 flex items-center justify-between">
-                                      <span className="text-[11px] font-medium tracking-widest md:text-slate-900 dark:text-white">
+                                      <span className="text-[11px] font-medium tracking-widest md:text-slate-900">
                                         STEP {String(realIndex + 1).padStart(2, "0")}
                                       </span>
 
                                       {/* Arrow */}
-                                      <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-slate-300 dark:!bg-white/90 md:text-slate-900 dark:text-white transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
+                                      <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-slate-300 dark:!bg-white/90 md:text-slate-900 transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
                                         <svg
                                           xmlns="http://www.w3.org/2000/svg"
                                           className="h-3.5 w-3.5"

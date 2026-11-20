@@ -160,7 +160,7 @@ const MetricGrid = ({ signal, totalGuides, totalReads, totalCategories, loading 
 const Card1 = () => {
   return (
     <a
-      href="https://mikrotik.com/"
+      href="https://pintex.co.id/apps/"
       target="_blank"
       rel="noopener noreferrer"
       className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-white/10 hover:brightness-[80%] !p-3.5 md:!p-4 shadow-sm"
@@ -170,21 +170,17 @@ const Card1 = () => {
           Open web <ChevronRight size={14} />
         </span>
       </div>
-      <p className="mb-4 text-sm text-slate-500 dark:text-gray-500">
-        Map your network, inspect a node
-      </p>
+      
 
-      <div className="relative h-56 w-full rounded-lg bg-gray-50 dark:bg-slate-300 flex items-center justify-center overflow-hidden">
-        <img
-          src="/mikrotik.png"
-          alt="logo-mikrotik"
-          className="w-[56%] h-full object-contain group-hover:scale-[1.1] duration-300 ease-out"
-        />
+      <div className="relative h-56 w-full rounded-lg bg-gray-50 dark:bg-slate-500 flex items-center justify-center overflow-hidden">
+        <h2 className="text-2xl bold font-bold text-slate-900 dark:text-white">
+          KANTIN
+        </h2>
       </div>
 
       <div className="mt-4 flex items-center justify-between text-xs text-slate-500 dark:text-gray-500">
         <span className="flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Mikrotik
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />Pintex
         </span>
       </div>
     </a>
@@ -194,31 +190,27 @@ const Card1 = () => {
 const Card2 = () => {
   return (
     <a
-      href="https://ui.com/"
+      href="https://www.ehrd.pintex.co.id/login"
       target="_blank"
       rel="noopener noreferrer"
       className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-white/10 hover:brightness-[80%] !p-3.5 md:!p-4 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
-        <span className="flex items-center gap-1 text-sm font-medium text-slate-900 group-hover:underline">
+        <span className="flex items-center gap-1 text-sm font-medium dark:!text-white text-slate-900 group-hover:underline">
           Open web <ChevronRight size={14} />
         </span>
       </div>
-      <p className="mb-4 text-sm text-slate-500 dark:text-gray-500">
-        Map your network, inspect a node
-      </p>
+      
 
-      <div className="relative h-56 w-full rounded-lg bg-gray-50 dark:bg-slate-300 flex items-center justify-center overflow-hidden">
-        <img
-          src="/ubiquiti.png"
-          alt="logo-ubiquiti"
-          className="w-[40%] h-full object-contain group-hover:scale-[1.1] duration-300 ease-out"
-        />
+      <div className="relative h-56 w-full rounded-lg bg-gray-50 dark:bg-slate-500 flex items-center justify-center overflow-hidden">
+        <h2 className="text-2xl bold font-bold text-slate-900 dark:text-white">
+          EHRD
+        </h2>
       </div>
 
       <div className="mt-4 flex items-center justify-between text-xs text-slate-500 dark:text-gray-500">
         <span className="flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Ubiquiti
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Pintex
         </span>
       </div>
     </a>
@@ -228,31 +220,27 @@ const Card2 = () => {
 const Card3 = () => {
   return (
     <a
-      href="https://www.tp-link.com/"
+      href="https://eproc.pintex.co.id/"
       target="_blank"
       rel="noopener noreferrer"
       className="surface-card group block cursor-pointer active:scale-[0.99] duration-100 rounded-xl border border-gray-200 bg-slate-300 dark:bg-white/10 hover:brightness-[80%] !p-3.5 md:!p-4 shadow-sm"
     >
       <div className="mb-1 flex items-start justify-between">
-        <span className="flex items-center gap-1 text-sm font-medium text-slate-900 group-hover:underline">
+        <span className="flex items-center gap-1 text-sm font-medium dark:!text-white text-slate-900 group-hover:underline">
           Open web <ChevronRight size={14} />
         </span>
       </div>
-      <p className="mb-4 text-sm text-slate-500 dark:text-gray-500">
-        Map your network, inspect a node
-      </p>
+      
 
-      <div className="relative h-56 w-full rounded-lg bg-gray-50 dark:bg-slate-300 flex items-center justify-center overflow-hidden">
-        <img
-          src="/tplink.png"
-          alt="logo-tplink"
-          className="w-[40%] h-full object-contain group-hover:scale-[1.1] duration-300 ease-out"
-        />
+      <div className="relative h-56 w-full rounded-lg bg-gray-50 dark:bg-slate-500 flex items-center justify-center overflow-hidden">
+       <h2 className="text-2xl bold font-bold text-slate-900 dark:text-white">
+        EPROC
+       </h2>
       </div>
 
       <div className="mt-4 flex items-center justify-between text-xs text-slate-500 dark:text-gray-500">
         <span className="flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Tp-Link
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Pintex
         </span>
       </div>
     </a>
@@ -1114,7 +1102,7 @@ const { remainingPosts } = useMemo(() => {
                         <p className="text-sm text-gray-500">
                           {search
                             ? "Try a different keyword or clear the search."
-                            : "Be the first to publish one for this category."}
+                                            : "Be the first to publish one for this category."}
                         </p>
                       </div>
                     ) : (
@@ -1184,8 +1172,8 @@ const { remainingPosts } = useMemo(() => {
                     </h2>
                   </div>
                   <div className="md:mb-2 mt-4 px-0 md:px-4 grid grid-cols-1 gap-3 lg:grid-cols-3">
-                    <Card2 />
                     <Card1 />
+                    <Card2 />
                     <Card3 />
                   </div>
                 </>

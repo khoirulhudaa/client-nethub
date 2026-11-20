@@ -34,19 +34,19 @@ const CommentItem = ({ comment, onReply, onDelete, depth = 0 }) => {
   return (
     <div className={depth > 0 ? "ml-6 border-l border-border-light pl-4 dark:border-border-dark" : ""}>
       <div className="flex gap-3 py-3">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-600 md:bg-accent-soft text-xs font-semibold text-white md:text-accent">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-600 md:bg-accent-soft text-xs font-semibold md:text-accent">
           {comment.author?.name?.[0]?.toUpperCase()}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">{comment.author?.name}</span>
+            <span className="text-sm font-medium text-slate-700">{comment.author?.name}</span>
             <span className="text-xs text-slate-950 md:dark:text-gray-400 md:text-gray-400">{timeAgo(comment.createdAt)}</span>
           </div>
-          <p className="mt-0.5 text-sm text-gray-600 dark:text-gray-300">{comment.content}</p>
+          <p className="mt-0.5 text-sm text-gray-600 dark:text-gray-600">{comment.content}</p>
           <div className="mt-1.5 flex items-center gap-3">
             <button
               onClick={() => setReplying((r) => !r)}
-              className="flex items-center gap-1 text-xs font-medium text-slate-950 dark:!text-white md:!dark:text-gray-400 hover:text-accent"
+              className="flex items-center gap-1 text-xs font-medium text-slate-950 hover:text-accent"
             >
               <CornerDownRight size={12} />
               Reply
